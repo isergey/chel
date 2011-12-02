@@ -13,4 +13,6 @@ urlpatterns = patterns('ask_librarian.views',
 
 urlpatterns += patterns('ask_librarian.administration_views',
     url(r'^administration/$', 'index', name="admin_index"),
+    url(r'^administration/questions/$', 'questions', name="admin_questions"),
+    url(r'^administration/managers/$', 'managers', name="admin_managers"),
 )

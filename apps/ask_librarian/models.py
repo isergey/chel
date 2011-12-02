@@ -120,6 +120,7 @@ class AnswerLanguage(models.Model):
 QUESTION_STATUSES = (
     (0, _(u'New')),
     (1, _(u'Processed')),
+    (2, _(u'Rejected')),
 )
 
 class Question(models.Model):

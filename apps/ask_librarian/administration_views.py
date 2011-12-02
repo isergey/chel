@@ -6,6 +6,10 @@ from models import Question, Category, AnswerManager, ManagerNonActivePeriod
 
 
 def index(request):
+    return render(request, 'administration/module.html')
 
-    return render(request, 'administration/index.html')
+def questions(request):
+    return render(request, 'administration/questions.html')
 
+def managers(request):
+    return render(request, 'administration/managers.html')
