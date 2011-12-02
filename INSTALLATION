@@ -1,0 +1,27 @@
+#Процесс установки для Ubuntu
+#требуется python 2.7
+apt-get install python-pip
+apt-get install mysql-server
+apt-get install python-mysqldb
+apt-get install python-lxml
+apt-get install memcached
+apt-get install libmemcached-dev
+
+pip install django -U
+pip install pylibmc -U
+
+
+
+# В СУБД MySQl создать базу с именем libcms ( или другое имя указанное в local_settingth.py),
+# указав ОБЯЗАТЕЛЬНО в качесиве кодировки по-умолчанию utf8-general-ci.
+
+# В local_settingth.py указать логин и пароль к созданной базе (словарь DATABASES['default'], ключи USER и PASSWORD)
+
+# Выполнить команду python manage.py syncdb (создание необходимыъ таблиц и заполнение их начальными данными). В процессе
+# синхронизации (если в она осуществляется в первые), система попросит ввести данные о супер пользователе.
+
+# Указать адрес сервера Memcached (словарь CACHES['default'], ключ LOCATION)
+
+# Выполнить команду python manage.py collectstatic
+# Настроить вебсервер для доступа к дирректории static по адресу указанному в переменной STATIC_URL файла settings.py
+

@@ -1,0 +1,41 @@
+{% extends 'backend_base.html' %}
+{% load i18n %}
+{% load mptt_tags %}
+{% block module_name %}{% trans 'Ask a librarian' %}{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .panel{
+            padding: 5px;;
+            background: #f6f6f6;
+            box-shadow: 0 0 5px black; /* Параметры тени */
+            box-shadow: 0 0 5px rgba(0,0,0,0.5); /* Параметры тени */
+            -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5); /* Для Firefox */
+            -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5); /* Для Safari и Chrome */
+        }
+        ul.section_menu{
+            margin: 0px;
+            list-style: none;
+        }
+        ul.section_menu a{
+            text-decoration: none;
+        }
+    </style>
+    <div class="page-header">
+        <h1>{% trans 'Ask a librarian' %}
+            <small>{% trans 'Administration' %}</small>
+        </h1>
+    </div>
+    <div class="row">
+        <div class="span3 panel">
+                <ul class="section_menu">
+                    <li><a href="#">{% trans 'Ask managers list' %}</a></li>
+                    <li><a href="#">{% trans 'Add ask manager' %}</a></li>
+                </ul>
+        </div>
+        <div class="span12">
+                <h2>Main content</h2>
+
+        </div>
+
+    </div>
+{% endblock %}

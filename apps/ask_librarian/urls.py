@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+from django.conf.urls.defaults import *
+
+
+urlpatterns = patterns('ask_librarian.views',
+    url(r'^$', 'index', name="index"),
+    url(r'^ask_question/$', 'ask_question', name="ask_question"),
+    url(r'^question/(?P<id>\d+)/$', 'question_detail', name="question_detail"),
+    url(r'^by_category/(?P<id>\d+)/$', 'by_category', name="by_category"),
+    url(r'^available_managers/$', 'available_managers', name="available_managers"),
+)
+
+
+urlpatterns += patterns('ask_librarian.administration_views',
+    url(r'^administration/$', 'index', name="admin_index"),
+)
