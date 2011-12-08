@@ -1,13 +1,12 @@
-{% extends 'backend_base.html' %}
+{% extends 'administration/module.html' %}
 {% load i18n %}
 {% load mptt_tags %}
 {% block module_name %}{% trans 'Ask a librarian' %}{% endblock %}
 {% block module_menu %}{% include 'administration/module_menu.html' %}{% endblock %}
-{% block content %}
-    {% include 'administration/style.html' %}
+{% block module_content %}
     <div class="row">
         <div class="span16 page-header">
-            <h2>{% trans 'Questions' %}
+            <h2>{% trans 'Ask managers' %}
                 <small>{% trans 'Administration' %}</small>
             </h2>
         </div>

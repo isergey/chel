@@ -1,15 +1,17 @@
 # encoding: utf-8
 import os
 import sys
-
 from local_settings import *
+
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 sys.path.insert(0, os.path.join(PROJECT_PATH, "vendors"))
 
+
 ADMINS = (
 # ('Your Name', 'your_email@example.com'),
 )
+
 
 MANAGERS = ADMINS
 
@@ -33,7 +35,7 @@ LANGUAGES = (
     ('ru', gettext('Russian')),
     ('en', gettext('English')),
     #('tt', gettext('Tatar')),
-    )
+)
 
 SITE_ID = 1
 
@@ -70,7 +72,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    )
+)
 
 
 
@@ -82,6 +84,17 @@ TEMPLATE_LOADERS = (
 #    )),
     #     'django.template.loaders.eggs.Loader',
 )
+
+
+#TEMPLATE_LOADERS = (
+#        ('django.template.loaders.cached.Loader', (
+#    'django.template.loaders.filesystem.Loader',
+#    'django.template.loaders.app_directories.Loader',
+#        )),
+#         'django.template.loaders.eggs.Loader',
+#    )
+
+
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -101,7 +114,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 #    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
+)
 
 ROOT_URLCONF = 'libcms.urls'
 
@@ -123,7 +136,7 @@ INSTALLED_APPS = (
     # cms apps
     'core',
     'ask_librarian',
-    )
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -137,7 +150,7 @@ LOGGING = {
         'standard': {
             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
         },
-        },
+    },
     'handlers': {
         'default': {
             'level': 'DEBUG',
@@ -168,7 +181,7 @@ LOGGING = {
                            'level': 'DEBUG',
                            'propagate': False
         },
-        }
+    }
 }
 # префикс для системы кеширования
 KEY_PREFIX = 'libcms'
@@ -189,4 +202,4 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.sql.SQLDebugPanel',
     'debug_toolbar.panels.signals.SignalDebugPanel',
     'debug_toolbar.panels.logger.LoggingPanel',
-    )
+)

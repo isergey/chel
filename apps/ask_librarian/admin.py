@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from models import Category, Question, Answer, AnswerLanguage, AnswerManager, ManagerNonActivePeriod
+from models import Category, Question, Answer, AnswerLanguage, AnswerManager, ManagerNonActivePeriod, AssignManager
 
 admin.site.register(Category, MPTTModelAdmin)
 
@@ -29,9 +29,15 @@ admin.site.register(AnswerLanguage,AnswerLanguageAdmin)
 
 
 class AnswerManagerAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'surname', 'phone')
+    list_display = ('user', 'phone')
 
 admin.site.register(AnswerManager,AnswerManagerAdmin)
+
+
+class AssignManagerAdmin(admin.ModelAdmin):
+    list_display = ('answer_manager', 'question')
+
+admin.site.register(AssignManager,AssignManagerAdmin)
 
 
 

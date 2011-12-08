@@ -15,7 +15,7 @@
     <div id="topbar" class="topbar" data-dropdown="dropdown">
         <div class="topbar-inner">
             <div class="container">
-                <h3><a href="#">{% block module_name %}{% endblock %}</a></h3>
+                <h3>{% block module_name %}<a href="#">Module name</a>{% endblock %}</h3>
                 <ul>
                 {% block module_menu %}
 {#                    <li><a href="#">{% trans 'Questions' %}</a></li>#}
@@ -56,10 +56,11 @@
 {#            </div>#}
         {% endblock %}
     </div>
-
-    <footer>
-        <p>© LibCMS 2011</p>
-    </footer>
+    <div class="row span16">
+        <footer>
+            <p>© LibCMS 2011</p>
+        </footer>
+    </div>
 
 </div>
 </body>

@@ -20,12 +20,12 @@ class AnswerManager(models.Model):
     где присутвует связь между пользователями и организациями
     """
     user = models.ForeignKey(User,verbose_name=_(u'User, who can give the answer'), unique=True)
-    name = models.CharField(max_length=32, verbose_name=_(u'Name'))
-    surname = models.CharField(max_length=32, verbose_name=_(u'Surname'))
+#    name = models.CharField(max_length=32, verbose_name=_(u'Name'))
+#    surname = models.CharField(max_length=32, verbose_name=_(u'Surname'))
     phone = models.CharField(max_length=16, verbose_name=_(u'Phone number'))
 
     def __unicode__(self):
-        return u'%s %s' % (self.surname, self.name)
+        return u'%s %s' % (self.user.last_name, self.user.first_name)
 
     @classmethod
     def get_non_active_managers(cls):
@@ -137,6 +137,7 @@ class Question(models.Model):
     category = models.ForeignKey(Category, verbose_name=_(u'Question category'), db_index=True)
     create_date = models.DateTimeField(auto_now=True, auto_now_add=True, db_index=True)
     status = models.IntegerField(verbose_name=_(u'Question status'), choices=QUESTION_STATUSES, default=0, db_index=True)
+
     @models.permalink
     def get_absolute_url(self):
         return ('ask_librarian:question_detail', [str(self.id)])
@@ -144,10 +145,23 @@ class Question(models.Model):
     def __unicode__(self):
         return self.text
 
+    def get_category_path(self):
+        ancestors = self.category.get_ancestors(include_self=True)
+        return ancestors
+
     class Meta:
         permissions = (
             ("view_question", __("Can see question")),
         )
+
+
+class AssignManager(models.Model):
+    """
+    Менеджер, которому назначен вопрос
+    """
+    answer_manager = models.ForeignKey(AnswerManager)
+    question = models.ForeignKey(Question, unique=True)
+    create_date = models.DateTimeField(auto_now=True, auto_now_add=True, db_index=True)
 
 
 
