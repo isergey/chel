@@ -18,3 +18,4 @@ urlpatterns += patterns('ask_librarian.administration_views',
     url(r'^administration/questions/(?P<id>\d+)/$', 'questions_detail', name="admin_questions_detail"),
     url(r'^administration/managers/$', 'managers', name="admin_managers"),
 )
+
