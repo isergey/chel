@@ -20,8 +20,8 @@ class PermissionRequiredTest(TestCase):
 
     def setUp(self):
         self.anon = AnonymousUser()
-        self.user = User.objects.get(username='jack')
-        self.group = Group.objects.get(name='jackGroup')
+        self.user = User.objects.get_or_create(username='jack')[0]
+        self.group = Group.objects.get_or_create(name='jackGroup')[0]
 
     def _get_request(self, user=None):
         if user is None:
@@ -102,8 +102,7 @@ class PermissionRequiredTest(TestCase):
         def dummy_view(request):
             return HttpResponse('dummy_view')
 
-        with self.assertRaises(PermissionDenied):
-            dummy_view(request)
+        self.assertRaises(PermissionDenied, dummy_view, request)
 
     def test_anonymous_user_wrong_app(self):
 
@@ -169,6 +168,92 @@ class PermissionRequiredTest(TestCase):
                 pass
             else:
                 self.fail("Wrong arguments given but GuardianError not raised")
+
+    def test_user_has_no_access(self):
+
+        request = self._get_request()
+
+        @permission_required_or_403('auth.change_user')
+        def dummy_view(request):
+            return HttpResponse('dummy_view')
+        self.assertEqual(dummy_view(request).status_code, 403)
+
+    def test_user_has_access(self):
+
+        perm = 'auth.change_user'
+        joe, created = User.objects.get_or_create(username='joe')
+        assign(perm, self.user, obj=joe)
+
+        request = self._get_request(self.user)
+
+        @permission_required_or_403(perm, (
+            'auth.User', 'username', 'username'))
+        def dummy_view(request, username):
+            return HttpResponse('dummy_view')
+        response = dummy_view(request, username='joe')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 'dummy_view')
+
+    def test_user_has_obj_access_even_if_we_also_check_for_global(self):
+
+        perm = 'auth.change_user'
+        joe, created = User.objects.get_or_create(username='joe')
+        assign(perm, self.user, obj=joe)
+
+        request = self._get_request(self.user)
+
+        @permission_required_or_403(perm, (
+            'auth.User', 'username', 'username'), accept_global_perms=True)
+        def dummy_view(request, username):
+            return HttpResponse('dummy_view')
+        response = dummy_view(request, username='joe')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 'dummy_view')
+
+    def test_user_has_no_obj_perm_access(self):
+
+        perm = 'auth.change_user'
+        joe, created = User.objects.get_or_create(username='joe')
+
+        request = self._get_request(self.user)
+
+        @permission_required_or_403(perm, (
+            'auth.User', 'username', 'username'))
+        def dummy_view(request, username):
+            return HttpResponse('dummy_view')
+        response = dummy_view(request, username='joe')
+        self.assertEqual(response.status_code, 403)
+
+    def test_user_has_global_perm_access_but_flag_not_set(self):
+
+        perm = 'auth.change_user'
+        joe, created = User.objects.get_or_create(username='joe')
+        assign(perm, self.user)
+
+        request = self._get_request(self.user)
+
+        @permission_required_or_403(perm, (
+            'auth.User', 'username', 'username'))
+        def dummy_view(request, username):
+            return HttpResponse('dummy_view')
+        response = dummy_view(request, username='joe')
+        self.assertEqual(response.status_code, 403)
+
+    def test_user_has_global_perm_access(self):
+
+        perm = 'auth.change_user'
+        joe, created = User.objects.get_or_create(username='joe')
+        assign(perm, self.user)
+
+        request = self._get_request(self.user)
+
+        @permission_required_or_403(perm, (
+            'auth.User', 'username', 'username'), accept_global_perms=True)
+        def dummy_view(request, username):
+            return HttpResponse('dummy_view')
+        response = dummy_view(request, username='joe')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 'dummy_view')
 
     def test_model_lookup(self):
 

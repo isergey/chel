@@ -347,12 +347,13 @@ class GuardedModelAdminTests(TestCase):
         request = HttpRequest()
         request.user = joe
         qs = gma.queryset(request)
-        self.assertItemsEqual([e.pk for e in qs], [joe_entry.pk, jane_entry.pk])
+        self.assertEqual(sorted([e.pk for e in qs]),
+            sorted([joe_entry.pk, jane_entry.pk]))
 
 
 class GrappelliGuardedModelAdminTests(TestCase):
 
-    org_settings = copy.copy(settings)
+    org_installed_apps = copy.copy(settings.INSTALLED_APPS)
 
     def _get_gma(self, attrs=None, name=None, model=None):
         """
@@ -369,7 +370,7 @@ class GrappelliGuardedModelAdminTests(TestCase):
         settings.INSTALLED_APPS = ['grappelli'] + list(settings.INSTALLED_APPS)
 
     def tearDown(self):
-        globals()['settings'] = copy.copy(self.org_settings)
+        settings.INSTALLED_APPS = self.org_installed_apps
 
     def test_get_obj_perms_manage_template(self):
         gma = self._get_gma()

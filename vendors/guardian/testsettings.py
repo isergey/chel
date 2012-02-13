@@ -35,5 +35,18 @@ SITE_ID = 1
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'tests', 'templates'),
 )
-print TEMPLATE_DIRS
+
+# Database specific
+
+if os.environ.get('GUARDIAN_TEST_DB_BACKEND') == 'mysql':
+    DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+    DATABASES['default']['NAME'] = 'guardian_test'
+    DATABASES['default']['TEST_NAME'] = 'guardian_test'
+    DATABASES['default']['USER'] = os.environ.get('USER', 'root')
+
+if os.environ.get('GUARDIAN_TEST_DB_BACKEND') == 'postgresql':
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+    DATABASES['default']['NAME'] = 'guardian'
+    DATABASES['default']['TEST_NAME'] = 'guardian_test'
+    DATABASES['default']['USER'] = os.environ.get('USER', 'postgres')
 

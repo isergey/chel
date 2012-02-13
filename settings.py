@@ -1,7 +1,10 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 import os
 import sys
-from local_settings import *
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
+
+
 
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
@@ -141,54 +144,24 @@ INSTALLED_APPS = (
     'ask_librarian',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'standard': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
-        },
-    },
-    'handlers': {
-        'default': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/mylog.log',
-            'maxBytes': 1024 * 1024 * 5, # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
-            },
-        'request_handler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/django_request.log',
-            'maxBytes': 1024 * 1024 * 5, # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
-            },
-        },
-    'loggers': {
 
-        '': {
-            'handlers': ['default'],
-            'level': 'DEBUG',
-            'propagate': True
-        },
-        'django.request': {# Stop SQL debug from logging to main logger
-                           'handlers': ['request_handler'],
-                           'level': 'DEBUG',
-                           'propagate': False
-        },
-    }
-}
 # префикс для системы кеширования
 KEY_PREFIX = 'libcms'
 
 # guardian settings
 ANONYMOUS_USER_ID = -1
 
+DEBUG_TOOLBAR_PANELS = (
+    'debug_toolbar.panels.version.VersionDebugPanel',
+    'debug_toolbar.panels.timer.TimerDebugPanel',
+    'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
+    'debug_toolbar.panels.headers.HeaderDebugPanel',
+    'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
+    'debug_toolbar.panels.template.TemplateDebugPanel',
+    'debug_toolbar.panels.sql.SQLDebugPanel',
+    'debug_toolbar.panels.signals.SignalDebugPanel',
+    'debug_toolbar.panels.logger.LoggingPanel',
+    )
+
+
+from local_settings import *

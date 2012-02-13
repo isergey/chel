@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 import datetime
 import hashlib
 from django.db.models.signals import post_save, post_delete
