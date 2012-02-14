@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^core/', include('core.urls', namespace='core')),
-    (r'^users/', include('users.urls', namespace='users')),
+    (r'^accounts/', include('accounts.urls', namespace='accounts')),
     (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
 
     # Uncomment the next line to enable the admin:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-15 12:47+0400\n"
+"POT-Creation-Date: 2012-02-14 19:19+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,155 +19,305 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: settings.py:33
+#: settings.py:38
 msgid "Russian"
 msgstr "Русский"
 
-#: settings.py:34
+#: settings.py:39
 msgid "English"
-msgstr "Английский"
+msgstr "English"
 
-#: apps/ask_librarian/models.py:21
-msgid "User, who can give the answer"
-msgstr "Пользователь, который уполномочен давать ответы"
+#: apps/accounts/templates/administration/module_menu.html:4
+#: apps/accounts/templates/administration/user_list.html:8
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:36
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:31
+msgid "Users"
+msgstr "Пользователи"
 
-#: apps/ask_librarian/models.py:22
-msgid "Name"
+#: apps/accounts/templates/administration/module_menu.html:5
+#: apps/accounts/templates/administration/module_menu.html:7
+#: apps/accounts/templates/administration/user_list.html:9
+msgid "List"
+msgstr "Список"
+
+#: apps/accounts/templates/administration/module_menu.html:6
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:96
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:85
+msgid "Groups"
+msgstr "Группы"
+
+#: apps/accounts/templates/administration/user_list.html:7
+msgid "undefinded"
+msgstr "не определено"
+
+#: apps/accounts/templates/administration/user_list.html:18
+#: vendors/guardian/admin.py:348
+msgid "Username"
+msgstr "Логин"
+
+#: apps/accounts/templates/administration/user_list.html:19
+msgid "First name"
 msgstr "Имя"
 
-#: apps/ask_librarian/models.py:23
-msgid "Surname"
+#: apps/accounts/templates/administration/user_list.html:20
+msgid "Last name"
 msgstr "Фамилия"
 
-#: apps/ask_librarian/models.py:24
+#: apps/accounts/templates/administration/user_list.html:21
+msgid "Registration date"
+msgstr "Дата регистрации"
+
+#: apps/ask_librarian/models.py:22
+msgid "User, who can give the answer"
+msgstr ""
+
+#: apps/ask_librarian/models.py:25
 msgid "Phone number"
-msgstr "Номер телефона"
+msgstr ""
 
-#: apps/ask_librarian/models.py:39
+#: apps/ask_librarian/models.py:59
 msgid "Start date of non active period"
-msgstr "Начало периода недоступности"
+msgstr ""
 
-#: apps/ask_librarian/models.py:40
+#: apps/ask_librarian/models.py:60
 msgid "End date of non active period"
-msgstr "Окончание периода недоступности"
+msgstr ""
 
-#: apps/ask_librarian/models.py:41
+#: apps/ask_librarian/models.py:61
 msgid "Reason, why not active"
-msgstr "Причина недоступности"
+msgstr ""
 
-#: apps/ask_librarian/models.py:68
+#: apps/ask_librarian/models.py:96
 msgid "Question category name"
-msgstr "Название категории вопроса"
+msgstr ""
 
-#: apps/ask_librarian/models.py:88
+#: apps/ask_librarian/models.py:116
 msgid "Language name"
-msgstr "Название языка"
+msgstr ""
 
-#: apps/ask_librarian/models.py:93
+#: apps/ask_librarian/models.py:121
 msgid "New"
-msgstr "Новый"
+msgstr ""
 
-#: apps/ask_librarian/models.py:94
+#: apps/ask_librarian/models.py:122
 msgid "Processed"
-msgstr "Обработан"
+msgstr ""
 
-#: apps/ask_librarian/models.py:102
+#: apps/ask_librarian/models.py:123
+msgid "Rejected"
+msgstr ""
+
+#: apps/ask_librarian/models.py:131
 msgid "Text of question"
-msgstr "Текст вопроса"
+msgstr ""
 
-#: apps/ask_librarian/models.py:105
+#: apps/ask_librarian/models.py:134
 msgid "The answer may contain links and materials on the languages of chosen"
-msgstr "Ответ может содержать ссылки и материалы на выбранных языках"
+msgstr ""
 
-#: apps/ask_librarian/models.py:108
+#: apps/ask_librarian/models.py:137
 #: apps/ask_librarian/templates/frontend/question_detail.html:8
 msgid "Question category"
-msgstr "Категория вопроса"
+msgstr ""
 
-#: apps/ask_librarian/models.py:110
+#: apps/ask_librarian/models.py:139
 msgid "Question status"
-msgstr "Статус вопроса"
+msgstr ""
 
-#: apps/ask_librarian/models.py:129
+#: apps/ask_librarian/models.py:174
 msgid "Answer manager"
-msgstr "Менеджер ответов"
+msgstr ""
 
-#: apps/ask_librarian/models.py:130
+#: apps/ask_librarian/models.py:175
 msgid "Text of answer"
-msgstr "Текст ответа"
+msgstr ""
 
+#: apps/ask_librarian/templates/administration/managers.html:4
+#: apps/ask_librarian/templates/administration/module.html:4
 #: apps/ask_librarian/templates/frontend/create_question.html:4
 #: apps/ask_librarian/templates/frontend/index.html:33
 #: apps/ask_librarian/templates/frontend/question_detail.html:4
 msgid "Ask a librarian"
-msgstr "Спроси библиотекаря"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:9
+msgid "Ask managers"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:10
+msgid "Administration"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:17
+msgid "Ask managers list"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:18
+msgid "Add ask manager"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:25
+#: apps/ask_librarian/templates/administration/questions_stats.html:6
+msgid "New questions"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:30
+#: apps/ask_librarian/templates/administration/questions_stats.html:11
+msgid "Processed questions"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/managers.html:47
+#: apps/ask_librarian/templates/administration/questions_stats.html:28
+msgid "Rejected questions"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/module_menu.html:7
+#: apps/ask_librarian/templates/administration/questions.html:11
+msgid "Questions"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/module_menu.html:8
+msgid "Managers"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions.html:14
+msgid "Stats"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:4
+#: apps/ask_librarian/templates/administration/questions_list.html:4
+#: apps/ask_librarian/templates/administration/questions_menu.html:11
+msgid "Questions list"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:6
+msgid "Question detail"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:9
+#: apps/ask_librarian/templates/administration/questions_detail.html:13
+#: apps/ask_librarian/templates/administration/questions_detail.html:72
+msgid "Question"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:9
+msgid "The question has no answer"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:17
+msgid "Status"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:21
+msgid "Answer language"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:31
+#: apps/ask_librarian/templates/administration/questions_detail.html:76
+msgid "Create date"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:35
+msgid "Category"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:45
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:45
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:36
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:40
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:30
+msgid "User"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:50
+msgid "Unregistered"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:59
+msgid "Answer the question"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:60
+msgid "Assign to answer manager"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:61
+msgid "Reject question"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:68
+msgid "Answer"
+msgstr ""
+
+#: apps/ask_librarian/templates/administration/questions_detail.html:80
+msgid "Manager"
+msgstr ""
 
 #: apps/ask_librarian/templates/frontend/question_detail.html:5
 msgid "Your question was sent to the librarian"
-msgstr "Ваш вопрос был отправлен библиотекарю"
+msgstr ""
 
 #: apps/ask_librarian/templates/frontend/question_detail.html:6
-#, fuzzy
 msgid "Question identifier"
-msgstr "Идентификатор вопроса"
+msgstr ""
 
 #: apps/ask_librarian/templates/frontend/question_detail.html:7
-#, fuzzy
 msgid "Question text"
-msgstr "Тест вопроса"
+msgstr ""
 
 #: apps/core/views.py:12
 msgid "Hello"
-msgstr "Привет"
+msgstr ""
 
 #: apps/core/templates/i18n/select_lang_form.html:3
 msgid "Current language"
-msgstr "Текущий язык"
+msgstr ""
 
 #: apps/core/templates/i18n/select_lang_form.html:4
 msgid "Select language from list and press \"Change\""
-msgstr "Выберите язык из списка и нажмите Изменить"
+msgstr ""
 
 #: apps/core/templates/i18n/select_lang_form.html:14
 msgid "Change"
-msgstr "Изменить"
+msgstr ""
 
-#: apps/core/templates/pagination/admin_pagination_tag.html:7
 #: apps/core/templates/pagination/pagination_tag.html:6
-#, fuzzy
 msgid "previous page"
-msgstr "предыдущая страница"
+msgstr ""
 
-#: apps/core/templates/pagination/admin_pagination_tag.html:28
 #: apps/core/templates/pagination/pagination_tag.html:40
-#, fuzzy
 msgid "next page"
-msgstr "следующая страница"
+msgstr ""
 
-#: vendors/debug_toolbar/panels/cache.py:90
+#: vendors/debug_toolbar/panels/cache.py:92
 #, python-format
 msgid "Cache: %.2fms"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/cache.py:93
+#: vendors/debug_toolbar/panels/cache.py:95
 msgid "Cache Usage"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/headers.py:36
-#: vendors/debug_toolbar/panels/headers.py:39
+#: vendors/debug_toolbar/panels/headers.py:37
+#: vendors/debug_toolbar/panels/headers.py:40
 msgid "HTTP Headers"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/logger.py:108
+#: vendors/debug_toolbar/panels/logger.py:112
 msgid "Logging"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/logger.py:115
+#: vendors/debug_toolbar/panels/logger.py:119
 msgid "Log Messages"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/request_vars.py:13
-#: vendors/debug_toolbar/panels/request_vars.py:16
+#: vendors/debug_toolbar/panels/profiling.py:149
+#: vendors/debug_toolbar/panels/profiling.py:155
+msgid "Profiling"
+msgstr ""
+
+#: vendors/debug_toolbar/panels/request_vars.py:22
+#: vendors/debug_toolbar/panels/request_vars.py:25
 msgid "Request Vars"
 msgstr ""
 
@@ -180,80 +330,75 @@ msgstr ""
 msgid "Settings from <code>%s</code>"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/signals.py:39
-#: vendors/debug_toolbar/panels/signals.py:42
+#: vendors/debug_toolbar/panels/signals.py:40
+#: vendors/debug_toolbar/panels/signals.py:54
 msgid "Signals"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/sql.py:229
+#: vendors/debug_toolbar/panels/sql.py:121
 msgid "SQL"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/sql.py:253
-msgid "SQL Queries"
-msgstr ""
-
-#: vendors/debug_toolbar/panels/template.py:55
+#: vendors/debug_toolbar/panels/template.py:102
 msgid "Templates"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/template.py:60
+#: vendors/debug_toolbar/panels/template.py:106
 #, python-format
 msgid "Templates (%(num_templates)s rendered)"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:35
+#: vendors/debug_toolbar/panels/timer.py:56
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/cache.html:39
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/logger.html:7
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:5
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:11
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:12
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:11
 msgid "Time"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:47
+#: vendors/debug_toolbar/panels/timer.py:70
 msgid "Resource Usage"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:78
+#: vendors/debug_toolbar/panels/timer.py:83
 msgid "User CPU time"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:79
+#: vendors/debug_toolbar/panels/timer.py:84
 msgid "System CPU time"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:80
+#: vendors/debug_toolbar/panels/timer.py:85
 msgid "Total CPU time"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:81
+#: vendors/debug_toolbar/panels/timer.py:86
 msgid "Elapsed time"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/timer.py:82
+#: vendors/debug_toolbar/panels/timer.py:87
 msgid "Context switches"
 msgstr ""
 
-#: vendors/debug_toolbar/panels/version.py:20
-#: vendors/debug_toolbar/panels/version.py:29
+#: vendors/debug_toolbar/panels/version.py:19
+#: vendors/debug_toolbar/panels/version.py:28
 msgid "Versions"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/base.html:12
+#: vendors/debug_toolbar/templates/debug_toolbar/base.html:11
 msgid "Hide Toolbar"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/base.html:12
+#: vendors/debug_toolbar/templates/debug_toolbar/base.html:11
 msgid "Hide"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/base.html:37
+#: vendors/debug_toolbar/templates/debug_toolbar/base.html:36
 msgid "Show Toolbar"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/base.html:43
+#: vendors/debug_toolbar/templates/debug_toolbar/base.html:42
 msgid "Close"
 msgstr ""
 
@@ -322,9 +467,8 @@ msgid "Level"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/logger.html:8
-#, fuzzy
 msgid "Channel"
-msgstr "Изменить"
+msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/logger.html:9
 msgid "Message"
@@ -332,6 +476,27 @@ msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/logger.html:26
 msgid "No messages logged"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:6
+msgid "Call"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:7
+msgid "CumTime"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:8
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:10
+msgid "Per"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:9
+msgid "TotTime"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:11
+msgid "Count"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:3
@@ -405,36 +570,31 @@ msgstr ""
 msgid "Receivers"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:6
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:8
+#, python-format
+msgid "%(num)s query"
+msgid_plural "%(num)s queries"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:19
+msgid "Query"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:20
+msgid "Timeline"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:21
+msgid "Time (ms)"
+msgstr ""
+
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:22
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:49
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:109
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:44
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:98
 msgid "Action"
-msgstr ""
-
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:7
-msgid "Stacktrace"
-msgstr ""
-
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:8
-msgid "Alias"
-msgstr ""
-
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:9
-msgid "Query"
-msgstr ""
-
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:40
-msgid "Line"
-msgstr ""
-
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:41
-msgid "Method"
-msgstr ""
-
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:42
-msgid "File"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:3
@@ -454,11 +614,17 @@ msgstr ""
 msgid "Executed SQL"
 msgstr ""
 
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_explain.html:13
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:14
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:13
+msgid "Database"
+msgstr ""
+
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:4
 msgid "SQL Profiled"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:35
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_profile.html:37
 msgid "Error"
 msgstr ""
 
@@ -466,7 +632,7 @@ msgstr ""
 msgid "SQL Selected"
 msgstr ""
 
-#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:34
+#: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:36
 msgid "Empty set"
 msgstr ""
 
@@ -532,10 +698,6 @@ msgstr ""
 msgid "Permissions saved."
 msgstr ""
 
-#: vendors/guardian/admin.py:348
-msgid "Username"
-msgstr ""
-
 #: vendors/guardian/admin.py:351
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
 msgstr ""
@@ -568,21 +730,9 @@ msgstr ""
 msgid "Please correct the errors below."
 msgstr ""
 
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:36
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:31
-msgid "Users"
-msgstr ""
-
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:42
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:37
 msgid "User permissions"
-msgstr ""
-
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:45
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:36
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:40
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:30
-msgid "User"
 msgstr ""
 
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:66
@@ -597,11 +747,6 @@ msgstr ""
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:72
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:15
 msgid "Manage user"
-msgstr ""
-
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:96
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:85
-msgid "Groups"
 msgstr ""
 
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:102
@@ -656,7 +801,6 @@ msgid "%(count)s %(name)s was changed successfully."
 msgid_plural "%(count)s %(name)s were changed successfully."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: vendors/mptt/admin.py:200 vendors/mptt/admin.py:202
 msgid "Add child"
@@ -793,10 +937,3 @@ msgstr ""
 #, python-format
 msgid "%s tag requires a queryset"
 msgstr ""
-
-#~ msgid "Start date and time must be more then curent date time"
-#~ msgstr ""
-#~ "Дата и время начала периода должны быть больше текущей даты и времени"
-
-#~ msgid "End date and time must be more then start"
-#~ msgstr "Дата и время конца периода должны быть больше даты начала периода"

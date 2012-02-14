@@ -140,7 +140,7 @@ INSTALLED_APPS = (
 
     # cms apps
     'core',
-    'users',
+    'accounts',
     'ask_librarian',
 )
 
