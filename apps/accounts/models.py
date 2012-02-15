@@ -2,7 +2,15 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-class CommonInfo(User):
+
+class Permissions(User):
+    """
+    Класс для создания прав достпа
+    """
     class Meta:
         proxy = True
-        permissions = (("can_deliver_pizzas", "Can deliver pizzas"),)
+        permissions = (
+            ("view_users", "Can view users list"),
+            ("view_groups", "Can view groups list"),
+        )
+

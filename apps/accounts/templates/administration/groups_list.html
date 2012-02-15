@@ -1,14 +1,12 @@
 {% extends 'administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load in18n %}
+{% load i18n %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% trans 'Accounts' as Accounts_ %}
-    {% trans 'Groups' as Groups_ %}
-    {% breadcrumb Accounts_ accounts:administration:index %}
-    {% breadcrumb Groups_  %}
+    {% breadcrumb _("Accounts") accounts:administration:index %}
+    {% breadcrumb _("Groups")  %}
 {% endblock %}
 {% block action_content %}
 
@@ -23,7 +21,7 @@
         <tbody>
         {% for group in groups_page.object_list %}
         <tr>
-            <td>{{ group.name }}</td>
+            <td><a href="{% url accounts:administration:edit_group group.id %}">{{ group.name }}</a></td>
         </tr>
         {% endfor %}
         </tbody>

@@ -55,6 +55,7 @@ SECRET_KEY = '*q((-d&v^49bq!i+q9%!sf@^0&9!c&4u5i9q$g=j2&x6^)cco4'
 TEMPLATE_DIRS = (PROJECT_PATH + 'templates',)
 
 
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.
@@ -100,6 +101,9 @@ LOGGING = {
         },
     }
 }
+
+EMAIL_HOST = 'stu.ruslan.ru'
+EMAIL_PORT = 25
 
 # debug_toolbar settings
 INTERNAL_IPS = ('127.0.0.1',)

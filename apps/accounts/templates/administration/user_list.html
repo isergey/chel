@@ -1,18 +1,16 @@
 {% extends 'administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load in18n %}
+{% load i18n %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% trans 'Accounts' as Accounts_ %}
-    {% trans 'Users' as Users_ %}
-    {% breadcrumb Accounts_ accounts:administration:index %}
-    {% breadcrumb Users_  %}
+    {% breadcrumb _("Accounts") accounts:administration:index %}
+    {% breadcrumb _("Users")  %}
 {% endblock %}
 
 {% block action_content %}
-    {% trans 'undefinded' as undefinded_ %}
+{#    {% trans 'undefinded' as undefinded_ %}#}
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
@@ -26,8 +24,8 @@
         {% for user in users_page.object_list %}
         <tr>
             <td><a href="{% url accounts:administration:edit_user user.id %}">{{ user.username }}</a></td>
-            <td>{{ user.first_name|default:undefinded_ }}</td>
-            <td>{{ user.last_name|default:undefinded_ }}</td>
+            <td>{{ user.first_name|default:_("undefinded") }}</td>
+            <td>{{ user.last_name|default:_("undefinded") }}</td>
             <td>{{ user.date_joined }}</td>
         </tr>
         {% endfor %}

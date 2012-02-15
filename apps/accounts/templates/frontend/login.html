@@ -1,0 +1,15 @@
+{% extends 'frontend_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Login' %}
+{% endblock %}
+{% block content %}
+    <form method="POST" class="form-horizontal">{% csrf_token %}
+        <fieldset>
+            {% include 'frontend/base_form_fields.html' %}
+            <div class="form-actions">
+                <input type="submit" value="Войти" class="btn"/>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

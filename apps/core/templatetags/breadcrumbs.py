@@ -5,7 +5,7 @@ from django.utils.encoding import smart_str, smart_unicode
 from django.template.defaulttags import url
 from django.core.urlresolvers import reverse
 from django.template import VariableDoesNotExist
-
+from django.utils.translation import ugettext as _
 register = template.Library()
 
 @register.tag
@@ -62,7 +62,10 @@ class BreadcrumbNode(Node):
 
     def render(self, context):
         title = self.vars[0].var
-
+        do_translate = False
+        if title.startswith(u'_(') and title.endswith(u')'):
+            do_translate = True
+            title=title.strip(u'_(').strip(u')')
         if title.find("'")==-1 and title.find('"')==-1:
             try:
                 val = self.vars[0]
@@ -82,7 +85,8 @@ class BreadcrumbNode(Node):
                 url = reverse( unicode(val))
             except VariableDoesNotExist:
                 url = None
-
+        if do_translate:
+            title = _(title)
         return create_crumb(title, url)
 
 

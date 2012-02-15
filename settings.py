@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     'accounts',
     'ask_librarian',
 )
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 # префикс для системы кеширования
@@ -150,6 +151,9 @@ KEY_PREFIX = 'libcms'
 
 # guardian settings
 ANONYMOUS_USER_ID = -1
+
+
+LOGIN_REDIRECT_URL = "/"
 
 DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.version.VersionDebugPanel',

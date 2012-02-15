@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-14 19:19+0400\n"
+"POT-Creation-Date: 2012-02-15 16:39+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,43 +27,90 @@ msgstr "Русский"
 msgid "English"
 msgstr "English"
 
-#: apps/accounts/templates/administration/module_menu.html:4
+#: apps/accounts/administration/forms.py:8
+msgid "Password"
+msgstr ""
+
+#: apps/accounts/templates/administration/create_group.html:8
+#: apps/accounts/templates/administration/edit_user.html:8
+#: apps/accounts/templates/administration/groups_list.html:8
+#: apps/accounts/templates/administration/index.html:12
 #: apps/accounts/templates/administration/user_list.html:8
+msgid "Accounts"
+msgstr ""
+
+#: apps/accounts/templates/administration/create_group.html:9
+#: apps/accounts/templates/administration/edit_user.html:9
+#: apps/accounts/templates/administration/module_menu.html:4
+#: apps/accounts/templates/administration/user_list.html:9
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:36
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:31
 msgid "Users"
 msgstr "Пользователи"
 
-#: apps/accounts/templates/administration/module_menu.html:5
-#: apps/accounts/templates/administration/module_menu.html:7
-#: apps/accounts/templates/administration/user_list.html:9
-msgid "List"
-msgstr "Список"
-
+#: apps/accounts/templates/administration/create_group.html:10
+#: apps/accounts/templates/administration/create_group.html:22
+#: apps/accounts/templates/administration/create_user.html:23
 #: apps/accounts/templates/administration/module_menu.html:6
+msgid "Create"
+msgstr ""
+
+#: apps/accounts/templates/administration/create_group.html:23
+#: apps/accounts/templates/administration/create_user.html:24
+#: apps/accounts/templates/administration/edit_user.html:23
+msgid "Cancel"
+msgstr ""
+
+#: apps/accounts/templates/administration/create_user.html:14
+msgid "www"
+msgstr ""
+
+#: apps/accounts/templates/administration/edit_user.html:10
+msgid "Editing"
+msgstr ""
+
+#: apps/accounts/templates/administration/edit_user.html:22
+msgid "Save changes"
+msgstr ""
+
+#: apps/accounts/templates/administration/groups_list.html:9
+#: apps/accounts/templates/administration/module_menu.html:7
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:96
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:85
 msgid "Groups"
 msgstr "Группы"
 
-#: apps/accounts/templates/administration/user_list.html:7
+#: apps/accounts/templates/administration/groups_list.html:20
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:105
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:36
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:94
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:30
+msgid "Group"
+msgstr ""
+
+#: apps/accounts/templates/administration/module_menu.html:5
+#: apps/accounts/templates/administration/module_menu.html:8
+msgid "List"
+msgstr "Список"
+
+#: apps/accounts/templates/administration/user_list.html:15
 msgid "undefinded"
 msgstr "не определено"
 
-#: apps/accounts/templates/administration/user_list.html:18
+#: apps/accounts/templates/administration/user_list.html:19
 #: vendors/guardian/admin.py:348
 msgid "Username"
 msgstr "Логин"
 
-#: apps/accounts/templates/administration/user_list.html:19
+#: apps/accounts/templates/administration/user_list.html:20
 msgid "First name"
 msgstr "Имя"
 
-#: apps/accounts/templates/administration/user_list.html:20
+#: apps/accounts/templates/administration/user_list.html:21
 msgid "Last name"
 msgstr "Фамилия"
 
-#: apps/accounts/templates/administration/user_list.html:21
+#: apps/accounts/templates/administration/user_list.html:22
 msgid "Registration date"
 msgstr "Дата регистрации"
 
@@ -752,13 +799,6 @@ msgstr ""
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:102
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:91
 msgid "Group permissions"
-msgstr ""
-
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:105
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:36
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:94
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:30
-msgid "Group"
 msgstr ""
 
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:139

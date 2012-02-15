@@ -1,36 +1,20 @@
 {% extends 'administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load in18n %}
+{% load i18n %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% trans 'Accounts' as Accounts_ %}
-    {% trans 'Users' as Users_ %}
-    {% trans 'Editing' as Editing_ %}
-    {% breadcrumb Accounts_ accounts:administration:index %}
-    {% breadcrumb Users_  accounts:administration:users_list %}
-    {% breadcrumb Editing_ %}
+    {% breadcrumb _("Accounts") accounts:administration:index %}
+    {% breadcrumb _("Users")  accounts:administration:users_list %}
+    {% breadcrumb _("Editing") %}
 {% endblock %}
 
 {% block action_content %}
-
-    <form class="form-horizontal">
+    <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование информации о пользователе</legend>
         <fieldset>
-            {# Include the hidden fields #}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-            {# Include the visible fields #}
-            {% for field in form.visible_fields %}
-                <div class="control-group">
-                    <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-                    <div class="controls">
-                        {{ field }}
-                    </div>
-                </div>
-            {% endfor %}
+            {% include 'administration/base_form_fields.html' %}
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
                 <button type="reset" class="btn">{% trans "Cancel" %}</button>
