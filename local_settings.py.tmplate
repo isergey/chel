@@ -108,3 +108,43 @@ EMAIL_PORT = 25
 # debug_toolbar settings
 INTERNAL_IPS = ('127.0.0.1',)
 
+
+
+
+TWITTER_CONSUMER_KEY              = ''
+TWITTER_CONSUMER_SECRET           = ''
+FACEBOOK_APP_ID                   = '314686941912414'
+FACEBOOK_API_SECRET               = '403d6d3626a27fafb9ec5e2d66df8756'
+FACEBOOK_EXTENDED_PERMISSIONS     = ['email']
+LINKEDIN_CONSUMER_KEY             = ''
+LINKEDIN_CONSUMER_SECRET          = ''
+ORKUT_CONSUMER_KEY                = ''
+ORKUT_CONSUMER_SECRET             = ''
+GOOGLE_OAUTH2_CLIENT_ID           = '575784042894.apps.googleusercontent.com'
+GOOGLE_OAUTH2_CLIENT_SECRET       = '-kD0vm8n1yvNhh3mEWyUdbJC'
+SOCIAL_AUTH_CREATE_USERS          = True
+SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+SOCIAL_AUTH_DEFAULT_USERNAME      = 'socialauth_user'
+SOCIAL_AUTH_COMPLETE_URL_NAME     = 'socialauth_complete'
+LOGIN_ERROR_URL                   = '/accounts/login/error/'
+VKONTAKTE_APP_ID                  = '2797756'
+VKONTAKTE_APP_SECRET              = '4c3VZHVtg2i9knqz7jTg'
+# Usage for applications auth: {'key': application_key, 'user_mode': 0 (default) | 1 (check) | 2 (online check) }
+# 0 means is_app_user request parameter is ignored, 1 - must be = 1, 2 - checked via VK API request (useful when user
+# connects to your application on app page and you reload the iframe)
+VKONTAKTE_APP_AUTH                = None
+ODNOKLASSNIKI_OAUTH2_CLIENT_KEY   = ''
+ODNOKLASSNIKI_OAUTH2_APP_KEY      = ''
+ODNOKLASSNIKI_OAUTH2_CLIENT_SECRET = ''
+MAILRU_OAUTH2_CLIENT_KEY   		  = '627014db8f8d5f5916cb392d54e26737'
+MAILRU_OAUTH2_APP_KEY      		  = '664252'
+MAILRU_OAUTH2_CLIENT_SECRET       = 'd40df0f46003ee54832e9562c42d6246'
+#SOCIAL_AUTH_USER_MODEL            = 'app.CustomUser'
+SOCIAL_AUTH_ERROR_KEY             = 'socialauth_error'
+GITHUB_APP_ID                     = 'bca4e81127ee252cdb07'
+GITHUB_API_SECRET                 = '7b04434d573009fe7a1d44f6ad19cd1c49487ccd'
+FOURSQUARE_CONSUMER_KEY           = ''
+FOURSQUARE_CONSUMER_SECRET        = ''
+YANDEX_OAUTH2_CLIENT_KEY          = ''
+YANDEX_OAUTH2_CLIENT_SECRET       = ''
+YANDEX_OAUTH2_API_URL             = 'https://api-yaru.yandex.ru/me/' # http://api.moikrug.ru/v1/my/ for Moi Krug
