@@ -6,10 +6,12 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^$', include('index.urls', namespace='index')),
     (r'^core/', include('core.urls', namespace='core')),
     (r'^accounts/', include('accounts.urls', namespace='accounts')),
     (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^sauth/', include('social_auth.urls')),
 )
