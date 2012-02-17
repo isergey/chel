@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     (r'^$', include('index.urls', namespace='index')),
     (r'^core/', include('core.urls', namespace='core')),
     (r'^accounts/', include('accounts.urls', namespace='accounts')),
+    (r'^pages/', include('pages.urls', namespace='pages')),
+
     (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
 
     # Uncomment the next line to enable the admin:

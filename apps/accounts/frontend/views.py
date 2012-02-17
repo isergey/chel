@@ -12,7 +12,7 @@ from social_auth import __version__ as version
 
 
 def index(request):
-    return render(request, 'frontend/index.html')
+    return render(request, 'accounts/frontend/index.html')
 
 
 #def login(request):
@@ -30,7 +30,7 @@ def home(request):
     if request.user.is_authenticated():
         return redirect('accounts:frontend:done')
     else:
-        return render(request, 'frontend/oauth/home.html', {
+        return render(request, 'accounts/frontend/oauth/home.html', {
             'version': version
         })
 
@@ -41,13 +41,13 @@ def done(request):
         'version': version,
         'last_login': request.session.get('social_auth_last_login_backend')
     }
-    return render(request, 'frontend/oauth/done.html', ctx)
+    return render(request, 'accounts/frontend/oauth/done.html', ctx)
 
 
 def error(request):
     """Error view"""
     messages = get_messages(request)
-    return render(request, 'frontend/oauth/error.html', {
+    return render(request, 'accounts/frontend/oauth/error.html', {
         'version': version,
         'messages': messages
     })

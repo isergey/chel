@@ -11,7 +11,7 @@ def index(request):
     categories = Category.objects.all()
 
 #    print categories
-    return render(request, 'frontend/index.html', {'categories':categories})
+    return render(request, 'ask_librarian/frontend/index.html', {'categories':categories})
 
 
 
@@ -39,7 +39,7 @@ def by_category(request, id):
     if not category.is_leaf_node():
         filter_categories = category.get_descendants(include_self=True)
     questions = Question.objects.filter(category__in=filter_categories)
-    return render(request, 'frontend/index.html', {
+    return render(request, 'ask_librarian/frontend/index.html', {
         'categories':categories,
         'category':category,
         'questions': questions
@@ -58,13 +58,13 @@ def ask_question(request):
             return redirect(question)
     else:
         form = QuestionForm()
-    return render(request, 'frontend/create_question.html', {'form':form})
+    return render(request, 'ask_librarian/frontend/create_question.html', {'form':form})
 
 
 
 def question_detail(request, id):
     question = get_object_or_404(Question, id=id)
-    return render(request, 'frontend/question_detail.html', {
+    return render(request, 'ask_librarian/frontend/question_detail.html', {
         'question':question
     })
 

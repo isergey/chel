@@ -12,7 +12,7 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 #@permission_required_or_403('accounts.view_users')
 def index(request):
     print REDIRECT_FIELD_NAME
-    return render(request, 'administration/index.html')
+    return render(request, 'accounts/administration/index.html')
 
 
 
@@ -22,7 +22,7 @@ def index(request):
 def users_list(request):
     users_page = get_page(request,  User.objects.all().exclude(id=-1).order_by('-date_joined'))
 
-    return render(request, 'administration/user_list.html', {
+    return render(request, 'accounts/administration/user_list.html', {
         'users_page': users_page
     })
 
@@ -48,7 +48,7 @@ def create_user(request):
 
     else:
         form = UserForm()
-    return render(request, 'administration/create_user.html', {
+    return render(request, 'accounts/administration/create_user.html', {
         'form': form
     })
 
@@ -82,7 +82,7 @@ def edit_user(request, id):
     else:
         form = UserForm(instance=user)
 
-    return render(request, 'administration/edit_user.html', {
+    return render(request, 'accounts/administration/edit_user.html', {
         'form': form
     })
 
@@ -93,7 +93,7 @@ def edit_user(request, id):
 @permission_required_or_403('accounts.view_groups')
 def groups_list(request):
     groups_page = get_page(request,  Group.objects.all())
-    return render(request, 'administration/groups_list.html', {
+    return render(request, 'accounts/administration/groups_list.html', {
         'groups_page': groups_page
     })
 
@@ -110,7 +110,7 @@ def create_group(request):
             return redirect('accounts:administration:groups_list')
     else:
         form = GroupForm()
-    return render(request, 'administration/create_group.html', {
+    return render(request, 'accounts/administration/create_group.html', {
         'form': form
     })
 
@@ -136,7 +136,7 @@ def edit_group(request, id):
     else:
         form = GroupForm(instance=group)
 
-    return render(request, 'administration/edit_group.html', {
+    return render(request, 'accounts/administration/edit_group.html', {
         'form': form
     })
 

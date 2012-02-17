@@ -6,19 +6,19 @@ from models import Question, Category, AnswerManager, ManagerNonActivePeriod, An
 
 
 def index(request):
-    return render(request, 'administration/module.html')
+    return render(request, 'ask_librarian/administration/module.html')
 
 
 def questions(request):
     questions = None #Question.objects.all()
-    return render(request, 'administration/questions_stats.html', {
+    return render(request, 'ask_librarian/administration/questions_stats.html', {
         #'questions'
     })
 
 
 def questions_list(request):
     questions = Question.objects.all()
-    return render(request, 'administration/questions_list.html', {
+    return render(request, 'ask_librarian/administration/questions_list.html', {
         'questions': questions,
     })
 
@@ -32,11 +32,11 @@ def questions_detail(request, id):
     except Answer.DoesNotExist:
         answer = None
 
-    return render(request, 'administration/questions_detail.html', {
+    return render(request, 'ask_librarian/administration/questions_detail.html', {
         'question': question,
         'answer': answer
     })
 
 
 def managers(request):
-    return render(request, 'administration/managers.html')
+    return render(request, 'ask_librarian/administration/managers.html')
