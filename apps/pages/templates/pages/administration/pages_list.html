@@ -11,7 +11,9 @@
 
 {% block action_content %}
     {% if parent %}
-        {{ parent.get_ancestors }}
+        {% for ancestor in parent.get_ancestors %}
+            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →
+        {% endfor %}
         {{ parent }}
     {% endif %}
     <ul>
