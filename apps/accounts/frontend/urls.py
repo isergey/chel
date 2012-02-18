@@ -7,22 +7,22 @@ urlpatterns = patterns('accounts.frontend.views',
 )
 
 urlpatterns += patterns('',
-    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'frontend/login.html'}, name='login'),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'accounts/frontend/login.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
     url(r'^password/change/$', 'django.contrib.auth.views.password_change', name='password_change'),
     url(r'^password/change/done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
     url(r'^password/reset/$', 'django.contrib.auth.views.password_reset',
         {
-            'template_name': 'frontend/registration/password_reset_form.html',
-            'email_template_name': 'frontend/registration/password_reset_email.html',
-            'post_reset_redirect': '/accounts/password/reset/done/'
+            'template_name': 'accounts/frontend/registration/password_reset_form.html',
+            'email_template_name': 'accounts/frontend/registration/password_reset_email.html',
+            'post_reset_redirect': 'accounts/password/reset/done/'
         },
         name='password_reset'
     ),
     url(r'^password/reset/done/$',
         'django.contrib.auth.views.password_reset_done',
         {
-            'template_name': 'frontend/registration/password_reset_done.html',
+            'template_name': 'accounts/frontend/registration/password_reset_done.html',
         },
         name='password_reset_done'
     ),
@@ -37,7 +37,7 @@ urlpatterns += patterns('',
     url(r'^password/reset/complete/$',
         'django.contrib.auth.views.password_reset_complete',
         {
-            'template_name': 'frontend/registration/password_reset_complete.html',
+            'template_name': 'accounts/frontend/registration/password_reset_complete.html',
         },
         name='password_reset_complete'),
 )

@@ -37,7 +37,7 @@ gettext = lambda s: s
 LANGUAGES = (
     ('ru', gettext('Russian')),
     ('en', gettext('English')),
-    #('tt', gettext('Tatar')),
+    ('tt', gettext('Tatar')),
 )
 
 SITE_ID = 1
@@ -112,6 +112,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 
 MIDDLEWARE_CLASSES = (
+    'localeurl.middleware.LocaleURLMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -154,6 +155,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     # vendor apps
+    'localeurl',
     'mptt',
     'guardian',
     'debug_toolbar',

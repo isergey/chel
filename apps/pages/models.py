@@ -21,7 +21,7 @@ class Permissions(User):
 
 class Page(MPTTModel):
     parent = TreeForeignKey('self',null=True, blank=True, related_name='children', verbose_name=_(u'Parent page'))
-    slug = models.SlugField(verbose_name=_(u'Latin title'), max_length=255, db_index=True, unique=True)
+    slug = models.SlugField(verbose_name=_(u'Slug title'), max_length=255, db_index=True, unique=True)
     public = models.BooleanField(verbose_name=_(u'Public'), default=False, db_index=True)
     create_date = models.DateTimeField(verbose_name=_(u"Create date"), auto_now_add=True, db_index=True)
     class Meta:
@@ -30,11 +30,11 @@ class Page(MPTTModel):
     def __unicode__(self):
         return  self.slug
 
-class Translate(models.Model):
+class Content(models.Model):
     page = models.ForeignKey(Page, verbose_name=_(u'Page owner'))
     lang = models.CharField(verbose_name=u"Language", db_index=True, max_length=2, choices=settings.LANGUAGES)
     title = models.CharField(verbose_name=_(u'Title'), max_length=512)
-    meta = models.CharField(verbose_name=_(u"SEO meta"), max_length=512)
+    meta = models.CharField(verbose_name=_(u"SEO meta"), max_length=512, blank=True)
     content = models.TextField(verbose_name=_(u'Content'))
 
     class Meta:
