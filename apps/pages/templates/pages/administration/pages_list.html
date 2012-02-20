@@ -17,9 +17,9 @@
         {{ parent }}
     {% endif %}
     <ul>
-    {% for page in pages_page.object_list %}
+    {% for page in pages %}
         <li>
-            <h4><a href="{% url pages:administration:edit_page page.id %}">{{ page }}</a></h4>
+            <h4><a href="{% url pages:administration:edit_page page.id %}">{{ page.content.title }}</a></h4>
             {% if not page.is_leaf_node %}
                 <a href="{% url pages:administration:pages_list page.id %}">{% trans 'Subpages' %}</a>
             {% endif %}

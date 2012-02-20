@@ -42,5 +42,5 @@ def set_language(request):
                 request.session['django_language'] = lang_code
             else:
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code)
-    translation.activate(lang_code)
+        translation.activate(lang_code)
     return response

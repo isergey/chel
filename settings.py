@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
 
 
@@ -37,7 +36,7 @@ gettext = lambda s: s
 LANGUAGES = (
     ('ru', gettext('Russian')),
     ('en', gettext('English')),
-    ('tt', gettext('Tatar')),
+#    ('tt', _('Tatar')),
 )
 
 SITE_ID = 1
@@ -193,5 +192,7 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
 )
 
-
+#LOCALE_INDEPENDENT_PATHS = (
+#    r'^/$',
+#)
 from local_settings import *

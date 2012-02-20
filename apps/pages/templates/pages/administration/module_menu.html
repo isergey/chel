@@ -3,5 +3,5 @@
 <ul class="nav nav-list">
     <li class="nav-header">{% trans 'Pages' %}</li>
     <li class="{% active 'pages:administration:pages_list' %}"><a href="{% url pages:administration:pages_list %}">{% trans 'List' %}</a></li>
-    <li class="{% active 'pages:administration:create_page' %}"><a href="{% url pages:administration:create_page %}">{% trans 'Add' %}</a></li>
+    <li class="{% active_path 'pages:administration:create_page' %}"><a href="{% url pages:administration:create_page %}">{% trans 'Add' %}</a></li>
 </ul>

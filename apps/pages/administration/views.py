@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
+from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
 from pages.models import Page, Content
@@ -22,9 +23,21 @@ def pages_list(request, parent=None):
         parent = get_object_or_404(Page, id=parent)
 
     pages_page = get_page(request, Page.objects.filter(parent=parent))
+    contents = list(Content.objects.filter(page__in=list(pages_page.object_list), lang=get_language()[:2]))
+
+    pages_dict = {}
+    for page in pages_page.object_list:
+        pages_dict[page.id] = {'page':page}
+
+    for content in contents:
+        pages_dict[content.page_id]['page'].content = content
+
+    pages = [page['page'] for page in pages_dict.values()]
+
 
     return render(request, 'pages/administration/pages_list.html', {
         'parent': parent,
+        'pages': pages,
         'pages_page': pages_page,
         })
 
@@ -105,7 +118,7 @@ def create_page_content(request, page_id):
                 return redirect('pages:administration:edit_page_content', page_id=page_id, lang=content.lang)
     else:
         content_form = ContentForm(prefix='content_form')
-    return render(request, 'pages/administration/edit_page_content.html', {
+    return render(request, 'pages/administration/create_page_content.html', {
         'page': page,
         'content_form': content_form,
         })
