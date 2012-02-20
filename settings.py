@@ -165,6 +165,7 @@ INSTALLED_APPS = (
     'social_auth',
     'pages',
     'ask_librarian',
+    'ssearch',
 )
 
 
