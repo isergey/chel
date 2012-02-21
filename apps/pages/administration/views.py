@@ -13,7 +13,6 @@ from forms import PageForm, ContentForm, get_content_form
 
 #@permission_required_or_403('accounts.view_users')
 def index(request):
-    print REDIRECT_FIELD_NAME
     return render(request, 'pages/administration/index.html')
 
 
@@ -39,7 +38,7 @@ def pages_list(request, parent=None):
         'parent': parent,
         'pages': pages,
         'pages_page': pages_page,
-        })
+    })
 
 
 @permission_required_or_403('auth.add_page')
@@ -62,7 +61,7 @@ def create_page(request, parent=None):
     return render(request, 'pages/administration/create_page.html', {
         'parent': parent,
         'page_form': page_form,
-        })
+     })
 
 
 @permission_required_or_403('auth.change_page')
@@ -90,7 +89,7 @@ def edit_page(request, id):
         'page': page,
         'langs': langs,
         'page_form': page_form,
-        })
+    })
 
 
 @permission_required_or_403('auth.change_page')
@@ -121,7 +120,7 @@ def create_page_content(request, page_id):
     return render(request, 'pages/administration/create_page_content.html', {
         'page': page,
         'content_form': content_form,
-        })
+    })
 
 
 @permission_required_or_403('auth.change_page')
@@ -156,7 +155,7 @@ def edit_page_content(request, page_id, lang):
     return render(request, 'pages/administration/edit_page_content.html', {
         'content': content,
         'content_form': content_form,
-        })
+    })
 
 
 

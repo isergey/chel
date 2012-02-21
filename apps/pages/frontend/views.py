@@ -19,3 +19,15 @@ def index(request):
         'content': content
     })
 
+def show(request, slug):
+    cur_language = translation.get_language()
+    page = get_object_or_404(Page, slug=slug)
+    try:
+        content = Content.objects.get(page=page, lang=cur_language[:2])
+    except Content.DoesNotExist:
+        content = None
+
+    return render(request, 'pages/frontend/show.html', {
+        'page': page,
+        'content': content
+    })
