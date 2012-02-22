@@ -39,7 +39,7 @@ class Upload(models.Model):
         ordering = ['-timestamp', ]
 
     def __unicode__(self):
-        return self.file
+        return unicode(self.file)
 
     @property
     def size(self):
@@ -57,7 +57,8 @@ class Source(models.Model):
 
 class Record(models.Model):
     source = models.ForeignKey(Source, null=True, blank=True)
-    record_id = models.CharField(max_length=32, db_index=True, unique=True)
+    gen_id = models.CharField(max_length=32, unique=True, db_index=True)
+    record_id = models.CharField(max_length=32, db_index=True)
     scheme = models.CharField(max_length=16, choices=RECORD_SCHEMES, default='rusmarc', verbose_name=u"Scheme")
     content = models.TextField(verbose_name=u'Xml content')
     add_date = models.DateTimeField(auto_now_add=True)

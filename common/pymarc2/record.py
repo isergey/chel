@@ -63,6 +63,9 @@ class Record(object):
                     record_dict['datafields'][field.tag].append(field.to_dict())
         return record_dict
 
+    def add_field(self, field):
+        self._fields[field.tag].append(field)
+
 
     def decode(self, raw, raw_encoding):
         """
