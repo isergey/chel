@@ -1,0 +1,31 @@
+{% extends 'frontend_base.html' %}
+{% load i18n %}
+{% block title %} {{ forum.title }} {% endblock %}
+{% block content %}
+    {% include 'forum/frontend/style.html' %}
+    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → {{ forum.title }}</h3>
+    <hr/>
+    <div class="forums span12">
+        {% for topic in topics %}
+            <div class="row" style="margin-bottom: 10px">
+                <div class="span2"><span class="created">{{ topic.created|date:"d.m.Y" }}</span></div>
+                <div class="span10"><span class="subject"><a
+                        href="{% url forum:frontend:articles forum.slug topic.id %}">{{ topic.subject }}</a></span>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row">
+
+            <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+                    <legend>{% trans 'Create topic' %}</legend>
+                <fieldset>
+                    {% include 'frontend/base_form_fields.html' with form=topic_form %}
+                    {% include 'frontend/base_form_fields.html' with form=article_form %}
+                    <div class="form-actions">
+                        <button type="submit" class="btn">{% trans "Create topic" %}</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

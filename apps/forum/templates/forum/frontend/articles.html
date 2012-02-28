@@ -1,0 +1,62 @@
+{% extends 'frontend_base.html' %}
+{% load i18n %}
+{% block title %} {{ topic.subject }} {% endblock %}
+{% block content %}
+    {% include 'forum/frontend/style.html' %}
+    <style type="text/css">
+
+    </style>
+
+    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a
+            href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }}
+    </h3>
+    <hr/>
+    <div class="span12">
+        <div class="messages">
+            {% for article in articles %}
+                <div class="message row" id="{{ article.id }}">
+                    <div class="span2">
+                        <b>{{ article.author }}</b><br/>
+                        {{ article.created }}<br>
+
+                    </div>
+                    <div class="text span9">{{ article.text|safe }}</div>
+                    <div class="toolbar span1">
+                        {% if article.author == request.user %}<a class="btn btn-small btn-warning"
+                                                                  href="{% url forum:frontend:edit_article topic.forum.slug topic.id article.id %}#form"
+                                                                  title="{% trans 'Edit message' %}"><i
+                                class="icon-edit"></i></a>{% endif %}
+                        <a class="btn btn-small"
+                           href="{% url forum:frontend:replay_article topic.forum.slug topic.id article.id %}#form"
+                           title="{% trans 'Quote' %}">« »</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <hr/>
+            {% if quote_article %}
+                <h3>{% trans 'Quoted message' %}</h3>
+                <div class="message quote_message">{{ quote_article.text|safe }}</div>
+            {% endif %}
+
+            {% if edit_article %}
+                <h3>{% trans 'Edited message' %}</h3>
+                <div class="message edit_message">{{ edit_article.text|safe }}</div>
+            {% endif %}
+
+            <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+                {% if not quote_article and not edit_article %}
+                    <legend>{% trans 'Send a message' %}</legend>
+                {% endif %}
+                <fieldset>
+                    {% include 'frontend/base_form_fields.html' with form=form %}
+                    <div class="form-actions">
+                        <button type="submit" class="btn">{% trans "Send message" %}</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

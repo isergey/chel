@@ -1,7 +1,7 @@
 # coding: utf-8
 import datetime
 import hashlib
-import uuid
+import sunburnt
 from lxml import etree
 from django.core.files.storage import default_storage
 from forms import UploadForm
@@ -9,6 +9,9 @@ from ssearch.models import Upload, Record
 from django.shortcuts import render, redirect, HttpResponse
 from common.pymarc2 import reader, record, field, marcxml
 from django.db import transaction
+
+
+
 
 def return_record_class(scheme):
     if scheme == 'rusmarc' or scheme == 'unimarc':
@@ -83,10 +86,9 @@ def pocess(request):
         inset_records(records, uploaded_file.records_scheme)
 
     elif uploaded_file.records_format == 'xml':
-        raise Exception(u"Not emplemented")
+        raise Exception(u"Not yeat emplemented")
     else:
         return HttpResponse(u"Wrong file format")
-
 
     return HttpResponse(u'ok')
 
@@ -119,10 +121,32 @@ def inset_records(records, scheme):
             attrs.update(filter_attrs)
             obj = Record.objects.create(**attrs)
 
-def convert():
+def convert(request):
+
     pass
 
+xslt_root = etree.parse('xsl/record_mars.xsl')
+xslt_transformer = etree.XSLT(xslt_root)
 
-def indexing():
-    pass
+@transaction.commit_on_success
+def indexing(request):
+    offset = 0
+    package_count = 29
+    recs = []
+
+    records = list(Record.objects.all()[offset:package_count])
+    while len(records):
+        recs += records
+        offset += package_count
+        records = list(Record.objects.all()[offset:offset + package_count])
+
+
+    for rec in recs:
+#        print rec.content
+        doc = etree.XML(rec.content)
+
+        result_tree = xslt_transformer(doc)
+        print etree.tostring(result_tree, encoding='utf-8')
+
+    return HttpResponse(unicode(len(records)))
 

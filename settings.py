@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     'pages',
     'ask_librarian',
     'ssearch',
+    'forum',
 )
 
 

@@ -1,0 +1,17 @@
+{% extends 'frontend_base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Forums list' %}{% endblock %}
+{% block content %}
+    {% include 'forum/frontend/style.html' %}
+    <h3>{% trans 'Forums' %}</h3>
+    <hr/>
+    <div class="forums span12">
+        {% for forum in forums %}
+            <div class="row" style="margin-bottom: 10px">
+                <span class="subject"><a href="{% url forum:frontend:topics forum.slug %}">{{ forum.title }}</a></span>
+                <p class="help-block">{{ forum.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
