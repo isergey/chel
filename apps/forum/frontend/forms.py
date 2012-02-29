@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from forum.models import Article, Topic
+from forum.models import Article, Topic, Forum
 
 class TopicForm(forms.ModelForm):
     class Meta:
@@ -9,6 +9,7 @@ class TopicForm(forms.ModelForm):
             'forum',
             'created',
             'public',
+            'closed'
         ]
 
 class ArticleForm(forms.ModelForm):
@@ -19,6 +20,11 @@ class ArticleForm(forms.ModelForm):
             'author',
             'created',
             'updated',
-            'public'
+            'public',
+            'closed'
         ]
 
+
+class ForumForm(forms.ModelForm):
+    class Meta:
+        model = Forum

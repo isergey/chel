@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
 import postmarkup
+import simplejson
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, Http404
+from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage
 from forum.models import Forum, Topic, Article
-from forms import ArticleForm, TopicForm
+from forms import ArticleForm, TopicForm, ForumForm
 
 postmarkup_render = postmarkup.create()
 
 def index(request):
     forums = Forum.objects.all()
+    if request.method == 'POST':
+        form = ForumForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('forum:frontend:forums')
+    else:
+        form = ForumForm()
+
     return render(request, 'forum/frontend/forums.html', {
-        'forums': forums
+        'forums': forums,
+        'form': form
     })
 
 @login_required
@@ -41,11 +52,13 @@ def topics(request, slug):
         })
 
 
+
 @login_required
 def articles(request, slug, id, aid=None, eid=None):
     topic = get_object_or_404(Topic, id=id)
     articles_qs = Article.objects.select_related('author').filter(topic=topic)
 
+    # пагинация сообщений в топике форума
     paginator = Paginator(articles_qs, 20)
     page_num = request.GET.get('page', '1')
     if page_num == 'last':
@@ -55,17 +68,22 @@ def articles(request, slug, id, aid=None, eid=None):
     except (InvalidPage, ValueError):
         raise Http404()
 
+    # отрисовка сообщений в bbcode в html
     articles = page.object_list
     for article in articles:
         article.text = postmarkup_render(article.text)
 
+    # если пользователь нажал на цитирование
     if aid:
         quote_article = get_object_or_404(Article, id=aid)
     else:
         quote_article = None
 
+    # если пользователь редактирует свое сообщение
     if eid:
         edit_article = get_object_or_404(Article, id=eid)
+        if request.user != edit_article.author and not request.user.has_perms(['forum.change_article']):
+            return  HttpResponseForbidden()
     else:
         edit_article = None
 
@@ -98,6 +116,8 @@ def articles(request, slug, id, aid=None, eid=None):
 
     if quote_article:
         quote_article.text = postmarkup_render(quote_article.text)
+    if edit_article:
+        edit_article.text = postmarkup_render(edit_article.text)
 
     return render(request, 'forum/frontend/articles.html', {
         'topic': topic,
@@ -107,3 +127,55 @@ def articles(request, slug, id, aid=None, eid=None):
         'form': form
 
     })
+
+@login_required
+def article_delete(request, id):
+    if not request.user.has_perms(['forum.delete_article']):
+        return HttpResponseForbidden()
+
+    article = get_object_or_404(Article, id=id)
+    topic =  article.topic
+    article.delete()
+
+    if request.is_ajax():
+        return HttpResponse(u'{"status":"ok"}')
+    else:
+        return redirect('forum:frontend:articles', slug=topic.forum.slug, id=topic.id)
+
+@login_required
+def article_hide(request, id):
+    if not request.user.has_perms(['forum.publish_article']):
+        return HttpResponseForbidden()
+
+    article = get_object_or_404(Article, id=id)
+    article.public = False
+    article.save()
+
+    if request.is_ajax():
+        return HttpResponse(u'{"status":"ok"}')
+    else:
+        return redirect('forum:frontend:articles', slug=article.topic.forum.slug, id=article.topic.id)
+
+
+@login_required
+def article_show(request, id):
+    if not request.user.has_perms(['forum.publish_article']):
+        return HttpResponseForbidden()
+
+    article = get_object_or_404(Article, id=id)
+    article.public = True
+    article.save()
+
+    if request.is_ajax():
+        return HttpResponse(u'{"status":"ok"}')
+    else:
+        return redirect('forum:frontend:articles', slug=article.topic.forum.slug, id=article.topic.id)
+
+
+def article_preview(request):
+    if request.method == 'POST':
+        text = request.POST.get('text', u' ')
+        result = {'text':postmarkup_render(text)}
+        return HttpResponse(simplejson.dumps(result, ensure_ascii=False))
+
+    return HttpResponse(u'{}')

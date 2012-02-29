@@ -9,9 +9,23 @@
         {% for forum in forums %}
             <div class="row" style="margin-bottom: 10px">
                 <span class="subject"><a href="{% url forum:frontend:topics forum.slug %}">{{ forum.title }}</a></span>
+
                 <p class="help-block">{{ forum.description }}</p>
             </div>
         {% endfor %}
+        {% if perms.forum.add_forum %}
+            <div class="row">
+                <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+                    <legend>{% trans 'Create forum' %}</legend>
+                    <fieldset>
+                        {% include 'frontend/base_form_fields.html' with form=form %}
+                        <div class="form-actions">
+                            <button type="submit" class="btn">{% trans "Create forum" %}</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}
