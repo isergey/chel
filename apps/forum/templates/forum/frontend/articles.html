@@ -7,7 +7,7 @@
 
     </style>
 
-    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }}
+    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}({% trans 'Topic is closed' %}) {% endif %}
     </h3>
     <hr/>
     <div class="span12">
@@ -22,13 +22,13 @@
                     <div class="text span9">{{ article.text|safe }}</div>
                     <div class="toolbar span1">
 
-                        {% if article.author == request.user or perms.forum.change_topic %}
+                        {% if article.author == request.user or perms.forum.can_change_articles %}
                             <a class="btn btn-small btn-warning" href="{% url forum:frontend:edit_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Edit message' %}"><i class="icon-edit"></i></a>
                         {% endif %}
 
                         <a class="btn btn-small" href="{% url forum:frontend:replay_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Quote' %}">« »</a>
 
-                        {% if perms.forum.public_article %}
+                        {% if perms.forum.can_hide_articles %}
                             {% if article.public %}
                                 <a class="article_hide btn btn-small btn-info" href="{% url forum:frontend:article_hide article.id %}" title="{% trans 'Hide message' %}"><i class="icon-eye-open icon-white"></i> </a>
                             {% else %}
@@ -36,7 +36,7 @@
                             {% endif %}
                         {% endif %}
 
-                        {% if perms.forum.delete_topic %}
+                        {% if perms.forum.can_delete_articles %}
                             <a class="btn btn-small btn-danger article_delete" href="{% url forum:frontend:article_delete article.id %}" title="{% trans 'Delete' %}"><i class="icon-trash icon-white"></i> </a>
                         {% endif %}
 
@@ -47,6 +47,7 @@
 
         <div class="row">
             <hr/>
+        {% if not topic.closed %}
             {% if quote_article %}
                 <h3>{% trans 'Quoted message' %}</h3>
                 <div class="message quote_message">{{ quote_article.text|safe }}</div>
@@ -66,14 +67,19 @@
                 <fieldset>
                     {% include 'frontend/base_form_fields.html' with form=form %}
                     <div class="form-actions">
-{#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
-{#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
+                        {#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
+                        {#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
                         <button type="submit" class="btn">{% trans "Send message" %}</button>
                         <a href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>
 
                     </div>
                 </fieldset>
             </form>
+        {% else %}
+            <h2>{% trans 'Topic is closed' %}</h2>
+        {% endif %}
+
+
         </div>
     </div>
     <script type="text/javascript">

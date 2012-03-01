@@ -9,7 +9,8 @@ class TopicForm(forms.ModelForm):
             'forum',
             'created',
             'public',
-            'closed'
+            'closed',
+            'deleted'
         ]
 
 class ArticleForm(forms.ModelForm):
@@ -21,7 +22,8 @@ class ArticleForm(forms.ModelForm):
             'created',
             'updated',
             'public',
-            'closed'
+            'closed',
+            'deleted'
         ]
 
 

@@ -9,8 +9,22 @@
         {% for topic in topics %}
             <div class="row" style="margin-bottom: 10px">
                 <div class="span2"><span class="created">{{ topic.created|date:"d.m.Y" }}</span></div>
-                <div class="span10"><span class="subject"><a
-                        href="{% url forum:frontend:articles forum.slug topic.id %}">{{ topic.subject }}</a></span>
+                <div class="span10 {% if topic.closed %}close{% endif %}">
+                    <span class="subject">
+                        <a href="{% url forum:frontend:articles forum.slug topic.id %}">{{ topic.subject }}</a>
+                    </span>
+                    <span style="float: right;">
+                        {% if perms.forum.can_close_topics %}
+                            {% if not topic.closed %}
+                                <a class="topic_close btn btn-small" href="{% url forum:frontend:topic_close topic.id %}" title="{% trans 'Close topic' %}"><i class="icon-ban-circle"></i></a>
+                            {% else %}
+                                <a class="topic_open btn btn-small" href="{% url forum:frontend:topic_open topic.id %}" title="{% trans 'Open topic' %}"><i class="icon-ok-circle"></i></a>
+                            {% endif %}
+                        {% endif %}
+                        {% if perms.forum.can_delete_topics %}
+                            <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:topic_delete topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
         {% endfor %}
@@ -28,4 +42,111 @@
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+{#        $('#preview_button').click(function(){#}
+{#            $.ajax({#}
+{#                url:'{% url forum:frontend:article_preview %}',#}
+{#                type:'POST',#}
+{#                dataType:"json",#}
+{#                data: { text: $('#id_text').val()},#}
+{#                success:function (render) {#}
+{#                    $('#preview_message').html(render['text']);#}
+{#                }#}
+{#            });#}
+{##}
+{#        });#}
+{##}
+        $('.topic_delete').click(function(){
+            var link = $(this);
+            $.ajax({
+                url: link.attr('href'),
+                type:'GET',
+                dataType:"json",
+                success:function (result) {
+                    if(result['status'] == 'ok'){
+                        link.parent().parent().parent().remove();
+                    }
+                }
+            });
+            return false;
+        });
+        $('.topic_close').live('click', function(){
+            var link = $(this);
+            $.ajax({
+                url: link.attr('href'),
+                type:'GET',
+                dataType:"json",
+                success:function (result) {
+                    if(result['status'] == 'ok'){
+                        link.parent().parent().addClass('close');
+                        link.removeClass('topic_close');
+                        link.addClass('topic_open');
+                        link.attr('title',"{% trans 'Open topic' %}");
+                        link.html('<i class="icon-ok-circle">');
+                        link.attr('href', link.attr('href').replace('close', 'open'));
+                    }
+                }
+            });
+            return false;
+        });
+
+        $('.topic_open').live('click', function(){
+            var link = $(this);
+            $.ajax({
+                url: link.attr('href'),
+                type:'GET',
+                dataType:"json",
+                success:function (result) {
+                    if(result['status'] == 'ok'){
+                        link.parent().parent().removeClass('close');
+                        link.removeClass('topic_open');
+                        link.addClass('topic_close');
+                        link.attr('title',"{% trans 'Close topic' %}");
+                        link.html('<i class="icon-ban-circle"></i>');
+                        link.attr('href', link.attr('href').replace('open', 'close'));
+                    }
+                }
+            });
+            return false;
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ajaxSend(function(event, xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            function sameOrigin(url) {
+                // url could be relative or scheme relative or absolute
+                var host = document.location.host; // host + port
+                var protocol = document.location.protocol;
+                var sr_origin = '//' + host;
+                var origin = protocol + sr_origin;
+                // Allow absolute or scheme relative URLs to same origin
+                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                    // or any other URL that isn't scheme relative or absolute i.e relative.
+                        !(/^(\/\/|http:|https:).*/.test(url));
+            }
+            function safeMethod(method) {
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        });
+    </script>
 {% endblock %}

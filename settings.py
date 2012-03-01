@@ -111,6 +111,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 
 MIDDLEWARE_CLASSES = (
+#    'johnny.middleware.LocalStoreClearMiddleware',
+#    'johnny.middleware.QueryCacheMiddleware',
     'localeurl.middleware.LocaleURLMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -141,7 +143,8 @@ AUTHENTICATION_BACKENDS = (
 #    'social_auth.backends.contrib.yandex.YandexBackend',
 
     'django.contrib.auth.backends.ModelBackend',
-    )
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',

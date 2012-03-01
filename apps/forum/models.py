@@ -11,10 +11,20 @@ class Forum(models.Model):
     description = models.CharField(max_length=1024, verbose_name=_(u'Description'), help_text=_(u'Maximum 1024 simbols'))
     ordering = models.IntegerField(default=0, verbose_name=_(u'Ordering'), db_index=True, help_text=_(u'Order in forums list'))
     closed = models.BooleanField(verbose_name=_(u'Closed'), db_index=True, default=False, help_text=_(u'If forum is closed, users can not create topics'))
+    deleted = models.BooleanField(verbose_name=_(u'Deleted'), db_index=True, default=False)
 
     class Meta:
         ordering = ['ordering',]
-        permissions = (("view_forum", "Can view forum"),)
+        permissions = (
+            ("can_views_forums", "Can view forums"),
+            ("can_close_forums", "Can close forum"),
+            ("can_view_topics", "Can view forum topics"),
+            ("can_create_topics", "Can create topics in forum"),
+            ("can_change_topics", "Can change topics in forum"),
+            ("can_delete_topics", "Can delete topics in forum"),
+            ("can_close_topics", "Can close topics in forum"),
+            ("can_hide_topics", "Can hide topics in forum"),
+        )
 
     def __unicode__(self):
         return self.title
@@ -25,12 +35,18 @@ class Topic(models.Model):
     forum = models.ForeignKey(Forum)
     subject = models.CharField(verbose_name=_(u'Subject'), max_length=255, help_text=_(u'Maximum 255 simbols'))
     created = models.DateTimeField(default=datetime.now, db_index=True, verbose_name=_(u'Created'))
-    public = models.BooleanField(verbose_name=_(u'Publicated'), db_index=True, default=True)
+    public = models.BooleanField(verbose_name=_(u'Publicated'), db_index=True, default=False)
     closed = models.BooleanField(verbose_name=_(u'Closed'), db_index=True, default=False, help_text=_(u'If topic is closed, users can not create messages'))
-
+    deleted = models.BooleanField(verbose_name=_(u'Deleted'), db_index=True, default=False)
     class Meta:
         ordering = ['-id']
-        permissions = (("view_topic", "Can view forum topic"),)
+        permissions = (
+            ("can_view_articles", "Can view topic articles"),
+            ("can_add_articles", "Can add articles in topic"),
+            ("can_change_articles", "Can change articles in topic"),
+            ("can_delete_articles", "Can delete articles from topic"),
+            ("can_hide_articles", "Can hide articles in topic"),
+        )
 
 
 class Article(models.Model):
@@ -39,11 +55,10 @@ class Article(models.Model):
     text = models.TextField(verbose_name=_(u'Text of message'), max_length=10000, help_text=_(u'Maximum 10000 simbols'))
     created = models.DateTimeField(default=datetime.now, db_index=True, verbose_name=_(u'Created'))
     updated = models.DateTimeField(auto_now=True, db_index=True, verbose_name=_(u'Created'))
-    public = models.BooleanField(verbose_name=u'Publicated', db_index=True, default=True)
-
+    public = models.BooleanField(verbose_name=u'Publicated', db_index=True, default=False)
+    deleted = models.BooleanField(verbose_name=_(u'Deleted'), db_index=True, default=False)
     class Meta:
         ordering = ['created']
-        permissions = (("view_article", "Can view forum message"),)
 
     def __unicode__(self):
         return u'(%s, %s)' % (self.topic, self.author)
