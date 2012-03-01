@@ -28,8 +28,8 @@
                 </div>
             </div>
         {% endfor %}
+        {% if perms.forum.can_create_topics %}
         <div class="row">
-
             <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
                     <legend>{% trans 'Create topic' %}</legend>
                 <fieldset>
@@ -41,6 +41,7 @@
                 </fieldset>
             </form>
         </div>
+        {% endif %}
     </div>
     <script type="text/javascript">
 {#        $('#preview_button').click(function(){#}

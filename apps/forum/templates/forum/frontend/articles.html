@@ -46,7 +46,7 @@
         </div>
 
         <div class="row">
-            <hr/>
+{#            <hr/>#}
         {% if not topic.closed %}
             {% if quote_article %}
                 <h3>{% trans 'Quoted message' %}</h3>
@@ -60,21 +60,23 @@
             <div id="preview_message">
 
             </div>
-            <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
-                {% if not quote_article and not edit_article %}
-                    <legend>{% trans 'Send a message' %}</legend>
-                {% endif %}
-                <fieldset>
-                    {% include 'frontend/base_form_fields.html' with form=form %}
-                    <div class="form-actions">
-                        {#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
-                        {#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
-                        <button type="submit" class="btn">{% trans "Send message" %}</button>
-                        <a href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>
+            {% if perms.forum.can_add_articles or perms.forum.can_change_articles %}
+                <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+                    {% if not quote_article and not edit_article %}
+                        <legend>{% trans 'Send a message' %}</legend>
+                    {% endif %}
+                    <fieldset>
+                        {% include 'frontend/base_form_fields.html' with form=form %}
+                        <div class="form-actions">
+                            {#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
+                            {#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
+                            <button type="submit" class="btn">{% trans "Send message" %}</button>
+                            <a href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>
 
-                    </div>
-                </fieldset>
-            </form>
+                        </div>
+                    </fieldset>
+                </form>
+            {% endif %}
         {% else %}
             <h2>{% trans 'Topic is closed' %}</h2>
         {% endif %}

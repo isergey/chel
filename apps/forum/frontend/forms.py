@@ -30,3 +30,7 @@ class ArticleForm(forms.ModelForm):
 class ForumForm(forms.ModelForm):
     class Meta:
         model = Forum
+        exclude = [
+            'closed',
+            'deleted'
+        ]

@@ -85,10 +85,6 @@ def forum_topics(request, slug):
 
     if request.method == 'POST':
 
-
-        if not request.user.has_perm('forum.can_create_topics'):
-            return HttpResponseForbidden()
-
         if forum.closed:
             return HttpResponseForbidden()
 
@@ -96,6 +92,8 @@ def forum_topics(request, slug):
         article_form = ArticleForm(request.POST, prefix='article')
 
         if topic_form.is_valid() and article_form.is_valid():
+            if not request.user.has_perm('forum.can_create_topics'):
+                return HttpResponseForbidden()
             topic = topic_form.save(commit=False)
 
             if request.user.has_perms(['forum.can_hide_topics']):
