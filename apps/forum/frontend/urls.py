@@ -3,6 +3,9 @@ from django.conf.urls.defaults import *
 import views
 urlpatterns = patterns(views,
     url(r'^$', views.forums , name="forums"),
+    url(r'^forum_permissions/(?P<id>\d+)/$', views.forum_permissions , name="forum_permissions"),
+    url(r'^forum_permissions/(?P<id>\d+)/(?P<gid>\d+)/$', views.assign_forum_permissions , name="assign_forum_permissions"),
+
     url(r'^article_delete/(?P<id>\d+)/$', views.article_delete , name="article_delete"),
     url(r'^article_hide/(?P<id>\d+)/$', views.article_hide , name="article_hide"),
     url(r'^article_show/(?P<id>\d+)/$', views.article_show , name="article_show"),

@@ -18,7 +18,7 @@ class Forum(models.Model):
         permissions = (
             ("can_views_forums", "Can view forums"),
             ("can_close_forums", "Can close forum"),
-            ("can_view_topics", "Can view forum topics"),
+            ("can_view_topics", "Can view topics in forum"),
             ("can_create_topics", "Can create topics in forum"),
             ("can_change_topics", "Can change topics in forum"),
             ("can_delete_topics", "Can delete topics in forum"),

@@ -10,6 +10,7 @@
             <div class="row" style="margin-bottom: 10px">
                 <span class="subject"><a href="{% url forum:frontend:topics forum.slug %}">{{ forum.title }}</a></span>
                 <span style="float: right;">
+                        <a class="btn btn-small btn-warning" href="{% url forum:frontend:forum_permissions forum.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
                     {% if perms.forum.delete_forum %}
                         <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:forum_delete forum.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
                     {% endif %}
