@@ -22,7 +22,8 @@ class Forum(models.Model):
             ("can_create_topics", "Can create topics in forum"),
             ("can_change_topics", "Can change topics in forum"),
             ("can_delete_topics", "Can delete topics in forum"),
-            ("can_close_topics", "Can close topics in forum"),
+            ("can_close_topics", "Can close all topics in forum"),
+            ("can_close_own_topics", "Can close own topics in forum"),
             ("can_hide_topics", "Can hide topics in forum"),
         )
 

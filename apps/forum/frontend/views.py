@@ -38,8 +38,11 @@ def forums(request):
         'forums': forums,
         'form': form
     })
-
+@login_required
 def forum_permissions(request, id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
     forum = get_object_or_404(Forum, id=id)
     groups = Group.objects.all()
 
@@ -49,9 +52,12 @@ def forum_permissions(request, id):
         'groups': groups,
     })
 
-
+@login_required
 @transaction.commit_on_success
 def assign_forum_permissions(request, id, gid):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
     obj = get_object_or_404(Forum, id=id)
     group = get_object_or_404(Group, id=gid)
     obj_permissions  = get_perms_for_model(Forum).exclude(codename__in=['add_forum', 'can_views_forums'])
