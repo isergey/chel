@@ -11,7 +11,6 @@ from guardian.models import GroupObjectPermission
 from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assign
 from django.core.paginator import Paginator, InvalidPage
 from core.forms import get_permissions_form
-from django.contrib.contenttypes.models import ContentType
 from forum.models import Forum, Topic, Article
 from forms import ArticleForm, TopicForm, ForumForm
 
@@ -38,53 +37,7 @@ def forums(request):
         'forums': forums,
         'form': form
     })
-@login_required
-def forum_permissions(request, id):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
 
-    forum = get_object_or_404(Forum, id=id)
-    groups = Group.objects.all()
-
-
-    return render(request, 'forum/frontend/permissions.html', {
-        'forum': forum,
-        'groups': groups,
-    })
-
-@login_required
-@transaction.commit_on_success
-def assign_forum_permissions(request, id, gid):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
-
-    obj = get_object_or_404(Forum, id=id)
-    group = get_object_or_404(Group, id=gid)
-    obj_permissions  = get_perms_for_model(Forum).exclude(codename__in=['add_forum', 'can_views_forums'])
-
-    perms = []
-    for group_perm in GroupObjectPermission.objects.get_for_object(group, obj):
-        perms.append(group_perm.permission)
-
-    PermissionsForm = get_permissions_form(obj_permissions.select_related(), initial=perms)
-    if request.method == 'POST':
-        form = PermissionsForm(request.POST)
-        if form.is_valid():
-            for perm in obj_permissions:
-                remove_perm(perm.codename, group, obj)
-
-            for perm in  form.cleaned_data['perms']:
-                assign(perm.codename, group, obj )
-
-    else:
-        form = PermissionsForm()
-
-
-    return render(request, 'forum/frontend/edit_permissions.html', {
-        'forum': obj,
-        'group': group,
-        'form':form,
-    })
 
 
 @login_required
@@ -376,6 +329,7 @@ def article_show(request, id):
         return redirect('forum:frontend:articles', slug=article.topic.forum.slug, id=article.topic.id)
 
 
+
 def article_preview(request):
     if request.method == 'POST':
         text = request.POST.get('text', u' ')
@@ -383,3 +337,110 @@ def article_preview(request):
         return HttpResponse(simplejson.dumps(result, ensure_ascii=False))
 
     return HttpResponse(u'{}')
+
+
+
+
+
+@login_required
+def forum_permissions(request, id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    forum = get_object_or_404(Forum, id=id)
+    groups = Group.objects.all()
+
+
+    return render(request, 'forum/frontend/permissions.html', {
+        'forum': forum,
+        'groups': groups,
+        })
+
+
+
+@login_required
+@transaction.commit_on_success
+def assign_forum_permissions(request, id, gid):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    obj = get_object_or_404(Forum, id=id)
+    group = get_object_or_404(Group, id=gid)
+    obj_permissions  = get_perms_for_model(Forum).exclude(codename__in=['add_forum', 'can_views_forums'])
+
+    perms = []
+    for group_perm in GroupObjectPermission.objects.get_for_object(group, obj):
+        perms.append(group_perm.permission)
+
+    PermissionsForm = get_permissions_form(obj_permissions.select_related(), initial=perms)
+    if request.method == 'POST':
+        form = PermissionsForm(request.POST)
+        if form.is_valid():
+            for perm in obj_permissions:
+                remove_perm(perm.codename, group, obj)
+
+            for perm in  form.cleaned_data['perms']:
+                assign(perm.codename, group, obj )
+
+    else:
+        form = PermissionsForm()
+
+
+    return render(request, 'forum/frontend/edit_permissions.html', {
+        'forum': obj,
+        'group': group,
+        'form':form,
+        })
+
+
+
+@login_required
+def topic_permissions(request, id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    topic = get_object_or_404(Topic, id=id)
+    groups = Group.objects.all()
+
+
+    return render(request, 'forum/frontend/topic_permissions.html', {
+        'topic': topic,
+        'groups': groups,
+        })
+
+
+
+@login_required
+@transaction.commit_on_success
+def assign_topic_permissions(request, id, gid):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    obj = get_object_or_404(Topic, id=id)
+    group = get_object_or_404(Group, id=gid)
+    obj_permissions  = get_perms_for_model(Topic).exclude(codename__in=['add_topic', ])
+
+    perms = []
+
+    for group_perm in GroupObjectPermission.objects.get_for_object(group, obj):
+        perms.append(group_perm.permission)
+
+    PermissionsForm = get_permissions_form(obj_permissions.select_related(), initial=perms)
+    if request.method == 'POST':
+        form = PermissionsForm(request.POST)
+        if form.is_valid():
+            for perm in obj_permissions:
+                remove_perm(perm.codename, group, obj)
+
+            for perm in  form.cleaned_data['perms']:
+                assign(perm.codename, group, obj )
+
+    else:
+        form = PermissionsForm()
+
+
+    return render(request, 'forum/frontend/edit_topic_permissions.html', {
+        'topic': obj,
+        'group': group,
+        'form':form,
+        })

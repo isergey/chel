@@ -9,7 +9,6 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 sys.path.insert(0, os.path.join(PROJECT_PATH, "vendors"))
 
-
 ADMINS = (
 # ('Your Name', 'your_email@example.com'),
 )
@@ -125,6 +124,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'libcms.urls'
 
 AUTHENTICATION_BACKENDS = (
+    'common.ldap_auth_backend.LdapBackend',
     'social_auth.backends.twitter.TwitterBackend',
     'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',

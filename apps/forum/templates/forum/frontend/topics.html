@@ -27,6 +27,7 @@
                         {% if "can_delete_topics" in forum_perms %}
                             <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:topic_delete topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
                         {% endif %}
+                        <a class="btn btn-small btn-warning" href="{% url forum:frontend:topic_permissions topic.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
                     </span>
                 </div>
             </div>

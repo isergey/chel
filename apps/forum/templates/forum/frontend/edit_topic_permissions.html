@@ -1,9 +1,9 @@
 {% extends 'frontend_base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Forums list' %}{% trans 'Forum permissions' %}{% endblock %}
+{% block title %}{% trans 'Forums list' %}{% trans 'Topic permissions' %}{% endblock %}
 {% block content %}
     {% include 'forum/frontend/style.html' %}
-    <h3>{% trans 'Editing permissions for forum' %}: <b>{{ forum.title }}</b></h3>
+    <h3>{% trans 'Editing permissions for topic' %}: <b>{{ topic.forum.title }} → {{ topic.subject }}</b></h3>
     <hr/>
     <div>
         <p>{% trans 'Select permissions for group' %}: <b>{{ group.name }}</b></p>
