@@ -124,7 +124,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'libcms.urls'
 
 AUTHENTICATION_BACKENDS = (
-    'common.ldap_auth_backend.LdapBackend',
+    'arbicon.auth.ldap_auth_backend.LdapBackend',
     'social_auth.backends.twitter.TwitterBackend',
     'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',
@@ -170,6 +170,7 @@ INSTALLED_APPS = (
     'ask_librarian',
     'ssearch',
     'forum',
+    'arbicon',
 )
 
 
