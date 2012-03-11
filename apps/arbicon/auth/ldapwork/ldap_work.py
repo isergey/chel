@@ -61,7 +61,8 @@ class LdapConnection(object):
             Если node == '.' то поиск будет произведен только на уровне base_dn
         return list if results. if no results return emty list []
         """
-        filter = filter.replace('\\"', '"')
+        filter = filter.replace('\\"', '"').replace('\\,', ',')
+        print filter
         try:
             if base_dn == '':
                 if node and node != '.': base_dn = node.strip(', ') + ',' + self.base_dn

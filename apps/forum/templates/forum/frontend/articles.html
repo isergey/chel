@@ -1,12 +1,12 @@
 {% extends 'frontend_base.html' %}
+{% load arbicon_tags %}
+{% load guardian_tags %}
 {% load i18n %}
 {% block title %} {{ topic.subject }} {% endblock %}
 {% block content %}
+    {% get_obj_perms request.user for topic as "topic_perms" %}
+
     {% include 'forum/frontend/style.html' %}
-    <style type="text/css">
-
-    </style>
-
     <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}({% trans 'Topic is closed' %}) {% endif %}
     </h3>
     <hr/>
@@ -16,19 +16,31 @@
                 <div class="message row {% if not article.public %}hided{% endif %}" id="{{ article.id }}">
                     <div class="span2">
                         <b>{{ article.author }}</b><br/>
+                        {{ article.author.last_name }}
+                        {{ article.author.first_name }}
+
+                        {% with article.author|get_user_org as org_name %}
+                            {% if org_name %}
+                            <hr/>
+                                {{ org_name }}
+                            <hr/>
+                            {% endif %}
+                        {% endwith %}
+{#                        {{ article.author|get_user_org  }}#}
+
                         {{ article.created }}<br>
 
                     </div>
                     <div class="text span9">{{ article.text|safe }}</div>
                     <div class="toolbar span1">
 
-                        {% if article.author == request.user or perms.forum.can_change_articles %}
+                        {% if article.author == request.user or "can_change_articles" in topic_perms %}
                             <a class="btn btn-small btn-warning" href="{% url forum:frontend:edit_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Edit message' %}"><i class="icon-edit"></i></a>
                         {% endif %}
 
                         <a class="btn btn-small" href="{% url forum:frontend:replay_article topic.forum.slug topic.id article.id %}#form" title="{% trans 'Quote' %}">« »</a>
 
-                        {% if perms.forum.can_hide_articles %}
+                        {% if "can_hide_articles" in topic_perms %}
                             {% if article.public %}
                                 <a class="article_hide btn btn-small btn-info" href="{% url forum:frontend:article_hide article.id %}" title="{% trans 'Hide message' %}"><i class="icon-eye-open icon-white"></i> </a>
                             {% else %}
@@ -36,7 +48,7 @@
                             {% endif %}
                         {% endif %}
 
-                        {% if perms.forum.can_delete_articles %}
+                        {% if "can_delete_articles"  in topic_perms %}
                             <a class="btn btn-small btn-danger article_delete" href="{% url forum:frontend:article_delete article.id %}" title="{% trans 'Delete' %}"><i class="icon-trash icon-white"></i> </a>
                         {% endif %}
 
@@ -60,7 +72,8 @@
             <div id="preview_message">
 
             </div>
-            {% if perms.forum.can_add_articles or perms.forum.can_change_articles %}
+
+            {% if "can_add_articles" in topic_perms or "can_change_articles" in topic_perms %}
                 <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
                     {% if not quote_article and not edit_article %}
                         <legend>{% trans 'Send a message' %}</legend>
@@ -99,6 +112,7 @@
         });
 
         $('.article_delete').click(function(){
+            if(!confirm('Вы уверены что хотите удалить?')) return false;
             var link = $(this);
             $.ajax({
                 url: link.attr('href'),

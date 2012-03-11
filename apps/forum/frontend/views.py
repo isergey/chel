@@ -8,7 +8,11 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from guardian.core import ObjectPermissionChecker
 from guardian.models import GroupObjectPermission
-from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assign
+from guardian.forms import GroupObjectPermissionsForm
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
+from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assign, get_groups_with_perms
 from django.core.paginator import Paginator, InvalidPage
 from core.forms import get_permissions_form
 from forum.models import Forum, Topic, Article
@@ -93,6 +97,8 @@ def forum_topics(request, slug):
 
     forum = get_object_or_404(Forum, slug=slug)
 
+
+
     if not request.user.has_perm("can_view_topics", forum):
         return HttpResponseForbidden()
 
@@ -121,15 +127,25 @@ def forum_topics(request, slug):
             topic.save()
             article = article_form.save(commit=False)
 
-            # потому что топикстартер
-            if request.user.has_perm('can_hide_topics', forum):
-                article.public = True
-            else:
-                article.public = False
+            article.public = True
+
+#            # потому что топикстартер
+#            if request.user.has_perm('can_hide_topics', forum):
+#                article.public = True
+#            else:
+#                article.public = False
 
             article.author = request.user
             article.topic = topic
             article.save()
+
+            groups =  get_groups_with_perms(forum, attach_perms=True)
+            for group in groups:
+                if  u"can_create_topics" in  groups[group]:
+                    assign(u"can_add_articles", group, topic)
+#                    assign(u"can_view_articles", group, topic)
+                if  u"can_view_topics" in  groups[group]:
+                    assign(u"can_view_articles", group, topic)
 
             if request.user.has_perm('can_hide_topics', forum):
                 return redirect('forum:frontend:articles', slug=forum.slug, id=topic.id)
@@ -191,10 +207,10 @@ def topic_open(request, id):
 def topic_articles(request, slug, id, aid=None, eid=None):
 
     topic = get_object_or_404(Topic, id=id)
-    if not request.user.has_perms(['forum.can_view_articles']):
+    if not request.user.has_perm("can_view_articles", topic):
         return HttpResponseForbidden()
 
-    if request.user.has_perms(['forum.can_hide_articles']):
+    if request.user.has_perm("can_hide_articles", topic):
         articles_qs = Article.objects.select_related('author').filter(topic=topic)
     else:
         articles_qs = Article.objects.select_related('author').filter(topic=topic, public=True)
@@ -217,7 +233,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
 
     # если пользователь нажал на цитирование
     if aid:
-        if request.user.has_perms(['forum.can_hide_articles']):
+        if request.user.has_perm("can_hide_articles", topic):
             quote_article = get_object_or_404(Article, id=aid)
         else:
             quote_article = get_object_or_404(Article, id=aid, public=True)
@@ -227,7 +243,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
     # если пользователь редактирует свое сообщение
     if eid:
         edit_article = get_object_or_404(Article, id=eid)
-        if request.user != edit_article.author and not request.user.has_perms(['forum.can_change_articles']):
+        if request.user != edit_article.author and not request.user.has_perm("can_hide_articles", topic):
             return  HttpResponseForbidden()
     else:
         edit_article = None
@@ -244,7 +260,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
         if form.is_valid():
             if edit_article:
                 article = form.save(commit=False)
-                if request.user.has_perms(['forum.can_hide_articles']):
+                if request.user.has_perm("can_hide_articles", topic) or request.user.has_perm("can_publish_own_articles", topic):
                     article.public = True
                 else:
                     article.public = False
@@ -252,7 +268,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
                 return redirect('forum:frontend:articles', slug=topic.forum.slug, id=topic.id)
 
             article = form.save(commit=False)
-            if request.user.has_perms(['forum.can_hide_articles']):
+            if request.user.has_perm("can_hide_articles", topic) or request.user.has_perm("can_publish_own_articles", topic) :
                 article.public = True
 
             article.author = request.user
@@ -287,11 +303,12 @@ def topic_articles(request, slug, id, aid=None, eid=None):
 
 @login_required
 def article_delete(request, id):
-    if not request.user.has_perms(['forum.can_delete_articles']):
-        return HttpResponseForbidden()
-
     article = get_object_or_404(Article, id=id)
     topic =  article.topic
+
+    if not request.user.has_perm("can_delete_articles", topic):
+        return HttpResponseForbidden()
+
     article.delete()
 
     if request.is_ajax():
@@ -301,10 +318,12 @@ def article_delete(request, id):
 
 @login_required
 def article_hide(request, id):
-    if not request.user.has_perms(['forum.can_hide_articles']):
+    article = get_object_or_404(Article, id=id)
+
+    if not request.user.has_perm("can_hide_articles", article.topic):
         return HttpResponseForbidden()
 
-    article = get_object_or_404(Article, id=id)
+
     article.public = False
     article.save()
 
@@ -316,7 +335,8 @@ def article_hide(request, id):
 
 @login_required
 def article_show(request, id):
-    if not request.user.has_perms(['forum.can_hide_articles']):
+    article = get_object_or_404(Article, id=id)
+    if not request.user.has_perm("can_hide_articles", article.topic):
         return HttpResponseForbidden()
 
     article = get_object_or_404(Article, id=id)
@@ -358,6 +378,7 @@ def forum_permissions(request, id):
 
 
 
+
 @login_required
 @transaction.commit_on_success
 def assign_forum_permissions(request, id, gid):
@@ -368,10 +389,11 @@ def assign_forum_permissions(request, id, gid):
     group = get_object_or_404(Group, id=gid)
     obj_permissions  = get_perms_for_model(Forum).exclude(codename__in=['add_forum', 'can_views_forums'])
 
+    ctype = ContentType.objects.get_for_model(obj)
     perms = []
-    for group_perm in GroupObjectPermission.objects.get_for_object(group, obj):
+    for group_perm in GroupObjectPermission.objects.filter(group=group,content_type=ctype, object_pk=obj.id):
         perms.append(group_perm.permission)
-
+    #print perms
     PermissionsForm = get_permissions_form(obj_permissions.select_related(), initial=perms)
     if request.method == 'POST':
         form = PermissionsForm(request.POST)
@@ -420,12 +442,13 @@ def assign_topic_permissions(request, id, gid):
     group = get_object_or_404(Group, id=gid)
     obj_permissions  = get_perms_for_model(Topic).exclude(codename__in=['add_topic', ])
 
+    ctype = ContentType.objects.get_for_model(obj)
     perms = []
-
-    for group_perm in GroupObjectPermission.objects.get_for_object(group, obj):
+    for group_perm in GroupObjectPermission.objects.filter(group=group,content_type=ctype, object_pk=obj.id):
         perms.append(group_perm.permission)
 
     PermissionsForm = get_permissions_form(obj_permissions.select_related(), initial=perms)
+
     if request.method == 'POST':
         form = PermissionsForm(request.POST)
         if form.is_valid():

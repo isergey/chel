@@ -27,12 +27,14 @@
                         {% if "can_delete_topics" in forum_perms %}
                             <a class="topic_delete btn btn-small btn-danger" href="{% url forum:frontend:topic_delete topic.id %}" title="{% trans 'Delete topic' %}"><i class="icon-trash icon-white"></i></a>
                         {% endif %}
-                        <a class="btn btn-small btn-warning" href="{% url forum:frontend:topic_permissions topic.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
+                        {% if request.user.is_superuser %}
+                            <a class="btn btn-small btn-warning" href="{% url forum:frontend:topic_permissions topic.id %}" title="{% trans 'Edit permissions' %}"><i class="icon-lock"></i></a>
+                        {% endif %}
                     </span>
                 </div>
             </div>
         {% endfor %}
-        {% if perms.forum.can_create_topics %}
+        {% if "can_create_topics" in  forum_perms %}
         <div class="row">
             <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
                     <legend>{% trans 'Create topic' %}</legend>
@@ -61,7 +63,9 @@
 {##}
 {#        });#}
 {##}
+
         $('.topic_delete').click(function(){
+            if(!confirm('Вы уверены что хотите удалить?')) return false;
             var link = $(this);
             $.ajax({
                 url: link.attr('href'),

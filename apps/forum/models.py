@@ -47,6 +47,7 @@ class Topic(models.Model):
             ("can_change_articles", "Can change articles in topic"),
             ("can_delete_articles", "Can delete articles from topic"),
             ("can_hide_articles", "Can hide articles in topic"),
+            ("can_publish_own_articles", "Can publish own articles in topic"),
         )
 
 
