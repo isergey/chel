@@ -25,10 +25,12 @@ MANAGERS = ADMINS
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
+
 TIME_ZONE = 'Europe/Moscow'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
+
 LANGUAGE_CODE = 'ru-RU'
 
 gettext = lambda s: s
@@ -124,7 +126,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'libcms.urls'
 
 AUTHENTICATION_BACKENDS = (
-    'arbicon.auth.ldap_auth_backend.LdapBackend',
     'social_auth.backends.twitter.TwitterBackend',
     'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',
@@ -170,7 +171,6 @@ INSTALLED_APPS = (
     'ask_librarian',
     'ssearch',
     'forum',
-    'arbicon',
 )
 
 

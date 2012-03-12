@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 16:39+0400\n"
+"POT-Creation-Date: 2012-03-11 17:23+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,104 +19,186 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: settings.py:38
+#: settings.py:36
 msgid "Russian"
 msgstr "Русский"
 
-#: settings.py:39
+#: settings.py:37
 msgid "English"
 msgstr "English"
 
-#: apps/accounts/administration/forms.py:8
+#: apps/accounts/administration/forms.py:9
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
-#: apps/accounts/templates/administration/create_group.html:8
-#: apps/accounts/templates/administration/edit_user.html:8
-#: apps/accounts/templates/administration/groups_list.html:8
-#: apps/accounts/templates/administration/index.html:12
-#: apps/accounts/templates/administration/user_list.html:8
+#: apps/accounts/templates/accounts/administration/create_group.html:8
+#: apps/accounts/templates/accounts/administration/create_user.html:8
+#: apps/accounts/templates/accounts/administration/edit_group.html:8
+#: apps/accounts/templates/accounts/administration/edit_user.html:8
+#: apps/accounts/templates/accounts/administration/groups_list.html:8
+#: apps/accounts/templates/accounts/administration/index.html:14
+#: apps/accounts/templates/accounts/administration/user_list.html:8
 msgid "Accounts"
-msgstr ""
+msgstr "Аккаунты"
 
-#: apps/accounts/templates/administration/create_group.html:9
-#: apps/accounts/templates/administration/edit_user.html:9
-#: apps/accounts/templates/administration/module_menu.html:4
-#: apps/accounts/templates/administration/user_list.html:9
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:36
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:31
-msgid "Users"
-msgstr "Пользователи"
-
-#: apps/accounts/templates/administration/create_group.html:10
-#: apps/accounts/templates/administration/create_group.html:22
-#: apps/accounts/templates/administration/create_user.html:23
-#: apps/accounts/templates/administration/module_menu.html:6
-msgid "Create"
-msgstr ""
-
-#: apps/accounts/templates/administration/create_group.html:23
-#: apps/accounts/templates/administration/create_user.html:24
-#: apps/accounts/templates/administration/edit_user.html:23
-msgid "Cancel"
-msgstr ""
-
-#: apps/accounts/templates/administration/create_user.html:14
-msgid "www"
-msgstr ""
-
-#: apps/accounts/templates/administration/edit_user.html:10
-msgid "Editing"
-msgstr ""
-
-#: apps/accounts/templates/administration/edit_user.html:22
-msgid "Save changes"
-msgstr ""
-
-#: apps/accounts/templates/administration/groups_list.html:9
-#: apps/accounts/templates/administration/module_menu.html:7
+#: apps/accounts/templates/accounts/administration/create_group.html:9
+#: apps/accounts/templates/accounts/administration/edit_group.html:9
+#: apps/accounts/templates/accounts/administration/groups_list.html:9
+#: apps/accounts/templates/accounts/administration/module_menu.html:7
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:96
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:85
 msgid "Groups"
 msgstr "Группы"
 
-#: apps/accounts/templates/administration/groups_list.html:20
+#: apps/accounts/templates/accounts/administration/create_group.html:10
+#: apps/accounts/templates/accounts/administration/edit_group.html:10
+#: apps/accounts/templates/accounts/administration/edit_user.html:10
+#: apps/pages/templates/pages/administration/edit_page.html:9
+msgid "Editing"
+msgstr "Редактирования"
+
+#: apps/accounts/templates/accounts/administration/create_group.html:15
+#, fuzzy
+msgid "Create group"
+msgstr "Создать"
+
+#: apps/accounts/templates/accounts/administration/create_group.html:19
+#: apps/accounts/templates/accounts/administration/create_user.html:10
+#: apps/accounts/templates/accounts/administration/create_user.html:20
+#: apps/pages/templates/pages/administration/create_page.html:9
+msgid "Create"
+msgstr "Создать"
+
+#: apps/accounts/templates/accounts/administration/create_group.html:20
+#: apps/accounts/templates/accounts/administration/create_user.html:21
+#: apps/accounts/templates/accounts/administration/edit_group.html:20
+#: apps/accounts/templates/accounts/administration/edit_user.html:20
+#: apps/pages/templates/pages/administration/create_page.html:27
+#: apps/pages/templates/pages/administration/create_page_content.html:27
+#: apps/pages/templates/pages/administration/edit_page.html:25
+#: apps/pages/templates/pages/administration/edit_page_content.html:27
+msgid "Cancel"
+msgstr "Отменить"
+
+#: apps/accounts/templates/accounts/administration/create_user.html:9
+#: apps/accounts/templates/accounts/administration/edit_user.html:9
+#: apps/accounts/templates/accounts/administration/module_menu.html:4
+#: apps/accounts/templates/accounts/administration/user_list.html:9
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:36
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:31
+msgid "Users"
+msgstr "Пользователи"
+
+#: apps/accounts/templates/accounts/administration/edit_group.html:19
+#: apps/accounts/templates/accounts/administration/edit_user.html:19
+msgid "Save changes"
+msgstr "Сохранить изменения"
+
+#: apps/accounts/templates/accounts/administration/groups_list.html:18
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:105
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:36
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:94
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:30
 msgid "Group"
-msgstr ""
+msgstr "Группа"
 
-#: apps/accounts/templates/administration/module_menu.html:5
-#: apps/accounts/templates/administration/module_menu.html:8
+#: apps/accounts/templates/accounts/administration/module_menu.html:5
+#: apps/accounts/templates/accounts/administration/module_menu.html:8
+#: apps/pages/templates/pages/administration/module_menu.html:5
+#: apps/pages/templates/pages/administration/pages_list.html:9
 msgid "List"
 msgstr "Список"
 
-#: apps/accounts/templates/administration/user_list.html:15
-msgid "undefinded"
-msgstr "не определено"
+#: apps/accounts/templates/accounts/administration/module_menu.html:6
+#: apps/accounts/templates/accounts/administration/module_menu.html:9
+#: apps/pages/templates/pages/administration/module_menu.html:6
+msgid "Add"
+msgstr ""
 
-#: apps/accounts/templates/administration/user_list.html:19
+#: apps/accounts/templates/accounts/administration/user_list.html:17
 #: vendors/guardian/admin.py:348
 msgid "Username"
 msgstr "Логин"
 
-#: apps/accounts/templates/administration/user_list.html:20
+#: apps/accounts/templates/accounts/administration/user_list.html:18
 msgid "First name"
 msgstr "Имя"
 
-#: apps/accounts/templates/administration/user_list.html:21
+#: apps/accounts/templates/accounts/administration/user_list.html:19
 msgid "Last name"
 msgstr "Фамилия"
 
-#: apps/accounts/templates/administration/user_list.html:22
+#: apps/accounts/templates/accounts/administration/user_list.html:20
 msgid "Registration date"
 msgstr "Дата регистрации"
 
+#: apps/accounts/templates/accounts/administration/user_list.html:27
+#: apps/accounts/templates/accounts/administration/user_list.html:28
+msgid "undefinded"
+msgstr "не определено"
+
+#: apps/accounts/templates/accounts/frontend/login.html:4
+msgid "Login"
+msgstr "Войти"
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_complete.html:3
+msgid "Password reset complete"
+msgstr "Востановление вопроса завершено"
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_complete.html:6
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr "Ваш пароль был востановлен. Вы можете войти в систему."
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_complete.html:7
+msgid "Log in"
+msgstr "Войти"
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_confirm.html:8
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+"Пожалуйста, введите Ваш новый пароль дважды для проверки на совпадение."
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_confirm.html:13
+msgid "Change my password"
+msgstr "Изменить пароль"
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_confirm.html:18
+msgid "Password reset unsuccessful"
+msgstr "Смена пороля прошла неудачно"
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_confirm.html:19
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+"Ссылка для востановления пароля неправильная. Возможно она уже была "
+"использована ранее. Пожалуйста, запросите востановление пароля еще раз."
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_done.html:6
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted."
+msgstr ""
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_done.html:7
+msgid "You should be receiving it shortly."
+msgstr ""
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_form.html:6
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll e-mail "
+"instructions for setting a new one."
+msgstr ""
+
+#: apps/accounts/templates/accounts/frontend/registration/password_reset_form.html:11
+msgid "Reset my password"
+msgstr ""
+
 #: apps/ask_librarian/models.py:22
 msgid "User, who can give the answer"
-msgstr ""
+msgstr "Пользователь, который может давать ответ"
 
 #: apps/ask_librarian/models.py:25
 msgid "Phone number"
@@ -124,217 +206,530 @@ msgstr ""
 
 #: apps/ask_librarian/models.py:59
 msgid "Start date of non active period"
-msgstr ""
+msgstr "Дата начала перерыва"
 
 #: apps/ask_librarian/models.py:60
 msgid "End date of non active period"
-msgstr ""
+msgstr "Дата конца перерыва"
 
 #: apps/ask_librarian/models.py:61
 msgid "Reason, why not active"
-msgstr ""
+msgstr "Причина неактивности"
 
 #: apps/ask_librarian/models.py:96
 msgid "Question category name"
-msgstr ""
+msgstr "Название категория вопроса"
 
 #: apps/ask_librarian/models.py:116
 msgid "Language name"
-msgstr ""
+msgstr "Язык"
 
 #: apps/ask_librarian/models.py:121
 msgid "New"
-msgstr ""
+msgstr "Новый"
 
 #: apps/ask_librarian/models.py:122
 msgid "Processed"
-msgstr ""
+msgstr "Обработанный"
 
 #: apps/ask_librarian/models.py:123
 msgid "Rejected"
-msgstr ""
+msgstr "Отклонен"
 
 #: apps/ask_librarian/models.py:131
 msgid "Text of question"
-msgstr ""
+msgstr "Текст вопроса"
 
 #: apps/ask_librarian/models.py:134
 msgid "The answer may contain links and materials on the languages of chosen"
-msgstr ""
+msgstr "Ответ может содержать ссылки и материалы на следующих языках"
 
 #: apps/ask_librarian/models.py:137
-#: apps/ask_librarian/templates/frontend/question_detail.html:8
+#: apps/ask_librarian/templates/ask_librarian/frontend/question_detail.html:8
 msgid "Question category"
-msgstr ""
+msgstr "Категория вопроса"
 
 #: apps/ask_librarian/models.py:139
 msgid "Question status"
-msgstr ""
+msgstr "Статус вопроса"
 
 #: apps/ask_librarian/models.py:174
 msgid "Answer manager"
-msgstr ""
+msgstr "Менеджер ответов"
 
 #: apps/ask_librarian/models.py:175
 msgid "Text of answer"
-msgstr ""
+msgstr "Текст ответа"
 
-#: apps/ask_librarian/templates/administration/managers.html:4
-#: apps/ask_librarian/templates/administration/module.html:4
-#: apps/ask_librarian/templates/frontend/create_question.html:4
-#: apps/ask_librarian/templates/frontend/index.html:33
-#: apps/ask_librarian/templates/frontend/question_detail.html:4
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:4
+#: apps/ask_librarian/templates/ask_librarian/administration/module.html:4
+#: apps/ask_librarian/templates/ask_librarian/frontend/create_question.html:4
+#: apps/ask_librarian/templates/ask_librarian/frontend/index.html:33
+#: apps/ask_librarian/templates/ask_librarian/frontend/question_detail.html:4
 msgid "Ask a librarian"
-msgstr ""
+msgstr "Спроси библиотекаря"
 
-#: apps/ask_librarian/templates/administration/managers.html:9
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:9
 msgid "Ask managers"
-msgstr ""
+msgstr "Менеджеры вопросов"
 
-#: apps/ask_librarian/templates/administration/managers.html:10
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:10
 msgid "Administration"
-msgstr ""
+msgstr "Администрирование"
 
-#: apps/ask_librarian/templates/administration/managers.html:17
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:17
 msgid "Ask managers list"
-msgstr ""
+msgstr "Список менеджеров вопроса"
 
-#: apps/ask_librarian/templates/administration/managers.html:18
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:18
 msgid "Add ask manager"
-msgstr ""
+msgstr "Добавить менеджера"
 
-#: apps/ask_librarian/templates/administration/managers.html:25
-#: apps/ask_librarian/templates/administration/questions_stats.html:6
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:25
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_stats.html:6
 msgid "New questions"
-msgstr ""
+msgstr "Новые вопросы"
 
-#: apps/ask_librarian/templates/administration/managers.html:30
-#: apps/ask_librarian/templates/administration/questions_stats.html:11
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:30
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_stats.html:11
 msgid "Processed questions"
-msgstr ""
+msgstr "Обработанные вопросы"
 
-#: apps/ask_librarian/templates/administration/managers.html:47
-#: apps/ask_librarian/templates/administration/questions_stats.html:28
+#: apps/ask_librarian/templates/ask_librarian/administration/managers.html:47
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_stats.html:28
 msgid "Rejected questions"
-msgstr ""
+msgstr "Отклоненные вопросы"
 
-#: apps/ask_librarian/templates/administration/module_menu.html:7
-#: apps/ask_librarian/templates/administration/questions.html:11
+#: apps/ask_librarian/templates/ask_librarian/administration/module_menu.html:7
+#: apps/ask_librarian/templates/ask_librarian/administration/questions.html:11
 msgid "Questions"
-msgstr ""
+msgstr "Вопросы"
 
-#: apps/ask_librarian/templates/administration/module_menu.html:8
+#: apps/ask_librarian/templates/ask_librarian/administration/module_menu.html:8
 msgid "Managers"
-msgstr ""
+msgstr "Менеджеры"
 
-#: apps/ask_librarian/templates/administration/questions.html:14
+#: apps/ask_librarian/templates/ask_librarian/administration/questions.html:14
 msgid "Stats"
-msgstr ""
+msgstr "Статистика"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:4
-#: apps/ask_librarian/templates/administration/questions_list.html:4
-#: apps/ask_librarian/templates/administration/questions_menu.html:11
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:4
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_list.html:4
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_menu.html:11
 msgid "Questions list"
-msgstr ""
+msgstr "Список вопросов"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:6
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:6
 msgid "Question detail"
-msgstr ""
+msgstr "Детальная информация о вопросе"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:9
-#: apps/ask_librarian/templates/administration/questions_detail.html:13
-#: apps/ask_librarian/templates/administration/questions_detail.html:72
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:9
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:13
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:72
 msgid "Question"
-msgstr ""
+msgstr "Вопрос"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:9
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:9
 msgid "The question has no answer"
-msgstr ""
+msgstr "Вопрос не имеет ответа"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:17
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:17
 msgid "Status"
-msgstr ""
+msgstr "Статус"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:21
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:21
 msgid "Answer language"
-msgstr ""
+msgstr "Язык ответа"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:31
-#: apps/ask_librarian/templates/administration/questions_detail.html:76
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:31
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:76
+#: apps/pages/models.py:26
 msgid "Create date"
-msgstr ""
+msgstr "Дата создания"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:35
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:35
 msgid "Category"
-msgstr ""
+msgstr "Категория"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:45
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:45
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:45
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:36
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:40
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:30
 msgid "User"
-msgstr ""
+msgstr "Пользователь"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:50
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:50
 msgid "Unregistered"
-msgstr ""
+msgstr "Не зарегистрированный"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:59
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:59
 msgid "Answer the question"
-msgstr ""
+msgstr "Ответ на вопрос"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:60
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:60
 msgid "Assign to answer manager"
-msgstr ""
+msgstr "Назначить менеджером ответов"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:61
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:61
 msgid "Reject question"
-msgstr ""
+msgstr "Отклоненный вопрос"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:68
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:68
 msgid "Answer"
-msgstr ""
+msgstr "Ответ"
 
-#: apps/ask_librarian/templates/administration/questions_detail.html:80
+#: apps/ask_librarian/templates/ask_librarian/administration/questions_detail.html:80
 msgid "Manager"
-msgstr ""
+msgstr "Менеджер"
 
-#: apps/ask_librarian/templates/frontend/question_detail.html:5
+#: apps/ask_librarian/templates/ask_librarian/frontend/question_detail.html:5
 msgid "Your question was sent to the librarian"
-msgstr ""
+msgstr "Ваш вопрос был отправлен библиотекарю"
 
-#: apps/ask_librarian/templates/frontend/question_detail.html:6
+#: apps/ask_librarian/templates/ask_librarian/frontend/question_detail.html:6
 msgid "Question identifier"
-msgstr ""
+msgstr "Идентификатор вопроса"
 
-#: apps/ask_librarian/templates/frontend/question_detail.html:7
+#: apps/ask_librarian/templates/ask_librarian/frontend/question_detail.html:7
 msgid "Question text"
-msgstr ""
+msgstr "Текст вопроса"
 
 #: apps/core/views.py:12
 msgid "Hello"
-msgstr ""
+msgstr "Привет"
 
 #: apps/core/templates/i18n/select_lang_form.html:3
 msgid "Current language"
-msgstr ""
+msgstr "Текущий язык"
 
 #: apps/core/templates/i18n/select_lang_form.html:4
 msgid "Select language from list and press \"Change\""
-msgstr ""
+msgstr "Выберите язык из списка и нажмите \"Изменить\""
 
 #: apps/core/templates/i18n/select_lang_form.html:14
 msgid "Change"
-msgstr ""
+msgstr "Изменить"
 
 #: apps/core/templates/pagination/pagination_tag.html:6
 msgid "previous page"
-msgstr ""
+msgstr "предыдущая страница"
 
 #: apps/core/templates/pagination/pagination_tag.html:40
 msgid "next page"
+msgstr "следующая страница"
+
+#: apps/forum/models.py:9 apps/pages/models.py:36
+msgid "Title"
 msgstr ""
+
+#: apps/forum/models.py:9 apps/forum/models.py:37
+msgid "Maximum 255 simbols"
+msgstr "Максимально 255 символов"
+
+#: apps/forum/models.py:10
+msgid "Slug"
+msgstr ""
+
+#: apps/forum/models.py:10
+msgid "Small latin letter, \"-\" and \"_\""
+msgstr "Маленькие латинские буквы, знак \"-\" и \"_\""
+
+#: apps/forum/models.py:11
+#, fuzzy
+msgid "Description"
+msgstr "Вопрос"
+
+#: apps/forum/models.py:11
+msgid "Maximum 1024 simbols"
+msgstr "Максимально 1024 символов"
+
+#: apps/forum/models.py:12
+msgid "Ordering"
+msgstr "Порядок"
+
+#: apps/forum/models.py:12
+msgid "Order in forums list"
+msgstr "Порядок в списке форумов"
+
+#: apps/forum/models.py:13 apps/forum/models.py:40
+msgid "Closed"
+msgstr "Закрыт"
+
+#: apps/forum/models.py:13
+msgid "If forum is closed, users can not create topics"
+msgstr "Если форум закрыт, пользователи не смогут создавать топики"
+
+#: apps/forum/models.py:14 apps/forum/models.py:41 apps/forum/models.py:61
+msgid "Deleted"
+msgstr "Удален"
+
+#: apps/forum/models.py:37
+msgid "Subject"
+msgstr "Тема"
+
+#: apps/forum/models.py:38 apps/forum/models.py:58 apps/forum/models.py:59
+#, fuzzy
+msgid "Created"
+msgstr "Создать"
+
+#: apps/forum/models.py:39
+msgid "Publicated"
+msgstr "Опубликован"
+
+#: apps/forum/models.py:40
+msgid "If topic is closed, users can not create messages"
+msgstr "Если топик закрыт, пользователи не смогу создавать сообщения"
+
+#: apps/forum/models.py:56
+msgid "Author"
+msgstr "Автор"
+
+#: apps/forum/models.py:57
+#, fuzzy
+msgid "Text of message"
+msgstr "Текст ответа"
+
+#: apps/forum/models.py:57
+msgid "Maximum 10000 simbols"
+msgstr "Максимально 10000 символов"
+
+#: apps/forum/templates/forum/frontend/articles.html:10
+#: apps/forum/templates/forum/frontend/forums.html:6
+#: apps/forum/templates/forum/frontend/topics.html:9
+msgid "Forums"
+msgstr "Форумы"
+
+#: apps/forum/templates/forum/frontend/articles.html:10
+#: apps/forum/templates/forum/frontend/articles.html:94
+msgid "Topic is closed"
+msgstr "Топик закрыт"
+
+#: apps/forum/templates/forum/frontend/articles.html:38
+msgid "Edit message"
+msgstr "Редактировать сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:41
+msgid "Quote"
+msgstr "Цитата"
+
+#: apps/forum/templates/forum/frontend/articles.html:45
+#: apps/forum/templates/forum/frontend/articles.html:160
+msgid "Hide message"
+msgstr "Скрыть сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:47
+#: apps/forum/templates/forum/frontend/articles.html:140
+msgid "Publish message"
+msgstr "Опубликовать сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:52
+msgid "Delete"
+msgstr "Удалить"
+
+#: apps/forum/templates/forum/frontend/articles.html:64
+msgid "Quoted message"
+msgstr "Цитируемое сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:69
+msgid "Edited message"
+msgstr "Редактируемое сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:79
+msgid "Send a message"
+msgstr "Отправить сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:86
+msgid "Send message"
+msgstr "Отправить сообщение"
+
+#: apps/forum/templates/forum/frontend/articles.html:87
+msgid "Switch editor"
+msgstr "Переключить редактор"
+
+#: apps/forum/templates/forum/frontend/edit_permissions.html:3
+#: apps/forum/templates/forum/frontend/edit_topic_permissions.html:3
+#: apps/forum/templates/forum/frontend/forums.html:3
+#: apps/forum/templates/forum/frontend/permissions.html:3
+#: apps/forum/templates/forum/frontend/topic_permissions.html:3
+msgid "Forums list"
+msgstr "Список форумов"
+
+#: apps/forum/templates/forum/frontend/edit_permissions.html:3
+#: apps/forum/templates/forum/frontend/permissions.html:3
+#: apps/forum/templates/forum/frontend/topic_permissions.html:3
+msgid "Forum permissions"
+msgstr "Права доступа к форуму"
+
+#: apps/forum/templates/forum/frontend/edit_permissions.html:6
+#: apps/forum/templates/forum/frontend/permissions.html:6
+msgid "Editing permissions for forum"
+msgstr "Редактировать права доступа к форуму"
+
+#: apps/forum/templates/forum/frontend/edit_permissions.html:9
+#: apps/forum/templates/forum/frontend/edit_topic_permissions.html:9
+msgid "Select permissions for group"
+msgstr "Выберите права доступа для группы"
+
+#: apps/forum/templates/forum/frontend/edit_permissions.html:15
+#: apps/forum/templates/forum/frontend/edit_topic_permissions.html:15
+msgid "Change permissions"
+msgstr "Изменить права доступа"
+
+#: apps/forum/templates/forum/frontend/edit_topic_permissions.html:3
+msgid "Topic permissions"
+msgstr "Права доступа к топику"
+
+#: apps/forum/templates/forum/frontend/edit_topic_permissions.html:6
+msgid "Editing permissions for topic"
+msgstr "Редактировать доступа к топику"
+
+#: apps/forum/templates/forum/frontend/forums.html:14
+#: apps/forum/templates/forum/frontend/topics.html:31
+msgid "Edit permissions"
+msgstr "Редактировать права доступа"
+
+#: apps/forum/templates/forum/frontend/forums.html:17
+msgid "Delete forum"
+msgstr "Удалить форум"
+
+#: apps/forum/templates/forum/frontend/forums.html:26
+#: apps/forum/templates/forum/frontend/forums.html:30
+#, fuzzy
+msgid "Create forum"
+msgstr "Создать форум"
+
+#: apps/forum/templates/forum/frontend/permissions.html:9
+#: apps/forum/templates/forum/frontend/topic_permissions.html:9
+msgid "Select group for edit permissions"
+msgstr "Выберите "
+
+#: apps/forum/templates/forum/frontend/topic_permissions.html:6
+msgid "Editing permissions for forum topic"
+msgstr ""
+
+#: apps/forum/templates/forum/frontend/topics.html:22
+#: apps/forum/templates/forum/frontend/topics.html:113
+msgid "Close topic"
+msgstr "Закрыть топик"
+
+#: apps/forum/templates/forum/frontend/topics.html:24
+#: apps/forum/templates/forum/frontend/topics.html:93
+msgid "Open topic"
+msgstr "Открыть топик"
+
+#: apps/forum/templates/forum/frontend/topics.html:28
+msgid "Delete topic"
+msgstr "Удалить топик"
+
+#: apps/forum/templates/forum/frontend/topics.html:40
+#: apps/forum/templates/forum/frontend/topics.html:45
+#, fuzzy
+msgid "Create topic"
+msgstr "Дата создания"
+
+#: apps/pages/models.py:23
+#, fuzzy
+msgid "Parent page"
+msgstr "следующая страница"
+
+#: apps/pages/models.py:24
+msgid "Slug title"
+msgstr ""
+
+#: apps/pages/models.py:25
+msgid "Public"
+msgstr "Опубликован"
+
+#: apps/pages/models.py:34
+msgid "Page owner"
+msgstr "Владелец страницы"
+
+#: apps/pages/models.py:37
+msgid "SEO meta"
+msgstr "Метаданные SEO"
+
+#: apps/pages/models.py:38
+msgid "Content"
+msgstr "Содержимое"
+
+#: apps/pages/administration/views.py:130
+msgid "Language is not registered in system."
+msgstr "Язык не зарегистрирован в системе."
+
+#: apps/pages/administration/views.py:130
+#, fuzzy
+msgid " Language code: "
+msgstr "Язык"
+
+#: apps/pages/templates/pages/administration/create_page.html:8
+#: apps/pages/templates/pages/administration/create_page_content.html:8
+#: apps/pages/templates/pages/administration/edit_page.html:8
+#: apps/pages/templates/pages/administration/edit_page_content.html:8
+#: apps/pages/templates/pages/administration/index.html:14
+#: apps/pages/templates/pages/administration/module_menu.html:4
+#: apps/pages/templates/pages/administration/pages_list.html:8
+msgid "Pages"
+msgstr "Страницы"
+
+#: apps/pages/templates/pages/administration/create_page.html:21
+msgid "Page creating"
+msgstr "Создание страницы"
+
+#: apps/pages/templates/pages/administration/create_page.html:26
+msgid "Go to edit content"
+msgstr "Перейти к редактированию содержимого"
+
+#: apps/pages/templates/pages/administration/create_page_content.html:9
+#: apps/pages/templates/pages/administration/edit_page_content.html:9
+msgid "Edit content"
+msgstr "Редактировать содержимое"
+
+#: apps/pages/templates/pages/administration/create_page_content.html:21
+msgid "Page content creating"
+msgstr "Создание содержимого страницы"
+
+#: apps/pages/templates/pages/administration/create_page_content.html:25
+#: apps/pages/templates/pages/administration/edit_page_content.html:25
+msgid "Save and continue editing"
+msgstr "Сохранить и продолжить редактирование"
+
+#: apps/pages/templates/pages/administration/create_page_content.html:26
+#: apps/pages/templates/pages/administration/edit_page.html:24
+#: apps/pages/templates/pages/administration/edit_page_content.html:26
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:48
+#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:48
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:37
+#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:37
+msgid "Save"
+msgstr "Сохранить"
+
+#: apps/pages/templates/pages/administration/edit_page.html:19
+#, fuzzy
+msgid "Page editing"
+msgstr "Редактирования"
+
+#: apps/pages/templates/pages/administration/edit_page.html:29
+msgid "Edit content of this page on next languages"
+msgstr "Редактировать содержимое этой страницы на следующих языках"
+
+#: apps/pages/templates/pages/administration/edit_page_content.html:21
+msgid "Page content editing"
+msgstr "Редактирование содержимого страницы"
+
+#: apps/pages/templates/pages/administration/edit_page_content.html:21
+#, fuzzy
+msgid "Language"
+msgstr "Язык"
+
+#: apps/pages/templates/pages/administration/pages_list.html:24
+msgid "Subpages"
+msgstr "Подстраницы"
+
+#: apps/pages/templates/pages/administration/pages_list.html:26
+#, fuzzy
+msgid "Add subpage"
+msgstr "Добавить менеджера"
 
 #: vendors/debug_toolbar/panels/cache.py:92
 #, python-format
@@ -430,8 +825,9 @@ msgstr ""
 
 #: vendors/debug_toolbar/panels/version.py:19
 #: vendors/debug_toolbar/panels/version.py:28
+#, fuzzy
 msgid "Versions"
-msgstr ""
+msgstr "Вопросы"
 
 #: vendors/debug_toolbar/templates/debug_toolbar/base.html:11
 msgid "Hide Toolbar"
@@ -492,8 +888,9 @@ msgid "Parameters"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/cache.html:42
+#, fuzzy
 msgid "Function"
-msgstr ""
+msgstr "Вопрос"
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/headers.html:5
 msgid "Key"
@@ -514,8 +911,9 @@ msgid "Level"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/logger.html:8
+#, fuzzy
 msgid "Channel"
-msgstr ""
+msgstr "Изменить"
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/logger.html:9
 msgid "Message"
@@ -543,16 +941,18 @@ msgid "TotTime"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/profiling.html:11
+#, fuzzy
 msgid "Count"
-msgstr ""
+msgstr "Аккаунты"
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:3
 msgid "View information"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:7
+#, fuzzy
 msgid "View Function"
-msgstr ""
+msgstr "Новые вопросы"
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/request_vars.html:8
 msgid "args"
@@ -623,6 +1023,7 @@ msgid "%(num)s query"
 msgid_plural "%(num)s queries"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql.html:19
 msgid "Query"
@@ -676,8 +1077,9 @@ msgid "Error"
 msgstr ""
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:4
+#, fuzzy
 msgid "SQL Selected"
-msgstr ""
+msgstr "Отклонен"
 
 #: vendors/debug_toolbar/templates/debug_toolbar/panels/sql_select.html:36
 msgid "Empty set"
@@ -723,8 +1125,9 @@ msgstr ""
 
 #: vendors/guardian/admin.py:29 vendors/guardian/admin.py:39
 #: vendors/guardian/forms.py:53
+#, fuzzy
 msgid "Permissions"
-msgstr ""
+msgstr "Вопросы"
 
 #: vendors/guardian/admin.py:162
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:21
@@ -738,8 +1141,9 @@ msgstr ""
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:25
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:14
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:25
+#, fuzzy
 msgid "Object permissions"
-msgstr ""
+msgstr "Отклоненные вопросы"
 
 #: vendors/guardian/admin.py:251 vendors/guardian/admin.py:304
 msgid "Permissions saved."
@@ -786,15 +1190,17 @@ msgstr ""
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:126
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:61
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:115
+#, fuzzy
 msgid "Edit"
-msgstr ""
+msgstr "Редактирования"
 
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:79
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:15
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:72
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:15
+#, fuzzy
 msgid "Manage user"
-msgstr ""
+msgstr "Менеджер"
 
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage.html:102
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:91
@@ -805,21 +1211,15 @@ msgstr ""
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:15
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage.html:126
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:15
+#, fuzzy
 msgid "Manage group"
-msgstr ""
+msgstr "Менеджер"
 
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:28
 #: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:28
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:27
 #: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:27
 msgid "Object"
-msgstr ""
-
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_group.html:48
-#: vendors/guardian/templates/admin/guardian/contrib/grappelli/obj_perms_manage_user.html:48
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_group.html:37
-#: vendors/guardian/templates/admin/guardian/model/obj_perms_manage_user.html:37
-msgid "Save"
 msgstr ""
 
 #: vendors/guardian/templates/admin/guardian/model/change_form.html:8
@@ -829,6 +1229,66 @@ msgstr ""
 #: vendors/guardian/templates/admin/guardian/model/change_form.html:9
 #: vendors/mptt/admin.py:208 vendors/mptt/admin.py:210
 msgid "View on site"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:24
+msgid "title"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:25
+#: vendors/johnny/tests/testapp/models.py:52
+msgid "slug"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:28
+msgid "person type"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:29
+msgid "person types"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:49
+#, fuzzy
+msgid "first name"
+msgstr "Имя"
+
+#: vendors/johnny/tests/testapp/models.py:50
+msgid "middle name"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:51
+#, fuzzy
+msgid "last name"
+msgstr "Фамилия"
+
+#: vendors/johnny/tests/testapp/models.py:53
+msgid "gender"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:54
+msgid "mugshot"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:55
+msgid "mugshot credit"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:56
+#, fuzzy
+msgid "birth date"
+msgstr "Дата создания"
+
+#: vendors/johnny/tests/testapp/models.py:58
+msgid "website"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:61
+msgid "person"
+msgstr ""
+
+#: vendors/johnny/tests/testapp/models.py:62
+msgid "people"
 msgstr ""
 
 #: vendors/mptt/admin.py:94
@@ -841,6 +1301,7 @@ msgid "%(count)s %(name)s was changed successfully."
 msgid_plural "%(count)s %(name)s were changed successfully."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: vendors/mptt/admin.py:200 vendors/mptt/admin.py:202
 msgid "Add child"

@@ -1,5 +1,4 @@
 {% extends 'frontend_base.html' %}
-{% load arbicon_tags %}
 {% load guardian_tags %}
 {% load i18n %}
 {% block title %} {{ topic.subject }} {% endblock %}
@@ -16,16 +15,6 @@
                 <div class="message row {% if not article.public %}hided{% endif %}" id="{{ article.id }}">
                     <div class="span2">
                         <b>{{ article.author }}</b><br/>
-                        {{ article.author.last_name }}
-                        {{ article.author.first_name }}
-
-                        {% with article.author|get_user_org as org_name %}
-                            {% if org_name %}
-                            <hr/>
-                                {{ org_name }}
-                            <hr/>
-                            {% endif %}
-                        {% endwith %}
 {#                        {{ article.author|get_user_org  }}#}
 
                         {{ article.created }}<br>
