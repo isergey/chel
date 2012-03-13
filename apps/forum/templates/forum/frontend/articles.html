@@ -15,10 +15,7 @@
                 <div class="message row {% if not article.public %}hided{% endif %}" id="{{ article.id }}">
                     <div class="span2">
                         <b>{{ article.author }}</b><br/>
-{#                        {{ article.author|get_user_org  }}#}
-
                         {{ article.created }}<br>
-
                     </div>
                     <div class="text span9">{{ article.text|safe }}</div>
                     <div class="toolbar span1">

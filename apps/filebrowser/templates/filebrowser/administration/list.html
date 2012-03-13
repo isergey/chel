@@ -1,0 +1,86 @@
+{% extends "filebrowser/administration/index.html" %}
+{% load i18n %}
+{% block module_action %} {% endblock %}
+{% block action_content %}
+    <hr/>
+    <div class="row">
+
+        <div class="span5">
+            <form class="well" action="{% url filebrowser:administration:upload %}" method="post"
+                  enctype="multipart/form-data">{% csrf_token %}
+                <legend>{% trans 'Upload file' %}</legend>
+                <fieldset>
+
+                    {% include 'administration/base_form_fields.html' with form=upload_form %}
+                    <input type="submit" value="{% trans 'Upload' %}" class="btn btn-primary"/>
+                </fieldset>
+            </form>
+        </div>
+        <div class="span5">
+            <form class="well" action="{% url filebrowser:administration:create_directory %}" method="post">{% csrf_token %}
+                <legend>{% trans 'Create directory' %}</legend>
+                <fieldset>
+                    {% include 'administration/base_form_fields.html' with form=dir_form %}
+                    <input type="submit" value="{% trans 'Create directory' %}" class="btn btn-primary"/>
+                </fieldset>
+            </form>
+        </div>
+        <hr/>
+    </div>
+    <hr/>
+    <div style="font-size:16px; text-decoration:NONE">
+        <p>{% trans 'Current directory:' %}</p>
+        {% for breadcrumb in breadcrumbs %}
+            {% if forloop.last %}
+                <b>{{ breadcrumb.title }}</b>
+            {% else %}
+                <a style="text-decoration:none" href="?path={{ breadcrumb.url }}">{{ breadcrumb.title }}/</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <hr/>
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Create date' %}</th>
+            <th>{% trans 'Size' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for dir_item in dir_map %}
+            <tr>
+                <td>
+                    {% if dir_item.type == 'file' %}
+                        <a href="{{ dir_item.url|urlencode }}">{{ dir_item.name }}</a>
+                    {% else %}
+                        <a href="?path={{ dir_item.url|urlencode }}"><b>{{ dir_item.name }}</b></a>
+                    {% endif %}
+                </td>
+                <td>{{ dir_item.mtype }}</td>
+                <td>{{ dir_item.create_time|date:"d-M-Y H:i:s" }}</td>
+                <td>{{ dir_item.size.bytes }} ({{ dir_item.size.title }})</td>
+                <td>
+                    {% if dir_item.type == 'file' %}
+                        <a class="delete btn  btn-mini btn-danger" title="{% trans 'Delete' %}"
+                           href="{% url filebrowser:administration:delete %}?path={{ dir_item.work_url|urlencode }}">
+                            <i class="icon-trash icon-white"></i>
+                        </a>
+                    {% else %}
+                        <a class="delete btn btn-danger " title="{% trans 'Delete' %}"
+                           href="{% url filebrowser:administration:delete %}?path={{ dir_item.url|urlencode }}">
+                            <i class="icon-trash icon-white"></i>
+                        </a>
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}

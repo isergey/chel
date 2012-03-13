@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">{% trans 'Libraries' %}</li>
+    <li class="{% active 'participants:administration:list' %}">
+        <a href="{% url participants:administration:list %}">{% trans 'List' %}</a>
+    </li>
+    <li class="{% active_path 'participants:administration:create' %}">
+        <a href="{% url participants:administration:create %}">{% trans 'Create CBS' %}</a>
+    </li>
+</ul>
+<hr/>
+<ul class="nav nav-list">
+    <li class="nav-header">{% trans 'Library types' %}</li>
+    <li class="{% active 'participants:administration:library_types_list' %}">
+        <a href="{% url participants:administration:library_types_list %}">{% trans 'List' %}</a>
+    </li>
+    <li class="{% active_path 'participants:administration:library_type_create' %}">
+        <a href="{% url participants:administration:library_type_create %}">{% trans 'Create' %}</a>
+    </li>
+</ul>

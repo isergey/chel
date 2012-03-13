@@ -41,7 +41,7 @@ def pages_list(request, parent=None):
     })
 
 
-@permission_required_or_403('auth.add_page')
+@permission_required_or_403('pages.add_page')
 def create_page(request, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
@@ -64,7 +64,7 @@ def create_page(request, parent=None):
      })
 
 
-@permission_required_or_403('auth.change_page')
+@permission_required_or_403('pages.change_page')
 def edit_page(request, id):
     langs = []
     for lang in settings.LANGUAGES:
@@ -92,14 +92,14 @@ def edit_page(request, id):
     })
 
 
-@permission_required_or_403('auth.change_page')
+@permission_required_or_403('pages.delete_page')
 def delete_page(request, id):
     page = get_object_or_404(Page, id=id)
     page.delete()
     return redirect('pages:administration:pages_list')
 
 
-@permission_required_or_403('auth.add_page')
+@permission_required_or_403('pages.add_page')
 def create_page_content(request, page_id):
     page = get_object_or_404(Page, id=page_id)
     if request.method == 'POST':
@@ -123,7 +123,7 @@ def create_page_content(request, page_id):
     })
 
 
-@permission_required_or_403('auth.change_page')
+@permission_required_or_403('pages.change_page')
 def edit_page_content(request, page_id, lang):
     lang_form = LanguageForm({'lang': lang})
     if not lang_form.is_valid():
