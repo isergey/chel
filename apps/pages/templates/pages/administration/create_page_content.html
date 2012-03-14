@@ -12,10 +12,19 @@
 
 {% block action_content %}
 
-        {% for ancestor in page.get_ancestors %}
-            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →
-        {% endfor %}
-        {{ page }}
+{#        {% for ancestor in page.get_ancestors %}#}
+{#            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →#}
+{#        {% endfor %}#}
+{#        {{ page }}#}
+
+    {% for ancestor in page.get_ancestors %}
+        <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →
+    {% endfor %}
+    {% if page.parent_id %}
+        <a href="{% url pages:administration:pages_list page.id %}">{{ page }}</a>
+    {% else %}
+        <a href="{% url pages:administration:pages_list %}">{{ page }}</a>
+    {% endif %}
 
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>{% trans 'Page content creating' %}:</legend>
@@ -37,7 +46,7 @@
 {#            }#}
 {#        });#}
 {#    </script>#}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
         tinyMCE.init({
             // General options
@@ -60,7 +69,7 @@
             skin_variant : "silver",
 
             // Example content CSS (should be your site CSS)
-            content_css : "css/example.css",
+            content_css : "{{ STATIC_URL }}bootstrap/css/bootstrap.min.css",
 
             // Drop lists for link/image/media/template dialogs
             template_external_list_url : "js/template_list.js",

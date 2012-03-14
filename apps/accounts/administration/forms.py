@@ -33,3 +33,4 @@ class GroupForm(forms.ModelForm):
         self.fields['name'].validators = [validators.validate_slug]
         self.fields.keyOrder = ['name', 'permissions']
 
+

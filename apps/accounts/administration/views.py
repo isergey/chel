@@ -18,12 +18,15 @@ def index(request):
 
 
 
+
 @permission_required_or_403('accounts.view_users')
 def users_list(request):
-    users_page = get_page(request,  User.objects.all().exclude(id=-1).order_by('-date_joined'))
+    users_qs = User.objects.all().exclude(id=-1).order_by('-date_joined')
+    users_page = get_page(request,  users_qs)
 
     return render(request, 'accounts/administration/user_list.html', {
-        'users_page': users_page
+        'users_page': users_page,
+        'users': users_qs
     })
 
 
@@ -139,4 +142,11 @@ def edit_group(request, id):
     return render(request, 'accounts/administration/edit_group.html', {
         'form': form
     })
+
+
+@permission_required_or_403('auth.delete_group')
+def delete_group(request, id):
+    group = get_object_or_404(Group, id=id)
+    group.delete()
+    return redirect('accounts:administration:groups_list')
 

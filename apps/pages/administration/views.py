@@ -13,7 +13,8 @@ from forms import PageForm, ContentForm, get_content_form
 
 #@permission_required_or_403('accounts.view_users')
 def index(request):
-    return render(request, 'pages/administration/index.html')
+    return redirect('pages:administration:pages_list')
+    #return render(request, 'pages/administration/index.html')
 
 
 @permission_required_or_403('pages.add_page')

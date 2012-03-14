@@ -12,3 +12,14 @@ ul.errorlist li{
     width: 100%;
     height: 150px;
 }
+
+ul.list li{
+    clear: right;
+    margin-bottom: 10px;
+}
+ul.list li span.title{
+    font-size: 14px;
+}
+ul.list li span.buttons{
+    float: right;
+}

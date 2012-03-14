@@ -120,6 +120,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django_sorting.middleware.SortingMiddleware',
 #    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
@@ -162,6 +163,7 @@ INSTALLED_APPS = (
     'mptt',
     'guardian',
     'debug_toolbar',
+    'django_sorting',
 
     # cms apps
     'core',

@@ -10,4 +10,5 @@ urlpatterns = patterns('accounts.administration.views',
     url(r'^groups/$', 'groups_list', name="groups_list"),
     url(r'^groups/create/$', 'create_group', name="create_group"),
     url(r'^groups/edit/(?P<id>\d+)/$', 'edit_group', name="edit_group"),
+    url(r'^groups/delete/(?P<id>\d+)/$', 'delete_group', name="delete_group"),
 )
