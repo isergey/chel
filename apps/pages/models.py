@@ -22,13 +22,14 @@ class Permissions(User):
 class Page(MPTTModel):
     parent = TreeForeignKey('self',null=True, blank=True, related_name='children', verbose_name=_(u'Parent page'))
     slug = models.SlugField(verbose_name=_(u'Slug title'), max_length=255, db_index=True, unique=True)
-    public = models.BooleanField(verbose_name=_(u'Public'), default=False, db_index=True)
+    public = models.BooleanField(verbose_name=_(u'Public'), default=False, db_index=True, help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц')
     create_date = models.DateTimeField(verbose_name=_(u"Create date"), auto_now_add=True, db_index=True)
     class Meta:
         ordering = ['-create_date']
 
     def __unicode__(self):
         return  self.slug
+
 
 class Content(models.Model):
     page = models.ForeignKey(Page, verbose_name=_(u'Page owner'))
@@ -42,3 +43,7 @@ class Content(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+    def return_in_lang(self):
+        pass

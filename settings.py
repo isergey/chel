@@ -37,7 +37,7 @@ gettext = lambda s: s
 LANGUAGES = (
     ('ru', gettext('Russian')),
     ('en', gettext('English')),
-#    ('tt', _('Tatar')),
+    ('tt', gettext('Tatar')),
 )
 
 SITE_ID = 1
@@ -170,7 +170,7 @@ INSTALLED_APPS = (
     'accounts',
     'social_auth',
     'filebrowser',
-
+    'menu',
     'pages',
     'participants',
     'ask_librarian',

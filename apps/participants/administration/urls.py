@@ -15,4 +15,9 @@ urlpatterns = patterns('',
     url(r'^library_types/create/$', views.library_type_create, name="library_type_create"),
     url(r'^library_types/edit/(?P<id>\d+)/$', views.library_type_edit, name="library_type_edit"),
     url(r'^library_types/delete/(?P<id>\d+)/$', views.library_type_delete, name="library_type_delete"),
+
+    url(r'^district/list/$', views.district_list, name="district_list"),
+    url(r'^district/create/$', views.district_create, name="district_create"),
+    url(r'^district/edit/(?P<id>\d+)/$', views.district_edit, name="district_edit"),
+    url(r'^district/delete/(?P<id>\d+)/$', views.district_delete, name="district_delete"),
 )

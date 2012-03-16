@@ -3,7 +3,6 @@
 {% load pagination_tag %}
 {% load i18n %}
 {% load breadcrumbs %}
-{% load pages_tags %}
 
 {% block breadcrumb %}
     {% breadcrumb _("Pages") pages:administration:pages_list %}
@@ -13,21 +12,22 @@
 
 {% block action_content %}
 
+{#        {% for ancestor in page.get_ancestors %}#}
+{#            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →#}
+{#        {% endfor %}#}
+{#        {{ page }}#}
 
-    <h3>
-        {% for ancestor in content.page.get_ancestors %}
-            <a href="{% url pages:administration:pages_list ancestor.id %}">
-                {% if not ancestor|get_cur_lang_content %}
-                    {{ ancestor }}
-                {% else %}
-                    {{ ancestor|get_cur_lang_content }}
-                {% endif %}
-            </a> →
-        {% endfor %}
-        {{ content.title }}
-    </h3>
+    {% for ancestor in page.get_ancestors %}
+        <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →
+    {% endfor %}
+    {% if page.parent_id %}
+        <a href="{% url pages:administration:pages_list page.id %}">{{ page }}</a>
+    {% else %}
+        <a href="{% url pages:administration:pages_list %}">{{ page }}</a>
+    {% endif %}
+
     <form class="form-horizontal" method="POST">{% csrf_token %}
-        <legend>{% trans 'Page content editing' %} ({% trans 'Language' %}: <b>{{ content.lang }})</b></legend>
+        <legend>{% trans 'Page content creating' %}:</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=content_form %}
             <div class="form-actions">

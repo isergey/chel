@@ -6,16 +6,16 @@
 
 {% block breadcrumb %}
     {% breadcrumb _("Libraries") participants:administration:list %}
-    {% breadcrumb _("Library types") participants:administration:library_types_list %}
+    {% breadcrumb _("Districts") participants:administration:district_list %}
     {% breadcrumb _("Create") %}
 
 {% endblock %}
 
 {% block action_content %}
     <form class="form-horizontal" method="POST">{% csrf_token %}
-            <legend>{% trans 'Library tipe creating' %}</legend>
+            <legend>{% trans 'District creating' %}</legend>
         <fieldset>
-            {% include 'administration/base_form_fields.html' with form=library_form %}
+            {% include 'administration/base_form_fields.html' with form=district_form %}
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">{% trans "Create" %}</button>
                 <button type="reset" class="btn">{% trans "Cancel" %}</button>
@@ -23,3 +23,4 @@
         </fieldset>
     </form>
 {% endblock %}
+

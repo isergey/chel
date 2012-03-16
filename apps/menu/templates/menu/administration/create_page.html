@@ -1,0 +1,41 @@
+{% extends 'pages/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load i18n %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb _("Pages") pages:administration:pages_list %}
+    {% breadcrumb _("Create") %}
+
+{% endblock %}
+
+{% block action_content %}
+    {% if parent %}
+        {% for ancestor in parent.get_ancestors %}
+            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →
+        {% endfor %}
+        {{ parent }}
+    {% endif %}
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>{% trans 'Page creating' %}</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=page_form %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{% trans "Go to edit content" %}</button>
+                <button type="reset" class="btn">{% trans "Cancel" %}</button>
+            </div>
+        </fieldset>
+    </form>
+{#    <script type="text/javascript">#}
+{#        $('a').click(function(){#}
+{#            if (confirm("Вы не сохранили страницу. Всё равно покинуть?")) {#}
+{#                return True;#}
+{#            } else {#}
+{#                return false;#}
+{#            }#}
+{#        });#}
+{#    </script>#}
+
+{% endblock %}

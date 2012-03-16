@@ -7,11 +7,11 @@ from common.pagination import get_page
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
 
-from participants.models import Library, LibraryType
-from forms import LibraryForm, LibraryTypeForm
+from participants.models import Library, LibraryType, District
+from forms import LibraryForm, LibraryTypeForm, DistrictForm
 #@permission_required_or_403('accounts.view_users')
 def index(request):
-    return render(request, 'participants/administration/index.html')
+    return redirect('participants:administration:list')
 
 
 
@@ -141,3 +141,54 @@ def library_type_delete(request, id):
     library_type =  get_object_or_404(LibraryType, id=id)
     library_type.delete()
     return redirect('participants:administration:library_types_list')
+
+
+@permission_required_or_403('participants.add_library')
+def district_list(request):
+
+    districts_page = get_page(request, District.objects.all())
+
+    return render(request, 'participants/administration/district_list.html', {
+        'districts_page': districts_page,
+        })
+
+
+@permission_required_or_403('participants.add_library')
+def district_create(request):
+
+    if request.method == 'POST':
+        district_form = DistrictForm(request.POST)
+
+        if district_form.is_valid():
+            district_form.save()
+            return redirect('participants:administration:district_list')
+    else:
+        district_form = DistrictForm()
+
+    return render(request, 'participants/administration/create_district.html', {
+        'district_form': district_form,
+        })
+
+
+@permission_required_or_403('participants.add_library')
+def district_edit(request, id):
+    district =  get_object_or_404(District, id=id)
+    if request.method == 'POST':
+        district_form = DistrictForm(request.POST, instance=district)
+
+        if district_form.is_valid():
+            district_form.save()
+            return redirect('participants:administration:district_list')
+    else:
+        district_form = DistrictForm(instance=district)
+
+    return render(request, 'participants/administration/edit_district.html', {
+        'district_form': district_form,
+        })
+
+
+@permission_required_or_403('participants.add_library')
+def district_delete(request, id):
+    district =  get_object_or_404(District, id=id)
+    district.delete()
+    return redirect('participants:administration:district_list')

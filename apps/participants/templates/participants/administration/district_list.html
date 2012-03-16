@@ -6,21 +6,21 @@
 {% load mptt_tags %}
 {% block breadcrumb %}
     {% breadcrumb _("Libraries") participants:administration:list %}
-    {% breadcrumb _("Library types") %}
+    {% breadcrumb _("Districts") %}
 {% endblock %}
 
 {% block action_content %}
     <ul class="list">
-        {% for library_type in library_types_page.object_list %}
+        {% for district in districts_page.object_list %}
             <li>
-                <span class="title"><a href="{% url participants:administration:library_type_edit library_type.id %}">{{ library_type }}</a></span>
+                <span class="title"><a href="{% url participants:administration:district_edit district.id %}">{{ district }}</a></span>
             <span style="float: right;">
-                <a class="btn btn-danger" href="{% url participants:administration:library_type_delete library_type.id %}">
+                <a class="btn btn-danger" href="{% url participants:administration:district_delete district.id %}">
                     <i class="icon-trash icon-white"></i>
                 </a>
             </span>
             </li>
         {% endfor %}
     </ul>
-    {% admin_pagination library_types_page %}
+    {% admin_pagination districts_page %}
 {% endblock %}

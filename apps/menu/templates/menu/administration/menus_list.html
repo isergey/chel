@@ -1,0 +1,30 @@
+{% extends 'menu/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load i18n %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+
+{% block breadcrumb %}
+    {% breadcrumb _("Menu") menu:administration:index %}
+    {% breadcrumb _("List")  %}
+{% endblock %}
+
+{% block action_content %}
+
+    <ul class="list" style="list-style: none; padding: 0; margin: 0">
+    {% for menu in menus %}
+        <li>
+            {% if not menu.menu_title.title %}
+                <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.slug }}</a>
+            {% else %}
+                <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
+            {% endif %}
+            <a href="{% url menu:administration:item_list menu.id  %}">{% trans 'Items' %}</a>
+        </li>
+    {% endfor %}
+    </ul>
+    {% admin_pagination menus_page %}
+{% endblock %}
+
+

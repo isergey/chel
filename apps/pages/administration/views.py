@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from guardian.decorators import permission_required_or_403
+from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
@@ -16,7 +17,7 @@ def index(request):
     return redirect('pages:administration:pages_list')
     #return render(request, 'pages/administration/index.html')
 
-
+@login_required
 @permission_required_or_403('pages.add_page')
 def pages_list(request, parent=None):
     if parent:
@@ -41,7 +42,7 @@ def pages_list(request, parent=None):
         'pages_page': pages_page,
     })
 
-
+@login_required
 @permission_required_or_403('pages.add_page')
 def create_page(request, parent=None):
     if parent:
@@ -54,6 +55,10 @@ def create_page(request, parent=None):
             page = page_form.save(commit=False)
             if parent:
                 page.parent = parent
+
+            if not request.user.has_perm('pages.public_page'):
+                page.public = False
+
             page.save()
             return redirect('pages:administration:create_page_content', page_id=page.id)
     else:
@@ -64,7 +69,7 @@ def create_page(request, parent=None):
         'page_form': page_form,
      })
 
-
+@login_required
 @permission_required_or_403('pages.change_page')
 def edit_page(request, id):
     langs = []
@@ -80,7 +85,10 @@ def edit_page(request, id):
         page_form = PageForm(request.POST, prefix='page_form', instance=page)
 
         if page_form.is_valid():
-            page_form.save()
+            page = page_form.save(commit=False)
+            if not request.user.has_perm('pages.public_page'):
+                page.public = False
+            page.save()
             return redirect('pages:administration:pages_list')
 
     else:
@@ -92,14 +100,25 @@ def edit_page(request, id):
         'page_form': page_form,
     })
 
+#@login_required
+#@permission_required_or_403('pages.public_page')
+#def toggle_page_public(request, id):
+#    page = get_object_or_404(Page, id=id)
+#    if page.public:
+#        page.public = False
+#    else:
+#        page.public = True
+#    page.save()
+#    return redirect('pages:administration:pages_list')
 
+@login_required
 @permission_required_or_403('pages.delete_page')
 def delete_page(request, id):
     page = get_object_or_404(Page, id=id)
     page.delete()
     return redirect('pages:administration:pages_list')
 
-
+@login_required
 @permission_required_or_403('pages.add_page')
 def create_page_content(request, page_id):
     page = get_object_or_404(Page, id=page_id)
@@ -123,7 +142,7 @@ def create_page_content(request, page_id):
         'content_form': content_form,
     })
 
-
+@login_required
 @permission_required_or_403('pages.change_page')
 def edit_page_content(request, page_id, lang):
     lang_form = LanguageForm({'lang': lang})

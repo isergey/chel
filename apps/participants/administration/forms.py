@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 
-from participants.models import Library, LibraryType
+from participants.models import Library, LibraryType, District
 
 class LibraryForm(forms.ModelForm):
     class Meta:
@@ -14,6 +14,12 @@ class LibraryForm(forms.ModelForm):
 class LibraryTypeForm(forms.ModelForm):
     class Meta:
         model=LibraryType
+
+
+
+class DistrictForm(forms.ModelForm):
+    class Meta:
+        model=District
 
 #from pages.models import Page, Content
 #

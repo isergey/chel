@@ -29,23 +29,22 @@ from mptt.models import MPTTModel, TreeForeignKey
 #        verbose_name_plural = u"Города"
 #
 #
-#class District(models.Model):
-#    city = models.ForeignKey(City, verbose_name=u'Город')
-#    name = models.CharField(verbose_name=u'Район', max_length=32, db_index=True)
-#
-#    def __unicode__(self):
-#        return u'%s: %s' % (self.city.name, self.name)
-#
-#    class Meta:
-#        unique_together = ("city", "name"),
-#        verbose_name = u"Район"
-#        verbose_name_plural = u"Районы"
+class District(models.Model):
+    name = models.CharField(verbose_name=u'Район', max_length=32, db_index=True, unique=True)
+
+    def __unicode__(self):
+        return u'%s' % (self.name)
+
+    class Meta:
+        verbose_name = u"Район"
+        verbose_name_plural = u"Районы"
 
 
 class LibraryType(models.Model):
     name = models.CharField(verbose_name=u"Тип библиотеки", max_length=64, unique=True)
     def __unicode__(self):
         return self.name
+
 
 
 class Library(MPTTModel):
@@ -62,11 +61,14 @@ class Library(MPTTModel):
 
 #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
 #    city = models.ForeignKey(City, verbose_name=u'Город', db_index=True, blank=True, null=True)
-#    district = models.ForeignKey(District, verbose_name=u'Район', db_index=True, blank=True, null=True)
+    district = models.ForeignKey(District, verbose_name=u'Район', db_index=True, blank=True, null=True)
+    letter = models.CharField(verbose_name=u"Первая буква алфавита", help_text=u'Укажите первую букву, которой будет соответвовать фильтрация по алфавиту', max_length=1)
 
+    profile = models.TextField(verbose_name=u'Профиль', max_length=10000, blank=True)
     phone = models.CharField(max_length=64, verbose_name=u'Телефон', blank=True)
     plans = models.TextField(verbose_name=u'Расписание работы', max_length=512, blank=True)
     postal_address = models.TextField(verbose_name=u'Адрес', max_length=512, blank=True)
+
 
     http_service = models.URLField(max_length=255, verify_exists=False, verbose_name=u'Адрес сайта', blank=True)
     ill_service = models.EmailField(max_length=255, verbose_name=u'Адрес ILL сервиса', blank=True)
