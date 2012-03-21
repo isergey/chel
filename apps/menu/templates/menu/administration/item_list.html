@@ -4,47 +4,31 @@
 {% load i18n %}
 {% load breadcrumbs %}
 {% load mptt_tags %}
-{% load pages_tags %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Menu") pages:administration:index %}
+    {% breadcrumb _("Menu") menu:administration:index %}
     {% breadcrumb _("Items")  %}
 {% endblock %}
 
 {% block action_content %}
-
-{#    {% if parent %}#}
-{#        <h3>#}
-{#        <a href="{% url pages:administration:index %}">{% trans 'Pages' %}</a> →#}
-{#        {% for ancestor in parent.get_ancestors %}#}
-{#            <a href="{% url pages:administration:pages_list ancestor.id %}">#}
-{#                {% if not ancestor|get_cur_lang_content %}#}
-{#                    {{ ancestor }}#}
-{#                {% else %}#}
-{#                    {{ ancestor|get_cur_lang_content }}#}
-{#                {% endif %}#}
-{#            </a> →#}
-{#        {% endfor %}#}
-{#        {% if not parent|get_cur_lang_content %}#}
-{#            {{ parent }}#}
-{#        {% else %}#}
-{#            {{ parent|get_cur_lang_content }}#}
-{#        {% endif %}#}
-{#        </h3>#}
-{#    {% else %}#}
-{#        <h3>#}
-{#        {% trans 'Pages' %}#}
-{#        </h3>#}
-{#    {% endif %}#}
-{#    <style type="text/css">#}
-{#        .not_public a{#}
-{#            color: #ff4500;#}
-{#        }#}
-{#    </style>#}
+    <style type="text/css">
+        ul.root li>*{
+            margin-bottom: 10px;
+        }
+    </style>
+    <h3>{{ menu.title }}</h3>
+    <hr/>
+    <a class="btn" href="{% url menu:administration:item_create menu.id %}">{% trans 'Create menu item' %}</a>
+    <hr/>
     <ul class="root">
         {% recursetree nodes %}
             <li>
-                {{ node.id }} {{ node.title }}
+                {% if not node.show %}
+                    <i class="icon-eye-close" title="{% trans 'Not publicated' %}"></i>
+                {% endif %}
+                <a href="{% url menu:administration:item_edit menu.id node.id %}">{{ node.title }}</a>
+                <a class="btn" href="{% url menu:administration:item_create menu.id node.id %}"><i class="icon-plus" title="{% trans 'Add child item' %}"></i></a>
+                <a class="delete btn btn-danger" href="{% url menu:administration:item_delete menu.id node.id %}"><i class="icon-trash icon-white" title="{% trans 'Delete item' %}"></i></a>
                 {% if not node.is_leaf_node %}
                     <ul class="children">
                         {{ children }}
@@ -53,36 +37,11 @@
             </li>
         {% endrecursetree %}
     </ul>
-    <ul class="list" style="list-style: none; padding: 0; margin: 0">
-    {% for page in pages %}
-        <li>
-
-
-{#            {% if not page.public %}#}
-{#                <span class="title not_public">#}
-{#                <i class="icon-eye-close" title="{% trans 'Not publicated' %}"></i>#}
-{#            {% else %}#}
-{#                <span class="title">#}
-{#            {% endif %}#}
-{#                {% if not page.content.title %}#}
-{#                    <a href="{% url pages:administration:edit_page page.id %}">{{ page.slug }}</a>#}
-{#                {% else %}#}
-{#                    <a href="{% url pages:administration:edit_page page.id %}">{{ page.content.title }} ({{ page.slug }})</a>#}
-{#                {% endif %}#}
-{##}
-{#            </span>#}
-{#            {% if not page.is_leaf_node %}#}
-{#            <a class="btn" href="{% url pages:administration:pages_list page.id %}">{% trans 'Subpages' %}</a>#}
-{#            {% endif %}#}
-{#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
-{#            <span class="buttons">#}
-{#                <a class="btn" href="{% url pages:administration:create_page page.id %}"><i class="icon-plus"></i>{% trans 'Create subpage' %}</a>#}
-{#                <a class="btn btn-danger" href="{% url pages:administration:delete_page page.id %}"><i class="icon-trash icon-white"></i></a>#}
-{#            </span>#}
-        </li>
-    {% endfor %}
-    </ul>
-{#    {% admin_pagination pages_page %}#}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить? Удаляться так же дочерние элементы!')) return false;
+        });
+    </script>
 {% endblock %}
 
 

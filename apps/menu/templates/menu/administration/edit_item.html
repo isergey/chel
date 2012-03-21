@@ -1,0 +1,57 @@
+{% extends 'menu/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load i18n %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb _("Menu") menu:administration:menu_list %}
+    {% breadcrumb _("Item editing") %}
+
+{% endblock %}
+
+{% block action_content %}
+    <h3>
+        <a href="{% url menu:administration:item_list menu.id %}">{{ menu.title }}</a> →
+        {% for ancestor in item.get_t_ancestors %}
+
+                {% if not ancestor %}
+                    {{ ancestor }}
+                {% else %}
+                    {{ ancestor }}
+                {% endif %}
+            →
+        {% endfor %}
+        {% if not item %}
+            {{ item }}
+        {% else %}
+            {{ item }}
+        {% endif %}
+
+    </h3>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>{% trans 'Menu item editing' %}</legend>
+        <fieldset>
+            {% for menu_item_title_form in menu_item_title_forms %}
+                <p>{% trans 'Menu title on language' %}: <b>{{  menu_item_title_form.lang }}</b>↴</p>
+                {% include 'administration/base_form_fields.html' with form=menu_item_title_form.form %}
+            {% endfor %}
+            {% include 'administration/base_form_fields.html' with form=item_form %}
+{#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{% trans "Edit" %}</button>
+                <button type="reset" class="btn">{% trans "Cancel" %}</button>
+            </div>
+        </fieldset>
+    </form>
+{#    <script type="text/javascript">#}
+{#        $('a').click(function(){#}
+{#            if (confirm("Вы не сохранили страницу. Всё равно покинуть?")) {#}
+{#                return True;#}
+{#            } else {#}
+{#                return false;#}
+{#            }#}
+{#        });#}
+{#    </script>#}
+
+{% endblock %}

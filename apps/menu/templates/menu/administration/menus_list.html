@@ -14,12 +14,13 @@
 
     <ul class="list" style="list-style: none; padding: 0; margin: 0">
     {% for menu in menus %}
-        <li>
+        <li><span class="title">
             {% if not menu.menu_title.title %}
                 <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.slug }}</a>
             {% else %}
                 <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
             {% endif %}
+        </span>
             <a href="{% url menu:administration:item_list menu.id  %}">{% trans 'Items' %}</a>
         </li>
     {% endfor %}

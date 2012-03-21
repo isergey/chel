@@ -230,7 +230,8 @@ def item_list(request, menu_id):
         nd[item_title.item_id].title = item_title
 
     return render(request, 'menu/administration/item_list.html', {
-        'nodes': nodes
+        'nodes': nodes,
+        'menu': menu
     })
 
 
@@ -238,7 +239,11 @@ def item_list(request, menu_id):
 @transaction.commit_on_success
 def create_item(request, menu_id, parent=None):
     menu = get_object_or_404(Menu, id=menu_id)
-    root_item = menu.root_item
+
+    if not parent:
+        parent = menu.root_item
+    else:
+        parent = get_object_or_404(MenuItem, id=parent)
 
     if request.method == 'POST':
         item_form = MenuItemForm(request.POST,prefix='item_form')
@@ -252,8 +257,10 @@ def create_item(request, menu_id, parent=None):
 
         if item_form.is_valid():
 
-            item = item_form.save()
-
+            item = item_form.save(commit=False)
+            item.parent = parent
+            item.show = parent.show
+            item.save()
 
             valid = False
             for menu_item_title_form in menu_item_title_forms:
@@ -267,6 +274,7 @@ def create_item(request, menu_id, parent=None):
                     menu_item_title.lang = menu_item_title_form['lang']
                     menu_item_title.item = item
                     menu_item_title.save()
+                return redirect('menu:administration:item_list', menu_id=menu.id)
     else:
         item_form = MenuItemForm(prefix="item_form")
         menu_item_title_forms = []
@@ -278,13 +286,15 @@ def create_item(request, menu_id, parent=None):
 
     return render(request, 'menu/administration/create_item.html', {
         'item_form': item_form,
-        'menu_item_title_forms': menu_item_title_forms
+        'menu_item_title_forms': menu_item_title_forms,
+        'menu':menu
     })
 
 
 
 @transaction.commit_on_success
 def item_edit(request, id, menu_id=None):
+    menu = get_object_or_404(Menu, id=menu_id)
     item = get_object_or_404(MenuItem, id=id)
     item_titles = MenuItemTitle.objects.filter(item=item)
 
@@ -298,7 +308,7 @@ def item_edit(request, id, menu_id=None):
 
 
     if request.method == 'POST':
-        item_form = MenuItemForm(prefix='item_form', instance=item)
+        item_form = MenuItemForm(request.POST, prefix='item_form', instance=item)
         menu_item_title_forms = []
         for lang in settings.LANGUAGES:
             if lang in item_titles_langs:
@@ -315,11 +325,22 @@ def item_edit(request, id, menu_id=None):
                 break
 
 
+        if not item_form.is_valid():
+            valid = False
+
         if valid:
+            item = item_form.save()
             for menu_item_title_form in menu_item_title_forms:
                 menu_item_title = menu_item_title_form['form'].save(commit=False)
                 menu_item_title.save()
-#                menu_item_title.lang = menu_item_title_form['lang']
+
+            if not item.is_leaf_node():
+                ditems = item.get_descendants()
+                for ditem in ditems:
+                    ditem.show = item.show
+                    ditem.save()
+
+            return redirect('menu:administration:item_list', menu_id=menu_id)
 
 
     else:
@@ -332,13 +353,17 @@ def item_edit(request, id, menu_id=None):
                 'lang':lang
             })
 
-    return render(request, 'menu/administration/create_item.html', {
+    return render(request, 'menu/administration/edit_item.html', {
+        'item': item,
         'item_form': item_form,
-        'menu_item_title_forms': menu_item_title_forms
+        'menu_item_title_forms': menu_item_title_forms,
+        'menu': menu
     })
 
-
-
+def item_delete(request, menu_id, id):
+    item = get_object_or_404(MenuItem, id=id)
+    item.delete()
+    return redirect('menu:administration:item_list', menu_id=menu_id)
 #@login_required
 #@permission_required_or_403('menus.public_menu')
 #def toggle_menu_public(request, id):
