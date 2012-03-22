@@ -173,6 +173,7 @@ def edit_page_content(request, page_id, lang):
     else:
         content_form = ContentForm(prefix='content_form', instance=content)
     return render(request, 'pages/administration/edit_page_content.html', {
+        'page': page,
         'content': content,
         'content_form': content_form,
     })

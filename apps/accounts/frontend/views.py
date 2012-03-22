@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
-from django.contrib.auth import forms as auth_forms
-
-from django.http import HttpResponseRedirect
-from django.contrib.auth import logout as auth_logout
+from django.core.mail import send_mail
+from django.db import transaction
+from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
+from django.utils.hashcompat import md5_constructor
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
 from django.contrib.messages.api import get_messages
 
 from social_auth import __version__ as version
-
+from forms import RegistrationForm
+from accounts.models import RegConfirm
 
 def index(request):
     return render(request, 'accounts/frontend/index.html')
@@ -51,3 +52,56 @@ def error(request):
         'version': version,
         'messages': messages
     })
+
+@transaction.commit_on_success
+def registration(request):
+
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = User(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                is_active=False,
+            )
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
+            confirm = RegConfirm(hash=hash, user_id=user.id)
+            confirm.save()
+            current_site = Site.objects.get(id=1)
+            message = u'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
+                      (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
+
+
+            send_mail(u'Активация аккаунта ' + current_site.domain, message, 'system@'+current_site.domain,
+                [form.cleaned_data['email']])
+
+            return render(request, 'accounts/frontend/registration_done.html')
+    else:
+        form = RegistrationForm()
+    return render(request, 'accounts/frontend/registration.html', {
+        'form':form
+    })
+@transaction.commit_on_success
+def confirm_registration(request, hash):
+    try:
+        confirm = RegConfirm.objects.get(hash=hash)
+    except RegConfirm.DoesNotExist:
+        return HttpResponse(u'Код подтверждения не верен')
+    try:
+        user = User.objects.get(id=confirm.user_id)
+    except User.DoesNotExist:
+        return HttpResponse(u'Код подтверждения не верен')
+
+    if user.is_active == False:
+        #тут надо создать пользователя в лдапе
+        user.is_active = True
+        group = Group.objects.get(name='users')
+        user.groups.add(group)
+        user.save()
+        confirm.delete()
+    return render(request,  'registration/registration_confirm.html')
+

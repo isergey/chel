@@ -1,9 +1,8 @@
 {% extends 'backend_base.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
-{% block module_title %}{% trans 'Filebrowser' %}{% endblock %}
+{% block module_title %}Файлы{% endblock %}
 {% block module_menu %}
     {% include 'filebrowser/administration/module_menu.html' %}
 {% endblock %}
@@ -12,7 +11,7 @@
 {#    <a class="{% active 'accounts:administration:index' %}" href="{% url accounts:administration:index %}">wedwed</a>#}
     <ul class="breadcrumb">
     {% block breadcrumb %}
-        {% breadcrumb _("Filebrowser")  %}
+        {% breadcrumb "Файлы"  %}
     {% endblock %}
     </ul>
     {% block action_content %}

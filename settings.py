@@ -172,6 +172,7 @@ INSTALLED_APPS = (
     'filebrowser',
     'menu',
     'pages',
+    'news',
     'participants',
     'ask_librarian',
     'ssearch',

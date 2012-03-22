@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load localeurl_tags %}
+{% load menu_tags %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -12,6 +13,11 @@
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
+<style>
+    .active{
+        font-weight: bold;
+    }
+</style>
 <div class="container">
     <div class="row">
         <h1>Супер портал</h1>
@@ -20,11 +26,21 @@
         {% else %}
             <a href="{% url accounts:frontend:login %}">Войти</a> <a href="#1">Зарегистрироваться</a>
         {% endif %}
-        <div style="float: right;"><a href="/ru{{ request.path|rmlocale }}">Русский</a> <a href="/en{{ request.path|rmlocale }}">English</a></div>
+        <div style="float: right;"><a href="/ru{{ request.path|rmlocale }}">Русский</a> <a
+                href="/en{{ request.path|rmlocale }}">English</a></div>
         <hr/>
     </div>
     <div class="row">
-        {% block content %}wefwefwef{% endblock %}
+        <div class="span2">
+            <div class="row">
+            {% drow_menu 'main' %}
+            </div>
+        </div>
+        <div class="span10">
+            <div class="row">
+            {% block content %}wefwefwef{% endblock %}
+            </div>
+        </div>
     </div>
 </div>
 </body>

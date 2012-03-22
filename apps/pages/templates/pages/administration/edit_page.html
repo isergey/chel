@@ -1,12 +1,11 @@
 {% extends 'pages/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 {% load pages_tags %}
 {% block breadcrumb %}
-    {% breadcrumb _("Pages") pages:administration:pages_list %}
-    {% breadcrumb _("Editing") %}
+    {% breadcrumb "Страницы" pages:administration:pages_list %}
+    {% breadcrumb "Редактирование" %}
 {% endblock %}
 
 {% block action_content %}
@@ -28,17 +27,17 @@
 
     </h3>
     <form class="form-horizontal" method="POST">{% csrf_token %}
-        <legend>{% trans 'Page editing' %}</legend>
+        <legend>Редактирование страницы</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=page_form %}
             {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                <button type="reset" class="btn">{% trans "Cancel" %}</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="reset" class="btn">Отменить</button>
             </div>
         </fieldset>
     </form>
-    <h3>{% trans 'Edit content of this page on next languages' %}:</h3>
+    <h3>Редактирование контента страницы на следующих языках:</h3>
     <ul>
         {% for lang in langs %}
             <li><a href="{% url pages:administration:edit_page_content page.id lang.code %}">{{ lang.title }}</a></li>

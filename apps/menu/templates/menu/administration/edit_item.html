@@ -1,12 +1,11 @@
 {% extends 'menu/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Menu") menu:administration:menu_list %}
-    {% breadcrumb _("Item editing") %}
+    {% breadcrumb "Меню" menu:administration:menu_list %}
+    {% breadcrumb "Редактирование пункта меню" %}
 
 {% endblock %}
 
@@ -30,17 +29,17 @@
 
     </h3>
     <form class="form-horizontal" method="POST">{% csrf_token %}
-        <legend>{% trans 'Menu item editing' %}</legend>
+        <legend>Редактирование пункта меню</legend>
         <fieldset>
             {% for menu_item_title_form in menu_item_title_forms %}
-                <p>{% trans 'Menu title on language' %}: <b>{{  menu_item_title_form.lang }}</b>↴</p>
+                <p>Заглавие меню на языке: <b>{{  menu_item_title_form.lang }}</b>↴</p>
                 {% include 'administration/base_form_fields.html' with form=menu_item_title_form.form %}
             {% endfor %}
             {% include 'administration/base_form_fields.html' with form=item_form %}
 {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">{% trans "Edit" %}</button>
-                <button type="reset" class="btn">{% trans "Cancel" %}</button>
+                <button type="submit" class="btn btn-primary">Редактировать</button>
+                <button type="reset" class="btn">Отмена</button>
             </div>
         </fieldset>
     </form>

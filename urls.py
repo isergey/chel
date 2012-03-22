@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     (r'^filebrowser/', include('filebrowser.urls', namespace='filebrowser')),
     (r'^menu/', include('menu.urls', namespace='menu')),
     (r'^pages/', include('pages.urls', namespace='pages')),
+    (r'^news/', include('news.urls', namespace='news')),
     (r'^participants/', include('participants.urls', namespace='participants')),
     (r'^forum/', include('forum.urls', namespace='forum')),
 

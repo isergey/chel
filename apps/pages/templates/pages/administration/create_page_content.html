@@ -1,12 +1,11 @@
 {% extends 'pages/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Pages") pages:administration:pages_list %}
-    {% breadcrumb _("Edit content") %}
+    {% breadcrumb "Страницы" pages:administration:pages_list %}
+    {% breadcrumb "Создание контента страницы" %}
 
 {% endblock %}
 
@@ -27,13 +26,13 @@
     {% endif %}
 
     <form class="form-horizontal" method="POST">{% csrf_token %}
-        <legend>{% trans 'Page content creating' %}:</legend>
+        <legend>Создание контента страницы:</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=content_form %}
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary" name="save" value="save_edit">{% trans "Save and continue editing" %}</button>
-                <button type="submit" class="btn btn-primary" name="save" value="save">{% trans "Save" %}</button>
-                <button type="reset" class="btn">{% trans "Cancel" %}</button>
+                <button type="submit" class="btn btn-primary" name="save" value="save_edit">Сохранить и продолжить редактирование</button>
+                <button type="submit" class="btn btn-primary" name="save" value="save">Сохранить</button>
+                <button type="reset" class="btn">Отменить</button>
             </div>
         </fieldset>
     </form>

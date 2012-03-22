@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 import os
 class UploadFileForm(forms.Form):
-    file  = forms.FileField(label=_(u"Select file for upload"))
+    file  = forms.FileField(label=u"Выберите файл для загрузки")
     path = forms.CharField(widget=forms.HiddenInput, required=False)
 
     def clean_path(self):
@@ -17,7 +17,7 @@ class UploadFileForm(forms.Form):
         return path
 
 class CreateDirectory(forms.Form):
-    name = forms.CharField(label=_(u'Directory name'), max_length=255)
+    name = forms.CharField(label=u'Название директории', max_length=255)
     path = forms.CharField(widget=forms.HiddenInput, required=False)
 
     def clean_path(self):

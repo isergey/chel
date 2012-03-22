@@ -1,0 +1,54 @@
+{% extends 'news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Новости" news:administration:index %}
+    {% breadcrumb "Список" %}
+{% endblock %}
+
+{% block action_content %}
+    Тип новостей:
+    {% if request.GET.type ==  'public' or not request.GET.type %}
+        <b><a href="{% add_get type='public' %}">Общие</a></b>
+    {% else %}
+        <a href="{% add_get type='public' %}">Общие</a>
+    {% endif %}
+
+    {% if request.GET.type ==  'prof' %}
+        <b><a href="{% add_get type='prof' %}">Профессиональные</a></b>
+    {% else %}
+        <a href="{% add_get type='prof' %}">Профессиональные</a>
+    {% endif %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Новость</th>
+            <th class="span2">Дата создания</th>
+            <th class="span2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for news in news_list %}
+
+            <tr>
+                <td><a href="{% url news:administration:edit_news news.id %}">{{ news.news_content.title }}</a></td>
+                <td>{{ news.create_date }}</td>
+                <td><a class="delete btn btn-danger"  href="{% url news:administration:delete_news news.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% admin_pagination news_page %}
+    <script type="text/javascript">
+        $("a.delete").click(function () {
+            if (!confirm('Вы уверены, что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}
+
+

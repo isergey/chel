@@ -4,9 +4,12 @@ from django.conf.urls.defaults import *
 from  views import done, error, home
 urlpatterns = patterns('accounts.frontend.views',
     url(r'^$', 'index', name="index"),
+    url(r'^registration/$', 'registration', name="registration"),
+    url(r'^confirm/(?P<hash>[a-h0-9]{1,32})/$', 'confirm_registration', name="confirm_registration"),
 )
 
 urlpatterns += patterns('',
+
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'accounts/frontend/login.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
     url(r'^password/change/$', 'django.contrib.auth.views.password_change', name='password_change'),

@@ -217,17 +217,19 @@ def delete_menu(request, id):
 
 
 
-
+@login_required
+@permission_required_or_403('menu.create_menu')
 def item_list(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
     nodes = list(menu.root_item.get_descendants())
-    item_titles = MenuItemTitle.objects.filter(item__in=nodes, lang='ru')
+    lang=get_language()[:2]
+    item_titles = MenuItemTitle.objects.filter(item__in=nodes, lang=lang)
     nd = {}
     for node in nodes:
         nd[node.id] = node
 
     for item_title in item_titles:
-        nd[item_title.item_id].title = item_title
+        nd[item_title.item_id].t_title = item_title
 
     return render(request, 'menu/administration/item_list.html', {
         'nodes': nodes,
@@ -235,7 +237,8 @@ def item_list(request, menu_id):
     })
 
 
-
+@login_required
+@permission_required_or_403('menu.create_menu')
 @transaction.commit_on_success
 def create_item(request, menu_id, parent=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -280,7 +283,7 @@ def create_item(request, menu_id, parent=None):
         menu_item_title_forms = []
         for lang in settings.LANGUAGES:
             menu_item_title_forms.append({
-                'form':MenuItemTitleForm(prefix='menu_item_title_' + lang[0]),
+                'form':MenuItemTitleForm(initial={'url': u'/'+lang[0]+u'/#'},prefix='menu_item_title_' + lang[0]),
                 'lang':lang[0]
             })
 
@@ -291,7 +294,8 @@ def create_item(request, menu_id, parent=None):
     })
 
 
-
+@login_required
+@permission_required_or_403('menu.change_menu')
 @transaction.commit_on_success
 def item_edit(request, id, menu_id=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -360,6 +364,8 @@ def item_edit(request, id, menu_id=None):
         'menu': menu
     })
 
+@login_required
+@permission_required_or_403('menu.delete_menu')
 def item_delete(request, menu_id, id):
     item = get_object_or_404(MenuItem, id=id)
     item.delete()

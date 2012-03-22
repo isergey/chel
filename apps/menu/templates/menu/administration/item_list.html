@@ -1,13 +1,12 @@
 {% extends 'menu/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 {% load mptt_tags %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Menu") menu:administration:index %}
-    {% breadcrumb _("Items")  %}
+    {% breadcrumb "Меню" menu:administration:index %}
+    {% breadcrumb "Пункты меню"  %}
 {% endblock %}
 
 {% block action_content %}
@@ -18,17 +17,17 @@
     </style>
     <h3>{{ menu.title }}</h3>
     <hr/>
-    <a class="btn" href="{% url menu:administration:item_create menu.id %}">{% trans 'Create menu item' %}</a>
+    <a class="btn" href="{% url menu:administration:item_create menu.id %}">Создать пункт меню</a>
     <hr/>
     <ul class="root">
         {% recursetree nodes %}
             <li>
                 {% if not node.show %}
-                    <i class="icon-eye-close" title="{% trans 'Not publicated' %}"></i>
+                    <i class="icon-eye-close" title="Скрыто"></i>
                 {% endif %}
-                <a href="{% url menu:administration:item_edit menu.id node.id %}">{{ node.title }}</a>
-                <a class="btn" href="{% url menu:administration:item_create menu.id node.id %}"><i class="icon-plus" title="{% trans 'Add child item' %}"></i></a>
-                <a class="delete btn btn-danger" href="{% url menu:administration:item_delete menu.id node.id %}"><i class="icon-trash icon-white" title="{% trans 'Delete item' %}"></i></a>
+                <a href="{% url menu:administration:item_edit menu.id node.id %}">{{ node.t_title }}</a>
+                <a class="btn" href="{% url menu:administration:item_create menu.id node.id %}"><i class="icon-plus" title="Добавить подпункт"></i></a>
+                <a class="delete btn btn-danger" href="{% url menu:administration:item_delete menu.id node.id %}"><i class="icon-trash icon-white" title="Удалить пункт"></i></a>
                 {% if not node.is_leaf_node %}
                     <ul class="children">
                         {{ children }}

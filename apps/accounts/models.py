@@ -14,3 +14,7 @@ class Permissions(User):
             ("view_groups", "Can view groups list"),
         )
 
+class RegConfirm(models.Model):
+    hash = models.CharField(max_length=32, db_index=True, null=False, blank=False)
+    user = models.ForeignKey(User)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)

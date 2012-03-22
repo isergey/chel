@@ -19,9 +19,10 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 class MenuItem(MPTTModel):
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', verbose_name=_(u'Parent item'))
-    url = models.CharField(verbose_name=u'URL', max_length=1024, default='#')
-    show = models.BooleanField(verbose_name=u"Show item", default=True, db_index=True)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', verbose_name=_(u'Родительский элемент'))
+#    url = models.CharField(verbose_name=u'URL', max_length=1024, default='#')
+    show = models.BooleanField(verbose_name=u"Отображать пункт", default=True, db_index=True)
+    open_in_new = models.BooleanField(verbose_name=u'Открывать в новой вкладке браузера', default=False)
 
     def get_t_ancestors(self):
         """
@@ -42,8 +43,9 @@ class MenuItem(MPTTModel):
 
 class MenuItemTitle(models.Model):
     item = models.ForeignKey(MenuItem)
-    lang = models.CharField(verbose_name=u"Language", db_index=True, max_length=2, choices=settings.LANGUAGES)
-    title = models.CharField(verbose_name=_(u'Title'), max_length=512)
+    lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
+    title = models.CharField(verbose_name=u'Заглавие', max_length=512)
+    url = models.CharField(verbose_name=u'URL для этого языка', max_length=1024, default='#')
 
     def __unicode__(self):
         return self.title
@@ -51,7 +53,7 @@ class MenuItemTitle(models.Model):
         unique_together = (('item', 'lang'),)
 
 class Menu(models.Model):
-    slug = models.SlugField(verbose_name=_(u'Slug'), max_length=64, unique=True)
+    slug = models.SlugField(verbose_name=u'Slug', max_length=64, unique=True)
     root_item = models.ForeignKey(MenuItem)
     def title(self):
         lang=get_language()[:2]
@@ -60,8 +62,8 @@ class Menu(models.Model):
 
 class MenuTitle(models.Model):
     menu = models.ForeignKey(Menu)
-    lang = models.CharField(verbose_name=u"Language", db_index=True, max_length=2, choices=settings.LANGUAGES)
-    title = models.CharField(verbose_name=_(u'Title'), max_length=512)
+    lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
+    title = models.CharField(verbose_name=u'Заглавие', max_length=512)
     class Meta:
         unique_together = (('menu', 'lang'),)
 

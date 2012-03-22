@@ -1,12 +1,11 @@
 {% extends 'participants/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Libraries") participants:administration:list %}
-    {% breadcrumb _("Create") %}
+    {% breadcrumb "Библиотеки" participants:administration:list %}
+    {% breadcrumb "Создание" %}
 
 {% endblock %}
 
@@ -28,15 +27,15 @@
     </style>
     <form class="form-horizontal" method="POST">{% csrf_token %}
         {% if parent %}
-            <legend>{% trans 'Branch-library creating' %}</legend>
+            <legend>Создание филиала</legend>
         {% else %}
-            <legend>{% trans 'CBS creating' %}</legend>
+            <legend>Создание ЦБС</legend>
         {% endif %}
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=library_form %}
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">{% trans "Create" %}</button>
-                <button type="reset" class="btn">{% trans "Cancel" %}</button>
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="reset" class="btn">Отменить</button>
             </div>
         </fieldset>
     </form>

@@ -1,21 +1,20 @@
 {% extends 'pages/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 {% load mptt_tags %}
 {% load pages_tags %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Pages") pages:administration:index %}
-    {% breadcrumb _("List")  %}
+    {% breadcrumb "Страницы" pages:administration:index %}
+    {% breadcrumb "Список"  %}
 {% endblock %}
 
 {% block action_content %}
 
     {% if parent %}
         <h3>
-        <a href="{% url pages:administration:index %}">{% trans 'Pages' %}</a> →
+        <a href="{% url pages:administration:index %}">Страницы</a> →
         {% for ancestor in parent.get_ancestors %}
             <a href="{% url pages:administration:pages_list ancestor.id %}">
                 {% if not ancestor|get_cur_lang_content %}
@@ -33,7 +32,7 @@
         </h3>
     {% else %}
         <h3>
-        {% trans 'Pages' %}
+        Страницы
         </h3>
     {% endif %}
     <style type="text/css">
@@ -46,7 +45,7 @@
         <li>
             {% if not page.public %}
                 <span class="title not_public">
-                <i class="icon-eye-close" title="{% trans 'Not publicated' %}"></i>
+                <i class="icon-eye-close" title="Не опубликовано"></i>
             {% else %}
                 <span class="title">
             {% endif %}
@@ -58,11 +57,11 @@
 
             </span>
             {% if not page.is_leaf_node %}
-            <a class="btn" href="{% url pages:administration:pages_list page.id %}">{% trans 'Subpages' %}</a>
+            <a class="btn" href="{% url pages:administration:pages_list page.id %}">Подстраницы</a>
             {% endif %}
 {#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
             <span class="buttons">
-                <a class="btn" href="{% url pages:administration:create_page page.id %}"><i class="icon-plus"></i>{% trans 'Create subpage' %}</a>
+                <a class="btn" href="{% url pages:administration:create_page page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
                 <a class="btn btn-danger" href="{% url pages:administration:delete_page page.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
         </li>

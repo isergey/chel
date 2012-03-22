@@ -1,12 +1,11 @@
 {% extends 'participants/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 {% load mptt_tags %}
 {% block breadcrumb %}
-    {% breadcrumb _("Libraries") participants:administration:index %}
-    {% breadcrumb _("List") %}
+    {% breadcrumb "Библиотеки" participants:administration:index %}
+    {% breadcrumb "Список" %}
 {% endblock %}
 
 {% block action_content %}
@@ -28,13 +27,11 @@
                 <a style="font-size: 16px" href="{% url participants:administration:edit library.id %}" title="{{ library }}">{{ library }}</a>
 
             {% if not library.is_leaf_node %}
-                <a class="btn" href="{% url participants:administration:list library.id %}">{% trans 'Branches' %}</a>
+                <a class="btn" href="{% url participants:administration:list library.id %}">Филиалы</a>
             {% endif %}
             <span class="buttons">
-                <a class="btn btn-mini" href="{% url participants:administration:create library.id %}"><i
-                        class="icon-plus"></i>{% trans 'Add brunch' %}</a>
-            <a class="btn btn-danger" href="{% url participants:administration:delete library.id %}"><i
-                    class="icon-trash icon-white"></i></a>
+                <a class="btn btn-mini" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>
+            <a class="btn btn-danger" href="{% url participants:administration:delete library.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
             </li>
         {% endfor %}

@@ -1,12 +1,11 @@
 {% extends 'participants/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 {% load mptt_tags %}
 {% block breadcrumb %}
-    {% breadcrumb _("Libraries") participants:administration:list %}
-    {% breadcrumb _("Districts") %}
+    {% breadcrumb "Библиотеки" participants:administration:list %}
+    {% breadcrumb "Районы" %}
 {% endblock %}
 
 {% block action_content %}

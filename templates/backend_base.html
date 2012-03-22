@@ -19,15 +19,15 @@
             <div class="nav-collapse">
                 <ul class="nav pull-right">
                     <li id="fat-menu" class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Modules' %} <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Модули<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url menu:administration:index %}">{% trans 'Menu' %}</a></li>
-                            <li><a href="{% url pages:administration:index %}">{% trans 'Pages' %}</a></li>
-                            <li><a href="#">{% trans 'News' %}</a></li>
-                            <li><a href="{% url participants:administration:index %}">{% trans 'Libraries' %}</a></li>
+                            <li><a href="{% url menu:administration:index %}">Меню</a></li>
+                            <li><a href="{% url pages:administration:index %}">Страницы</a></li>
+                            <li><a href="{% url news:administration:index %}">Новости</a></li>
+                            <li><a href="{% url participants:administration:index %}">Библиотеки</a></li>
                             <li class="divider"></li>
-                            <li><a href="{% url filebrowser:administration:index %}">{% trans 'Filebrowser' %}</a></li>
-                            <li><a href="{% url accounts:administration:index %}">{% trans 'Accounts' %}</a></li>
+                            <li><a href="{% url filebrowser:administration:index %}">Файлы</a></li>
+                            <li><a href="{% url accounts:administration:index %}">Аккаунты</a></li>
 {#                            <li><a href="#">{% trans 'Settings' %}</a></li>#}
                         </ul>
                     </li>

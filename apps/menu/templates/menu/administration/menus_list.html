@@ -1,13 +1,12 @@
 {% extends 'menu/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
-{% load i18n %}
 {% load breadcrumbs %}
 {% load mptt_tags %}
 
 {% block breadcrumb %}
-    {% breadcrumb _("Menu") menu:administration:index %}
-    {% breadcrumb _("List")  %}
+    {% breadcrumb "Меню" menu:administration:index %}
+    {% breadcrumb "Список"  %}
 {% endblock %}
 
 {% block action_content %}
@@ -21,7 +20,7 @@
                 <a href="{% url menu:administration:edit_menu menu.id %}">{{ menu.menu_title.title }} ({{ menu.slug }})</a>
             {% endif %}
         </span>
-            <a href="{% url menu:administration:item_list menu.id  %}">{% trans 'Items' %}</a>
+            <a href="{% url menu:administration:item_list menu.id  %}">Пункты</a>
         </li>
     {% endfor %}
     </ul>
