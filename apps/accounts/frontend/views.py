@@ -2,7 +2,7 @@
 from django.core.mail import send_mail
 from django.db import transaction
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils.hashcompat import md5_constructor
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -103,5 +103,5 @@ def confirm_registration(request, hash):
         user.groups.add(group)
         user.save()
         confirm.delete()
-    return render(request,  'registration/registration_confirm.html')
+    return render(request,  'accounts/frontend/registration_confirm.html')
 

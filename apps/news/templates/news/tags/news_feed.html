@@ -1,0 +1,8 @@
+<ul>
+    {% for news in news_list %}
+        <li>
+            {{ news.news_content.title }}<br/>
+            {{ news.create_date }}
+        </li>
+    {% endfor %}
+</ul>

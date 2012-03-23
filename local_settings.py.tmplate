@@ -1,8 +1,42 @@
 # -*- coding: utf-8 -*-
-from settings import PROJECT_PATH
+from settings import PROJECT_PATH, MEDIA_URL, STATIC_URL
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+
+ADMINS = (
+# ('Your Name', 'your_email@example.com'),
+)
+
+
+MANAGERS = ADMINS
+
+
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# On Unix systems, a value of None will cause Django to use the same
+# timezone as the operating system.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+
+TIME_ZONE = 'Europe/Moscow'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+
+LANGUAGE_CODE = 'ru-RU'
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('ru', gettext('Russian')),
+    ('en', gettext('English')),
+    )
+
+
+
 
 DATABASES = {
     'default': {
@@ -28,6 +62,17 @@ CACHES = {
         }
 }
 
+#CACHES = {
+#    'default' : dict(
+#        BACKEND = 'johnny.backends.memcached.PyLibMCCache',
+#        LOCATION = ['127.0.0.1:11211'],
+#        JOHNNY_CACHE = True,
+#    )
+#}
+JOHNNY_MIDDLEWARE_KEY_PREFIX='libcms'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = PROJECT_PATH + 'var/media/'
@@ -37,17 +82,19 @@ MEDIA_ROOT = PROJECT_PATH + 'var/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = PROJECT_PATH + 'var/static_init/'
+STATIC_ROOT = PROJECT_PATH + 'var/static/'
 
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    PROJECT_PATH + 'var/static/',
+    PROJECT_PATH + 'var/static_init/',
     MEDIA_ROOT,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     )
+
+
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '*q((-d&v^49bq!i+q9%!sf@^0&9!c&4u5i9q$g=j2&x6^)cco4'
@@ -102,17 +149,21 @@ LOGGING = {
     }
 }
 
-EMAIL_HOST = 'stu.ruslan.ru'
+EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 
 # debug_toolbar settings
 INTERNAL_IPS = ('127.0.0.1',)
 
 
+FILEBROWSER = {
+    'upload_dir': MEDIA_ROOT + 'files/',
+    'upload_dir_url': STATIC_URL + 'files/'
+}
 
 
-TWITTER_CONSUMER_KEY              = ''
-TWITTER_CONSUMER_SECRET           = ''
+TWITTER_CONSUMER_KEY              = '110125937-qqZsC46x3xqKQCrUu3aafxkg3mGzIOUQh3L7hL6c'
+TWITTER_CONSUMER_SECRET           = 'f75YumDXmrliaYgaUoxUKopIgkqAX1wnLq4xkNYrpw'
 FACEBOOK_APP_ID                   = '314686941912414'
 FACEBOOK_API_SECRET               = '403d6d3626a27fafb9ec5e2d66df8756'
 FACEBOOK_EXTENDED_PERMISSIONS     = ['email']
@@ -148,3 +199,5 @@ FOURSQUARE_CONSUMER_SECRET        = ''
 YANDEX_OAUTH2_CLIENT_KEY          = ''
 YANDEX_OAUTH2_CLIENT_SECRET       = ''
 YANDEX_OAUTH2_API_URL             = 'https://api-yaru.yandex.ru/me/' # http://api.moikrug.ru/v1/my/ for Moi Krug
+
+

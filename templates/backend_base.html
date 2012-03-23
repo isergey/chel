@@ -24,6 +24,7 @@
                             <li><a href="{% url menu:administration:index %}">Меню</a></li>
                             <li><a href="{% url pages:administration:index %}">Страницы</a></li>
                             <li><a href="{% url news:administration:index %}">Новости</a></li>
+                            <li><a href="{% url events:administration:index %}">События</a></li>
                             <li><a href="{% url participants:administration:index %}">Библиотеки</a></li>
                             <li class="divider"></li>
                             <li><a href="{% url filebrowser:administration:index %}">Файлы</a></li>
@@ -52,7 +53,7 @@
         </div>
         <div class="span10">
             {% block module_content %}
-                Module content
+                Выберите модуль для администрирования
             {% endblock %}
         </div>
     </div>

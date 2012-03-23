@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from functools import wraps
-
+from django.contrib.auth.models import Group
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, \
                         HttpResponseServerError
@@ -154,6 +154,7 @@ def auth_process(request, backend):
 def complete_process(request, backend, *args, **kwargs):
     """Authentication complete process"""
     # pop redirect value before the session is trashed on login()
+
     redirect_value = request.session.get(REDIRECT_FIELD_NAME, '')
     user = auth_complete(request, backend, *args, **kwargs)
 
@@ -163,6 +164,9 @@ def complete_process(request, backend, *args, **kwargs):
     if user:
         if getattr(user, 'is_active', True):
             login(request, user)
+            group = Group.objects.get(name='users')
+            user.groups.add(group)
+            user.save()
             # user.social_user is the used UserSocialAuth instance defined
             # in authenticate process
             social_user = user.social_user
@@ -196,4 +200,5 @@ def auth_complete(request, backend, user=None, *args, **kwargs):
     """Complete auth process. Return authenticated user or None."""
     if user and not user.is_authenticated():
         user = None
+
     return backend.auth_complete(user=user, request=request, *args, **kwargs)

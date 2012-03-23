@@ -9,36 +9,6 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 sys.path.insert(0, os.path.join(PROJECT_PATH, "vendors"))
 
-ADMINS = (
-# ('Your Name', 'your_email@example.com'),
-)
-
-
-MANAGERS = ADMINS
-
-
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-
-TIME_ZONE = 'Europe/Moscow'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-
-LANGUAGE_CODE = 'ru-RU'
-
-gettext = lambda s: s
-LANGUAGES = (
-    ('ru', gettext('Russian')),
-    ('en', gettext('English')),
-    ('tt', gettext('Tatar')),
-)
 
 SITE_ID = 1
 
@@ -135,18 +105,19 @@ AUTHENTICATION_BACKENDS = (
     'social_auth.backends.google.GoogleOAuth2Backend',
     'social_auth.backends.contrib.yandex.YandexOAuth2Backend',
 #    'social_auth.backends.google.GoogleOAuthBackend',
-#    'social_auth.backends.google.GoogleBackend',
+    'social_auth.backends.google.GoogleBackend',
 #    'social_auth.backends.yahoo.YahooBackend',
 #    'social_auth.backends.contrib.linkedin.LinkedinBackend',
 #    'social_auth.backends.contrib.flickr.FlickrBackend',
     'social_auth.backends.OpenIDBackend',
     'social_auth.backends.contrib.livejournal.LiveJournalBackend',
 #    'social_auth.backends.contrib.vkontakte.VKontakteBackend',
-#    'social_auth.backends.contrib.yandex.YandexBackend',
+    'social_auth.backends.contrib.yandex.YandexBackend',
 
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -173,6 +144,7 @@ INSTALLED_APPS = (
     'menu',
     'pages',
     'news',
+    'events',
     'participants',
     'ask_librarian',
     'ssearch',
@@ -204,7 +176,6 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
 )
 
-#LOCALE_INDEPENDENT_PATHS = (
-#    r'^/$',
-#)
+
+
 from local_settings import *

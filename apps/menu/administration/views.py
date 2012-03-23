@@ -317,10 +317,16 @@ def item_edit(request, id, menu_id=None):
         for lang in settings.LANGUAGES:
             if lang in item_titles_langs:
                 lang = lang[0]
-                menu_item_title_forms.append({
-                    'form':MenuItemTitleForm(request.POST,prefix='menu_item_title_' + lang, instance=item_titles_langs[lang]),
-                    'lang':lang
-                })
+                if lang in item_titles_langs:
+                    menu_item_title_forms.append({
+                        'form':MenuItemTitleForm(request.POST,prefix='menu_item_title_' + lang, instance=item_titles_langs[lang]),
+                        'lang':lang
+                    })
+                else:
+                    menu_item_title_forms.append({
+                        'form':MenuItemTitleForm(request.POST,prefix='menu_item_title_' + lang),
+                        'lang':lang
+                    })
 
         valid = False
         for menu_item_title_form in menu_item_title_forms:
@@ -336,6 +342,8 @@ def item_edit(request, id, menu_id=None):
             item = item_form.save()
             for menu_item_title_form in menu_item_title_forms:
                 menu_item_title = menu_item_title_form['form'].save(commit=False)
+                menu_item_title.item = item
+                menu_item_title.lang = menu_item_title_form['lang']
                 menu_item_title.save()
 
             if not item.is_leaf_node():
@@ -352,10 +360,16 @@ def item_edit(request, id, menu_id=None):
         menu_item_title_forms = []
         for lang in settings.LANGUAGES:
             lang = lang[0]
-            menu_item_title_forms.append({
-                'form':MenuItemTitleForm(prefix='menu_item_title_' + lang, instance=item_titles_langs[lang]),
-                'lang':lang
-            })
+            if lang in item_titles_langs:
+                menu_item_title_forms.append({
+                    'form':MenuItemTitleForm(prefix='menu_item_title_' + lang, instance=item_titles_langs[lang]),
+                    'lang':lang
+                })
+            else:
+                menu_item_title_forms.append({
+                    'form':MenuItemTitleForm(prefix='menu_item_title_' + lang),
+                    'lang':lang
+                })
 
     return render(request, 'menu/administration/edit_item.html', {
         'item': item,

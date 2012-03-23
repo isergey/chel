@@ -1,6 +1,9 @@
 {% load i18n %}
 {% load localeurl_tags %}
 {% load menu_tags %}
+{% load news_tags %}
+{% load events_tags %}
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -17,10 +20,34 @@
     .active{
         font-weight: bold;
     }
+    .menu>ul, .news>ul{
+            padding: 0;
+            margin: 0;
+    }
+    .menu ul, .news ul {
+        list-style: none;
+    }
+    .menu .title{
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .events #id_month{
+        width: 80px;
+    }
+    .events #id_year{
+        width: 70px;
+    }
+    .events form{
+        margin: 0;
+    }
+    .events table{
+        width: 100%;
+    }
 </style>
 <div class="container">
     <div class="row">
-        <h1>Супер портал</h1>
+        <h1>Портал</h1>
         {% if request.user.is_authenticated %}
             Вы вошкли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
         {% else %}
@@ -32,8 +59,22 @@
     </div>
     <div class="row">
         <div class="span2">
-            <div class="row">
+
+            <div class="row menu">
             {% drow_menu 'main' %}
+                <hr/>
+            </div>
+            <div class="row news">
+                <h3>Новости</h3>
+                {% news_feed %}
+                <br/>
+                <a href="{% url news:frontend:index %}">Остальные новости</a>
+                <hr/>
+            </div>
+
+            <div class="row events">
+                <h3>События</h3>
+                {% events_calendar %}
             </div>
         </div>
         <div class="span10">
