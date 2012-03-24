@@ -77,14 +77,13 @@
                 <a href="{% url news:frontend:index %}">Остальные новости</a>
                 <hr/>
             </div>
-
             <div class="row events">
                 <h3>События</h3>
                 {% events_calendar %}
             </div>
         </div>
         <div class="span10">
-            <div class="row">
+            <div class="row" style="padding-left: 10px;">
             {% block content %}wefwefwef{% endblock %}
             </div>
         </div>
