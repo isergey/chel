@@ -4,6 +4,7 @@
     {% trans 'Login' %}
 {% endblock %}
 {% block content %}
+    <h3 style="margin: 0 0 10px 160px;">Вход на портал</h3>
     <form method="POST" class="form-horizontal">{% csrf_token %}
         <fieldset>
             {% include 'frontend/base_form_fields.html' %}

@@ -8,7 +8,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>{% block title %}Библиотеки г. Челябинска{% endblock %}</title>
+    <title>{% block title %}Библиотеки Челябинска{% endblock %}</title>
     <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/frontend/styles.css">
 
@@ -44,49 +44,61 @@
     .events table{
         width: 100%;
     }
+    .news ul li {
+        margin: 0 0 10px 0;
+    }
 </style>
 <div class="container">
     <div class="row">
         <div class="span8">
-            <div class="row">
-                <img src="{{ STATIC_URL }}images/theme/logo.png" alt="">
-            </div>
+                <img src="{{ STATIC_URL }}images/theme/logo.png" alt="" style="float: left;">
+                <h2>Библиотеки Челябинска</h2>
         </div>
         <div class="span4">
-            <div class="row">
             {% if request.user.is_authenticated %}
                 Вы вошкли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
             {% else %}
-                <a href="{% url accounts:frontend:login %}">Войти</a> <a href="#1">Зарегистрироваться</a>
+                <a href="{% url accounts:frontend:login %}">Войти</a> <a href="{% url accounts:frontend:registration %}">Зарегистрироваться</a>
             {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="span12" align="right">
+            <span style=" font-size: 18px;">
+                <a href="{% url participants:frontend:index %}">Библиотеки</a>
+                <a href="{% url forum:frontend:forums %}">Форум</a>
+            </span>
+            <hr/>
+        </div>
+
+        <div class="span3">
+
+            <div class="well">
+                <div class="menu">
+                {% drow_menu 'main' %}
+                    <hr/>
+                </div>
+                <div class="news">
+                    <h3>Новости</h3>
+                    {% news_feed %}
+                    <a href="{% url news:frontend:index %}">Остальные новости >></a>
+                    <hr/>
+                </div>
+                <div class="events">
+                    <h3>События</h3>
+                    {% events_calendar %}
+                </div>
             </div>
+        </div>
+        <div class="span9">
+            {% block content %}wefwefwef{% endblock %}
         </div>
     </div>
-    <div class="row">
-        <hr/>
-        <div class="span2">
-
-            <div class="row menu">
-            {% drow_menu 'main' %}
-                <hr/>
-            </div>
-            <div class="row news">
-                <h3>Новости</h3>
-                {% news_feed %}
-                <br/>
-                <a href="{% url news:frontend:index %}">Остальные новости</a>
-                <hr/>
-            </div>
-            <div class="row events">
-                <h3>События</h3>
-                {% events_calendar %}
-            </div>
-        </div>
-        <div class="span10">
-            <div class="row" style="padding-left: 10px;">
-            {% block content %}wefwefwef{% endblock %}
-            </div>
-        </div>
+    <div style="background-color: whiteSmoke; min-height: 50px;">
+        Библиотеки Челябинска
     </div>
 </div>
 </body>
