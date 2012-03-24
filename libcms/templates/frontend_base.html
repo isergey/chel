@@ -8,7 +8,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>{% block title %}LibCMS{% endblock %}</title>
+    <title>{% block title %}Библиотеки г. Челябинска{% endblock %}</title>
     <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/frontend/styles.css">
 
@@ -47,15 +47,23 @@
 </style>
 <div class="container">
     <div class="row">
-        <h1>Портал</h1>
-        {% if request.user.is_authenticated %}
-            Вы вошкли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
-        {% else %}
-            <a href="{% url accounts:frontend:login %}">Войти</a> <a href="#1">Зарегистрироваться</a>
-        {% endif %}
-        <hr/>
+        <div class="span8">
+            <div class="row">
+                <img src="{{ STATIC_URL }}images/theme/logo.png" alt="">
+            </div>
+        </div>
+        <div class="span4">
+            <div class="row">
+            {% if request.user.is_authenticated %}
+                Вы вошкли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
+            {% else %}
+                <a href="{% url accounts:frontend:login %}">Войти</a> <a href="#1">Зарегистрироваться</a>
+            {% endif %}
+            </div>
+        </div>
     </div>
     <div class="row">
+        <hr/>
         <div class="span2">
 
             <div class="row menu">
