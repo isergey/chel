@@ -30,7 +30,7 @@ def events_calendar(context,y=0, m=0):
     if m: month = m
     weeks = calendar.monthcalendar(year, month)
 
-    events = Event.objects.filter(start_date__year=year, start_date__month=month)
+    events = Event.objects.filter(start_date__year=year, start_date__month=month, active=True)
     calendar_of_events = []
     for week in weeks:
         week_events = []
