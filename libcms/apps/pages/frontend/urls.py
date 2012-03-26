@@ -3,5 +3,5 @@ from django.conf.urls.defaults import *
 import views
 urlpatterns = patterns(views,
     url(r'^$', views.index , name="index"),
-    url(r'^(?P<slug>[_\-0-9a-z]+)/$', views.show , name="show"),
+    url(r'^(?P<slug>[_\-0-9A-Za-z]+)/$', views.show , name="show"),
 )
