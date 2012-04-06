@@ -57,7 +57,7 @@ class Library(MPTTModel):
     )
     name = models.CharField(max_length=255, verbose_name=u'Название')
     code = models.CharField(verbose_name=u'Сигла', max_length=32, db_index=True, unique=True)
-    type = models.ForeignKey(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
+    types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
 
 #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
 #    city = models.ForeignKey(City, verbose_name=u'Город', db_index=True, blank=True, null=True)
@@ -116,5 +116,6 @@ class UserLibrary(models.Model):
     class Meta:
         verbose_name = u"Пользователь библиотеки"
         verbose_name_plural = u"Пользователи библиотеки"
+
 
 
