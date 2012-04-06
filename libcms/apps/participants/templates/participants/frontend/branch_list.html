@@ -4,14 +4,14 @@
 {% block content %}
     <script type="text/javascript">
         function modalWin(attr) {
-            if (window.showModalDialog) {
-                window.showModalDialog(attr,"name",
-                        "dialogWidth:600px;dialogHeight:500px");
-            } else {
+//            if (window.showModalDialog) {
+//                window.showModalDialog(attr,"name",
+//                        "dialogWidth:600px;dialogHeight:500px");
+//            } else {
                 window.open(attr,'name',
                         'height=500px,width=600px%,toolbar=no,directories=no,status=no,\
                 menubar=no,scrollbars=no,resizable=no ,modal=yes');
-            }
+//            }
         }
     </script>
     <ul class="breadcrumb">
