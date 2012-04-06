@@ -1,12 +1,12 @@
-{% extends 'frontend_base.html' %}
-{% block title %}Библиотеки{% endblock %}
+{#{% extends 'frontend_base.html' %}#}
+{#{% block title %}Библиотеки{% endblock %}#}
 {% block content %}
-    <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
-        <li><a href="{%  url participants:frontend:branches library.parent.id %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>
-        <li class="active">{{ library.name }}</li>
-    </ul>
+{#    <ul class="breadcrumb">#}
+{#        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
+{#        <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>#}
+{#        <li><a href="{%  url participants:frontend:branches library.parent.id %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>#}
+{#        <li class="active">{{ library.name }}</li>#}
+{#    </ul>#}
 
 
 
@@ -16,6 +16,6 @@
         Адрес: {{ library.postal_address }}
 
     </div>
-    <div id="map_canvas" style="width: 100%; height: 550px"></div>
+    <div id="map_canvas" style="width: 100%; height: 350px"></div>
     {% include 'participants/frontend/map_js.html' %}
 {% endblock %}
