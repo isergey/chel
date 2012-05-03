@@ -1,15 +1,18 @@
-{% extends 'frontend_base.html' %}
+{% extends 'participants/frontend/library_content.html' %}
 {% load participants_pages_tags %}
 {% block title %}Библиотеки{% endblock %}
-{% block content %}
+{% block  breadcrumb %}
     <ul class="breadcrumb">
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
         <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
         <li class="active">{{ library.name }}</li>
     </ul>
-    <div class="span2">
-        {% drow_page_tree library.id %}
-    </div>
+{% endblock %}
+{% block content %}
+
+{#    <div class="span2">#}
+{#        {% drow_page_tree library.id %}#}
+{#    </div>#}
     <div class="span8">
         <ul class="participants">
             {% for library in  libraries %}
@@ -22,6 +25,7 @@
             {% endfor %}
         </ul>
     </div>
+
     <div id="map_canvas" style="width: 100%; height: 550px"></div>
     {% include 'participants/frontend/map_js.html' %}
 {% endblock %}
