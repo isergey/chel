@@ -76,7 +76,7 @@ def create_page(request, library_id, parent=None):
         parent = get_object_or_404(Page, id=parent)
 
     if request.method == 'POST':
-        page_form = PageForm(request.POST, prefix='page_form')
+        page_form = PageForm(parent,request.POST, prefix='page_form')
         if page_form.is_valid():
             page = page_form.save(commit=False)
             if parent:
