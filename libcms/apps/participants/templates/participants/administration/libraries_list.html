@@ -34,6 +34,7 @@
             {% if not library.is_leaf_node %}
                 <a class="btn" href="{% url participants:administration:list library.id %}">Филиалы</a>
             {% endif %}
+            <br/>
             <span class="buttons">
 
                 {% if not parent  %}<a class="btn btn-mini {% if not perms.participants.add_library %} disabled {% endif %}" href="{% url participants:administration:create library.id %}"><i class="icon-plus"></i>Добавить филиал</a>{% endif %}
@@ -45,6 +46,7 @@
                 {% endif %}
 
             </span>
+            <hr/>
             </li>
         {% endfor %}
     </ul>
