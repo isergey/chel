@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'pages',
     'news',
     'events',
+    'participants_pages',
     'participants',
     'ask_librarian',
     'ssearch',

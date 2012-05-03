@@ -1,20 +1,26 @@
-{% extends 'pages/administration/index.html' %}
+{% extends 'participants_pages/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    {% breadcrumb "Страницы" pages:administration:pages_list %}
+    {% breadcrumb_url "Страницы" participants_pages:administration:pages_list library.id %}
     {% breadcrumb "Создание" %}
 
 {% endblock %}
 
 {% block action_content %}
+{#    {% if parent %}#}
+{#        {% for ancestor in parent.get_ancestors %}#}
+{#            <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">{{ ancestor }}</a> →#}
+{#        {% endfor %}#}
+{#        {{ parent }}#}
+{#    {% endif %}#}
     <h3>
-    <a href="{% url pages:administration:index %}">Страницы</a> →
-    {% if parent %}
+        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+        {% if parent %}
             {% for ancestor in parent.get_ancestors %}
-                <a href="{% url pages:administration:pages_list ancestor.id %}">
+                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}
@@ -28,9 +34,8 @@
                 {{ parent.get_cur_lang_content }}
             {% endif %}
 
-    {% endif %}
+        {% endif %}
     </h3>
-    <hr/>
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Создание страницы</legend>
         <fieldset>

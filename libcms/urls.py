@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     (r'^pages/', include('pages.urls', namespace='pages')),
     (r'^news/', include('news.urls', namespace='news')),
     (r'^events/', include('events.urls', namespace='events')),
+    (r'^participants/(?P<library_id>\d+)/pages/', include('participants_pages.urls', namespace='participants_pages')),
     (r'^participants/', include('participants.urls', namespace='participants')),
     (r'^forum/', include('forum.urls', namespace='forum')),
 

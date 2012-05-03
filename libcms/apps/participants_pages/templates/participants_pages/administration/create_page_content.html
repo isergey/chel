@@ -1,26 +1,22 @@
-{% extends 'pages/administration/index.html' %}
+{% extends 'participants_pages/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
 {% load localeurl_tags %}
 
 {% block breadcrumb %}
-    {% breadcrumb "Страницы" pages:administration:pages_list %}
+    {% breadcrumb_url "Страницы" participants_pages:administration:pages_list library.id %}
     {% breadcrumb "Создание контента страницы" %}
 
 {% endblock %}
 
 {% block action_content %}
 
-{#        {% for ancestor in page.get_ancestors %}#}
-{#            <a href="{% url pages:administration:pages_list ancestor.id %}">{{ ancestor }}</a> →#}
-{#        {% endfor %}#}
-{#        {{ page }}#}
     <h3>
-    <a href="{% url pages:administration:index %}">Страницы</a> →
-    {% if page.parent_id %}
+        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+        {% if page.parent_id %}
             {% for ancestor in page.parent.get_ancestors %}
-                <a href="{% url pages:administration:pages_list ancestor.id %}">
+                <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
                         {{ ancestor }}
                     {% else %}
@@ -29,14 +25,14 @@
                 </a> →
             {% endfor %}
             {% if not page.parent.get_cur_lang_content %}
-                <a href="{% url pages:administration:pages_list page.parent.id %}">{{ page.parent }}</a> →
+                <a href="{% url participants_pages:administration:pages_list library.id page.parent.id %}">{{ page.parent }}</a> →
             {% else %}
-                <a href="{% url pages:administration:pages_list page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
+                <a href="{% url participants_pages:administration:pages_list library.id page.parent.id %}">{{ page.parent.get_cur_lang_content }}</a> →
             {% endif %}
-    {% endif %}
+        {% endif %}
         {{ page }}
     </h3>
-    <div class="well">URL этой страницы: {% url pages:frontend:show page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url|rmlocale }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url|rmlocale }}</a></div>
+    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url|rmlocale }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url|rmlocale }}</a></div>
 
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Создание контента страницы:</legend>
@@ -57,5 +53,5 @@
             $('#content_url_link').attr('href', '/' + $(this).val() + content_url_link);
         });
     </script>
-    {% include 'pages/administration/editor.html' %}
+    {% include 'participants_pages/administration/editor.html' %}
 {% endblock %}

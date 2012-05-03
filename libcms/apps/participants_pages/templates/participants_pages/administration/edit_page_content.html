@@ -1,12 +1,11 @@
-{% extends 'pages/administration/index.html' %}
+{% extends 'participants_pages/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
-{% load pages_tags %}
 {% load localeurl_tags %}
 
 {% block breadcrumb %}
-    {% breadcrumb "Страницы" pages:administration:pages_list %}
+    {% breadcrumb_url "Страницы" participants_pages:administration:pages_list library.id %}
     {% breadcrumb "Редактирование контента" %}
 
 {% endblock %}
@@ -19,9 +18,9 @@
     </style>
 
     <h3>
-        <a href="{% url pages:administration:index %}">Страницы</a> →
+        <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
         {% for ancestor in content.page.get_ancestors %}
-            <a href="{% url pages:administration:pages_list ancestor.id %}">
+            <a href="{% url participants_pages:administration:pages_list library.id ancestor.id %}">
                 {% if not ancestor.get_cur_lang_content %}
                     {{ ancestor }}
                 {% else %}
@@ -36,9 +35,7 @@
         {% endif %}
 
     </h3>
-{#    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>#}
-
-    <div class="well">URL этой страницы: {% url pages:frontend:show page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
+    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование контента для языка: <b>{{ content.lang }}</b></legend>
         <fieldset>
@@ -50,5 +47,5 @@
             </div>
         </fieldset>
     </form>
-    {% include 'pages/administration/editor.html' %}
+    {% include 'participants_pages/administration/editor.html' %}
 {% endblock %}
