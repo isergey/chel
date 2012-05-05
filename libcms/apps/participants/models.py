@@ -129,7 +129,7 @@ class UserLibrary(models.Model):
 
 class LibraryContentEditor(models.Model):
     library = models.ForeignKey(Library)
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.user.username
