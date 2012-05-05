@@ -146,3 +146,4 @@ class LibraryContentEditor(models.Model):
     class Meta:
         verbose_name = u"Редактор контента ЦБС"
         verbose_name_plural = u"Редакторы контента ЦБС"
+        unique_together = (('library','user'))
