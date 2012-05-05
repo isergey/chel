@@ -150,6 +150,8 @@ INSTALLED_APPS = (
     'ask_librarian',
     'ssearch',
     'forum',
+    'orders',
+    'zgate',
 )
 
 
