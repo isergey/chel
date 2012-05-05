@@ -100,7 +100,7 @@ def handle_uploaded_file(f, path):
 
 @login_required
 def index(request):
-    if not request.user.is_superuser:
+    if not request.user.has_module_perms('filebrowser'):
         return HttpResponseForbidden()
 
     base_uplod_path = settings.FILEBROWSER['upload_dir']
@@ -166,9 +166,8 @@ def index(request):
 
 
 @login_required
+@permission_required_or_403('filebrowser.delete_file')
 def delete(request):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
 
     base_uplod_path = settings.FILEBROWSER['upload_dir']
 
@@ -193,9 +192,8 @@ def delete(request):
 
 
 @login_required
+@permission_required_or_403('filebrowser.add_file')
 def upload(request):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
 
     path = '/'
     base_uplod_path = settings.FILEBROWSER['upload_dir']
@@ -221,9 +219,8 @@ def upload(request):
 
 
 @login_required
+@permission_required_or_403('filebrowser.add_file')
 def create_directory(request):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
 
     path = '/'
     base_uplod_path = settings.FILEBROWSER['upload_dir']
