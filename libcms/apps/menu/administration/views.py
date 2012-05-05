@@ -244,7 +244,7 @@ def item_list(request, menu_id):
 
 
 @login_required
-@permission_required_or_403('menu.add_menu_item')
+@permission_required_or_403('menu.add_menuitem')
 @transaction.commit_on_success
 def create_item(request, menu_id, parent=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -301,7 +301,7 @@ def create_item(request, menu_id, parent=None):
 
 
 @login_required
-@permission_required_or_403('menu.change_menu_item')
+@permission_required_or_403('menu.change_menuitem')
 @transaction.commit_on_success
 def item_edit(request, id, menu_id=None):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -385,7 +385,7 @@ def item_edit(request, id, menu_id=None):
     })
 
 @login_required
-@permission_required_or_403('menu.delete_menu_item')
+@permission_required_or_403('menu.delete_menuitem')
 def item_delete(request, menu_id, id):
     item = get_object_or_404(MenuItem, id=id)
     item.delete()
