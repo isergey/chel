@@ -13,14 +13,18 @@ from events.models import Event, EventContent
 from forms import EventForm, EventContentForm
 
 @login_required
-@permission_required_or_403('event.add_event')
+@permission_required_or_403('events.add_event')
 def index(request):
+    if not request.user.has_module_perms('events'):
+        return HttpResponseForbidden()
     return redirect('events:administration:events_list')
 
 
 @login_required
 @permission_required_or_403('events.add_event')
 def events_list(request):
+    if not request.user.has_module_perms('events'):
+        return HttpResponseForbidden()
     events_page = get_page(request, Event.objects.all().order_by('-create_date'))
     event_contents = list(EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
 

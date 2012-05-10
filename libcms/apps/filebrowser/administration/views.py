@@ -64,7 +64,7 @@ def get_file_map(path, show_path_url, show_path):
 
     item_map['create_time'] = datetime.datetime.fromtimestamp(file_stat.st_ctime)
     item_map['url'] = show_path_url.rstrip('/') + '/' + file_name
-    item_map['work_url'] = show_path + file_name
+    item_map['work_url'] = show_path + '/' + file_name
     return item_map
 
 
