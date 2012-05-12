@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'index/frontend/index.html' %}
 {% load i18n %}
 {% block content %}
     <h1>{% trans 'Ask a librarian' %}</h1>
@@ -6,4 +6,9 @@
     <p>{% trans 'Question identifier' %}: {{ question.id }}</p>
     <p>{% trans 'Question text' %}: {{ question.text }}</p>
     <p>{% trans 'Question category' %}: {{ question.category }}</p>
+
+    {% if answer %}
+        Ответ:
+        <p>{{ answer.text|safe }}</p>
+    {% endif %}
 {% endblock %}

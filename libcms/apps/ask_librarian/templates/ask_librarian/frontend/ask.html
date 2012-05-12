@@ -1,0 +1,14 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}Спроси библиотекаря{% endblock %}
+{% block content %}
+<form class="form-horizontal" method="POST">{% csrf_token %}
+    <legend>Задать вопрос</legend>
+    <fieldset>
+        {% include 'frontend/base_form_fields.html' with form=form %}
+        {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Спросить</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
