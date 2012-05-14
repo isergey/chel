@@ -1,7 +1,19 @@
-{% extends 'index/frontend/index.html' %}
+{% extends 'ask_librarian/frontend/index.html' %}
 {% block title %}Спроси библиотекаря{% endblock %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url ask_librarian:frontend:index %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
+        <li>Задать вопрос</li>
+    </ul>
+{% endblock %}
 {% block content %}
-<form class="form-horizontal" method="POST">{% csrf_token %}
+<style type="text/css">
+form#ask_form textarea{
+    width: 99%;
+}
+</style>
+<form id="ask_form" class="" method="POST">{% csrf_token %}
     <legend>Задать вопрос</legend>
     <fieldset>
         {% include 'frontend/base_form_fields.html' with form=form %}

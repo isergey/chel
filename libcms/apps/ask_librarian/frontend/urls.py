@@ -4,6 +4,8 @@ import views
 urlpatterns = patterns(views,
     url(r'^$', views.index , name="index"),
     url(r'^ask$', views.ask , name="ask"),
+    url(r'^detail/(?P<id>\d+)/', views.detail , name="detail"),
+#    url(r'^detail/', views.detail , name="detail"),
 #    url(r'^(?P<slug>[/_\-0-9A-Za-z]+)/$', views.show , name="show"),
 )
 
