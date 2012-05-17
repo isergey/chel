@@ -348,12 +348,12 @@ def index(request, catalog_id='', slug=''):
         raise Http404()
 
 
-    checker = ObjectPermissionChecker(request.user)
-    if not checker.has_perm('view_zcatalog', catalog):
-        return HttpResponse(u'Доступ запрещен')
-
-    if not catalog.can_search:
-        return HttpResponse(u"Каталог не доступен для поиска.")
+#    checker = ObjectPermissionChecker(request.user)
+#    if not checker.has_perm('view_zcatalog', catalog):
+#        return HttpResponse(u'Доступ запрещен')
+#
+#    if not catalog.can_search:
+#        return HttpResponse(u"Каталог не доступен для поиска.")
 
     zgate_url = catalog.url
     if request.method == 'POST' and 'SESSION_ID' in request.POST:
