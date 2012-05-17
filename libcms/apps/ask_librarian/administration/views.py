@@ -2,29 +2,150 @@
 from django.conf import settings
 from django.db import transaction
 from django.utils.translation import ugettext as _
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, Http404
 from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
-from django.contrib.auth import login, REDIRECT_FIELD_NAME
-from django.utils.translation import to_locale, get_language
-
-from core.forms import LanguageForm
-#from menu.models import Menu, MenuTitle, MenuItem, MenuItemTitle
-#from forms import MenuForm,MenuTitleForm,  CategoryForm, CategoryTitleForm
-from ..models import Category, CategoryTitle
-from forms import CategoryForm, CategoryTitleForm
+from django.utils.translation import get_language
+from common.pagination import get_page
+from django.db.models import Q
+from ..models import Category, CategoryTitle,  Question, QuestionManager, Recomendation
+from forms import CategoryForm, CategoryTitleForm,  AnswerQuestionForm
 
 
 
 #@permission_required_or_403('accounts.view_users')
 @login_required
 def index(request):
-    if not request.user.has_module_perms('ask_librarian'):
+    manager = QuestionManager.get_manager(request.user)
+    if not manager and not request.user.is_superuser:
         return HttpResponseForbidden()
 
     return render(request, 'ask_librarian/administration/index.html')
+
+
+
+@login_required
+def questions_list(request, my=None):
+    manager = QuestionManager.get_manager(request.user)
+    manager.user = request.user
+    if not manager and not request.user.is_superuser and not request.user.has_module_perms('ask_librarian'):
+        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+
+    status = request.GET.get('status', 0)
+
+    if my:
+        questions_page = get_page(request, Question.objects.filter(status=status, manager=manager).exclude(manager=None).order_by('-create_date'), 10)
+        questions_page.object_list = list(questions_page.object_list)
+        for question in questions_page.object_list:
+            question.manager = manager
+    else:
+        questions_page = get_page(request, Question.objects.filter(status=status).order_by('-create_date'), 10)
+        questions_page.object_list = list(questions_page.object_list)
+        md = {}
+        for question in questions_page.object_list:
+            if question.manager_id:
+                md[question.manager_id] = None
+
+        managers = QuestionManager.objects.select_related('user').filter(id__in=md.keys())
+        for manager_item in managers:
+            if manager_item.id in md:
+                md[manager_item.id] = manager_item
+
+        for question in questions_page.object_list:
+            if question.manager_id:
+                question.manager = md[question.manager_id]
+
+
+    return render(request, 'ask_librarian/administration/questions_list.html', {
+            'questions_page': questions_page,
+        })
+
+
+@login_required
+@transaction.commit_on_success
+def questions_to_process(request, id):
+    manager = QuestionManager.get_manager(request.user)
+    if not manager:
+        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+    try:
+        question = Question.objects.select_for_update().get(Q(id=id), ~Q(status=2))
+    except Question.DoesNotExist:
+        raise Http404()
+    question.take_to_process(manager)
+    return redirect('ask_librarian:administration:questions_list')
+
+@login_required
+def question_detail(request, id):
+    manager = QuestionManager.get_manager(request.user)
+    if not manager and not request.user.is_superuser:
+        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+
+    question = get_object_or_404(Question, id=id)
+    recomendations = Recomendation.objects.filter(id=id)
+    return render(request, 'ask_librarian/administration/question_detail.html', {
+        'question': question,
+        'recomendations': recomendations
+    })
+
+@login_required
+def question_answer(request, id):
+    manager = QuestionManager.get_manager(request.user)
+    if not manager:
+        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+
+    question = get_object_or_404(Question, id=id)
+    if question.is_ready():
+        return HttpResponse(u'Ответ на вопрос уже дан.')
+    if request.method == 'POST':
+        form = AnswerQuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            question = form.save(commit=False)
+            if question.is_new():
+                question.take_to_process(manager, commit=False)
+            question.close_process()
+            return redirect('ask_librarian:administration:question_detail', id=id)
+    else:
+        form = AnswerQuestionForm(instance=question)
+
+    return render(request, 'ask_librarian/administration/question_answer.html', {
+        'question': question,
+        'form': form
+    })
+
+@login_required
+def question_edit(request, id):
+    question = get_object_or_404(Question, id=id)
+    if (question.manager and not question.manager.user_id == request.user.id) and not request.user.is_superuser:
+        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+
+
+    if request.method == 'POST':
+        form = AnswerQuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            return redirect('ask_librarian:administration:question_detail', id=id)
+    else:
+        form = AnswerQuestionForm(instance=question)
+
+    return render(request, 'ask_librarian/administration/question_edit.html', {
+        'question': question,
+        'form': form
+    })
+
+
+@login_required
+@permission_required_or_403('ask_librarian.delete_question')
+@transaction.commit_on_success
+def question_delete(request, id):
+    manager = QuestionManager.get_manager(request.user)
+    if not manager:
+        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+
+    question = get_object_or_404(Question, id=id)
+    question.delete()
+    return redirect(request.META.get('HTTP_REFERER', 'ask_librarian:administration:questions_list'))
 
 
 @login_required
@@ -162,7 +283,7 @@ def category_edit(request, id):
 
 
 @login_required
-@permission_required_or_403('menu.change_menucategory')
+@permission_required_or_403('ask_librarian.change_category')
 @transaction.commit_on_success
 def category_edit(request, id,):
     category = get_object_or_404(Category, id=id)
@@ -247,7 +368,7 @@ def category_edit(request, id,):
 
 #
 @login_required
-@permission_required_or_403('menu.delete_menucategory')
+@permission_required_or_403('ask_librarian.delete_category')
 def category_delete(request, id):
     category = get_object_or_404(Category, id=id)
     category.delete()

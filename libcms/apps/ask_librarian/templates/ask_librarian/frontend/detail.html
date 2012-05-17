@@ -9,11 +9,16 @@
     </ul>
 {% endblock %}
 {% block content %}
+    <style>
+        form#recomended_form textarea{
+            width: 99%;
+        }
+    </style>
         <div>
             <h3>Вопрос:</h3>
             {{ question.question }}<br/>
             {% if question.category_id %}
-                <b>
+                <b>Категория:
                 {% cache 30 questions_category question.category_id %}
                     {% for ancestor in  question.category.get_t_ancestors %}
                         {{ ancestor }}  →
@@ -23,17 +28,7 @@
                 </b>
             {% endif %}
             <br/>
-            <style>
-                .question_status0 {
-                    color: #0376ff;
-                }
-                .question_status1 {
-                    color: green;
-                }
-                .question_status2 {
-                    color: #e0904c;
-                }
-            </style>
+
             <b>Статус</b>: <span class="question_status{{ question.status }}">{{ question.get_status_display }} </span>
         <hr/>
         </div>
@@ -62,11 +57,6 @@
                 Если у вас есть ответ на вопрос или дополнительная информация, которая поможет дополнить ответ,
                 Вы можете указать ее в рекомендации. Мы будем очень признательны.
             </div>
-            <style type="text/css">
-                form#recomended_form textarea{
-                    width: 99%;
-                }
-            </style>
             <form id="recomended_form" class="" method="POST">{% csrf_token %}
                 <legend>Рекомендовать:</legend>
                 <fieldset>

@@ -29,7 +29,7 @@ def index(request):
             for descendant in descendants:
                 categories.append(descendant)
     else:
-        categories = Category.objects.all()
+        categories = list(Category.objects.all())
 
     if categories:
         questions_page = get_page(request, Question.objects.filter(category__in=categories, status=1).order_by('-create_date'), 10)
