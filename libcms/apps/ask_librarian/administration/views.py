@@ -29,10 +29,10 @@ def index(request):
 @login_required
 def questions_list(request, my=None):
     manager = QuestionManager.get_manager(request.user)
-    manager.user = request.user
     if not manager and not request.user.is_superuser and not request.user.has_module_perms('ask_librarian'):
         return HttpResponse(u'Вы не можете обрабатывать вопросы')
-
+    if manager:
+        manager.user = request.user
     status = request.GET.get('status', 0)
 
     if my:
