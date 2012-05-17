@@ -3,6 +3,8 @@
 {% load news_tags %}
 {% load events_tags %}
 {% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block index_content %}
     <style>
         .active{
@@ -50,7 +52,7 @@
                 </div>
                 <div class="news">
                     <h3>Новости</h3>
-                    {% cache 60 'news' %}
+                    {% cache 60 'news' LANGUAGE_CODE %}
                     {% news_feed %}
                     {% endcache %}
                     <a href="{% url news:frontend:index %}">Остальные новости >></a>
@@ -58,7 +60,7 @@
                 </div>
                 <div class="events">
                     <h3>События</h3>
-                    {% cache 60 'events' %}
+                    {% cache 60 'events' LANGUAGE_CODE %}
                     {% events_calendar %}
                     {% endcache %}
                 </div>
