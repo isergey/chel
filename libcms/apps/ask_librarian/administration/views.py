@@ -374,15 +374,15 @@ def category_delete(request, id):
     category.delete()
     return redirect('ask_librarian:administration:categories_list')
 
-#
-#def category_up(request, menu_id, id):
-#    category = get_object_or_404(MenuItem, id=id)
-#    category.up()
-#    return redirect('menu:administration:category_list', menu_id=menu_id)
-#
-#def category_down(request, menu_id, id):
-#    category = get_object_or_404(MenuItem, id=id)
-#    category.down()
-#    return redirect('menu:administration:category_list', menu_id=menu_id)
+
+def category_up(request, id):
+    category = get_object_or_404(Category, id=id)
+    category.up()
+    return redirect('ask_librarian:administration:categories_list')
+
+def category_down(request, id):
+    category = get_object_or_404(Category, id=id)
+    category.down()
+    return redirect('ask_librarian:administration:categories_list')
 
 

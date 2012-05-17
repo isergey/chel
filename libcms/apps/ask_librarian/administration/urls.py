@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^categories/(?P<parent>\d+)/create/$', views.category_create, name="category_create"),
     url(r'^categories/edit/(?P<id>\d+)/$', views.category_edit, name="category_edit"),
     url(r'^categories/delete/(?P<id>\d+)/$', views.category_delete, name="category_delete"),
+    url(r'^categories/up/(?P<id>\d+)/$', views.category_up, name="category_up"),
+    url(r'^categories/down/(?P<id>\d+)/$', views.category_down, name="category_down"),
 
     url(r'^questions/$', views.questions_list, name="questions_list"),
     url(r'^processes/my/$', views.questions_list, name="questions_processes", kwargs={'my':True}),
