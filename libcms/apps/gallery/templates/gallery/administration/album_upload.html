@@ -28,7 +28,7 @@
         $(function() {
             $('#id_image').uploadify({
                 'formData'      : {'sessionid' : '{{ request.COOKIES.sessionid }}'},
-                'buttonText' : 'Укажите файлы',1
+                'buttonText' : 'Укажите файлы',
                 'fileObjName' : 'image',
                 'swf'      : '{{ STATIC_URL }}gallery/uploadify/uploadify.swf',
                 'uploader' : '{% url gallery:administration:album_upload album.id %}',
