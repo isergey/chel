@@ -17,8 +17,8 @@
     <ul class="thumbnails" >
         {% for album_image in album_images %}
             <li class="span2" style="height: 120px; margin-bottom: 40px;">
-                <a title="{{ album_image.comments }}" class="mins" href="{{ STATIC_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">
-                    <img class="tumb" src="{{ STATIC_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">
+                <a title="{{ album_image.comments }}" class="mins" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">
+                    <img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">
                 </a>
                 <div style="margin-top: 5px;">
                     <a class="btn" href="{% url gallery:administration:image_edit album_image.id %}" title="Редактировать"><i class="icon-pencil"></i></a>
