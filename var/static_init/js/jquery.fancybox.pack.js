@@ -1,10 +1,3 @@
-/**
- * Created with PyCharm.
- * User: sergey
- * Date: 15.05.12
- * Time: 15:31
- * To change this template use File | Settings | File Templates.
- */
 /*
  * FancyBox - jQuery Plugin
  * Simple and fancy lightbox alternative

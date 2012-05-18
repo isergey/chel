@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'orders',
     'zgate',
     'ask_librarian',
+    'gallery',
 )
 
 
