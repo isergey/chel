@@ -321,9 +321,8 @@ def draw_order(request, catalog_id='', slug=''):
         zgate_url=catalog.url,
         xml=catalog.xml,
         xsl=catalog.xsl,
+        entry_point='/',
         cookies=request.COOKIES,
-        username='5881-12',
-        password='AAsa5YFs',
     )
     session_id = zworker.get_zgate_session_id(zgate_form)
     form_params =  zworker.get_form_dict(zgate_form)
@@ -406,6 +405,7 @@ def index(request, catalog_id='', slug=''):
                 zgate_url=zgate_url,
                 xml=catalog.xml,
                 xsl=catalog.xsl,
+                entry_point=reverse('zgate_slug_index', args=[catalog.latin_title]),
                 cookies=request.COOKIES
             )
 

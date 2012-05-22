@@ -48,13 +48,15 @@ def request(url, data={}, cookies={}):
     return (results, cookies)
 
 
-def get_zgate_form(zgate_url, xml, xsl, lang='rus',cookies=dict(), username=None, password=None):
+def get_zgate_form(zgate_url, xml, xsl, entry_point, lang='rus',cookies=dict(), username=None, password=None):
 #    data = {
 #        'FORM_HOST_PORT': '%s,%s' % (xml, xsl),
 #        'LANG': lang,
 #        'ACTION': 'init',
 #        }
-    url =  zgate_url +'?init+%s,%s+rus' %(xml, xsl)
+#    url =  zgate_url +'?init+%s,%s+rus' %(xml, xsl)
+    url =  zgate_url + '?action=init&form_host_port=%s,%s&lang=rus&entry_point=%s' % (xml, xsl, entry_point)
+#    url =  zgate_url +'?init+%s,%s+rus' %(xml, xsl)
     if username and password:
         url += '+%s+%s' % (username, password)
     return request(url, cookies=cookies)

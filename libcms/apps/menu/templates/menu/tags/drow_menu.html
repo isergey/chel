@@ -8,9 +8,11 @@
                     <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
                 </li>
                 {% if not node.is_leaf_node %}
-                    <ul class="children">
+                    <li>
+                        <ul class="children">
                         {{ children }}
-                    </ul>
+                        </ul>
+                    </li>
                 {% endif %}
             {% endrecursetree %}
         {% endif %}
