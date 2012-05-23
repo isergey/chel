@@ -125,7 +125,7 @@ ul.dropdown a:active	{ color: #ffa500; }
 /* -- level mark -- */
 
 ul.dropdown ul {
-    width: 150px;
+    /*width: 200px;*/
     margin-top: 1px;
 }
 

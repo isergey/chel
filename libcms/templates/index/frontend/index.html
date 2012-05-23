@@ -38,11 +38,12 @@
             margin: 0 0 10px 0;
         }
     </style>
-    <div>
+    <div class="span12">
         {% drow_menu 'main' %}
+        <hr style="clear: both;"/>
     </div>
-    <hr style="clear: both;"/>
-    <div class="row">
+
+{#    <div class="row">#}
 
 
         <div class="span3">
@@ -71,5 +72,5 @@
         <div class="span9">
             {% block content %}wefwefwef{% endblock %}
         </div>
-    </div>
+{#    </div>#}
 {% endblock %}
