@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import os
+import shutil
 import Image
 import time
 from django.conf import settings
@@ -69,25 +70,29 @@ class AlbumImage(models.Model):
         if os.path.isfile(get_thumbinail_path):
             os.remove(get_thumbinail_path)
 
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_delete
 from django.dispatch import receiver
 
 
 
-@receiver(post_delete, sender=Album)
-def album_post_delete(instance, **kwargs):
+@receiver(pre_delete, sender=Album)
+def album_pre_delete(instance, **kwargs):
     album_path = instance.get_dir()
-    if os.path.isdir(album_path):
-        os.rmdir(instance.get_dir())
+    album_images = AlbumImage.objects.filter(album=instance)
 
+    for album_image in album_images:
+        album_image.delete()
+
+    if os.path.isdir(album_path):
+        shutil.rmtree(instance.get_dir())
 
 
 @receiver(post_save, sender=AlbumImage)
 def image_post_save(instance, **kwargs):
     handle_uploaded_file(instance)
 
-@receiver(post_delete, sender=AlbumImage)
-def image_post_delete(instance, **kwargs):
+@receiver(pre_delete, sender=AlbumImage)
+def image_pre_delete(instance, **kwargs):
     if os.path.isfile(unicode(instance.image)):
         os.remove(unicode(instance.image))
 

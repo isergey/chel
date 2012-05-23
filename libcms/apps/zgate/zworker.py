@@ -19,12 +19,12 @@ def request(url, data={}, cookies={}):
         mrequest = data.copy()
         r = []
         #если поисковые термы не пустые, добавляем * в конец терма
-        if 'TERM_1' in mrequest and len(mrequest['TERM_1']) != 0:
-            mrequest['TERM_1'] += '*'
-        if 'TERM_2' in mrequest and len(mrequest['TERM_2']) != 0:
-            mrequest['TERM_2'] += '*'
-        if 'TERM_3' in mrequest and len(mrequest['TERM_3']) != 0:
-            mrequest['TERM_3'] += '*'
+#        if 'TERM_1' in mrequest and len(mrequest['TERM_1']) != 0:
+#            mrequest['TERM_1'] += '*'
+#        if 'TERM_2' in mrequest and len(mrequest['TERM_2']) != 0:
+#            mrequest['TERM_2'] += '*'
+#        if 'TERM_3' in mrequest and len(mrequest['TERM_3']) != 0:
+#            mrequest['TERM_3'] += '*'
 
         if type(mrequest) == dict:
             cgi_post_params = []
