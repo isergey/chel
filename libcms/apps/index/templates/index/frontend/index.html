@@ -1,4 +1,4 @@
-{% extends 'themed_frontend_base.html' %}
+{% extends 'frontend_base.html' %}
 {% load menu_tags %}
 {% load news_tags %}
 {% load events_tags %}
@@ -38,20 +38,20 @@
             margin: 0 0 10px 0;
         }
     </style>
-    <div>
-        {% drow_menu 'main' %}
-    </div>
-    <hr style="clear: both;"/>
+{#    <div>#}
+{#        {% drow_menu 'main' %}#}
+{#    </div>#}
+
     <div class="row">
 
 
         <div class="span3">
 
             <div class="well">
-{#                <div class="menu">#}
-{#                    {% drow_menu 'main' %}#}
-{#                    <hr/>#}
-{#                </div>#}
+                <div class="menu">
+                    {% drow_menu 'main' %}
+                    <hr/>
+                </div>
                 <div class="news">
                     <h3>Новости</h3>
                     {% cache 60 'news' LANGUAGE_CODE %}
