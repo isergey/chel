@@ -51,72 +51,75 @@
         #catalogs_menu ul li {
             padding: 10px 0 0 0;
         }
-        #catalogs_menu {
+        .left_block {
             border: #ffffff solid 1px;
             border-top-color: #b5b5b5;
             border-right-color: #b5b5b5;
+            border-bottom-width: 0;
+            padding: 0 0 20px 0;
         }
-    #service_menu{
+        #service_menu{
 
-        height: 20px;
-        list-style: none;
-        margin: 0;
+            height: 20px;
+            list-style: none;
+            margin: 0;
 
-    }
-    #service_menu li {
-        padding: 3px 10px;
-        float: left;
-        background: #515151;
+        }
+        #service_menu li {
+            padding: 3px 10px;
+            float: left;
+            background: #515151;
 
-    }
-    #service_menu li a {
-        color: #ffffff;
-        text-decoration: none;
-    }
-    #search_panel{
-        height: 42px;
-        float: right;
-        padding: 6px 5px 6px 0;
-    }
-    #search_panel input {
+        }
+        #service_menu li a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        #search_panel{
+            height: 42px;
+            float: right;
+            padding: 6px 5px 6px 0;
+        }
+        #search_panel input {
 
-        border-color: #fff;
-        width: 150px;
-        height: 22px;
-        padding: 4px;
-        font-size: 14px;
-        line-height: 18px;
-        color: #555;
-        border: 0;
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        border-radius: 0;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-        margin: 0;
-    }
-    #search_panel input:focus{
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-        -webkit-transition: none;
-        -moz-transition:none;
-        -ms-transition: none;
-        -o-transition: none;
-        transition: none;
-    }
+            border-color: #fff;
+            width: 150px;
+            height: 22px;
+            padding: 4px;
+            font-size: 14px;
+            line-height: 18px;
+            color: #555;
+            border: 0;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            margin: 0;
+        }
+        #search_panel input:focus{
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            -webkit-transition: none;
+            -moz-transition:none;
+            -ms-transition: none;
+            -o-transition: none;
+            transition: none;
+        }
 
-    #search_panel .search_btn{
-        padding: 0;
-        width: 26px;
-        height: 30px;
-        background: #f6f6f6;
-        border: 0;
-    }
+        #search_panel .search_btn{
+            padding: 0;
+            width: 26px;
+            height: 30px;
+            background: #f6f6f6;
+            border: 0;
+        }
 
     </style>
     <div class="span12">
+
     <ul id="service_menu">
         <li><a href="{% url news:frontend:index %}">Новости</a></li>
         <li><a href="{% url forum:frontend:forums %}">Форум</a></li>
@@ -140,7 +143,7 @@
 
         <div class="span3">
 
-            <div id="catalogs_menu">
+            <div id="catalogs_menu" class="left_block">
                 <div style="font-size: 16px; color: #d12f23; padding-top: 20px;">КАТАЛОГИ</div>
                 <ul>
                     <li><a href="{% url zgate_slug_index 'books' %}">Книги</a></li>
@@ -149,10 +152,10 @@
                     <li><a href="{% url zgate_slug_index 'audiovisuals' %}">Аудиовизуальные документы</a></li>
                 </ul>
             </div>
-            <div>
+            <div class="left_block">
 
                 <div class="events">
-                    <h3>События</h3>
+                    <div style="font-size: 16px; color: #d12f23; padding: 20px 0 10px 0;">АФИША МЕРОПРИЯТИЙ</div>
                     {% cache 60 'events' LANGUAGE_CODE %}
                     {% events_calendar %}
                     {% endcache %}
