@@ -152,6 +152,9 @@
                     <li><a href="{% url zgate_slug_index 'audiovisuals' %}">Аудиовизуальные документы</a></li>
                 </ul>
             </div>
+            <div class="left_block" style="padding-top: 20px ">
+                <a href="{% url ask_librarian:frontend:index %}"><img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальная справочная служба" ></a>
+            </div>
             <div class="left_block">
 
                 <div class="events">
@@ -161,6 +164,7 @@
                     {% endcache %}
                 </div>
             </div>
+
         </div>
         <div class="span9">
             {% block content %}
