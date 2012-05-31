@@ -37,9 +37,101 @@
         .news ul li {
             margin: 0 0 10px 0;
         }
+
+        #catalogs_menu ul{
+            list-style: none;
+            margin: 0;
+        }
+        #catalogs_menu ul li a{
+            text-decoration: none;
+            color: #252525;
+            font-weight: bold;
+
+        }
+        #catalogs_menu ul li {
+            padding: 10px 0 0 0;
+        }
+        #catalogs_menu {
+            border: #ffffff solid 1px;
+            border-top-color: #b5b5b5;
+            border-right-color: #b5b5b5;
+        }
+    #service_menu{
+
+        height: 20px;
+        list-style: none;
+        margin: 0;
+
+    }
+    #service_menu li {
+        padding: 3px 10px;
+        float: left;
+        background: #515151;
+
+    }
+    #service_menu li a {
+        color: #ffffff;
+        text-decoration: none;
+    }
+    #search_panel{
+        height: 42px;
+        float: right;
+        padding: 6px 5px 6px 0;
+    }
+    #search_panel input {
+
+        border-color: #fff;
+        width: 210px;
+        height: 22px;
+        padding: 4px;
+        font-size: 14px;
+        line-height: 18px;
+        color: #555;
+        border: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        margin: 0;
+    }
+    #search_panel input:focus{
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        -webkit-transition: none;
+        -moz-transition:none;
+        -ms-transition: none;
+        -o-transition: none;
+        transition: none;
+    }
+
+    #search_panel .search_btn{
+        padding: 0;
+        width: 26px;
+        height: 30px;
+        background: #f6f6f6;
+        border: 0;
+    }
+
     </style>
     <div class="span12">
+    <ul id="service_menu">
+        <li><a href="{% url news:frontend:index %}">Новости</a></li>
+        <li><a href="{% url forum:frontend:forums %}">Форум</a></li>
+        <li><a href="#">Гостевая книга</a></li>
+        <li><a href="#">Галерея</a></li>
+        <li><a href="#">Календарь знаменательных дат</a></li>
+    </ul>
+    </div>
+    <div class="span12">
+        <div class="menu" style="background: #d12f23; height: 42px">
         {% drow_menu 'main' %}
+            <div id="search_panel">
+                <input placeholder="Поиск по сайту" type="text"/><button class="search_btn" ><i class="icon-search"></i></button>
+            </div>
+        </div>
         <hr style="clear: both;"/>
     </div>
 
@@ -48,19 +140,17 @@
 
         <div class="span3">
 
-            <div class="well">
-{#                <div class="menu">#}
-{#                    {% drow_menu 'main' %}#}
-{#                    <hr/>#}
-{#                </div>#}
-                <div class="news">
-                    <h3>Новости</h3>
-                    {% cache 60 'news' LANGUAGE_CODE %}
-                    {% news_feed %}
-                    {% endcache %}
-                    <a href="{% url news:frontend:index %}">Остальные новости >></a>
-                    <hr/>
-                </div>
+            <div id="catalogs_menu">
+                <div style="font-size: 16px; color: #d12f23; padding-top: 20px;">КАТАЛОГИ</div>
+                <ul>
+                    <li><a href="{% url zgate_slug_index 'books' %}">Книги</a></li>
+                    <li><a href="{% url zgate_slug_index 'periodics' %}">Периодика</a></li>
+                    <li><a href="{% url zgate_slug_index 'kraychel' %}">Краеведение</a></li>
+                    <li><a href="{% url zgate_slug_index 'audiovisuals' %}">Аудиовизуальные документы</a></li>
+                </ul>
+            </div>
+            <div>
+
                 <div class="events">
                     <h3>События</h3>
                     {% cache 60 'events' LANGUAGE_CODE %}
@@ -70,7 +160,17 @@
             </div>
         </div>
         <div class="span9">
-            {% block content %}wefwefwef{% endblock %}
+            {% block content %}
+                <div class="news">
+                    <h3 style="color: #d12f23">Новости</h3>
+                    {% cache 60 'news' LANGUAGE_CODE %}
+                        {% news_feed %}
+                    {% endcache %}
+                    <a href="{% url news:frontend:index %}">Остальные новости >></a>
+                    <hr/>
+                </div>
+            {% endblock %}
+
         </div>
 {#    </div>#}
 {% endblock %}

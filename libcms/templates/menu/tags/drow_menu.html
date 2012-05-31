@@ -1,17 +1,13 @@
 {% load mptt_tags %}
-<style type="text/css">
-
-</style>
 <link href="/static/css/frontend/menu.css" media="all" rel="stylesheet" type="text/css" />
 {#<link href="http://vremenno.net/examples/css-drop-down-menu/css/dropdown/themes/mtv.com/default.ultimate.css" media="all" rel="stylesheet" type="text/css" />#}
-<div class="menu">
-{#    <span class="title">{{ menu.title }}</span>#}
+
     <ul class="items dropdown dropdown-linear dropdown-columnar">
         {% if nodes %}
             {% recursetree nodes %}
                 {% if not node.is_leaf_node %}
                     <li class="dir">
-                        <a>{{ node }} </a>
+                        <a href="{{ node.item_title.url }}">{{ node }} </a>
                         <ul class="children">
                         {{ children }}
                         </ul>
@@ -24,20 +20,6 @@
             {% endrecursetree %}
         {% endif %}
     </ul>
-</div>
-{#<script type="text/javascript">#}
-{#    $(document).ready(function() {#}
-{#        $("ul.dropdown li").hover(function() {#}
-{##}
-{#            $(this).addClass("hover");#}
-{#            $('> .dir',this).addClass("open");#}
-{#            $('ul:first',this).css('visibility', 'visible');#}
-{#        }, function() {#}
-{#            $(this).removeClass("hover");#}
-{#            $('.open',this).removeClass("open");#}
-{#            $('ul:first',this).css('visibility', 'hidden');#}
-{#        });#}
-{##}
-{#    });#}
-{#</script>#}
+
+
 
