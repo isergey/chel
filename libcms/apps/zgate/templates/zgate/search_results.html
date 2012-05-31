@@ -20,6 +20,11 @@
             margin: 0;
         }
     </style>
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url zgate_slug_index catalog.latin_title %}">{{ catalog_title.title }}</a> <span class="divider">/</span></li>
+        <li class="active">Результаты поиска</li>
+    </ul>
     <h3>{{ catalog_title }}</h3>
 
     <div class="zresults">

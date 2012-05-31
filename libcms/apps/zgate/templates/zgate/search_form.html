@@ -36,7 +36,12 @@
         }
 
     </style>
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">{{ catalog_title.title }}</li>
+    </ul>
     <h3>{{ catalog_title }}</h3>
+
     <div class="zgate text">
         <div>
             {{ catalog.description|safe }}

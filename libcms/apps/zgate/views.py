@@ -70,6 +70,7 @@ def render_search_result(request, catalog, zresult=''):
 
     response = render(request, 'zgate/search_results.html', {
         'catalog_title': catalog.title,
+        'catalog': catalog,
         'search_results': result
     })
 
