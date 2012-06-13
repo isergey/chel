@@ -135,6 +135,7 @@ INSTALLED_APPS = (
     'guardian',
     'debug_toolbar',
     'django_sorting',
+    'captcha',
 
     # cms apps
     'core',
@@ -153,6 +154,7 @@ INSTALLED_APPS = (
     'zgate',
     'ask_librarian',
     'gallery',
+    'guestbook',
 )
 
 

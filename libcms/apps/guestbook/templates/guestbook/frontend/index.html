@@ -1,0 +1,17 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Гостевая книга</li>
+
+    </ul>
+    <ul class="feedbacks">
+    {% for feedback in feedbacks_page.object_list %}
+        <li>{{ feedback.content }}</li>
+    {% endfor %}
+    </ul>
+    {% admin_pagination feedbacks_page %}
+{% endblock %}
