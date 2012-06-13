@@ -16,120 +16,155 @@
     <script type='text/javascript' src='http://yandex.st/jquery/tmpl/1.0.0pre/jquery.tmpl.min.js'></script>
     <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.fancybox.pack.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+    <style>
+        .active{
+            font-weight: bold;
+        }
+        .menu>ul, .news>ul{
+            padding: 0;
+            margin: 0;
+        }
+        .menu ul, .news ul {
+            list-style: none;
+        }
+        .menu .title{
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .events #id_month{
+            width: 80px;
+        }
+        .events #id_year{
+            width: 70px;
+        }
+        .events form{
+            margin: 0;
+        }
+        .events table{
+            width: 100%;
+        }
+        .news ul li {
+            margin: 0 0 10px 0;
+        }
+
+        #catalogs_menu ul{
+            list-style: none;
+            margin: 0;
+        }
+        #catalogs_menu ul li a{
+            text-decoration: none;
+            color: #252525;
+            font-weight: bold;
+
+        }
+        #catalogs_menu ul li {
+            padding: 10px 0 0 0;
+        }
+        .left_block {
+            border: #ffffff solid 1px;
+            border-top-color: #b5b5b5;
+            border-right-color: #b5b5b5;
+            border-bottom-width: 0;
+            padding: 0 0 20px 0;
+        }
+        .right_block {
+            border: #ffffff solid 1px;
+            border-top-color: #b5b5b5;
+            border-left-color: #b5b5b5;
+            border-bottom-width: 0;
+            padding: 0 0 20px 10px;;
+        }
+        #service_menu{
+
+            height: 20px;
+            list-style: none;
+            margin: 0;
+
+        }
+        #service_menu li {
+            padding: 3px 10px;
+            float: left;
+            background: #515151;
+
+        }
+        #service_menu li a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        #search_panel{
+            height: 42px;
+            float: right;
+            padding: 6px 5px 6px 0;
+        }
+        #search_panel input {
+
+            border-color: #fff;
+            width: 135px;
+            height: 22px;
+            padding: 4px;
+            font-size: 14px;
+            line-height: 18px;
+            color: #555;
+            border: 0;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            margin: 0;
+        }
+        #search_panel input:focus{
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            -webkit-transition: none;
+            -moz-transition:none;
+            -ms-transition: none;
+            -o-transition: none;
+            transition: none;
+        }
+
+        #search_panel .search_btn{
+            padding: 0;
+            width: 26px;
+            height: 30px;
+            background: #f6f6f6;
+            border: 0;
+        }
+
+        .label-size-1 {
+            font-size:80%;
+            filter:alpha(80);
+            opacity:.8;
+        }
+
+        .label-size-2 {
+            font-size:90%;
+            filter:alpha(90);
+            opacity:.9;
+        }
+
+        .label-size-3 {
+            font-size:100%;
+        }
+
+        .label-size-4 {
+            font-size:120%;
+        }
+
+        .label-size-5 {
+            font-size:160%;
+        }
+
+        .label-size {
+            line-height:1.2;
+        }
+    </style>
 </head>
 <body>
-<style>
-    .active{
-        font-weight: bold;
-    }
-    .menu>ul, .news>ul{
-        padding: 0;
-        margin: 0;
-    }
-    .menu ul, .news ul {
-        list-style: none;
-    }
-    .menu .title{
-        font-size: 18px;
-        font-weight: bold;
-    }
 
-    .events #id_month{
-        width: 80px;
-    }
-    .events #id_year{
-        width: 70px;
-    }
-    .events form{
-        margin: 0;
-    }
-    .events table{
-        width: 100%;
-    }
-    .news ul li {
-        margin: 0 0 10px 0;
-    }
-
-    #catalogs_menu ul{
-        list-style: none;
-        margin: 0;
-    }
-    #catalogs_menu ul li a{
-        text-decoration: none;
-        color: #252525;
-        font-weight: bold;
-
-    }
-    #catalogs_menu ul li {
-        padding: 10px 0 0 0;
-    }
-    .left_block {
-        border: #ffffff solid 1px;
-        border-top-color: #b5b5b5;
-        border-right-color: #b5b5b5;
-        border-bottom-width: 0;
-        padding: 0 0 20px 0;
-    }
-    #service_menu{
-
-        height: 20px;
-        list-style: none;
-        margin: 0;
-
-    }
-    #service_menu li {
-        padding: 3px 10px;
-        float: left;
-        background: #515151;
-
-    }
-    #service_menu li a {
-        color: #ffffff;
-        text-decoration: none;
-    }
-    #search_panel{
-        height: 42px;
-        float: right;
-        padding: 6px 5px 6px 0;
-    }
-    #search_panel input {
-
-        border-color: #fff;
-        width: 140px;
-        height: 22px;
-        padding: 4px;
-        font-size: 14px;
-        line-height: 18px;
-        color: #555;
-        border: 0;
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        border-radius: 0;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-        margin: 0;
-    }
-    #search_panel input:focus{
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-        -webkit-transition: none;
-        -moz-transition:none;
-        -ms-transition: none;
-        -o-transition: none;
-        transition: none;
-    }
-
-    #search_panel .search_btn{
-        padding: 0;
-        width: 26px;
-        height: 30px;
-        background: #f6f6f6;
-        border: 0;
-    }
-
-</style>
 <div class="container">
     <div class="row">
 
@@ -139,11 +174,11 @@
                 <h4 style="color: #d12f23; font-weight: normal">ИНФОРМАЦИОННЫЙ ПОРТАЛ <br/> БИБЛИОТЕК ЧЕЛЯБИНСКОЙ ОБЛАСТИ</h4>
         </div>
         <div class="span4">
-            {% if request.user.is_authenticated %}
-                Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
-            {% else %}
-                <a href="{% url accounts:frontend:login %}">Войти</a> <a href="{% url accounts:frontend:registration %}">Зарегистрироваться</a>
-            {% endif %}
+{#            {% if request.user.is_authenticated %}#}
+{#                Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>#}
+{#            {% else %}#}
+{#                <a href="{% url accounts:frontend:login %}">Войти</a> <a href="{% url accounts:frontend:registration %}">Зарегистрироваться</a>#}
+{#            {% endif %}#}
 
         </div>
 {#        <div class="span12" align="right">#}
