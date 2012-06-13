@@ -17,7 +17,7 @@ def feedbacks_list(request):
     if not request.user.has_module_perms('guestbook'):
         return HttpResponseForbidden()
 
-    feedbacks_page = get_page(request, Feedback.objects.filter(publicated=True).order_by('-add_date'))
+    feedbacks_page = get_page(request, Feedback.objects.all().order_by('-add_date'))
 
     return render(request, 'guestbook/administration/feedbacks_list.html', {
         'feedbacks_page': feedbacks_page,

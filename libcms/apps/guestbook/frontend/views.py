@@ -17,7 +17,7 @@ def send_feedback(request):
         form = FeedbackForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('guestbook:frontend:index')
+            return render(request, 'guestbook/frontend/thanks.html')
     else:
         form = FeedbackForm()
 
