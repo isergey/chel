@@ -1,0 +1,33 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ album.title }}{% endblock %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.ad-gallery.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.fancybox.css">
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url gallery:frontend:index %}">Галерея</a> <span class="divider">/</span></li>
+        <li class="active">{{ album.title }}</li>
+
+    </ul>
+    <ul class="thumbnails" >
+        {% for album_image in album_images %}
+            <li class="span2" style="height: 120px; margin-bottom: 40px;">
+                <a title="{{ album_image.comments }}" class="mins" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">
+                    <img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <script type="text/javascript">
+        $('.tumb').tooltip();
+    </script>
+    <script type="text/javascript">
+        $("a.mins").fancybox({
+            'overlayColor'        : '#000',
+            'overlayOpacity'    : 0.9
+        });
+    </script>
+{% endblock %}

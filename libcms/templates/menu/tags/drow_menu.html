@@ -263,24 +263,24 @@ ul.dropdown>li>ul>li>ul {
     /*background-color: #0099FF;*/
 }
 </style>
-    <ul class="items dropdown dropdown-linear dropdown-columnar">
-        {% if nodes %}
-            {% recursetree nodes %}
-                {% if not node.is_leaf_node %}
-                    <li class="dir">
-                        <a href="{{ node.item_title.url }}">{{ node }} </a>
-                        <ul class="children">
-                        {{ children }}
-                        </ul>
-                    </li>
-                {% else %}
-                    <li {% if path == node.item_title.url  %} class="active" {% endif %}>
-                        <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
-                    </li>
-                {% endif %}
-            {% endrecursetree %}
-        {% endif %}
-    </ul>
+<ul class="items dropdown dropdown-linear dropdown-columnar">
+    {% if nodes %}
+        {% recursetree nodes %}
+            {% if not node.is_leaf_node %}
+                <li class="dir">
+                    <a href="{{ node.item_title.url }}">{{ node }} </a>
+                    <ul class="children">
+                    {{ children }}
+                    </ul>
+                </li>
+            {% else %}
+                <li {% if path == node.item_title.url  %} class="active" {% endif %}>
+                    <a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a>
+                </li>
+            {% endif %}
+        {% endrecursetree %}
+    {% endif %}
+</ul>
 
 
 
