@@ -4,7 +4,6 @@
             <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
             <div class="teaser">{{ news.news_content.teaser }}</div>
             <div class="create_date">{{ news.create_date }}</div>
-            {% if not forloop.last %}<hr/>{% endif %}
         </li>
     {% endfor %}
 </ul>

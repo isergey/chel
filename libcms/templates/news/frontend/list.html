@@ -2,6 +2,7 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
+
     <ul class="breadcrumb">
 
         <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
@@ -14,4 +15,5 @@
     {% endfor %}
     </ul>
     {% admin_pagination news_page %}
+
 {% endblock %}

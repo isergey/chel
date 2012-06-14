@@ -16,8 +16,6 @@ def index(request):
 
 
 def album_view(request, id):
-    if not request.user.has_module_perms('gallery'):
-        return HttpResponseForbidden()
 
     album = get_object_or_404(Album, id=id)
     album_images = AlbumImage.objects.filter(album=album)
