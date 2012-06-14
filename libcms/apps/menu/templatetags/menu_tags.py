@@ -21,8 +21,7 @@ def drow_menu(context, menu_slug):
 
     path = context['request'].META['PATH_INFO']
 
-#    nodes = cache.get('menu_nodes' + menu_slug + lang, None)
-    nodes = None
+    nodes = cache.get('menu_nodes' + menu_slug + lang, None)
     if not nodes:
         nodes = list(menu.root_item.get_descendants())
         cache.set('menu_nodes' + menu_slug + lang, nodes)

@@ -1,0 +1,12 @@
+<ul>
+    {% for news in news_list %}
+        <li>
+            <div class="create_date"><b>{{ news.create_date|date:"j E Y" }}</b></div>
+            <div class="title"><a  style="color: #d12f23;" href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
+            <div class="teaser">{{ news.news_content.teaser }}</div>
+
+            {% if not forloop.last %}<hr/>{% endif %}
+        </li>
+    {% endfor %}
+</ul>
+

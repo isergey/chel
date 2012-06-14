@@ -29,7 +29,7 @@
                 <div class="widget-content cloud-label-widget-content">
                     <style>
                         .label-size a{
-                            color: green;
+                            color: #047164;
                         }
                     </style>
 <span class="label-size label-size-2">
@@ -187,8 +187,9 @@
                     <a href="{% url accounts:frontend:login %}">Войти</a> <a href="{% url accounts:frontend:registration %}">Зарегистрироваться</a>
                 {% endif %}
             </div>
-            <div class="right_block" style="padding: 5px 0 5px 10px;">
-                <a href="{% url ask_librarian:frontend:index %}"><img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальная справочная служба" ></a>
+            <div class="right_block" style="padding: 5px 0 5px 10px; height: 120px;">
+                <a href="{% url ask_librarian:frontend:index %}"><img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальнаясправочная служба" ></a>
+                <div style="position: relative; top: -20px;">Виртуальная <br/> справочная служба</div>
             </div>
             <div class="right_block">
                 <div class="events">
