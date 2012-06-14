@@ -166,7 +166,8 @@
 
 
         </div>
-        <div class="span7">
+        <div class="span8">
+
             {% block content %}
                 <div class="news">
                     <h3 style="color: #d12f23; font-weight: normal;">Новости</h3>
@@ -174,11 +175,12 @@
                         {% news_feed %}
                     {% endcache %}
                     <a href="{% url news:frontend:index %}">Остальные новости >></a>
-                </div>
-            {% endblock %}
 
+            {% endblock %}
         </div>
-        <div class="span3">
+        </div>
+        <div class="span2">
+        <div class="row">
             <div class="right_block">
                 <h3 style="color: #d12f23; font-weight: normal;">Личный кабинет</h3>
                 {% if request.user.is_authenticated %}
@@ -189,7 +191,7 @@
             </div>
             <div class="right_block" style="padding: 5px 0 5px 10px; height: 120px;">
                 <a href="{% url ask_librarian:frontend:index %}"><img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальнаясправочная служба" ></a>
-                <div style="position: relative; top: -20px;">Виртуальная <br/> справочная служба</div>
+                <div style="position: relative;">Виртуальная <br/> справочная служба</div>
             </div>
             <div class="right_block">
                 <div class="events">
@@ -200,6 +202,7 @@
                     {% endcache %}
                 </div>
             </div>
+        </div>
 
 
         </div>
