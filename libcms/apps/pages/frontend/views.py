@@ -29,19 +29,19 @@ def show(request, slug):
         content = None
     children = None
 
-    if not page.is_leaf_node():
-        children = list(Page.objects.filter(parent=page, public=True))
-        contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
-        cd = {}
-        for child in children:
-            cd[child.id] = child
-
-        for contend_page in contents:
-            if contend_page.page_id in cd:
-                cd[contend_page.page_id].content = contend_page
+#    if not page.is_leaf_node():
+#        children = list(Page.objects.filter(parent=page, public=True))
+#        contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
+#        cd = {}
+#        for child in children:
+#            cd[child.id] = child
+#
+#        for contend_page in contents:
+#            if contend_page.page_id in cd:
+#                cd[contend_page.page_id].content = contend_page
 
     return render(request, 'pages/frontend/show.html', {
         'page': page,
         'content': content,
-        'children': children,
+#        'children': children,
     })

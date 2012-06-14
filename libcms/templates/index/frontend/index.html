@@ -12,10 +12,12 @@
 {#    <div class="row">#}
 
 
-        <div class="span3">
+        <div class="span2">
 
             <div id="catalogs_menu" class="left_block">
-                <div style="font-size: 16px; color: #d12f23; padding-top: 20px;">Каталоги</div>
+
+{#                <div style="font-size: 16px; color: #d12f23; padding-top: 5px;">Каталоги</div>#}
+                <h3 style="color: #d12f23; font-weight: normal;">Каталоги</h3>
                 <ul>
                     <li><a href="{% url zgate_slug_index 'books' %}">Книги</a></li>
                     <li><a href="{% url zgate_slug_index 'periodics' %}">Периодика</a></li>
@@ -25,6 +27,11 @@
             </div>
             <div class="left_block" style="padding-top: 20px ">
                 <div class="widget-content cloud-label-widget-content">
+                    <style>
+                        .label-size a{
+                            color: green;
+                        }
+                    </style>
 <span class="label-size label-size-2">
 <a dir="ltr" href="#AJAX">AJAX</a>
 </span>
@@ -159,10 +166,10 @@
 
 
         </div>
-        <div class="span6">
+        <div class="span7">
             {% block content %}
                 <div class="news">
-                    <h3 style="color: #d12f23">Новости</h3>
+                    <h3 style="color: #d12f23; font-weight: normal;">Новости</h3>
                     {% cache 60 'news' LANGUAGE_CODE %}
                         {% news_feed %}
                     {% endcache %}
@@ -173,7 +180,7 @@
         </div>
         <div class="span3">
             <div class="right_block">
-                <div style="font-size: 16px; color: #d12f23; padding-top: 20px;">Личный кабинет</div>
+                <h3 style="color: #d12f23; font-weight: normal;">Личный кабинет</h3>
                 {% if request.user.is_authenticated %}
                     Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
                 {% else %}
@@ -185,7 +192,8 @@
             </div>
             <div class="right_block">
                 <div class="events">
-                    <div style="font-size: 16px; color: #d12f23; padding: 20px 0 10px 0;">Афиша мероприятий</div>
+                    <h3 style="color: #d12f23; font-weight: normal;">Афиша мероприятий</h3>
+{#                    <div style="font-size: 16px; color: #d12f23; padding: 20px 0 10px 0;">Афиша мероприятий</div>#}
                     {% cache 60 'events' LANGUAGE_CODE %}
                         {% events_calendar %}
                     {% endcache %}
