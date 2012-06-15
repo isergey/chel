@@ -1,12 +1,13 @@
 {% extends 'index/frontend/index.html' %}
 {% block content %}
     <style>
-        .zgate input {
+        .zgate input[type=text] {
             border-radius: 2px;
             border: 1px solid #dfdfdf;
             background: #fff;
             padding: 5px;
             color: #333333;
+            width: 250px;
 
         }
         /*.zgate input[type=text]{*/
@@ -36,6 +37,10 @@
         }
 
         .zgate  td.buttons {
+            vertical-align: top;
+        }
+        .zgate form table {
+            width: 610px;
             vertical-align: top;
         }
 
