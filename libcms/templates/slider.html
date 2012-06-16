@@ -1,0 +1,20 @@
+{% load gallery_tags %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ STATIC_URL }}nivo-slider/nivo-slider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}nivo-slider/themes/default/default.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="{{ STATIC_URL }}nivo-slider/jquery.nivo.slider.pack.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+    <div id="slider-wrapper" class="theme-default" >
+        <div id="slider" style="height: 100%">
+            {% gallery_slider %}
+    </div>
+    <script type="text/javascript">
+        $(window).load(function() {
+            $('#slider').nivoSlider({directionNavHide:false});
+        });
+    </script>
+
