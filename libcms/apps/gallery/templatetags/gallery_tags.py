@@ -33,4 +33,4 @@ def gallery_carusel():
     return {
         'album':album,
         'album_images': album_images,
-        }
+    }

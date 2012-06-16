@@ -530,6 +530,42 @@ def make_saved_request(request, request_id=''):
     response = redirect(link)
     return set_cookies_to_response(cookies, response)
 
+
+def simple_search(request):
+    q = request.GET.get('text', None)
+    if q:
+        zcatalog = get_object_or_404(ZCatalog, latin_title='books')
+        (zgate_form, cookies) = zworker.get_zgate_form(
+            zgate_url=zcatalog.url,
+            xml=zcatalog.xml,
+            xsl=zcatalog.xsl,
+            entry_point='/',
+            cookies=request.COOKIES
+        )
+        session_id = zworker.get_zgate_session_id(zgate_form)
+        get_params = []
+        get_params.append(urlquote('zstate') + '=' + urlquote('action'))
+        get_params.append(urlquote('ACTION') + '=' + urlquote('SEARCH'))
+        get_params.append(urlquote('SESSION_ID') + '=' + urlquote(session_id))
+        get_params.append(urlquote('LANG') + '=' + urlquote(zcatalog.default_lang))
+        get_params.append(urlquote('DBNAME') + '=' + urlquote('books'))
+
+        get_params.append(urlquote('TERM_1') + '=' + urlquote('%s[1,4:1.2.840.10003.3.1,2,0,4,0,5,1]' % q))
+        get_params.append(urlquote('ESNAME') + '=' + urlquote('B'))
+        get_params.append(urlquote('MAXRECORDS') + '=' + urlquote('20'))
+        get_params.append(urlquote('CHAR_SET') + '=' + urlquote('UTF-8'))
+        get_params.append(urlquote('RECSYNTAX') + '=' + urlquote('1.2.840.10003.5.28'))
+
+        link = reverse('zgate_index', args=(zcatalog.id,)) + '?' + '&'.join(get_params)
+
+        response = redirect(link)
+        return set_cookies_to_response(cookies, response)
+    else:
+        return HttpResponse(u'Указаны неправильные параметры')
+
+
+
+
 @login_required
 def delete_saved_request(request, request_id=''):
     saved_request = get_object_or_404(SavedRequest,id=request_id, user = request.user)
