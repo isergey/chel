@@ -2,7 +2,7 @@
 {% for album_image in album_images %}
     {% if album_image.comments %}
         <li>
-            <a href="{{ album_image.comments }}" ><img  src="/static/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" /></a>
+            <a href="{{ album_image.comments }}" ><img  src="/media/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" /></a>
         </li>
     {% else %}
         <img  src="/media/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" />
