@@ -25,7 +25,7 @@ def gallery_carusel():
     album = None
     album_images = []
     try:
-        album = Album.objects.get(slug='slwider')
+        album = Album.objects.get(slug='carousel')
         album_images = AlbumImage.objects.filter(album=album)
     except Album.DoesNotExist:
         pass
