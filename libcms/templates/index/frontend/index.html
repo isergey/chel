@@ -2,7 +2,7 @@
 
 {% load news_tags %}
 {% load events_tags %}
-{% load polls_tags %}
+{#{% load polls_tags %}#}
 {% load cache %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
@@ -104,12 +104,12 @@
                 {% endcache %}
             </div>
         </div>
-        <div class="right_block">
-            <div class="polls">
-                <h3 style="color: #d12f23; font-weight: normal;">Голосование</h3>
-                {% poll_form %}
-            </div>
-        </div>
+{#        <div class="right_block">#}
+{#            <div class="polls">#}
+{#                <h3 style="color: #d12f23; font-weight: normal;">Голосование</h3>#}
+{#                {% poll_form %}#}
+{#            </div>#}
+{#        </div>#}
     </div>
     </div>
 
