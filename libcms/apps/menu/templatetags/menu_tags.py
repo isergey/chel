@@ -23,7 +23,7 @@ def drow_menu(context, menu_slug):
 
     nodes = cache.get('menu_nodes' + menu_slug + lang, None)
     if not nodes:
-        nodes = list(menu.root_item.get_descendants())
+        nodes = list(menu.root_item.get_descendants().exclude(show=False))
         cache.set('menu_nodes' + menu_slug + lang, nodes)
 
     item_titles = cache.get('menu_item_titles' + menu_slug + lang, None)
