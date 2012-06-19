@@ -69,7 +69,7 @@
         #catalogs_menu ul li a {
             text-decoration: none;
             color: #252525;
-            font-weight: bold;
+            /*font-weight: bold;*/
 
         }
 
@@ -191,20 +191,23 @@
 <div class="row">
 
     <div class="span7">
-        <div id="logo" style="margin-top: 10px;">
-            <a href="/{{ LANGUAGE_CODE }}/"><img src="{{ STATIC_URL }}images/theme/logo.png" alt=""
-                                                 style="float: left;"></a>
+        <div class="row">
+            <div id="logo" style="margin: 0 0 10px 0;">
+                <a href="/{{ LANGUAGE_CODE }}/"><img src="{{ STATIC_URL }}images/theme/logo.png" alt=""
+                                                     style="float: left; margin-right: 20px;"></a>
 
-            <h3 style="font-weight: normal; width: 500px">ЧЕЛЯБИНСКАЯ ОБЛАСТНАЯ УНИВЕРСАЛЬНАЯ НАУЧНАЯ <br/>БИБЛИОТЕКА</h3>
-            <h4 style="color: #d12f23; font-weight: normal; FONT-SIZE: 13px">ИНФОРМАЦИОННЫЙ ПОРТАЛ <br/> БИБЛИОТЕК
-                ЧЕЛЯБИНСКОЙ ОБЛАСТИ</h4>
-            <div style="clear: both;"></div>
+                <h3 style="font-weight: normal; width: 500px; line-height: 20px; padding: 23px 0 0 0">ЧЕЛЯБИНСКАЯ ОБЛАСТНАЯ <br/> УНИВЕРСАЛЬНАЯ НАУЧНАЯ <br/>БИБЛИОТЕКА</h3>
+                <h4 style="color: #d12f23; font-weight: normal; FONT-SIZE: 13px; line-height: 15px; margin: 15px 0 0 ">ИНФОРМАЦИОННЫЙ ПОРТАЛ <br/> БИБЛИОТЕК
+                    ЧЕЛЯБИНСКОЙ ОБЛАСТИ</h4>
+                <div style="clear: both;"></div>
+            </div>
         </div>
     </div>
     <div class="span5">
         <style>
-            .buttons:after {
-                clear: both;
+
+            .buttons {
+                margin: 0 23px 2px 0;
             }
 
             .buttons .home, .buttons .letter, .buttons .map {
@@ -251,8 +254,8 @@
         <style>
             #slider {
                 border: 0;
-                width: 412px;
-                height: 118px;
+                width: 390px;
+                height: 116px;
                 margin: 0 0 -25px -33px;
 
             }

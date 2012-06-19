@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
     (r'^gallery/', include('gallery.urls', namespace='gallery')),
     (r'^guestbook/', include('guestbook.urls', namespace='guestbook')),
-#    (r'^polls/', include('polls.urls', namespace='polls')),
+    (r'^polls/', include('polls.urls', namespace='polls')),
 #    (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
 
     # Uncomment the next line to enable the admin:

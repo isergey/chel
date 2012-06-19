@@ -155,7 +155,7 @@ INSTALLED_APPS = (
     'ask_librarian',
     'gallery',
     'guestbook',
-#    'polls'
+    'polls'
 )
 
 

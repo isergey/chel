@@ -2,7 +2,7 @@
 
 {% load news_tags %}
 {% load events_tags %}
-{#{% load polls_tags %}#}
+{% load polls_tags %}
 {% load cache %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
@@ -25,7 +25,7 @@
         <div id="catalogs_menu" class="left_block">
 
             {#                <div style="font-size: 16px; color: #d12f23; padding-top: 5px;">Каталоги</div>#}
-            <h3 style="color: #d12f23; font-weight: normal;">Каталоги</h3>
+            <h3 style="color: #d12f23; font-weight: normal; margin-top: 3px;">Каталоги</h3>
             <ul>
                 <li><a href="{% url zgate_slug_index 'books' %}">Книги</a></li>
                 <li><a href="{% url zgate_slug_index 'periodics' %}">Периодика</a></li>
@@ -84,7 +84,7 @@
     </div>
     <div class="left">
         <div class="right_block">
-            <h3 style="color: #d12f23; font-weight: normal;">Личный кабинет</h3>
+            <h3 style="color: #d12f23; font-weight: normal;margin: 5px 0 0 0">Личный кабинет</h3>
             {% if request.user.is_authenticated %}
                 Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
             {% else %}
@@ -104,12 +104,12 @@
                 {% endcache %}
             </div>
         </div>
-{#        <div class="right_block">#}
-{#            <div class="polls">#}
-{#                <h3 style="color: #d12f23; font-weight: normal;">Голосование</h3>#}
-{#                {% poll_form %}#}
-{#            </div>#}
-{#        </div>#}
+        <div class="right_block">
+            <div class="polls">
+                <h3 style="color: #d12f23; font-weight: normal;">Голосование</h3>
+                {% poll_form %}
+            </div>
+        </div>
     </div>
     </div>
 
