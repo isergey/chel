@@ -108,26 +108,26 @@
             );
         });
     </script>
-    <hr/>
-    <ul class="images" >
-        {% for album_image in album_images %}
-            <li>
-                <a title="{{ album_image.comments }}" class="mins" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">
-                    <img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">
-                </a>
+{#    <hr/>#}
+{#    <ul class="images" >#}
+{#        {% for album_image in album_images %}#}
+{#            <li>#}
+{#                <a title="{{ album_image.comments }}" class="mins" href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">#}
+{#                    <img class="tumb" src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">#}
+{#                </a>#}
 {#                <a title="{{ album_image.comments }}" class="mins" href="/static/gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}" class="thumbnail"  rel="gallery_group">#}
 {#                    <img class="tumb" src="/static/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" alt="" rel="tooltip" data-original-title="{{ album_image.comments }}">#}
 {#                </a>#}
-            </li>
-        {% endfor %}
-    </ul>
-    <script type="text/javascript">
-        $('.tumb').tooltip();
-    </script>
-    <script type="text/javascript">
-        $("a.mins").fancybox({
-            'overlayColor'        : '#000',
-            'overlayOpacity'    : 0.9
-        });
-    </script>
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#    <script type="text/javascript">#}
+{#        $('.tumb').tooltip();#}
+{#    </script>#}
+{#    <script type="text/javascript">#}
+{#        $("a.mins").fancybox({#}
+{#            'overlayColor'        : '#000',#}
+{#            'overlayOpacity'    : 0.9#}
+{#        });#}
+{#    </script>#}
 {% endblock %}

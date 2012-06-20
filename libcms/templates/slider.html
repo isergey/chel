@@ -12,9 +12,14 @@
         <div id="slider" style="height: 100%">
             {% gallery_slider %}
     </div>
+    </div>
     <script type="text/javascript">
         $(window).load(function() {
-            $('#slider').nivoSlider({directionNavHide:false});
+            $('#slider').nivoSlider({
+                directionNavHide:false,
+                effect: 'fade',
+                pauseTime: 9000
+            });
         });
     </script>
 

@@ -195,11 +195,9 @@
 <ul id="carousel" class="jcarousel-skin-tango">
 {% for album_image in album_images %}
     {% if album_image.comments %}
-        <li>
-            <a href="{{ album_image.comments }}" ><img  src="/media/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" /></a>
-        </li>
+        <li><a href="{{ album_image.comments }}" ><img  src="/static/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" /></a></li>
     {% else %}
-        <img  src="/media/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" />
+        <li><a href="#1" ><img  src="/static/gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" /></a><li>
     {% endif %}
 {% empty %}
     <li>Carousel gallery doesn't exist</li>
