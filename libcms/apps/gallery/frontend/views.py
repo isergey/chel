@@ -8,7 +8,7 @@ from ..models import Album, AlbumImage
 
 
 def index(request):
-    albums = Album.objects.all()
+    albums = Album.objects.filter(public=True)
 
     return render(request, 'gallery/frontend/albums_list.html', {
         'albums': albums
@@ -17,7 +17,7 @@ def index(request):
 
 def album_view(request, id):
 
-    album = get_object_or_404(Album, id=id)
+    album = get_object_or_404(Album, id=id, public=True)
     album_images = AlbumImage.objects.filter(album=album)
 
     return render(request, 'gallery/frontend/album_view.html', {
