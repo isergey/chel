@@ -321,10 +321,13 @@ ul.dropdown>li>ul {
 }
 
 ul.dropdown>li>ul>li{
-    width: 166px;
+    width: 162px;
     /*background: #0044cc;*/
 }
-
+ul.dropdown>li>ul>li:first-child, ul.dropdown>li>ul>li:last-child{
+    width: 172px;
+    /*background: #0044cc;*/
+}
 </style>
 <ul class="items dropdown dropdown-linear dropdown-columnar">
     {% if nodes %}
