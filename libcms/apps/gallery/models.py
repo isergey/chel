@@ -44,6 +44,9 @@ class Album(models.Model):
     def get_dir(self):
         return get_album_dir(self.slug)
 
+    def get_description(self):
+        return self.description.replace(u'\n',u'<br/>')
+
 class AlbumImage(models.Model):
     album = models.ForeignKey(Album)
     image = models.FileField(upload_to=image_file_name, verbose_name=u'Файл с изображением')
