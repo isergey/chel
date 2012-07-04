@@ -252,15 +252,17 @@
         </div>
 
         <style>
-            #slider {
+            #slider_frame {
                 border: 0;
                 width: 390px;
                 height: 116px;
-                margin: 0 0 -25px -33px;
-
+                /*margin: 0 0 -500px -33px;*/
+                position: relative;
+                top: 15px;
+                right: 30px;
             }
         </style>
-        <iframe id="slider" src="{% url index:frontend:slider %}"></iframe>
+        <iframe id="slider_frame" src="{% url index:frontend:slider %}"></iframe>
     </div>
 <div class="row">
     <div class="span12">
