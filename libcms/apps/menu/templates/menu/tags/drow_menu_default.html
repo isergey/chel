@@ -1,11 +1,9 @@
 {% load mptt_tags %}
-<style type="text/css">
 
-</style>
 {#<link href="http://vremenno.net/examples/css-drop-down-menu/css/dropdown/themes/mtv.com/default.ultimate.css" media="all" rel="stylesheet" type="text/css" />#}
-<div class="menu">
+
 {#    <span class="title">{{ menu.title }}</span>#}
-    <ul class="items dropdown dropdown-linear dropdown-columnar">
+    <ul>
         {% if nodes %}
             {% recursetree nodes %}
                 <li {% if path == node.item_title.url  %} class="active" {% endif %}>
@@ -21,7 +19,7 @@
             {% endrecursetree %}
         {% endif %}
     </ul>
-</div>
+
 {#<script type="text/javascript">#}
 {#    $(document).ready(function() {#}
 {#        $("ul.dropdown li").hover(function() {#}

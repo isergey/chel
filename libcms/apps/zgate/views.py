@@ -126,19 +126,20 @@ def render_detail(request, catalog):
             doc = xslt_transformer(record_tree[0])
             doc = doc_tree_to_dict(doc)
 
-#        owners = get_document_owners(xml_record)
+        owners = get_document_owners(xml_record)
+
 #        record_id = get_record_id(xml_record)
         save_document = True
     except SyntaxError as e:
         pass #не будем добавлять держателей
 
-
+    print owners
     result = zworker.make_html_body_content(zresults_body_element)
     response =  render(request, 'zgate/search_results.html', {
         'doc': doc,
         'catalog_title': catalog.title,
         'search_results': result,
-#        'owners': owners,
+        'owners': owners,
         'record_id': record_id,
         'zsession': zsession,
         'zoffset': zoffset,
@@ -577,10 +578,11 @@ return list of owners
 """
 
 def get_document_owners(xml_record):
-    owner_trees = xml_record.xpath('/record/bibliographicRecord/record/field[@id="999"]/subfield[@id="a"]')
+    owner_trees = xml_record.xpath('/record/field[@id="899"]/subfield[@id="a"]')
     owners = []
     for owner_tree in owner_trees:
         owners.append(owner_tree.text)
+
 
 #    print etree.tostring(owners[0], encoding='utf-8')
 #    def get_subfields(field_code, subfield_code):
@@ -604,12 +606,14 @@ def get_document_owners(xml_record):
 
     owners_dicts = []
     if owners:
+        owners = list(set(owners))
         libraries = Library.objects.filter(code__in=owners)
         for org in libraries:
             owners_dicts.append({
                 'code':org.code,
                 'name': org.name
             })
+    print owners_dicts
     return owners_dicts
 
 """

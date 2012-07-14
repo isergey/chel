@@ -13,10 +13,6 @@ class News(models.Model):
     create_date = models.DateTimeField(auto_now=True, verbose_name=u"Дата создания", db_index=True)
     type = models.IntegerField(verbose_name=u'Вид новостей', default=(0, u'Публичные'), choices=NEWS_TYPE_CHOICES, db_index=True)
     publicated = models.BooleanField(verbose_name=u'Опубликовано?', default=True, db_index=True)
-    class Meta:
-        permissions = (
-            ("can_views_prof_news", "Can view professional news"),
-        )
     def get_absolute_url(self):
         return urlresolvers.reverse('news:frontend:show', args=[self.id])
 

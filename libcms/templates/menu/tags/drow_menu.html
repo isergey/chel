@@ -329,12 +329,13 @@ ul.dropdown>li>ul>li:first-child, ul.dropdown>li>ul>li:last-child{
     /*background: #0044cc;*/
 }
 </style>
+
 <ul class="items dropdown dropdown-linear dropdown-columnar">
     {% if nodes %}
         {% recursetree nodes %}
             {% if not node.is_leaf_node %}
                 <li class="dir">
-                    <a href="{{ node.item_title.url }}">{{ node }} </a>
+                    <a href="{{ node.item_title.url }}">{{ node.item_title }} </a>
                     <ul class="children">
                         {{ children }}
                     </ul>
