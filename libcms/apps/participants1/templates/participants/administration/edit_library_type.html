@@ -1,0 +1,24 @@
+{% extends 'participants/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Библиотеки" participants:administration:list %}
+    {% breadcrumb "Типы библиотек" participants:administration:library_types_list %}
+    {% breadcrumb "Редактирование" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+            <legend>Редактирование типа библиотек</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=library_form %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Редактировать</button>
+                <button type="reset" class="btn">Отменить</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}
