@@ -1,4 +1,4 @@
-{% extends 'frontend_base.html' %}
+{% extends 'themed_frontend_base.html' %}
 {% load participants_pages_tags %}
 {% block title %}Библиотеки{% endblock %}
 {% block index_content %}
@@ -8,9 +8,7 @@
     {% endblock %}
     </div>
     <div class="span3">
-        <div class="well">
         {% drow_page_tree library.id %}
-        </div>
     </div>
     <div class="span9">
         {% block content %}

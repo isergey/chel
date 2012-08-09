@@ -1,12 +1,38 @@
-<ul>
-    {% for news in news_list %}
-        <li>
-            <div class="create_date"><b>{{ news.create_date|date:"j E Y" }}</b></div>
-            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
-            <div class="teaser">{{ news.news_content.teaser }}</div>
+{#<ul>#}
+{#    {% for news in news_list %}#}
+{#        <li>#}
+{#            <div class="create_date"><b>{{ news.create_date|date:"j E Y" }}</b></div>#}
+{#            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>#}
+{#            <div class="teaser">{{ news.news_content.teaser }}</div>#}
+{##}
+{#            {% if not forloop.last %}<hr/>{% endif %}#}
+{#        </li>#}
+{#    {% endfor %}#}
+{#</ul>#}
 
-            {% if not forloop.last %}<hr/>{% endif %}
-        </li>
+<style>
+    ul.news {
+        list-style: none;
+        margin: 0;
+    }
+    .news .title{
+        font-size: 14px;
+        /*font-weight: bold;*/
+    }
+    .news .teaser{
+        padding: 5px 0;
+    }
+    .news .create_date{
+        color: #8c8c8c;
+    }
+</style>
+
+<ul class="news">
+    {% for news in news_list %}
+        <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
+        <div class="teaser">{{ news.news_content.teaser }}</div>
+        <div class="create_date">{{ news.create_date|date:"j E Y" }}</div>
+        {% if not forloop.last %}<hr/>{% endif %}
     {% endfor %}
 </ul>
 

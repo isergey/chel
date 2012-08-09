@@ -6,7 +6,7 @@
         {% if request.GET.back %}
             <li><a href="{{ request.GET.back }}">Афиша событий</a> <span class="divider">/</span></li>
         {% else %}
-            <li><a href="{% url news:frontend:index %}">Афиша событий</a> <span class="divider">/</span></li>
+            <li><a href="{% url events:frontend:index %}">Афиша событий</a> <span class="divider">/</span></li>
         {% endif %}
         <li class="active">{{ content.title }}</li>
     </ul>

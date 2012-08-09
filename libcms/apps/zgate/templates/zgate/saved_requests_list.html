@@ -3,8 +3,11 @@
     Мои запросы
 {% endblock %}
 {% block content %}
+    <ul class="breadcrumb">
+    <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+    <li class="active">Мои запросы</li>
+    </ul>
     <div class="text">
-        <h3 class="">Мои запросы</h3>
         <div class="news">
             {% for saved_request in saved_requests_list.object_list %}
                 <div class="item">

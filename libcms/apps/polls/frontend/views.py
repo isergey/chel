@@ -27,12 +27,11 @@ def vote(request, poll_id):
         poller_id = request.user.username
     elif request.session.session_key:
         poller_id = request.session.session_key
+    if not poll.multi_vote:
+        votes_in_poll = PolledUser.objects.filter(poller_id=poller_id,poll=poll).count()
 
-    votes_in_poll = PolledUser.objects.filter(poller_id=poller_id,poll=poll).count()
-
-    if votes_in_poll:
-        return results(request, poll_id, poll)
-
+        if votes_in_poll:
+            return results(request, poll_id, poll)
 
     if request.method == 'POST' and 'answer' in request.POST:
         if poll.poll_type == 'radio':
@@ -65,6 +64,7 @@ def results(request, poll_id, poll=None):
     if not poll:
         poll = get_object_or_404(Poll, id=poll_id, published=True)
 
+
     choices = Choice.objects.filter(poll=poll).order_by('-sort')[:100]
 
     choices_dicts = []
@@ -76,16 +76,17 @@ def results(request, poll_id, poll=None):
     max_choice_answers = 0
     if len(choices):
         max_choice_answers = sorted(choices, key=lambda x: x.votes, reverse=True)[0].votes
-        if max_choice_answers == 0: max_choice_answers = 1
+        if max_choice_answers == 0:
+            max_choice_answers = 1
 
+    for choice in choices:
+        summ_number_of_answers += choice.votes
     for choice in choices:
         choices_dicts.append({
             'choice': choice,
             # Процент от макимального значения
-            'percent_from_max': int(choice.votes * 100 / max_choice_answers * 0.85),
+            'percent_from_max': int(choice.votes * 100 / summ_number_of_answers ),
             })
-        summ_number_of_answers += choice.votes
-
     if summ_number_of_answers == 0:
         summ_number_of_answers = 1;
     for choices_dict in choices_dicts:

@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, 
 from django.utils import translation
 from django.utils.translation import get_language
 from common.pagination import get_page
-from ..models import Library, District
+from django.db.models import Q
+from ..models import Library, District, LibraryType
 
 def make_library_dict(library):
     return {
@@ -17,19 +18,66 @@ def make_library_dict(library):
         'http_service': getattr(library, 'http_service', u"не указан"),
         'latitude': library.latitude,
         'longitude': library.longitude,
-        }
+    }
 
 
 def index(request):
-    cbs_list = Library.objects.filter(parent=None).order_by('weight')
+    filter = False
+    filter_title = u''
+    if request.GET.get('letter', None):
+        filter = True
+        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('weight').exclude(parent=None)
+        filter_title = u'библиотеки на букву: ' + request.GET.get('letter')
+    if request.GET.get('district', None):
+        filter = True
+        cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('weight').exclude(parent=None)
+        filter_title = u'библиотеки района: '
+        try:
+            district = District.objects.get(id=request.GET.get('district'))
+            district_title = unicode(district)
+        except District.DoesNotExist:
+            district_title = u'район не найден'
+        filter_title +=  district_title
+
+    if request.GET.get('type', None):
+        filter = True
+        cbs_list = Library.objects.filter(types__in=request.GET.get('type')).order_by('weight').exclude(parent=None)
+        filter_title = u'библиотеки типа: '
+        types = LibraryType.objects.filter(id__in=request.GET.get('type'))
+        type_titles = []
+        for type in types:
+            type_titles.append(type.name)
+        filter_title +=  u', '.join(type_titles)
+
+    if not filter:
+        cbs_list = Library.objects.filter(parent=None).order_by('weight')
     js_orgs = []
-    for org in cbs_list:
+    letters = []
+
+    cbs_page = get_page(request, cbs_list)
+
+    for org in cbs_page.object_list:
         js_orgs.append(make_library_dict(org))
 
+    letters_libs = Library.objects.all().values('letter')
+    for org in letters_libs:
+        letters.append(org['letter'])
+
     js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+    letters = list(set(letters))
+    letters.sort()
+
+    districts = District.objects.all()
+    types = LibraryType.objects.all()
     return render(request, 'participants/frontend/cbs_list.html',{
-        'cbs_list': cbs_list,
-        'js_orgs': js_orgs
+        'cbs_list': cbs_page.object_list,
+        'js_orgs': js_orgs,
+        'letters': letters,
+        'districts': districts,
+        'types': types,
+        'cbs_page': cbs_page,
+        'filter': filter,
+        'filter_title': filter_title
     })
 
 

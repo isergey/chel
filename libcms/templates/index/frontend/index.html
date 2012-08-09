@@ -63,9 +63,9 @@
             </form>
 {#            <div class="ya-site-form ya-site-form_inited_no" onclick="return {'bg': '#ffffff', 'target': '_blank', 'language': 'ru', 'suggest': true, 'tld': 'ru', 'site_suggest': true, 'action': 'http://yandex.ru/sitesearch', 'webopt': false, 'fontsize': 12, 'arrow': true, 'fg': '#000000', 'searchid': '1915725', 'logo': 'rb', 'websearch': false, 'type': 2}"><form action="http://yandex.ru/sitesearch" method="get" target="_blank"><input type="hidden" name="searchid" value="1915725" /><input type="hidden" name="l10n" value="ru" /><input type="hidden" name="reqenc" value="" /><input type="text" name="text" value="" /><input type="submit" value="Найти" /></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;(' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1&&(e.className+=' ya-page_js_yes');s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>#}
         </div>
-        <div class="left_block" style="padding-top: 20px ">
-            {% include 'tags.html' %}
-        </div>
+{#        <div class="left_block" style="padding-top: 20px ">#}
+{#            {% include 'tags.html' %}#}
+{#        </div>#}
     </div>
     <div class="center">
         <div style="padding: 0 5px;">
@@ -76,6 +76,7 @@
                     {% cache 60 'news' LANGUAGE_CODE %}
                         {% news_feed %}
                     {% endcache %}
+                <hr/>
                     <a href="{% url news:frontend:index %}">Остальные новости >></a>
                 </div>
 
@@ -87,21 +88,26 @@
             <h3 style="color: #D11314; font-weight: normal;margin: 5px 0 0 0">Личный кабинет</h3>
             {% if request.user.is_authenticated %}
                 Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
+                <ul>
+                    <li><a href="{% url events:frontend:favorit_events %}">Мои события</a></li>
+                    <li><a href="{% url zgate_saved_document_list %}">Мои документы</a></li>
+                    <li><a href="{% url zgate_saved_requests %}">Мои запросы</a></li>
+                </ul>
             {% else %}
                 <a href="{% url accounts:frontend:login %}">Войти</a> <a href="{% url accounts:frontend:registration %}">Зарегистрироваться</a>
             {% endif %}
         </div>
-        <div class="right_block" style="padding: 5px 0 5px ; height: 120px;">
-            <a href="{% url ask_librarian:frontend:index %}"><img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальнаясправочная служба" ></a>
-            <div style="position: relative;">Виртуальная <br/> справочная служба</div>
+        <div class="right_block" style="padding: 5px 0 5px 5px; height: 68px;">
+            <a href="{% url ask_librarian:frontend:index %}"> <img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальнаясправочная служба" ></a>
+{#            <div style="position: relative;">Виртуальная <br/> справочная служба</div>#}
         </div>
         <div class="right_block">
             <div class="events">
                 <h3 style="color: #D11314; font-weight: normal;">Афиша мероприятий</h3>
                 {#                    <div style="font-size: 16px; color: #D11314; padding: 20px 0 10px 0;">Афиша мероприятий</div>#}
-                {% cache 60 'events' LANGUAGE_CODE %}
+{#                {% cache 60 'events' LANGUAGE_CODE %}#}
                     {% events_calendar %}
-                {% endcache %}
+{#                {% endcache %}#}
             </div>
         </div>
         <div class="right_block">

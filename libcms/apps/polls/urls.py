@@ -2,7 +2,7 @@
 from django.conf.urls import *
 
 urlpatterns = patterns('',
-#    (r'^admin/', include('news.administration.urls', namespace='administration')),
+    (r'^admin/', include('polls.administration.urls', namespace='administration')),
     (r'^', include('polls.frontend.urls', namespace='frontend')),
 
 )

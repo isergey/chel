@@ -1,15 +1,15 @@
-{% extends 'themed_frontend_base.html' %}
-{% block title %}Библиотеки{% endblock %}
-{% block index_content %}
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
-            {% if library.parent_id %}<li><a href="{%  url participants:frontend:branches library.parent.code %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}
-            <li class="active">{{ library.name }}</li>
-        </ul>
-
-
+{#{% extends 'themed_frontend_base.html' %}#}
+{#{% block title %}Библиотеки{% endblock %}#}
+{#{% block index_content %}#}
+{#    <div class="span12">#}
+{#        <ul class="breadcrumb">#}
+{#            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
+{#            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>#}
+{#            {% if library.parent_id %}<li><a href="{%  url participants:frontend:branches library.parent.code %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}#}
+{#            <li class="active">{{ library.name }}</li>#}
+{#        </ul>#}
+<link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
+<title>{{ library.name }}</title>
 
         <div class="participants">
             <h3>{{ library.name }}</h3>
@@ -27,7 +27,7 @@
                 border: #ffffff solid 10px;
             }
         </style>
-        <div id="map_canvas" style="width: 100%; height: 550px"></div>
+        <div id="map_canvas" style="width: 95%; height: 300px"></div>
         {% include 'participants/frontend/map_js.html' %}
-    </div>
-{% endblock %}
+{#    </div>#}
+{#{% endblock %}#}

@@ -10,7 +10,7 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
-from participants_pages.models import Page, Content
+from ..models import Page, Content
 from forms import get_content_form, get_page_form
 from participants.models import Library, LibraryContentEditor
 
@@ -170,6 +170,7 @@ def create_page_content(request, library_id, page_id):
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на создание страницы в этой ЦБС')
     page = get_object_or_404(Page, id=page_id)
+    ContentForm = get_content_form(('page',))
     if request.method == 'POST':
         content_form = ContentForm(request.POST, prefix='content_form')
 

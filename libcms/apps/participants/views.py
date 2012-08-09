@@ -21,9 +21,17 @@ def make_library_dict(library):
 
 
 def index(request):
+
     library_systems = Library.objects.filter(parent=None).order_by('weight')
+    letters = []
+    for cbs in library_systems:
+        letters.append(cbs.letter)
+    letters = list(set(letters))
+    print letters
+    print 'edwedweded'
     return render(request, 'participants/cbs_list.html', {
-        'orgs': library_systems
+        'orgs': library_systems,
+        'letters': letters
     })
 
 def detail(request, code):

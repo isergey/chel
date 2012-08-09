@@ -26,7 +26,7 @@
             <div class="span5" >
                 <ul class="participants">
                     {% for library in  libraries %}
-                        <li><a href="{% url participants:frontend:detail library.code %}">{{ library.name }}<br/></a>
+                        <li><a href="{% url participants:frontend:detail library.code %}" onclick="modalWin('{% url participants:frontend:detail library.code %}'); return false;">{{ library.name }}<br/></a>
                             Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
                             {% else %} не указан {% endif %}
                         </li>
@@ -56,4 +56,15 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        function modalWin(url) {
+            if (window.showModalDialog) {
+                window.showModalDialog(url,"name",
+                        "dialogWidth:550px;dialogHeight:460px");
+            } else {
+                window.open(url,'name',
+                        'height=550px,width=460px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
+            }
+        }
+    </script>
 {% endblock %}
