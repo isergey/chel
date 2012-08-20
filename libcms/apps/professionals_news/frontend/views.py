@@ -26,6 +26,7 @@ def index(request):
         'news_list': news_page.object_list,
         'news_page': news_page,
         })
+
 @permission_required_or_403('professionals_news.can_views_prof_news')
 def show(request, id):
     cur_language = translation.get_language()

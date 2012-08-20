@@ -11,7 +11,11 @@
 {% endfor %}
 {% for field in form.visible_fields %}
     <div class="control-group {% if field.errors %}error{% endif %}">
-        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+
+        {% if field.field.required %}<label class="control-label" for="{{ field.auto_id }}"><b>{{ field.label }} *</b></label>
+        {% else %}
+            <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+        {% endif %}
         <div class="controls">
             {{ field }}
             {% if field.errors %}

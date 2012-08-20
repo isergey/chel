@@ -9,9 +9,9 @@
 {% endblock %}
 {% block content %}
 <style type="text/css">
-form#ask_form textarea{
-    width: 99%;
-}
+    form#ask_form textarea, input[type=text]{
+        width: 99%;
+    }
 </style>
 <form id="ask_form" class="" method="POST">{% csrf_token %}
     <legend>Задать вопрос</legend>
@@ -19,7 +19,7 @@ form#ask_form textarea{
         {% include 'frontend/base_form_fields.html' with form=form %}
         {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Спросить</button>
+            <button type="submit" class="btn">Спросить</button>
         </div>
     </fieldset>
 </form>
