@@ -151,7 +151,6 @@ INSTALLED_APPS = (
     'professionals_pages',
     'professionals_news',
     'professionals',
-    'ssearch',
     'forum',
     'orders',
     'zgate',
