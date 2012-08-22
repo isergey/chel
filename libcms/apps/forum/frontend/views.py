@@ -15,7 +15,7 @@ from django.contrib.contenttypes.models import ContentType
 from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assign, get_groups_with_perms
 from django.core.paginator import Paginator, InvalidPage
 from core.forms import get_permissions_form
-from forum.models import Forum, Topic, Article
+from ..models import Forum, Topic, Article
 from forms import ArticleForm, TopicForm, ForumForm
 
 
