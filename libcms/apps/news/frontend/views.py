@@ -4,7 +4,7 @@ from django.utils import translation
 from django.utils.translation import get_language
 from django.db.models import Q
 from common.pagination import get_page
-from news.models import News, NewsContent
+from ..models import News, NewsContent
 
 
 
@@ -15,7 +15,9 @@ def index(request):
 
     t_dict = {}
     for news in news_page.object_list:
-        t_dict[news.id] = {'news': news}
+        t_dict[news.id] = {
+            'news': news
+        }
 
     for news_content in news_contents:
         t_dict[news_content.news_id]['news'].news_content = news_content
@@ -41,3 +43,4 @@ def show(request, id):
         'news': news,
         'content': content
     })
+
