@@ -116,3 +116,16 @@ def detail(request, code):
         'library': library,
         'js_orgs': js_orgs
     })
+
+
+def get_branches_by_district(request):
+    district_id = request.GET.get('district_id', None)
+    if not district_id:
+        return HttpResponse(u'[]')
+
+    libraries = Library.objects.filter(district=int(district_id)).order_by('weight').exclude(parent=None)
+    js_orgs = []
+    for library in libraries:
+        js_orgs.append(make_library_dict(library))
+
+    return  HttpResponse(simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False))

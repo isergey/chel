@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from guardian.core import ObjectPermissionChecker
 
-from participants.models import Library
+from participants.models import Library, District
 #catalogs = settings.ZGATE['catalogs']
 
 from models import ZCatalog, SavedRequest, SavedDocument
@@ -132,8 +132,8 @@ def render_detail(request, catalog):
         save_document = True
     except SyntaxError as e:
         pass #не будем добавлять держателей
+    districts = list(District.objects.all())
 
-    print owners
     result = zworker.make_html_body_content(zresults_body_element)
     response =  render(request, 'zgate/search_results.html', {
         'doc': doc,
@@ -145,6 +145,7 @@ def render_detail(request, catalog):
         'zoffset': zoffset,
         'catalog': catalog,
         'save_document': save_document,
+        'districts': districts
     })
     return set_cookies_to_response(cookies, response)
 

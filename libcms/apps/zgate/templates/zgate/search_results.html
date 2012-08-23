@@ -114,24 +114,9 @@
             <p><b>Выберите район, в котором хотите получить заказ </b>&#8628;</p>
             <select style="min-width:200px;" name="territory" id="district_select">
                 <option disabled="" selected="">Выберите район</option>
-                <option value="1">Адмиралтейский</option>
-                <option value="2">Василеостровский</option>
-                <option value="3">Выборгский</option>
-                <option value="4">Калининский</option>
-                <option value="5">Кировский</option>
-                <option value="6">Колпинский</option>
-                <option value="7">Красногвардейский</option>
-                <option value="8">Красносельский</option>
-                <option value="9">Кронштадтский</option>
-                <option value="10">Курортный</option>
-                <option value="11">Московский</option>
-                <option value="12">Невский</option>
-                <option value="13">Петроградский</option>
-                <option value="14">Петродворцовый</option>
-                <option value="15">Приморский</option>
-                <option value="16">Пушкинский</option>
-                <option value="17">Фрунзенский</option>
-                <option value="18">Центральный</option>
+                {% for district in districts %}
+                    <option value="{{ district.id }}">{{ district.name }}</option>
+                {% endfor %}
             </select>
 
             <div id="order_step_2" style="display:none">
@@ -175,7 +160,7 @@
              {'code':'2', 'title':'bib2'},
              {'code':'3', 'title':'bib3'}*/
         ];
-        var markup = "<option value='${code}'>${title}</option>";
+        var markup = "<option value='${code}'>${name}</option>";
         $.template("libsTemplate", markup);
         $("a.order_copy").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
         $("a.order_document").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
@@ -184,11 +169,11 @@
         $("a.save_document_dialog").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
         $("#district_select").change(function () {
             $.ajax({
-                url:'/orders/orgbydistrict/',
-                type:'POST',
+                url:'{% url participants:frontend:get_branches_by_district %}',
+                type:'GET',
                 dataType:"json",
                 async:false,
-                data:{district:$("#district_select").val()},
+                data:{district_id:$("#district_select").val()},
                 success:function (orgs) {
                     libs = [];
                     for (index in orgs) {

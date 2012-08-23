@@ -7,4 +7,5 @@ urlpatterns = patterns(views,
     # в этом вызове id передается в GET
     url(r'^branches/$', views.branches , name="branches"),
     url(r'^detail/(?P<code>[/_\-0-9A-Za-z\s]+)/$', views.detail , name="detail"),
+    url(r'^branches_by_district/$', views.get_branches_by_district , name="get_branches_by_district"),
 )
