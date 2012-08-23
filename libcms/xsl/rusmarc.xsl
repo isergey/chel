@@ -290,7 +290,7 @@ RUSMARC
 	</xsl:if>
         <xsl:if test="$holdings and count(../../holdingsData) = 0">
           <xsl:apply-templates select="field[@id='850']"/>
-          <xsl:apply-templates select="field[@id='899']"/>
+          <!--<xsl:apply-templates select="field[@id='899']"/>-->
         </xsl:if>
       </xsl:if>
       <xsl:apply-templates select="field[@id='999']/subfield[@id='z']"/>
