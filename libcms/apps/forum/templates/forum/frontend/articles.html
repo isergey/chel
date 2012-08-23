@@ -5,7 +5,7 @@
 {% block title %} {{ topic.subject }} {% endblock %}
 {% block content %}
     {% get_obj_perms request.user for topic as "topic_perms" %}
-    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}({% trans 'Topic is closed' %}) {% endif %}
+    <h3><a href="{% url forum:frontend:forums %}">Форум</a> → <a href="{% url forum:frontend:topics topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}(Тема закрыта) {% endif %}
     </h3>
     <hr/>
     <div class="span12">
@@ -83,8 +83,8 @@
                             <div class="form-actions">
                                 {#                        <a class="btn" id="preview_button">{% trans "Preview message" %}</a>#}
                                 {#                        <a class="btn .btn-info .btn-mini" href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>#}
-                                <button type="submit" class="btn">{% trans "Send message" %}</button>
-                                <a href="#form" onclick="tinyMCE.execCommand('mceToggleEditor',false,'id_text');">{% trans 'Switch editor' %}</a>
+                                <button type="submit" class="btn">Написать</button>
+
 
                             </div>
                         </fieldset>

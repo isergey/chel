@@ -46,12 +46,12 @@
             <div class="row">
                 <hr/>
                 <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
-                    <legend>{% trans 'Create topic' %}</legend>
+                    <legend>Создание темы</legend>
                     <fieldset>
                         {% include 'frontend/base_form_fields.html' with form=topic_form %}
                         {% include 'frontend/base_form_fields.html' with form=article_form %}
                         <div class="form-actions">
-                            <button type="submit" class="btn">{% trans "Create topic" %}</button>
+                            <button type="submit" class="btn">Создать тему</button>
                         </div>
                     </fieldset>
                 </form>
