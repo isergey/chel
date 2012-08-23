@@ -11,7 +11,7 @@
     </style>
     {% get_obj_perms request.user for forum as "forum_perms" %}
 
-    <h3><a href="{% url forum:frontend:forums %}">{% trans 'Forums' %}</a> → {{ forum.title }}</h3>
+    <h3><a href="{% url forum:frontend:forums %}">Форум</a> → {{ forum.title }}</h3>
     <hr/>
     <div class="forums span12">
         {% for topic in page.object_list %}
