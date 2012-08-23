@@ -392,12 +392,8 @@ def article_show(request, id):
 
 
 def article_preview(request):
-    if request.method == 'POST':
-        text = request.POST.get('text', u' ')
-        result = {'text':postmarkup_render(text)}
-        return HttpResponse(simplejson.dumps(result, ensure_ascii=False))
+    return HttpResponse(postmarkup_render(request.GET.get('data', u' ')))
 
-    return HttpResponse(u'{}')
 
 
 
