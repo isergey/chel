@@ -81,6 +81,8 @@ def results(request, poll_id, poll=None):
 
     for choice in choices:
         summ_number_of_answers += choice.votes
+    if summ_number_of_answers == 0:
+        summ_number_of_answers = 1
     for choice in choices:
         choices_dicts.append({
             'choice': choice,
