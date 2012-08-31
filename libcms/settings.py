@@ -187,4 +187,3 @@ DEBUG_TOOLBAR_PANELS = (
 
 
 
-from local_settings import *
