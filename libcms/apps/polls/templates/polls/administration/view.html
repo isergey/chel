@@ -5,8 +5,9 @@
 {% load mptt_tags %}
 {% load add_get_tag %}
 {% block breadcrumb %}
-    {% breadcrumb "Голосования" polls:administration:index %}
-    {% breadcrumb "Просмотр голосования" %}
+        <li><a href="{% url polls:administration:index %}">Голосования</a> <span class="divider">/</span></li>
+        <li>{{ poll.question }}<span class="divider">/</span></li>
+        <li class="active">Управление ответами</li>
 {% endblock %}
 
 {% block action_content %}
