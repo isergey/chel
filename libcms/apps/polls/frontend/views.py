@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 from  django.shortcuts import  redirect, render, HttpResponse, get_object_or_404
 from django.core.urlresolvers import reverse
 
@@ -23,9 +24,15 @@ def vote(request, poll_id):
         return redirect(reverse('polls:frontend:results', args=(poll.id,)))
 
     poller_id = request.session.session_key
+
+    if not poller_id:
+        poller_id = hashlib.md5(request.META.get('HTTP_USER_AGENT', '0') + request.META.get('REMOTE_ADDR', '0')).hexdigest()
+
     if request.user.is_authenticated():
         poller_id = request.user.username
-    print dir(request.session)
+#    print request
+    print
+
     if not poll.multi_vote:
         votes_in_poll = PolledUser.objects.filter(poller_id=poller_id,poll=poll).count()
 
