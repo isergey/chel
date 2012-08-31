@@ -22,11 +22,10 @@ def vote(request, poll_id):
     if not poll.is_active():
         return redirect(reverse('polls:frontend:results', args=(poll.id,)))
 
-    poller_id = None
+    poller_id = request.session.session_key
     if request.user.is_authenticated():
         poller_id = request.user.username
-    elif request.session.session_key:
-        poller_id = request.session.session_key
+    print dir(request.session)
     if not poll.multi_vote:
         votes_in_poll = PolledUser.objects.filter(poller_id=poller_id,poll=poll).count()
 
