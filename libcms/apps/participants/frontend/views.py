@@ -29,25 +29,36 @@ def index(request):
         cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('weight').exclude(parent=None)
         filter_title = u'библиотеки на букву: ' + request.GET.get('letter')
     if request.GET.get('district', None):
-        filter = True
-        cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('weight').exclude(parent=None)
-        filter_title = u'библиотеки района: '
         try:
-            district = District.objects.get(id=request.GET.get('district'))
-            district_title = unicode(district)
-        except District.DoesNotExist:
-            district_title = u'район не найден'
-        filter_title +=  district_title
+            int(request.GET.get('district'))
+        except ValueError:
+            pass
+        else:
+            filter = True
+            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('weight').exclude(parent=None)
+            filter_title = u'библиотеки района: '
+            try:
+                district = District.objects.get(id=request.GET.get('district'))
+                district_title = unicode(district)
+            except District.DoesNotExist:
+                district_title = u'район не найден'
+            filter_title +=  district_title
 
     if request.GET.get('type', None):
-        filter = True
-        cbs_list = Library.objects.filter(types__in=request.GET.get('type')).order_by('weight').exclude(parent=None)
-        filter_title = u'библиотеки типа: '
-        types = LibraryType.objects.filter(id__in=request.GET.get('type'))
-        type_titles = []
-        for type in types:
-            type_titles.append(type.name)
-        filter_title +=  u', '.join(type_titles)
+        try:
+            int(request.GET.get('type'))
+        except ValueError:
+            pass
+        else:
+            filter = True
+            cbs_list = Library.objects.filter(types__in=request.GET.get('type')).order_by('weight').exclude(parent=None)
+            filter_title = u'библиотеки типа: '
+            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
+            type_titles = []
+            for type in types:
+                type_titles.append(type.name)
+            filter_title +=  u', '.join(type_titles)
+
 
     if not filter:
         cbs_list = Library.objects.filter(parent=None).order_by('weight')
