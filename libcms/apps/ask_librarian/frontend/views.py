@@ -35,7 +35,12 @@ def index(request):
         date_filter_form = DateFilterForm(request.POST)
         if date_filter_form.is_valid():
             date =  date_filter_form.cleaned_data['date']
-            questions_page = get_page(request, Question.objects.filter(create_date__year=date.year,create_date__month=date.month, create_date__day=date.day).order_by('-id'), 10)
+            questions_page = get_page(request,
+                Question.objects.filter(
+                    create_date__year=date.year,
+                    create_date__month=date.month,
+                    create_date__day=date.day
+                ).order_by('-id'), 10)
             filtered_by_date = True
     else:
         date_filter_form = DateFilterForm()
