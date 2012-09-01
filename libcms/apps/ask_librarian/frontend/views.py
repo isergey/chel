@@ -20,14 +20,12 @@ def index(request):
     if category:
         try:
             category = Category.objects.get(id=category)
-        except Category.DoesNotExist:
-            pass
-
-        if category:
             categories.append(category)
             descendants = category.get_descendants()
             for descendant in descendants:
                 categories.append(descendant)
+        except Category.DoesNotExist:
+            categories = list(Category.objects.all())
     else:
         categories = list(Category.objects.all())
 
