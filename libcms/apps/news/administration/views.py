@@ -189,6 +189,32 @@ import os
 import Image
 import uuid
 from datetime import datetime
+#def handle_uploaded_file(f, old_name=None):
+#    upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
+#    now = datetime.now()
+#    dirs = [
+#        upload_dir,
+#        upload_dir  + str(now.year) + '/',
+#        upload_dir  + str(now.year) + '/' + str(now.month) + '/',
+#        ]
+#    for dir in dirs:
+#        if not os.path.isdir(dir):
+#            os.makedirs(dir, 0744)
+#    size = 147, 110
+#    if old_name:
+#        name = old_name
+#    else:
+#        name = str(now.year) + '/' + str(now.month) + '/' + uuid.uuid4().hex + '.jpg'
+#    path = upload_dir + name
+#    with open(path, 'wb+') as destination:
+#        for chunk in f.chunks():
+#            destination.write(chunk)
+#    im = Image.open(path)
+#    im = im.resize(size, Image.ANTIALIAS)
+#    im.save(path, "JPEG",  quality=95)
+#    return name
+
+
 def handle_uploaded_file(f, old_name=None):
     upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
     now = datetime.now()
@@ -210,7 +236,41 @@ def handle_uploaded_file(f, old_name=None):
         for chunk in f.chunks():
             destination.write(chunk)
     im = Image.open(path)
-    im = im.resize(size, Image.ANTIALIAS)
+    image_width = im.size[0]
+    image_hight = im.size[1]
+    image_ratio = float(image_width) / image_hight
+
+    box = [0, 0, 0, 0]
+    if image_ratio <= 1:
+        new_hight = int(image_width / 1.333)
+        vert_offset = int((image_hight - new_hight) / 2)
+        box[0] = 0
+        box[1] = vert_offset
+        box[2] = image_width
+        box[3] = vert_offset + new_hight
+    else:
+        new_width = image_hight * 1.333
+        if new_width > image_width:
+            new_width = image_width
+            new_hight = int(new_width / 1.333)
+            vert_offset = int((image_hight - new_hight) / 2)
+            box[0] = 0
+            box[1] = vert_offset
+            box[2] = new_width
+            box[3] = vert_offset + new_hight
+        else:
+            gor_offset = int((image_width - new_width) / 2)
+            box[0] = gor_offset
+            box[1] = 0
+            box[2] = int(gor_offset + new_width)
+            box[3] = image_hight
+
+    im = im.crop(tuple(box))
+
+    final_hight = 110
+    image_ratio = float(im.size[0]) / im.size[1]
+    final_width = int((image_ratio * final_hight))
+    im = im.resize((final_width, final_hight), Image.ANTIALIAS)
     im.save(path, "JPEG",  quality=95)
     return name
 
