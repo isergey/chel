@@ -5,7 +5,7 @@ from django.db import models
 
 
 class News(models.Model):
-    create_date = models.DateTimeField(auto_now=True, verbose_name=u"Дата создания", db_index=True)
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name=u"Дата создания", db_index=True)
     publicated = models.BooleanField(verbose_name=u'Опубликовано?', default=True, db_index=True)
     class Meta:
         permissions = (
