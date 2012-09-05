@@ -15,9 +15,15 @@
         width: 99%;
     }
     </style>
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Создание новости</legend>
         <fieldset>
+            <div class="control-group ">
+                <label class="control-label" for="id_news_form_avatar">Аватарка к новости</label>
+                <div class="controls">
+                    <input type="file" name="news_form_avatar" id="id_news_form_avatar">
+                </div>
+            </div>
             {% include 'administration/base_form_fields.html' with form=news_form %}
             {% for news_content_form in news_content_forms %}
                 <p>Новостб на языке: <b>{{  news_content_form.lang }}</b>↴</p>

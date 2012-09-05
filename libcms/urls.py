@@ -34,3 +34,14 @@ urlpatterns = patterns('',
     url(r'^sauth/', include('social_auth.urls')),
     url(r'^captcha/', include('captcha.urls')),
 )
+
+
+
+from django.conf import settings
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT,
+            }),
+    )

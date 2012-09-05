@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django import template
 from django.utils.translation import get_language
-from news.models import News, NewsContent
+from ..models import News, NewsContent
 
 register = template.Library()
 @register.inclusion_tag('news/tags/news_feed.html')
@@ -20,5 +21,6 @@ def news_feed(count=5):
         news_list = []
     return ({
         'news_list': news_list,
+        'MEDIA_URL': settings.MEDIA_URL
     })
 

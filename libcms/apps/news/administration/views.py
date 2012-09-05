@@ -10,7 +10,7 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
-from news.models import News, NewsContent
+from ..models import News, NewsContent
 from forms import NewsForm, NewsContentForm
 
 @login_required
@@ -68,12 +68,14 @@ def create_news(request):
             valid = False
             for news_content_form in news_content_forms:
                 valid = news_content_form['form'].is_valid()
-                print valid
                 if not valid:
                     break
 
             if valid:
                 news = news_form.save(commit=False)
+                if 'news_form_avatar' in request.FILES:
+                    avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
+                    news.avatar_img_name = avatar_img_name
                 news.save()
                 for news_content_form in news_content_forms:
                     news_content = news_content_form['form'].save(commit=False)
@@ -93,7 +95,7 @@ def create_news(request):
     return render(request, 'news/administration/create_news.html', {
         'news_form': news_form,
         'news_content_forms': news_content_forms,
-    })
+        })
 
 @login_required
 @permission_required_or_403('news.change_news')
@@ -113,7 +115,14 @@ def edit_news(request, id):
         news_form = NewsForm(request.POST,prefix='news_form', instance=news)
 
         if news_form.is_valid():
-            news_form.save()
+            news = news_form.save(commit=False)
+            if 'news_form_avatar' in request.FILES:
+                if news.avatar_img_name:
+                    handle_uploaded_file(request.FILES['news_form_avatar'], news.avatar_img_name)
+                else:
+                    avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
+                    news.avatar_img_name = avatar_img_name
+            news.save()
             news_content_forms = []
             for lang in settings.LANGUAGES:
                 lang = lang[0]
@@ -157,6 +166,7 @@ def edit_news(request, id):
                     'form':NewsContentForm(prefix='news_content_' + lang),
                     'lang':lang
                 })
+
     return render(request, 'news/administration/edit_news.html', {
         'news_form': news_form,
         'news_content_forms': news_content_forms,
@@ -169,6 +179,42 @@ def edit_news(request, id):
 def delete_news(request, id):
     news = get_object_or_404(News, id=id)
     news.delete()
+    delete_avatar(news.avatar_img_name)
     return redirect('news:administration:news_list')
 
 
+
+
+import os
+import Image
+import uuid
+from datetime import datetime
+def handle_uploaded_file(f, old_name=None):
+    upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
+    now = datetime.now()
+    dirs = [
+        upload_dir,
+        upload_dir  + str(now.year) + '/',
+        upload_dir  + str(now.year) + '/' + str(now.month) + '/',
+        ]
+    for dir in dirs:
+        if not os.path.isdir(dir):
+            os.makedirs(dir, 0744)
+    size = 147, 110
+    if old_name:
+        name = old_name
+    else:
+        name = str(now.year) + '/' + str(now.month) + '/' + uuid.uuid4().hex + '.jpg'
+    path = upload_dir + name
+    with open(path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    im = Image.open(path)
+    im = im.resize(size, Image.ANTIALIAS)
+    im.save(path, "JPEG",  quality=95)
+    return name
+
+def delete_avatar(name):
+    upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
+    if os.path.isfile(upload_dir + name):
+        os.remove(upload_dir + name)
