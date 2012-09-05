@@ -77,8 +77,8 @@ class Library(MPTTModel):
     mail = models.EmailField(max_length=255, verbose_name=u'Адрес электронной почты', blank=True, null=True)
     mail_access = models.CharField(max_length=255, verbose_name=u'Адрес сервера электронной почты', blank=True)
 
-    latitude = models.FloatField(db_index=True, blank=True, null=True, verbose_name=u'Географическая широта')
-    longitude = models.FloatField(db_index=True, blank=True, null=True, verbose_name=u'Географическая долгота')
+    latitude = models.FloatField(db_index=True, blank=True, null=True, verbose_name=u'Географическая широта', default=0)
+    longitude = models.FloatField(db_index=True, blank=True, null=True, verbose_name=u'Географическая долгота', default=0)
 
     weight = models.IntegerField(verbose_name=u'Порядок вывода в списке', default=100, db_index=True)
 

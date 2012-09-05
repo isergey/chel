@@ -1,9 +1,10 @@
 {% load mptt_tags %}
 {% load active_link %}
+{% if nodes %}
 <div class="menu">
 {#    <span class="title">{{ menu.title }}</span>#}
     <ul class="items">
-        {% if nodes %}
+
             {% recursetree nodes %}
 {#                <li {% if path == node.item_title.url  %}class="active"{% endif %}>#}
                 {% url participants_pages:frontend:show library_id node.url_path as node_url %}
@@ -17,7 +18,7 @@
                     </ul>
                 {% endif %}
             {% endrecursetree %}
-        {% endif %}
+
     </ul>
 </div>
-
+{% endif %}

@@ -3,9 +3,9 @@
 {% block title %}Библиотеки{% endblock %}
 {% block index_content %}
     <style>
-    ul.participants li {
-        margin-bottom: 10px;
-    }
+        ul.participants li {
+            margin-bottom: 10px;
+        }
     </style>
     <div class="span12">
         <ul class="breadcrumb">
@@ -18,79 +18,66 @@
             {% endif %}
 
         </ul>
-    <div class="row">
-{#        <div class="span7">#}
-{#            <style>#}
-{#                #map_canvas{#}
-{#                    background: white;#}
-{##}
-{#                    box-shadow: 0 0 10px #999;#}
-{#                    border-radius: 2px;#}
-{#                    border: #ffffff solid 10px;#}
-{#                }#}
-{#            </style>#}
-{#            <div id="map_canvas" style="height: 400px"></div>#}
-{#            {% include 'participants/frontend/map_cbs_js.html' %}#}
-{#        </div>#}
-        <div class="span8">
+        <div class="row">
+            <div class="span8">
 
-            <ul class="participants" style="list-style: none; margin: 0">
-                {% for cbs in  cbs_list %}
-                    {% if cbs.parent_id %}
-                    <li>
-                        <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
-                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                        {% else %} не указан {% endif %}
-                    </li>
-                    {% else %}
-                        <li>
-                            <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
-                            Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
+                <ul class="participants" style="list-style: none; margin: 0">
+                    {% for cbs in  cbs_list %}
+                        {% if cbs.parent_id %}
+                            <li>
+                                <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
+                                Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                             {% else %} не указан {% endif %}
-                        <li>
-                    {% endif %}
-                {% empty %}
-                    Список еще не сформирован
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="span4">
-            <div class="letters">
-                <h3>По начальной букве:</h3>
-                {% for letter in letters %}
-                    <a href="?letter={{ letter }}">{{ letter }}</a>
-                {% endfor %}
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
+                                Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
+                            {% else %} не указан {% endif %}
+                            <li>
+                        {% endif %}
+                    {% empty %}
+                        Список еще не сформирован
+                    {% endfor %}
+                </ul>
             </div>
-            <hr/>
-            <div class="districts">
-                <h3>По районам:</h3>
-                <form method="GET" style="margin: 0">
-                    <select onchange="this.form.submit();" name="district" id="id_district">
-                    <option>Укажите район</option>
-                        {% for district in districts %}
-                            <option value="{{ district.id }}" {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>
-                        {% endfor %}
-                    </select>
-                </form>
+            <div class="span4">
+                <div class="letters">
+                    <h3>По начальной букве:</h3>
+                    {% for letter in letters %}
+                        <a href="?letter={{ letter }}">{{ letter }}</a>
+                    {% endfor %}
+                </div>
+                <hr/>
+                <div class="districts">
+                    <h3>По районам:</h3>
+                    <form method="GET" style="margin: 0">
+                        <select onchange="this.form.submit();" name="district" id="id_district">
+                            <option>Укажите район</option>
+                            {% for district in districts %}
+                                <option value="{{ district.id }}" {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                <hr/>
+                <div class="types">
+                    <h3>По типу:</h3>
+                    <form method="GET" style="margin: 0">
+                        <select onchange="this.form.submit();" name="type" id="id_type">
+                            <option>Укажите тип библиотеки</option>
+                            {% for type in types %}
+                                <option value="{{ type.id }}" {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
             </div>
-            <hr/>
-            <div class="types">
-                <h3>По типу:</h3>
-                <form method="GET" style="margin: 0">
-                    <select onchange="this.form.submit();" name="type" id="id_type">
-                        <option>Укажите тип библиотеки</option>
-                        {% for type in types %}
-                            <option value="{{ type.id }}" {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>
-                        {% endfor %}
-                    </select>
-                </form>
+            <div class="span12">
+                {% admin_pagination cbs_page %}
             </div>
-        </div>
-        <div class="span12">
-            {% admin_pagination cbs_page %}
-        </div>
 
-    </div>
+        </div>
 
     </div>
     <script type="text/javascript">

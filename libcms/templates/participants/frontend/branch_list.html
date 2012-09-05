@@ -35,15 +35,15 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="span5">
+            <div class="span5" id='map_container'>
                 <style>
                     #map_canvas{
                         background: white;
 
                         box-shadow: 0 0 10px #999;
                         border-radius: 2px;
-                        border: #ffffff solid 10px;
-                        padding: 10px;
+                        border: #ffffff solid 5px;
+                        padding: 5px;
                     }
                 </style>
                 <div id="map_canvas" style="height: 400px"></div>
@@ -65,6 +65,12 @@
                 window.open(url,'name',
                         'height=550px,width=460px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
             }
+        }
+    </script>
+    <script type="text/javascript">
+        if (!$('.cbs_menu').children().length){
+            $('#map_container').removeClass('span5');
+            $('#map_container').addClass('span7');
         }
     </script>
 {% endblock %}

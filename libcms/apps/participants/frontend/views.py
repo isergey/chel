@@ -8,17 +8,35 @@ from django.db.models import Q
 from ..models import Library, District, LibraryType
 
 def make_library_dict(library):
-    return {
+
+    lib_dict =  {
         'id': library.id,
         'code': library.code,
         'name': library.name,
-        'postal_address': getattr(library, 'postal_address', u"не указан"),
-        'phone': getattr(library, 'phone', u"не указан"),
-        'plans': getattr(library, 'plans', u"не указано"),
-        'http_service': getattr(library, 'http_service', u"не указан"),
+        'postal_address': library.postal_address,
+        'phone': library.phone,
+        'plans': library.plans,
+        'http_service': library.http_service,
         'latitude': library.latitude,
         'longitude': library.longitude,
     }
+    if not lib_dict['postal_address']:
+        lib_dict['postal_address'] = u'не указан'
+
+    if not lib_dict['phone']:
+        lib_dict['phone'] = u'не указан'
+
+    if not lib_dict['plans']:
+        lib_dict['plans'] = u'не указано'
+
+
+    if not lib_dict['latitude']:
+        lib_dict['latitude'] = 0
+
+    if not lib_dict['longitude']:
+        lib_dict['longitude'] = 0
+
+    return lib_dict
 
 
 def index(request):
