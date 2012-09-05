@@ -18,7 +18,7 @@
         myCollection = new ymaps.GeoObjectCollection();
 
 
-        for (var i = 0; i < 1; i++) {
+        for (i in points) {
 
             var point = points[i];
 
@@ -30,10 +30,9 @@
         }
         orgMap.geoObjects.add(myCollection);
         orgMap.setBounds(myCollection.getBounds());
-        orgMap.zoomRange.get().then(function (zoomRange) {
-            orgMap.setZoom(zoomRange[1]);
-        });
-
+        if (orgMap.getZoom() > 15){
+            orgMap.setZoom(15);
+        }
 
     }
 
