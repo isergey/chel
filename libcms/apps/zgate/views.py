@@ -205,7 +205,7 @@ def save_document(request):
     except SyntaxError as e:
         return HttpResponse(json_error(u'Заказ не выполнен. Возможно, время сессии истекло'))
 
-    comments = None
+    comments = u''
     if 'comments' in request.POST and request.POST['comments']:
         comments = request.POST['comments']
 
