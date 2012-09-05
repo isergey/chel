@@ -1,33 +1,31 @@
-{#{% extends 'themed_frontend_base.html' %}#}
-{#{% block title %}Библиотеки{% endblock %}#}
-{#{% block index_content %}#}
-{#    <div class="span12">#}
-{#        <ul class="breadcrumb">#}
-{#            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>#}
-{#            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>#}
-{#            {% if library.parent_id %}<li><a href="{%  url participants:frontend:branches library.parent.code %}">{{ library.parent.name }}</a> <span class="divider">/</span></li>{% endif %}#}
-{#            <li class="active">{{ library.name }}</li>#}
-{#        </ul>#}
+<!DOCTYPE html>
+<html>
+
+<head>
 <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
 <title>{{ library.name }}</title>
+</head>
+<body style="margin: 10px;">
 
-        <div class="participants">
-            <h3>{{ library.name }}</h3>
-            Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>{% else %} не указан {% endif %}<br/>
-            Адрес: {{ library.postal_address }}
+    <div class="participants">
+        <h3>{{ library.name }}</h3>
+        <b>Адрес:</b> {{ library.postal_address }}<br/>
+        <b>Тел.:</b> {{ library.phone }}<br/>
+        <b>Режим работы:</b> {{ library.plans }}<br/>
+        <b>Сайт:</b> {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>{% else %} не указан {% endif %}<br/>
 
-        </div>
-        <hr/>
-        <style>
-            #map_canvas{
-                background: white;
 
-                box-shadow: 0 0 10px #999;
-                border-radius: 2px;
-                border: #ffffff solid 10px;
-            }
-        </style>
-        <div id="map_canvas" style="width: 95%; height: 300px"></div>
-        {% include 'participants/frontend/map_js.html' %}
-{#    </div>#}
-{#{% endblock %}#}
+    </div>
+    <hr/>
+    <style>
+        #map_canvas{
+            background: white;
+
+            box-shadow: 0 0 10px #999;
+            border-radius: 2px;
+            border: #ffffff solid 10px;
+        }
+    </style>
+    <div id="map_canvas" style="width: 95%; height: 300px"></div>
+    {% include 'participants/frontend/map_js.html' %}
+</body>
