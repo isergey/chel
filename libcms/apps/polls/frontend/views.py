@@ -138,7 +138,7 @@ def results(request, poll_id, poll=None):
 
 
 def set_cookies(response, poller_id):
-    response.set_cookie('polls.id', poller_id)
+    response.set_cookie('polls.id', poller_id, expires=(365*24*3600))
 
 
 def get_poller_id(request):
