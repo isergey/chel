@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import uuid
 from  django.shortcuts import  redirect, render, HttpResponse, get_object_or_404
 from django.core.urlresolvers import reverse
 
@@ -23,15 +24,7 @@ def vote(request, poll_id):
     if not poll.is_active():
         return redirect(reverse('polls:frontend:results', args=(poll.id,)))
 
-    poller_id = request.session.session_key
-
-    if not poller_id:
-        poller_id = hashlib.md5(request.META.get('HTTP_USER_AGENT', '0') + request.META.get('REMOTE_ADDR', '0')).hexdigest()
-
-    if request.user.is_authenticated():
-        poller_id = request.user.username
-#    print request
-    print
+    poller_id = get_poller_id(request)
 
     if not poll.multi_vote:
         votes_in_poll = PolledUser.objects.filter(poller_id=poller_id,poll=poll).count()
@@ -55,15 +48,18 @@ def vote(request, poll_id):
         polled_user = PolledUser(poller_id=poller_id, poll=poll)
         polled_user.save()
 
-
-        return results(request, poll_id, poll)
+        response = results(request, poll_id, poll)
+        set_cookies(response, poller_id)
+        return response
 
     choices = Choice.objects.filter(poll=poll).order_by('-sort')
 
-    return render(request, 'polls/frontend/vote.html',{
+    response =  render(request, 'polls/frontend/vote.html',{
         'poll': poll,
         'choices': choices,
     })
+    set_cookies(response, poller_id)
+    return response
 
 def results(request, poll_id, poll=None):
 
@@ -123,7 +119,7 @@ def results(request, poll_id, poll=None):
         show_results = True
 
     if request.is_ajax():
-        return render(request, 'polls/tags/polls_ajax_results.html', {
+        return  render(request, 'polls/tags/polls_ajax_results.html', {
             'poll': poll,
             'choices_dicts': choices_dicts,
             'show_results': show_results,
@@ -131,9 +127,23 @@ def results(request, poll_id, poll=None):
         })
 
 
-    return render(request, 'polls/frontend/polls_results.html', {
+
+    return  render(request, 'polls/frontend/polls_results.html', {
         'poll': poll,
         'choices_dicts': choices_dicts,
         'show_results': show_results,
         'message': message,
     })
+
+
+
+def set_cookies(response, poller_id):
+    response.set_cookie('polls.id', poller_id)
+
+
+def get_poller_id(request):
+    if request.user.is_authenticated():
+        poller_id = hashlib.md5(request.user.username).hexdigest()
+    else:
+        poller_id =request.COOKIES.get('polls.id',  uuid.uuid4().hex)
+    return  poller_id
