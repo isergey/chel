@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.timezone import utc
 from django.db import models
 import datetime
 POLL_TYPE_CHOICES = (
@@ -32,7 +33,7 @@ class Poll(models.Model):
         null=False, blank=False, default=False)
 
     def is_active(self):
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
         return now >= self.start_poll_date and now < self.end_poll_date
 
 

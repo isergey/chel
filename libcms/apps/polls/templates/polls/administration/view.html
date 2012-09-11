@@ -6,7 +6,7 @@
 {% load add_get_tag %}
 {% block breadcrumb %}
         <li><a href="{% url polls:administration:index %}">Голосования</a> <span class="divider">/</span></li>
-        <li>{{ poll.question }}<span class="divider">/</span></li>
+        <li><a href="{% url polls:administration:edit poll.id %}">{{ poll.question }}</a><span class="divider">/</span></li>
         <li class="active">Управление ответами</li>
 {% endblock %}
 
