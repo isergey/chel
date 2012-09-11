@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.utils.timezone import utc
+from django.utils import timezone
 from django.db import models
 import datetime
 POLL_TYPE_CHOICES = (
     ('radio', u"Радио"),
     ('checkboxes', u"Галочки"),
-    )
+)
 class Poll(models.Model):
     question = models.CharField(verbose_name=u"Вопрос",
         max_length=255, null=False, blank=False)
@@ -33,7 +33,7 @@ class Poll(models.Model):
         null=False, blank=False, default=False)
 
     def is_active(self):
-        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        now = timezone.now()
         return now >= self.start_poll_date and now < self.end_poll_date
 
 
