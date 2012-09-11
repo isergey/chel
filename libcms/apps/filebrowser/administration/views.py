@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from guardian.decorators import permission_required_or_403
 from forms import UploadFileForm, CreateDirectory
 
-FILE_NAME_ENCODING = sys.getfilesystemencoding()
+FILE_NAME_ENCODING = 'utf-8'
 
 mtypes = {
     'gif': 'image',
@@ -91,7 +91,7 @@ def get_dir_map(path, show_path):
 
 
 def handle_uploaded_file(f, path):
-    destination = open(path + '/' + f.name.encode('utf-8'), 'wb+')
+    destination = open(path + '/' + f.name.encode(FILE_NAME_ENCODING), 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
