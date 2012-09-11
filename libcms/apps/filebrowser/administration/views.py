@@ -91,7 +91,7 @@ def get_dir_map(path, show_path):
 
 
 def handle_uploaded_file(f, path):
-    destination = open(path + '/' + f.name.encode(FILE_NAME_ENCODING), 'wb+')
+    destination = open(path + '/' + f.name.encode(sys.getfilesystemencoding()), 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
