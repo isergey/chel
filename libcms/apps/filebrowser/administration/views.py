@@ -202,9 +202,9 @@ def upload(request):
             path = form.cleaned_data['path'].encode(FILE_NAME_ENCODING)
             upload_path = base_uplod_path + path
             file_name = request.FILES['file'].name
-            if os.path.isfile(upload_path + '/' + file_name.encode('utf-8')):
+            if os.path.isfile(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
                 return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename uploadable file.'))
-            elif  os.path.isdir(upload_path + '/' + file_name.encode('utf-8')):
+            elif  os.path.isdir(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
                 return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or rename uploadable file.'))
 
             if not os.path.isdir(upload_path):
