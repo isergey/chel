@@ -199,7 +199,7 @@ def upload(request):
         form = UploadFileForm(request.POST, request.FILES)
 
         if form.is_valid():
-            path = form.cleaned_data['path'].encode(FILE_NAME_ENCODING)
+            path = form.cleaned_data['path']
             upload_path = base_uplod_path + path
             file_name = request.FILES['file'].name
             if os.path.isfile(upload_path + '/' + file_name):
