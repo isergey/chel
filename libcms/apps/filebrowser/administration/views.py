@@ -176,7 +176,7 @@ def delete(request):
         if '..' in path or '/.' in path:
             raise Http404(u"Path not founded")
 
-        delete_path = '%s' % path.encode('utf-8')
+        delete_path = '%s' % path.encode(FILE_NAME_ENCODING)
         current_dir = os.path.split(delete_path)[0]
         
         delete_path = base_uplod_path + delete_path
