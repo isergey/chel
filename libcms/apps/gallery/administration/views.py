@@ -98,6 +98,7 @@ def album_upload(request, id):
 
     album = get_object_or_404(Album, id=id)
     if request.method == 'POST':
+
         form = AlbumImageForm(request.POST, request.FILES)
         if form.is_valid():
             album_image = form.save(commit=False)

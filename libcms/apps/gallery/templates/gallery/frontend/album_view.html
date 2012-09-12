@@ -51,7 +51,7 @@
 {#                                     alt="{{ album_image.comments }}">#}
 {#                            </a>#}
                             <a href="{{ MEDIA_URL }}gallery/{{ album.slug }}/{{ album_image.get_image_file_name }}">
-                                <img src="{{ MEDIA_URL }}gallery/{{ album.slug }}/thumbinails/{{ album_image.get_image_file_name }}" title="{{ image.title }}"
+                                <img src="{{ MEDIA_URL }}gallery/{{ album.slug|safe }}/thumbinails/{{ album_image.get_image_file_name|safe }}" title="{{ image.title }}"
                                      alt="{{ album_image.comments }}">
                             </a>
                         </li>
