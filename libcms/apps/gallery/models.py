@@ -31,7 +31,9 @@ class Album(models.Model):
     description = models.TextField(verbose_name=u'Описание', blank=True)
     public = models.BooleanField(verbose_name=u'Опубликован', default=False, db_index=True )
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
-
+    def save(self):
+        if hasattr(self, 'id'):
+            self.slug = Album.objects.get(id=self.id).slug
     def __unicode__(self):
         return self.title
 
@@ -52,9 +54,7 @@ class AlbumImage(models.Model):
     image = models.FileField(upload_to=image_file_name, verbose_name=u'Файл с изображением', max_length=512)
     comments = models.CharField(max_length=512, blank=True, verbose_name=u'Коментарии к изображению')
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
-    def save(self):
-        if hasattr(self, 'id'):
-            self.slug = Album.objects.get(id=self.id).slug
+
     def __unicode__(self):
         return self.comments
 
