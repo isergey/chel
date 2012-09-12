@@ -32,7 +32,7 @@ class Album(models.Model):
     public = models.BooleanField(verbose_name=u'Опубликован', default=False, db_index=True )
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
     def save(self):
-        if hasattr(self, 'id'):
+        if getattr(self, 'id', None):
             self.slug = Album.objects.get(id=self.id).slug
     def __unicode__(self):
         return self.title
