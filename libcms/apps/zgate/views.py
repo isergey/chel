@@ -414,6 +414,7 @@ def index(request, catalog_id='', slug=''):
             )
             print "rf"
             response = render_form(request, zgate_form, catalog)
+            print "rf1"
             return set_cookies_to_response(cookies, response)
 
 
