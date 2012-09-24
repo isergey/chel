@@ -557,7 +557,7 @@ def simple_search(request):
         get_params.append(urlquote('CHAR_SET') + '=' + urlquote('UTF-8'))
         get_params.append(urlquote('RECSYNTAX') + '=' + urlquote('1.2.840.10003.5.28'))
 
-        link = reverse('zgate_index', args=(zcatalog.id,)) + '?' + '&'.join(get_params)
+        link = reverse('zgate_slug_index', args=(zcatalog.latin_title,)) + '?' + '&'.join(get_params)
 
         response = redirect(link)
         return set_cookies_to_response(cookies, response)
