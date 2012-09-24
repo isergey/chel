@@ -550,7 +550,7 @@ def simple_search(request):
         get_params.append(urlquote('ACTION') + '=' + urlquote('SEARCH'))
         get_params.append(urlquote('SESSION_ID') + '=' + urlquote(session_id))
         get_params.append(urlquote('LANG') + '=' + urlquote(zcatalog.default_lang))
-        get_params.append(urlquote('DBNAME') + '=' + urlquote('books'))
+        get_params.append(urlquote('DBNAME') + '=' + urlquote('books,pokrovsk_br,civil_press,languages,notes,periodics,analytics,arts,staff,kraychel,ural_el,audiovisuals'))
 
         get_params.append(urlquote('TERM_1') + '=' + urlquote('%s[1,4:1.2.840.10003.3.1,2,0,4,0,5,1]' % q))
         get_params.append(urlquote('ESNAME') + '=' + urlquote('B'))
