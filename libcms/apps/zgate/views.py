@@ -536,7 +536,7 @@ def make_saved_request(request, request_id=''):
 def simple_search(request):
     q = request.GET.get('text', None)
     if q:
-        zcatalog = get_object_or_404(ZCatalog, latin_title='books')
+        zcatalog = get_object_or_404(ZCatalog, latin_title='allbases')
         (zgate_form, cookies) = zworker.get_zgate_form(
             zgate_url=zcatalog.url,
             xml=zcatalog.xml,
