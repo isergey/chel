@@ -341,6 +341,7 @@ def draw_order(request, catalog_id='', slug=''):
 
 @csrf_exempt
 def index(request, catalog_id='', slug=''):
+    print "index"
     catalog = None
     if catalog_id:
         catalog = get_object_or_404(ZCatalog, id=catalog_id)
@@ -411,7 +412,7 @@ def index(request, catalog_id='', slug=''):
                 entry_point=reverse('zgate_slug_index', args=[catalog.latin_title]),
                 cookies=request.COOKIES
             )
-
+            print "rf"
             response = render_form(request, zgate_form, catalog)
             return set_cookies_to_response(cookies, response)
 
@@ -445,7 +446,7 @@ def load_documents(request):
         if request.user.is_authenticated():
             owner_id = request.user.username
         elif request.session.session_key:
-            owner_id = session_key
+            owner_id = request.session.session_key.session_key
 
         documents = []
 
@@ -470,7 +471,7 @@ def delete_saved_document(request, document_id=''):
     if request.user.is_authenticated():
         owner_id = request.user.username
     elif request.session.session_key:
-        owner_id = session_key
+        owner_id = request.session.session_key
 
     saved_document = get_object_or_404(SavedDocument,id=document_id, owner_id=owner_id)
     saved_document.delete()
