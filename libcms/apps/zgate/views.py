@@ -341,7 +341,6 @@ def draw_order(request, catalog_id='', slug=''):
 
 @csrf_exempt
 def index(request, catalog_id='', slug=''):
-    print "index"
     catalog = None
     if catalog_id:
         catalog = get_object_or_404(ZCatalog, id=catalog_id)
@@ -412,9 +411,7 @@ def index(request, catalog_id='', slug=''):
                 entry_point=reverse('zgate_slug_index', args=[catalog.latin_title]),
                 cookies=request.COOKIES
             )
-            print "rf"
             response = render_form(request, zgate_form, catalog)
-            print "rf1"
             return set_cookies_to_response(cookies, response)
 
 
