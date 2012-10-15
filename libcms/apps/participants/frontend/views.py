@@ -70,7 +70,6 @@ def index(request):
         else:
             filter = True
             types = LibraryType.objects.filter(id=request.GET.get('type'))
-            print types
             cbs_list = Library.objects.filter(types__in=types).order_by('weight').exclude(parent=None)
             filter_title = u'библиотеки типа: '
 #            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
