@@ -69,9 +69,10 @@ def index(request):
             pass
         else:
             filter = True
-            cbs_list = Library.objects.filter(types__in=request.GET.get('type')).order_by('weight').exclude(parent=None)
-            filter_title = u'библиотеки типа: '
             types = LibraryType.objects.filter(id__in=request.GET.get('type'))
+            cbs_list = Library.objects.filter(types__in=types).order_by('weight').exclude(parent=None)
+            filter_title = u'библиотеки типа: '
+#            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
             type_titles = []
             for type in types:
                 type_titles.append(type.name)
