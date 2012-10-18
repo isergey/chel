@@ -58,7 +58,7 @@
                     {% else %} не указан {% endif %}
                     </li>
                 {% else %}
-                    <li>
+                    <li  style="margin: 0">
                         <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
                         Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                     {% else %} не указан {% endif %}
