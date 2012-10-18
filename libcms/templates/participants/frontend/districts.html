@@ -53,15 +53,15 @@
             {% for cbs in  main_branches %}
                 {% if cbs.parent_id %}
                     <li>
-                        <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
-                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                    {% else %} не указан {% endif %}
+                        <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}</a>
+{#                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
+{#                    {% else %} не указан {% endif %}#}
                     </li>
                 {% else %}
                     <li>
-                        <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
-                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
-                    {% else %} не указан {% endif %}
+                        <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}</a>
+{#                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
+{#                    {% else %} не указан {% endif %}#}
                     <li>
                 {% endif %}
             {% empty %}
