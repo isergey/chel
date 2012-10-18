@@ -82,13 +82,13 @@ def index(request):
     if not filter:
         cbs_list = Library.objects.filter(parent=None).order_by('weight')
     js_orgs = []
-    letters = []
+
 
     cbs_page = get_page(request, cbs_list)
 
     for org in cbs_page.object_list:
         js_orgs.append(make_library_dict(org))
-
+    letters = []
     letters_libs = Library.objects.all().values('letter')
     for org in letters_libs:
         letters.append(org['letter'])
@@ -159,3 +159,77 @@ def get_branches_by_district(request):
         js_orgs.append(make_library_dict(library))
 
     return  HttpResponse(simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False))
+
+
+
+def districts(request):
+    filter = False
+    filter_title = u''
+    cbs_list = None
+    if request.GET.get('letter', None):
+        filter = True
+        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('weight').exclude(parent=None)
+        filter_title = u'библиотеки на букву: ' + request.GET.get('letter')
+    if request.GET.get('district', None):
+        try:
+            int(request.GET.get('district'))
+        except ValueError:
+            pass
+        else:
+            filter = True
+            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('weight').exclude(parent=None)
+            filter_title = u'библиотеки района: '
+            try:
+                district = District.objects.get(id=request.GET.get('district'))
+                district_title = unicode(district)
+            except District.DoesNotExist:
+                district_title = u'район не найден'
+            filter_title +=  district_title
+
+    if request.GET.get('type', None):
+        try:
+            int(request.GET.get('type'))
+        except ValueError:
+            pass
+        else:
+            filter = True
+            types = LibraryType.objects.filter(id=request.GET.get('type'))
+            cbs_list = Library.objects.filter(types__in=types).order_by('weight').exclude(parent=None)
+            filter_title = u'библиотеки типа: '
+            #            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
+            type_titles = []
+            for type in types:
+                type_titles.append(type.name)
+            filter_title +=  u', '.join(type_titles)
+
+
+#    if not filter:
+#        cbs_list = Library.objects.filter(parent=None).order_by('weight')
+    js_orgs = []
+
+    cbs_page = None
+    if cbs_list:
+        cbs_page = get_page(request, cbs_list)
+        cbs_list = cbs_page.object_list
+        for org in cbs_page.object_list:
+            js_orgs.append(make_library_dict(org))
+
+
+
+    districts = District.objects.all().order_by('name')
+    letters = []
+    letters_libs = Library.objects.all().values('letter')
+    for org in letters_libs:
+        letters.append(org['letter'])
+    types = LibraryType.objects.all()
+
+    return render(request, 'participants/frontend/districts.html', {
+        'cbs_list': cbs_list,
+        'js_orgs': js_orgs,
+        'letters': letters,
+        'districts': districts,
+        'types': types,
+        'cbs_page': cbs_page,
+        'filter': filter,
+        'filter_title': filter_title
+    })

@@ -1,0 +1,16 @@
+{% extends 'frontend_base.html' %}
+{% block title %}Библиотеки{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Библиотеки</li>
+    </ul>
+    <ul class="districts">
+        {% for district in  districts %}
+            <li><a href="#1">{{ district.name }}</a></li>
+        {% empty %}
+            Список еще не сформирован
+        {% endfor %}
+    </ul>
+
+{% endblock %}
