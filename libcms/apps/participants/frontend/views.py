@@ -225,8 +225,13 @@ def districts(request):
 
     types = LibraryType.objects.all()
 
+    main_branches = []
+    if not cbs_list:
+        main_branches = Library.objects.filter(main=True).order_by('weight').exclude(parent=None)
+
     return render(request, 'participants/frontend/districts.html', {
         'cbs_list': cbs_list,
+        'main_branches': main_branches,
         'js_orgs': js_orgs,
         'letters': letters,
         'districts': districts,

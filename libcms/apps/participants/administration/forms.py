@@ -5,10 +5,13 @@ from django.contrib.auth.models import User, Group
 
 from participants.models import Library, LibraryType, District
 
-class LibraryForm(forms.ModelForm):
-    class Meta:
-        model=Library
-        exclude = ('parent',)
+def get_library_form(exclude_fields=list('parent')):
+    class LibraryForm(forms.ModelForm):
+        class Meta:
+            model=Library
+            exclude = exclude_fields
+
+    return LibraryForm
 
 
 class LibraryTypeForm(forms.ModelForm):

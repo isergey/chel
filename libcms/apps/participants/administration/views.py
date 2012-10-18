@@ -9,7 +9,7 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
 
 from ..models import Library, LibraryType, District, LibraryContentEditor
-from forms import LibraryForm, LibraryTypeForm, DistrictForm
+from forms import get_library_form, LibraryTypeForm, DistrictForm
 #@permission_required_or_403('accounts.view_users')
 
 def check_owning(user, library):
@@ -61,6 +61,11 @@ def list(request, parent=None):
 @transaction.commit_on_success
 def create(request, parent=None):
     if parent:
+        LibraryForm = get_library_form(exclude_fields=('parent',))
+    else:
+        LibraryForm = get_library_form(exclude_fields=('parent','main'))
+
+    if parent:
         if not request.user.has_perm('participants.add_library'):
             return HttpResponse(u'У Вас нет прав на создание филиалов')
 
@@ -110,6 +115,12 @@ def edit(request, id):
         cbs = get_cbs(parent)
         if not check_owning(request.user, cbs) or not request.user.has_perm('participants.change_library'):
             return HttpResponse(u'У Вас нет прав на редактирование филиалов в этой ЦБС')
+
+    if parent:
+        LibraryForm = get_library_form(exclude_fields=('parent',))
+    else:
+        LibraryForm = get_library_form(exclude_fields=('parent','main'))
+
 
     if request.method == 'POST':
         library_form = LibraryForm(request.POST, prefix='library_form', instance=library)
