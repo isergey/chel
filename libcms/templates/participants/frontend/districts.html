@@ -7,7 +7,6 @@
             margin-bottom: 10px;
         }
     </style>
-{#    <div class="span12">#}
         <ul class="breadcrumb">
             <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
             {% if filter %}
@@ -47,14 +46,13 @@
             </form>
         </div>
     <div style="clear: both"></div>
-        <hr/>
-{#        <div class="row">#}
-{#            <div class="span8">#}
+    <hr/>
+
     {% if cbs_list %}
         <ul class="participants" style="list-style: none; margin: 0">
             {% for cbs in  cbs_list %}
                 {% if cbs.parent_id %}
-                    <li>
+                    <li style="margin: 0">
                         <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
                         Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                     {% else %} не указан {% endif %}
@@ -82,43 +80,6 @@
         </ul>
     {% endif %}
 
-{#            </div>#}
-{#            <div class="span4">#}
-{#                <div class="letters">#}
-{#                    <h3>По начальной букве:</h3>#}
-{#                    {% for letter in letters %}#}
-{#                        <a href="?letter={{ letter }}">{{ letter }}</a>#}
-{#                    {% endfor %}#}
-{#                </div>#}
-{#                <hr/>#}
-{#                <div class="districts">#}
-{#                    <h3>По районам:</h3>#}
-{#                    <form method="GET" style="margin: 0">#}
-{#                        <select onchange="this.form.submit();" name="district" id="id_district">#}
-{#                            <option>Укажите район</option>#}
-{#                            {% for district in districts %}#}
-{#                                <option value="{{ district.id }}" {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-{#                    </form>#}
-{#                </div>#}
-{#                <hr/>#}
-{#                <div class="types">#}
-{#                    <h3>По типу:</h3>#}
-{#                    <form method="GET" style="margin: 0">#}
-{#                        <select onchange="this.form.submit();" name="type" id="id_type">#}
-{#                            <option>Укажите тип библиотеки</option>#}
-{#                            {% for type in types %}#}
-{#                                <option value="{{ type.id }}" {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-{#                    </form>#}
-{#                </div>#}
-{#            </div>#}
-
-{#        </div>#}
-{##}
-{#    </div>#}
 
     <script type="text/javascript">
         function modalWin(url) {

@@ -222,7 +222,7 @@ def districts(request):
     for org in letters_libs:
         letters.append(org['letter'])
     letters = list(set(letters))
-    
+
     types = LibraryType.objects.all()
 
     return render(request, 'participants/frontend/districts.html', {
