@@ -75,7 +75,7 @@
         <ul class="participants" style="list-style: none; margin: 0">
             {% for district in  districts %}
                 <li>
-                <a href="#1">{{ district.name }}</a>
+                <a href="./?district={{ district.id }}">{{ district.name }}</a>
             {% empty %}
                 Список еще не сформирован
             {% endfor %}
