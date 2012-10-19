@@ -24,7 +24,7 @@
             {% endfor %}
         </div>
         <hr/>
-        <div class="types" style="float:left">
+        <div class="types" style="float:left; margin-left: 50px;">
             <h4>По типу:</h4>
             <form method="GET" style="margin: 0">
                 <select onchange="this.form.submit();" name="type" id="id_type">
@@ -35,7 +35,7 @@
                 </select>
             </form>
         </div>
-        <div class="districts" style="float: right">
+        <div class="districts" style="float: right; ; margin-right: 50px;">
             <h4>По районам:</h4>
             <form method="GET" style="margin: 0">
                 <select onchange="this.form.submit();" name="district" id="id_district">
@@ -52,13 +52,13 @@
         <ul class="participants" style="list-style: none; margin: 0">
             {% for cbs in  main_branches %}
                 {% if cbs.parent_id %}
-                    <li>
+                    <li style="margin: 0">
                         <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}</a>
 {#                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
 {#                    {% else %} не указан {% endif %}#}
                     </li>
                 {% else %}
-                    <li>
+                    <li style="margin: 0">
                         <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}</a>
 {#                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
 {#                    {% else %} не указан {% endif %}#}
@@ -74,13 +74,13 @@
         <ul class="participants" style="list-style: none; margin: 0">
             {% for cbs in  cbs_list %}
                 {% if cbs.parent_id %}
-                    <li>
+                    <li style="margin: 0">
                         <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
                         Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                     {% else %} не указан {% endif %}
                     </li>
                 {% else %}
-                    <li>
+                    <li style="margin: 0">
                         <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
                         Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                     {% else %} не указан {% endif %}
