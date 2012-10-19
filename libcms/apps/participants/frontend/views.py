@@ -222,7 +222,7 @@ def districts(request):
     for org in letters_libs:
         letters.append(org['letter'])
     letters = list(set(letters))
-
+    letters.sort()
     types = LibraryType.objects.all()
 
     main_branches = []
