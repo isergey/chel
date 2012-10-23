@@ -8,7 +8,7 @@
         {% if nodes %}
             {% recursetree nodes %}
                 <li {% if path == node.item_title.url  %}class="active"{% endif %}>
-                    <a href="{{ ask_librarian_index }}?category2={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>
+                    <a href="{{ ask_librarian_index }}?category={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>
                 </li>
                 {% if not node.is_leaf_node %}
 
