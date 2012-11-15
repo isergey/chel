@@ -87,5 +87,19 @@ xmlns:marc="http://www.loc.gov/MARC21/slim" exclude-result-prefixes="marc">
 	    </xsl:otherwise>
 	  </xsl:choose>
 	  </xsl:element>
-	</xsl:template>							
+	</xsl:template>
+    <xsl:template name="record.diagnostic">
+        <xsl:param name="hideable" select="false()"/>
+        <xsl:element name="div">
+            <xsl:attribute name="class">diag</xsl:attribute>
+            <xsl:if test="$hideable and $hide.diag and count(../record[@syntax='diagnostic']) &gt; $diag.threshold">
+                <xsl:attribute name="style">display: none;</xsl:attribute>
+            </xsl:if>
+            <xsl:variable name="n1" select="string(diagSetId)"/>
+            <xsl:variable name="n2" select="condition"/>
+            <xsl:value-of select="$dia/diagnostic/set[@id=$n1]/localization[@lang=$lang]/code[@value=$n2]"/>
+            <xsl:text>: </xsl:text>
+            <xsl:value-of select="addInfo"/>
+        </xsl:element>
+    </xsl:template>
 </xsl:stylesheet>
