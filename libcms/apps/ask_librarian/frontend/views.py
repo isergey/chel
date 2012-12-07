@@ -17,6 +17,10 @@ def index(request):
         return redirect('ask_librarian:frontend:detail', id=id)
 
     category = request.GET.get('category', None)
+    try:
+        category = int(category)
+    except ValueError:
+        raise Http404()
     categories = []
     category_m = None
     if category:
