@@ -74,7 +74,10 @@ def create_news(request):
             if valid:
                 news = news_form.save(commit=False)
                 if 'news_form_avatar' in request.FILES:
-                    avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
+                    try:
+                        avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
+                    except IOError as e:
+                        return HttpResponse(u'Возникла ошибка при загрузке аватарки:' + e.message)
                     news.avatar_img_name = avatar_img_name
                 news.save()
                 for news_content_form in news_content_forms:
