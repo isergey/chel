@@ -1,0 +1,25 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ idate }}{% endblock %}
+{% block content %}
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        {% if request.GET.back %}
+            <li><a href="{{ request.GET.back }}">Календарь знаменательных дат</a> <span class="divider">/</span></li>
+        {% else %}
+            <li><a href="{% url cid:frontend:index %}">Календарь знаменательных дат</a> <span class="divider">/</span></li>
+        {% endif %}
+        <li class="active">{{ idate }}</li>
+
+    </ul>
+    <div>
+    <div>
+        Дата события: {{ idate.date }}<br/>
+        Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}
+    </div>
+    <hr/>
+        <b>Описание</b>:{{ idate.description|safe }}
+    <hr/>
+        <b>Литература</b>:{{ idate.literature|safe }}
+    </div>
+{% endblock %}

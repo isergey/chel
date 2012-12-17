@@ -1,0 +1,22 @@
+{% extends 'cid/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load adminmedia %}
+{% block breadcrumb %}
+    {% breadcrumb "Знаменательные даты" cid:administration:id_list %}
+    {% breadcrumb "Список" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <ul>
+    {% for idate in idates_page.object_list %}
+        <li>
+            <div><a href="{% url cid:administration:edit_id idate.id %}">{{ idate }} ({{ idate.date }})</a></div>
+            <div>Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
+        </li>
+    {% endfor %}
+    </ul>
+    {% admin_pagination idates_page %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'cid/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load adminmedia %}
+{% block breadcrumb %}
+    {% breadcrumb "Знаменательные даты" cid:administration:id_list %}
+    {% breadcrumb "Создание знаменательной даты" %}
+
+{% endblock %}
+
+{% block action_content %}
+
+    <script type="text/javascript" src="{% url jsi18n %}"></script>
+    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/jquery.init.js"></script>
+    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/core.js"></script>
+    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/calendar.js"></script>
+    <script type="text/javascript" src="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}css/widgets.css"/>
+
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+    </script>
+    <style>
+        form input[type=text], textarea{
+            width: 95%;
+        }
+        form input[type=checkbox]{
+            display: inline-block;
+        }
+    </style>
+    <form class=
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Создание знаменательной даты</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=form %}
+        </fieldset>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Создать</button>
+        </div>
+    </form>
+    {% include 'cid/administration/editor.html' %}
+{% endblock %}

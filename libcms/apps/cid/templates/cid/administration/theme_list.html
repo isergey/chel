@@ -1,0 +1,19 @@
+{% extends 'cid/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Темы" cid:administration:theme_list %}
+    {% breadcrumb "Список" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <ul>
+    {% for theme in themes_page.object_list %}
+        <li><a href="{% url cid:administration:edit_theme theme.id %}">{{ theme }}</a></li>
+    {% endfor %}
+    </ul>
+    {% admin_pagination themes_page %}
+{% endblock %}

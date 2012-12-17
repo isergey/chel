@@ -1,0 +1,68 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+
+    <ul class="breadcrumb">
+
+        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Календарь знаменательных дат</li>
+
+    </ul>
+
+    <div>
+        <div>
+            <h3>Фильтр событий</h3>
+            {% if errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        <div>
+            <ul style="float: left; width: 200px">
+                <li><a href="?day={{ now|date:"d" }}&month={{ now|date:"m" }}&year={{ now|date:"Y" }}">Сегодня</a></li>
+                <li><a href="?month={{ now|date:"m" }}&year={{ now|date:"Y" }}">Текущий месяц</a></li>
+                <li><a href="?year={{ now|date:"Y" }}">Текущий год</a></li>
+            </ul>
+            <div style="float: left; width: 350px;"">
+                         Укажите интересующую дату (можно по отдельности):<br/>
+                    <form action="" method="GET">
+                        Год: <input type="text" name="year" value="{{ request.GET.year|default_if_none:"" }}" style="width: 50px"/>
+                        Месяц: <input type="text" name="month" value="{{ request.GET.month|default_if_none:"" }}" style="width: 50px"/>
+                        День: <input type="text" name="day" value="{{ request.GET.day|default_if_none:"" }}" style="width: 50px"/>
+                        <div><input type="submit" value="Показать" class="btn"/></div>
+                    </form>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+            <ul>
+                Тип:
+                {% for type in types %}
+                    <li><a href="?type={{ type.id }}">{{ type }}</a></li>
+                {% endfor %}
+            </ul>
+            <ul>
+                Тема:
+                {% for theme in themes %}
+                    <li><a href="?theme={{ theme.id }}">{{ theme }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+        <hr/>
+            <ul>
+                {% for event in events_page.object_list %}
+                    <li>
+                        <a href="{% url cid:frontend:detail event.id %}?back={{ request.get_full_path }}">{{ event }} ({{ event.date }})</a>
+                        <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% if events_page %}
+        {% admin_pagination events_page %}
+    {% endif %}
+    </div>
+{% endblock %}

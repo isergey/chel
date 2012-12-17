@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^gallery/', include('gallery.urls', namespace='gallery')),
     (r'^guestbook/', include('guestbook.urls', namespace='guestbook')),
     (r'^polls/', include('polls.urls', namespace='polls')),
+    (r'^cid/', include('cid.urls', namespace='cid')),
 #    (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
 
     # Uncomment the next line to enable the admin:

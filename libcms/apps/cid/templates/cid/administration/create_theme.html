@@ -1,0 +1,22 @@
+{% extends 'cid/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+
+{% block breadcrumb %}
+    {% breadcrumb "Темы" cid:administration:theme_list %}
+    {% breadcrumb "Создание темы для знаменательных дат" %}
+
+{% endblock %}
+
+{% block action_content %}
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <legend>Создание темы для знаменательных дат</legend>
+        <fieldset>
+            {% include 'administration/base_form_fields.html' with form=form %}
+        </fieldset>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Создать</button>
+        </div>
+    </form>
+{% endblock %}
