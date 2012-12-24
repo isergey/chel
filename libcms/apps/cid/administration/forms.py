@@ -1,7 +1,7 @@
 # encoding: utf-8
 from django import forms
 from django.contrib.admin import widgets
-from ..models import Type, Theme, ImportantDate
+from ..models import Type,  ImportantDate
 
 class TypeForm(forms.Form):
     types = forms.ModelMultipleChoiceField(
@@ -11,9 +11,9 @@ class TypeForm(forms.Form):
     )
 
 
-class ThemeForm(forms.ModelForm):
-    class Meta:
-        model = Theme
+#class ThemeForm(forms.ModelForm):
+#    class Meta:
+#        model = Theme
 
 
 

@@ -1,4 +1,5 @@
 # encoding: utf-8
+from django.conf import settings
 from django.db import models
 
 
@@ -16,10 +17,6 @@ class Type(models.Model):
     def __unicode__(self):
         return self.get_variant_display()
 
-class Theme(models.Model):
-    title = models.CharField(max_length=512, verbose_name=u'Тема')
-    def __unicode__(self):
-        return self.title
 
 class ImportantDate(models.Model):
     date = models.DateField(verbose_name=u'Дата события', db_index=True)
@@ -28,7 +25,7 @@ class ImportantDate(models.Model):
     org_title = models.CharField(verbose_name=u'Название организации', max_length=512, blank=True, null=True)
     event_title = models.CharField(verbose_name=u'Название мероприятия', max_length=512, blank=True, null=True)
     geo_title = models.CharField(verbose_name=u'Наименование геогр. объекта', max_length=512, blank=True, null=True)
-    theme = models.ForeignKey(Theme, verbose_name=u'Тема', null=True, blank=True)
+    theme = models.CharField(verbose_name=u'Тема', max_length=512, blank=True, null=True)
     description = models.TextField(verbose_name=u'Описание', blank=True)
     literature = models.TextField(verbose_name=u'Литература', blank=True)
     create_date = models.DateTimeField(verbose_name=u'Дата создания', db_index=True, auto_now_add=True)
@@ -53,3 +50,72 @@ class ImportantDate(models.Model):
 
         return u'. '.join(lines)
 
+
+from django.db.models.signals import post_save, post_delete
+from django.utils.html import strip_tags
+from solr.solr import Solr, SolrError
+
+def update_doc(sender, **kwargs):
+
+    idmodel = (kwargs['instance'])
+    types = []
+    for type in idmodel.type.all():
+        types.append(type.get_variant_display())
+
+    doc = {
+        'id': idmodel.id,
+    }
+
+    if types:
+        doc['type_s'] = types
+
+    if idmodel.fio:
+        doc['fio_t'] = idmodel.fio
+
+    if idmodel.org_title:
+        doc['org_title_t'] = idmodel.org_title
+
+    if idmodel.org_title:
+        doc['event_title_t'] = idmodel.event_title
+
+    if idmodel.geo_title:
+        doc['geo_title_t'] = idmodel.geo_title
+
+    if idmodel.theme:
+        doc['theme_t'] = idmodel.theme
+
+    if idmodel.description:
+        doc['description_t'] = strip_tags(idmodel.description)
+
+    if idmodel.literature:
+        doc['literature_t'] = strip_tags(idmodel.literature)
+
+
+    try:
+        solr_conf = settings.CID['solr']
+        solr = Solr(solr_conf['addr'])
+        collection = solr.get_collection(solr_conf['collection'])
+        collection.add([doc])
+        collection.commit()
+    except SolrError as e:
+        raise e
+
+
+post_save.connect(update_doc, sender=ImportantDate)
+
+
+
+def delete_doc(sender, **kwargs):
+
+    idmodel = (kwargs['instance'])
+    try:
+        solr_conf = settings.CID['solr']
+        solr = Solr(solr_conf['addr'])
+        collection = solr.get_collection(solr_conf['collection'])
+        collection.delete([idmodel.id])
+        collection.commit()
+    except SolrError as e:
+        raise e
+
+
+post_delete.connect(delete_doc, sender=ImportantDate)

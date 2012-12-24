@@ -29,12 +29,14 @@
             <div style="float: left; width: 350px;"">
                          Укажите интересующую дату (можно по отдельности):<br/>
                     <form action="" method="GET">
-                        Год: <input type="text" name="year" value="{{ request.GET.year|default_if_none:"" }}" style="width: 50px"/>
-                        Месяц: <input type="text" name="month" value="{{ request.GET.month|default_if_none:"" }}" style="width: 50px"/>
-                        День: <input type="text" name="day" value="{{ request.GET.day|default_if_none:"" }}" style="width: 50px"/>
+                        Дата(гггг.мм.дд): <input type="text" name="year" value="{{ request.GET.year|default_if_none:"" }}" style="width: 50px"/>
+                        .<input type="text" name="month" value="{{ request.GET.month|default_if_none:"" }}" style="width: 50px"/>
+                        .<input type="text" name="day" value="{{ request.GET.day|default_if_none:"" }}" style="width: 50px"/>
                         <div><input type="submit" value="Показать" class="btn"/></div>
                     </form>
             </div>
+
+
             <div style="clear: both"></div>
         </div>
             <ul>
@@ -43,23 +45,38 @@
                     <li><a href="?type={{ type.id }}">{{ type }}</a></li>
                 {% endfor %}
             </ul>
-            <ul>
-                Тема:
-                {% for theme in themes %}
-                    <li><a href="?theme={{ theme.id }}">{{ theme }}</a></li>
-                {% endfor %}
-            </ul>
+{#            <ul>#}
+{#                Тема:#}
+{#                {% for theme in themes %}#}
+{#                    <li><a href="?theme={{ theme.id }}">{{ theme }}</a></li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
         </div>
+    <h3>Поиск событий:</h3>
+    <form method="GET">
+        {#                <div class="input-append">#}
+        <select name="attr" class="span2">
+            <option value="all_t">Везде</option>
+            <option value="fio_t">Персоналия</option>
+            <option value="org_title_t">Организация</option>
+            <option value="event_title_t">Мероприятие</option>
+            <option value="geo_title_t">Географический объект</option>
+            <option value="theme_t">Тема</option>
+        </select>
+        <input class="span5" id="appendedInputButton" type="text" value="{{ request.GET.q }}" name="q">
+        <input class="btn" type="submit" value="Искать"/>
+        {#                </div>#}
+    </form>
         <div>
         <hr/>
-            <ul>
-                {% for event in events_page.object_list %}
-                    <li>
-                        <a href="{% url cid:frontend:detail event.id %}?back={{ request.get_full_path }}">{{ event }} ({{ event.date }})</a>
-                        <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
-                    </li>
-                {% endfor %}
-            </ul>
+        <ul style="list-style: none; margin: 0">
+            {% for event in events %}
+                <li>
+                    <a href="{% url cid:frontend:detail event.id %}?back={{ request.get_full_path }}">{{ event }} ({{ event.date }})</a>
+                    <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
+                </li>
+            {% endfor %}
+        </ul>
         </div>
     {% if events_page %}
         {% admin_pagination events_page %}
