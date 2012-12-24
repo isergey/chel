@@ -19,6 +19,7 @@ def index(request):
     errors = []
 
     attr = request.GET.get('attr', None)
+    search=False
     q = request.GET.get('q', None)
     if attr and q:
         attrs, values = extract_request_query_attrs(request)
@@ -45,11 +46,11 @@ def index(request):
             ids.append(doc['id'])
         events = get_records(ids)
         events_page.object_list = events
-
+        search = True
 
             #events_page = result
 
-    if not events:
+    if not search:
         q = Q()
         try:
             if year:
