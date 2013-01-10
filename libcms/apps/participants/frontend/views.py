@@ -177,7 +177,7 @@ def districts(request):
             pass
         else:
             filter = True
-            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('weight').exclude(parent=None)
+            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('name').exclude(parent=None)
             filter_title = u'библиотеки района: '
             try:
                 district = District.objects.get(id=request.GET.get('district'))
@@ -194,7 +194,7 @@ def districts(request):
         else:
             filter = True
             types = LibraryType.objects.filter(id=request.GET.get('type'))
-            cbs_list = Library.objects.filter(types__in=types).order_by('weight').exclude(parent=None)
+            cbs_list = Library.objects.filter(types__in=types).order_by('name').exclude(parent=None)
             filter_title = u'библиотеки типа: '
             #            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
             type_titles = []
