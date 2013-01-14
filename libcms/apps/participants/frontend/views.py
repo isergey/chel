@@ -44,7 +44,7 @@ def index(request):
     filter_title = u''
     if request.GET.get('letter', None):
         filter = True
-        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('name').exclude(parent=None)
+        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('weight').order_by('name').exclude(parent=None)
         filter_title = u'библиотеки на букву: ' + request.GET.get('letter')
     if request.GET.get('district', None):
         try:
@@ -53,7 +53,7 @@ def index(request):
             pass
         else:
             filter = True
-            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('name').exclude(parent=None)
+            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('weight').order_by('name').exclude(parent=None)
             filter_title = u'библиотеки района: '
             try:
                 district = District.objects.get(id=request.GET.get('district'))
@@ -70,7 +70,7 @@ def index(request):
         else:
             filter = True
             types = LibraryType.objects.filter(id=request.GET.get('type'))
-            cbs_list = Library.objects.filter(types__in=types).order_by('name').exclude(parent=None)
+            cbs_list = Library.objects.filter(types__in=types).order_by('weight').order_by('name').exclude(parent=None)
             filter_title = u'библиотеки типа: '
 #            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
             type_titles = []
@@ -80,7 +80,7 @@ def index(request):
 
 
     if not filter:
-        cbs_list = Library.objects.filter(parent=None).order_by('name')
+        cbs_list = Library.objects.filter(parent=None).order_by('weight').order_by('name')
     js_orgs = []
 
 
@@ -117,7 +117,7 @@ def branches(request, code=None):
     library=None
     if code:
         library = get_object_or_404(Library, code=code)
-    libraries = Library.objects.filter(parent=library).order_by('name')
+    libraries = Library.objects.filter(parent=library).order_by('weight').order_by('name')
 
     js_orgs = []
     for org in libraries:
@@ -153,7 +153,7 @@ def get_branches_by_district(request):
     if not district_id:
         return HttpResponse(u'[]')
 
-    libraries = Library.objects.filter(district=int(district_id)).order_by('name').exclude(parent=None)
+    libraries = Library.objects.filter(district=int(district_id)).order_by('weight').order_by('name').exclude(parent=None)
     js_orgs = []
     for library in libraries:
         js_orgs.append(make_library_dict(library))
@@ -168,7 +168,7 @@ def districts(request):
     cbs_list = None
     if request.GET.get('letter', None):
         filter = True
-        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('name').exclude(parent=None)
+        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('weight').order_by('name').exclude(parent=None)
         filter_title = u'библиотеки на букву: ' + request.GET.get('letter')
     if request.GET.get('district', None):
         try:
@@ -227,7 +227,7 @@ def districts(request):
 
     main_branches = []
     if not cbs_list:
-        main_branches = Library.objects.filter(main=True).order_by('name').exclude(parent=None)
+        main_branches = Library.objects.filter(main=True).order_by('weight').order_by('name').exclude(parent=None)
 
     return render(request, 'participants/frontend/districts.html', {
         'cbs_list': cbs_list,
