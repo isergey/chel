@@ -13,6 +13,7 @@ from core.forms import LanguageForm
 from events.models import Event, EventContent
 from forms import EventForm, EventContentForm
 
+
 @login_required
 @permission_required_or_403('events.add_event')
 def index(request):
@@ -23,9 +24,13 @@ def index(request):
 
 @login_required
 def events_list(request):
+    print request.GET.get('page', 1)
     if not request.user.has_module_perms('events'):
         return HttpResponseForbidden()
-    events_page = get_page(request, Event.objects.all().order_by('-create_date'))
+    events_page = get_page(request, Event.objects.all().order_by('-create_date'), 10)
+
+    print events_page.number
+
     event_contents = list(EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
 
     t_dict = {}
@@ -82,8 +87,8 @@ def create_event(request):
         event_content_forms = []
         for lang in settings.LANGUAGES:
             event_content_forms.append({
-                'form':EventContentForm(prefix='event_content' + lang[0]),
-                'lang':lang[0]
+                'form': EventContentForm(prefix='event_content' + lang[0]),
+                'lang': lang[0]
             })
 
     return render(request, 'events/administration/create_event.html', {
