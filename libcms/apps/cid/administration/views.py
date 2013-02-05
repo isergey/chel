@@ -1,5 +1,6 @@
 # encoding: utf-8
 from django.db import transaction
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
@@ -10,16 +11,21 @@ from forms import TypeForm, ImportantDateForm
 
 @login_required
 def index(request):
+    if not request.user.has_module_perms('cid'):
+        return HttpResponseForbidden()
     return render(request, 'cid/administration/index.html')
 
 @login_required
 def id_list(request):
+    if not request.user.has_module_perms('ids'):
+        return HttpResponseForbidden()
     idates_page =  get_page(request, ImportantDate.objects.select_related('theme').all().order_by('-id'))
     return render(request, 'cid/administration/id_list.html', {
         'idates_page': idates_page
     })
 
 @login_required
+@permission_required_or_403('cid.add_importantdate')
 @transaction.commit_on_success
 def create_id(request):
     if request.method == 'POST':
@@ -35,6 +41,7 @@ def create_id(request):
 
 @login_required
 @transaction.commit_on_success
+@permission_required_or_403('cid.change_importantdate')
 def edit_id(request, id):
     idate = get_object_or_404(ImportantDate, id=id)
     if request.method == 'POST':
@@ -50,6 +57,7 @@ def edit_id(request, id):
 
 @login_required
 @transaction.commit_on_success
+@permission_required_or_403('cid.delete_importantdate')
 def delete_id(request, id):
     idate = get_object_or_404(ImportantDate, id=id)
     idate.delete()
