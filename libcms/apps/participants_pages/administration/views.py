@@ -36,7 +36,7 @@ def index(request, library_id):
 
 @login_required
 def pages_list(request, library_id, parent=None):
-
+    print library_id
     if not request.user.has_module_perms('participants_pages'):
         return HttpResponseForbidden()
     library = get_object_or_404(Library, id=library_id)
@@ -45,7 +45,7 @@ def pages_list(request, library_id, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
 
-    pages_page = get_page(request, Page.objects.filter(parent=parent))
+    pages_page = get_page(request, Page.objects.filter(parent=parent, library=library))
     pages_page.object_list = list(pages_page.object_list)
     pages = pages_page.object_list
     contents = list(Content.objects.filter(page__in=pages, lang=get_language()[:2]))
