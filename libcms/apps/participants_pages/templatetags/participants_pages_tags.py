@@ -3,7 +3,7 @@ from django import template
 from django.utils import translation
 from django.utils.translation import to_locale, get_language
 from ..models import Page, Content
-
+from participants.models import Library
 register = template.Library()
 
 @register.filter
@@ -18,9 +18,12 @@ def get_cur_lang_content(page):
 
 register = template.Library()
 @register.inclusion_tag('participants_pages/tags/drow_page_tree.html', takes_context=True)
-def drow_page_tree(context, library_id):
+def drow_page_tree(context, code):
     request =  context['request']
-    pages = list(Page.objects.filter(library=library_id))
+    library = Library.objects.get(code=code)
+
+
+    pages = list(Page.objects.filter(library=library))
     lang=get_language()[:2]
     pages_contents = list(Content.objects.filter(page__in=pages, lang=lang).values('page_id', 'title'))
     pages_dict = {}
@@ -35,7 +38,7 @@ def drow_page_tree(context, library_id):
 #
     return {
         'nodes': pages,
-        'library_id': library_id,
+        'code': code,
         'request': request
 
     }

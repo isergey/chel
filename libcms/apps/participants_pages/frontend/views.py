@@ -21,8 +21,8 @@ def index(request, library_id):
         'library':library
     })
 
-def show(request, library_id, slug):
-    library = get_object_or_404(Library, id=library_id)
+def show(request, code, slug):
+    library = get_object_or_404(Library, code=code)
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug)
     try:

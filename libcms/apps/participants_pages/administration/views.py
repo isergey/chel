@@ -30,16 +30,15 @@ def check_owning(user, library):
             return False
 
 #@permission_required_or_403('accounts.view_users')
-def index(request, library_id):
-    return redirect('participants_pages:administration:pages_list', library_id=library_id)
+def index(request, code):
+    return redirect('participants_pages:administration:pages_list', code=code)
 
 
 @login_required
-def pages_list(request, library_id, parent=None):
-    print library_id
+def pages_list(request, code, parent=None):
     if not request.user.has_module_perms('participants_pages'):
         return HttpResponseForbidden()
-    library = get_object_or_404(Library, id=library_id)
+    library = get_object_or_404(Library, code=code)
 
 
     if parent:
@@ -69,8 +68,8 @@ def pages_list(request, library_id, parent=None):
 
 @login_required
 @permission_required_or_403('participants_pages.add_page')
-def create_page(request, library_id, parent=None):
-    library = get_object_or_404(Library, id=library_id)
+def create_page(request, code, parent=None):
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на создание страниц в этой ЦБС')
@@ -88,7 +87,7 @@ def create_page(request, library_id, parent=None):
                 page.public = False
             page.library = library
             page.save()
-            return redirect('participants_pages:administration:create_page_content', page_id=page.id, library_id=library_id)
+            return redirect('participants_pages:administration:create_page_content', page_id=page.id, code=code)
     else:
         page_form = PageForm(prefix='page_form')
 
@@ -100,9 +99,9 @@ def create_page(request, library_id, parent=None):
 
 @login_required
 @permission_required_or_403('participants_pages.change_page')
-def edit_page(request, library_id, id):
+def edit_page(request, code, id):
 
-    library = get_object_or_404(Library, id=library_id)
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на редактирование страницы в этой ЦБС')
@@ -124,7 +123,7 @@ def edit_page(request, library_id, id):
             if not request.user.has_perm('participants_pages.public_page'):
                 page.public = False
             page.save()
-            return redirect('participants_pages:administration:pages_list', library_id=library_id)
+            return redirect('participants_pages:administration:pages_list', code=code)
 
     else:
         page_form = PageForm(prefix='page_form', instance=page)
@@ -151,21 +150,21 @@ def edit_page(request, library_id, id):
 
 @login_required
 @permission_required_or_403('participants_pages.delete_page')
-def delete_page(request, library_id, id):
-    library = get_object_or_404(Library, id=library_id)
+def delete_page(request, code, id):
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на удаление страницы в этой ЦБС')
     page = get_object_or_404(Page, id=id)
     page.delete()
-    return redirect('participants_pages:administration:pages_list', library_id=library_id)
+    return redirect('participants_pages:administration:pages_list', code=code)
 
 
 
 @login_required
 @permission_required_or_403('participants_pages.add_page')
-def create_page_content(request, library_id, page_id):
-    library = get_object_or_404(Library, id=library_id)
+def create_page_content(request, code, page_id):
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на создание страницы в этой ЦБС')
@@ -181,7 +180,7 @@ def create_page_content(request, library_id, page_id):
 
             save = request.POST.get('save', u'save_edit')
             if save == u'save':
-                return redirect('participants_pages:administration:edit_page', id=page_id, library_id=library_id)
+                return redirect('participants_pages:administration:edit_page', id=page_id, code=code)
             else:
                 return redirect('participants_pages:administration:edit_page_content', page_id=page_id, lang=content.lang)
     else:
@@ -194,8 +193,8 @@ def create_page_content(request, library_id, page_id):
 
 @login_required
 @permission_required_or_403('participants_pages.change_page')
-def edit_page_content(request, library_id,  page_id, lang):
-    library = get_object_or_404(Library, id=library_id)
+def edit_page_content(request, code,  page_id, lang):
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на редактирование страницы в этой ЦБС')
@@ -222,7 +221,7 @@ def edit_page_content(request, library_id,  page_id, lang):
 
         save = request.POST.get('save', u'save_edit')
         if save == u'save':
-            return redirect('participants_pages:administration:edit_page', id=page_id, library_id=library_id)
+            return redirect('participants_pages:administration:edit_page', id=page_id, code=code)
 
     else:
         content_form = ContentForm(prefix='content_form', instance=content)
