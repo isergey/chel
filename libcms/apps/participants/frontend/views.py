@@ -114,7 +114,7 @@ def index(request):
 def branches(request, code=None):
     if request.method == "POST":
         code = request.POST.get('code', None)
-    library=None
+    library = None
     if code:
         library = get_object_or_404(Library, code=code)
     libraries = Library.objects.filter(parent=library).order_by('name')
