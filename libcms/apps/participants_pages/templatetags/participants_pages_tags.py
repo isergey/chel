@@ -39,7 +39,8 @@ def drow_page_tree(context, code):
     return {
         'nodes': pages,
         'code': code,
-        'request': request
+        'request': request,
+        'library_id': library.code
 
     }
 
