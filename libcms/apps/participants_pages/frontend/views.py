@@ -24,7 +24,7 @@ def index(request, library_id):
 def show(request, code, slug):
     library = get_object_or_404(Library, code=code)
     cur_language = translation.get_language()
-    page = get_object_or_404(Page, url_path=slug)
+    page = get_object_or_404(Page, url_path=slug, library=library)
     try:
         content = Content.objects.get(page=page, lang=cur_language[:2])
     except Content.DoesNotExist:
