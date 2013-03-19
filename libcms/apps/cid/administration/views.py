@@ -17,7 +17,7 @@ def index(request):
 
 @login_required
 def id_list(request):
-    if not request.user.has_module_perms('ids'):
+    if not request.user.has_module_perms('cid'):
         return HttpResponseForbidden()
     idates_page =  get_page(request, ImportantDate.objects.select_related('theme').all().order_by('-id'))
     return render(request, 'cid/administration/id_list.html', {
