@@ -234,9 +234,8 @@ def edit_page_content(request, code,  page_id, lang):
     })
 
 
-def page_up(request, library_id, id):
-
-    library = get_object_or_404(Library, id=library_id)
+def page_up(request, code, id):
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на редактирование страниц в этой ЦБС')
@@ -244,14 +243,13 @@ def page_up(request, library_id, id):
     page.up()
 
     if page.parent_id:
-        return redirect('participants_pages:administration:pages_list', library_id=library_id, parent=page.parent_id)
+        return redirect('participants_pages:administration:pages_list', code=code, parent=page.parent_id)
     else:
-        return redirect('participants_pages:administration:pages_list', library_id=library_id)
+        return redirect('participants_pages:administration:pages_list', code=code)
 
 
-def page_down(request, library_id, id):
-
-    library = get_object_or_404(Library, id=library_id)
+def page_down(request, code, id):
+    library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse(u'У Вас нет прав на редактирование страниц в этой ЦБС')
@@ -259,9 +257,9 @@ def page_down(request, library_id, id):
     page = get_object_or_404(Page, id=id)
     page.down()
     if page.parent_id:
-        return redirect('participants_pages:administration:pages_list', library_id=library_id, parent=page.parent_id)
+        return redirect('participants_pages:administration:pages_list', code=code, parent=page.parent_id)
     else:
-        return redirect('participants_pages:administration:pages_list', library_id=library_id)
+        return redirect('participants_pages:administration:pages_list', code=code)
 
 
 
