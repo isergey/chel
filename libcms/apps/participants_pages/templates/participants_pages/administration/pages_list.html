@@ -6,7 +6,7 @@
 
 
 {% block breadcrumb %}
-    {% breadcrumb_url "Страницы" participants_pages:administration:index library.id %}
+    {% breadcrumb_url "Страницы" participants_pages:administration:index library.code %}
     {% breadcrumb "Список"  %}
 {% endblock %}
 
@@ -14,7 +14,7 @@
 
     {% if parent %}
         <h3>
-            <a href="{% url participants_pages:administration:index library.id %}">Страницы</a> →
+            <a href="{% url participants_pages:administration:index library.code %}">Страницы</a> →
             {% for ancestor in parent.get_ancestors %}
                 <a href="{% url participants_pages:administration:pages_list library.code ancestor.id %}">
                     {% if not ancestor.get_cur_lang_content %}
