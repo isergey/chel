@@ -2,6 +2,7 @@
 {% load localeurl_tags %}
 {% load menu_tags %}
 {% load gallery_tags %}
+{% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -281,7 +282,9 @@
     </div>
     <div class="span12">
         <div class="menu" style="background: #d11314; height: 33px">
+            {% cache 120 'main' LANGUAGE_CODE %}
             {% drow_menu 'main' %}
+            {% endcache %}
         </div>
         {#            <hr style="clear: both;"/>#}
     </div>
@@ -293,8 +296,9 @@
 </div>
 {#    </div>#}
 <hr/>
-
+{% cache 120 gallery_carusel LANGUAGE_CODE %}
 {% gallery_carusel %}
+{% endcache %}
 <hr/>
 <div style="min-height: 50px;">
     <p style="font-size: 11px">

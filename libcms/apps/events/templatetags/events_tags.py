@@ -2,8 +2,9 @@
 from datetime import date
 import calendar
 from django import template
-from events.models import Event
-from events.frontend.forms import CalendarFilterForm, get_current_month_choice, get_current_year_choice
+from django.core.cache import cache
+from ..models import Event
+from ..frontend.forms import CalendarFilterForm, get_current_month_choice, get_current_year_choice
 
 register = template.Library()
 
@@ -26,6 +27,11 @@ def events_calendar(context, y=0, m=0):
     if y: year = y
     if m: month = m
     weeks = calendar.monthcalendar(year, month)
+    cache_key = 'events_y_m' + str(year) + str(month) + 'active=1'
+    events = cache.get(cache_key, [])
+    if not events:
+        events = list(Event.objects.filter(start_date__year=year, start_date__month=month, active=True))
+        cache.set(cache_key, events)
 
     events = Event.objects.filter(start_date__year=year, start_date__month=month, active=True)
     calendar_of_events = []
