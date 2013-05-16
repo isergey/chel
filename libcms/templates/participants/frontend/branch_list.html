@@ -4,8 +4,8 @@
 {% block index_content %}
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{%  url participants:frontend:index %}">Библиотеки</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{%  url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>
             <li class="active">{{ library.name }}</li>
         </ul>
         <div class="row">
@@ -26,7 +26,7 @@
             <div class="span5" >
                 <ul class="participants">
                     {% for library in  libraries %}
-                        <li><a href="{% url participants:frontend:detail library.code %}" onclick="modalWin('{% url participants:frontend:detail library.code %}'); return false;">{{ library.name }}<br/></a>
+                        <li><a href="{% url 'participants:frontend:detail' library.code %}" onclick="modalWin('{% url 'participants:frontend:detail' library.code %}'); return false;">{{ library.name }}<br/></a>
                             Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
                             {% else %} не указан {% endif %}
                         </li>

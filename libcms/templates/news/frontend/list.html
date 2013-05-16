@@ -5,7 +5,7 @@
 
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Новости</li>
 
     </ul>
@@ -31,7 +31,7 @@
             {% if news.avatar_img_name %}
                 <img src="{{ MEDIA_URL }}uploads/newsavatars/{{ news.avatar_img_name }}" alt="" style="float: left; margin-right: 5px;">
             {% endif %}
-            <div class="title"><a href="{% url news:frontend:show news.id %}">{{ news.news_content.title }}</a></div>
+            <div class="title"><a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></div>
             <div class="teaser">{{ news.news_content.teaser }}</div>
             <div class="create_date">{{ news.create_date|date:"j E Y" }}</div>
             <div style="clear: both;"></div>

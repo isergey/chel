@@ -265,16 +265,16 @@
                 overflow: hidden;
             }
         </style>
-        <iframe id="slider_frame" src="{% url index:frontend:slider %}" frameBorder="0"></iframe>
+        <iframe id="slider_frame" src="{% url 'index:frontend:slider' %}" frameBorder="0"></iframe>
     </div>
 <div class="row">
     <div class="span12">
         <div style="height: 20px;">
         <ul id="service_menu">
-            <li><a href="{% url news:frontend:index %}">Новости</a></li>
-            <li><a href="{% url forum:frontend:forums %}">Форум</a></li>
-            <li><a href="{% url guestbook:frontend:index %}">Гостевая книга</a></li>
-            <li><a href="{% url gallery:frontend:index %}">Галерея</a></li>
+            <li><a href="{% url 'news:frontend:index' %}">Новости</a></li>
+            <li><a href="{% url 'forum:frontend:forums' %}">Форум</a></li>
+            <li><a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a></li>
+            <li><a href="{% url 'gallery:frontend:index' %}">Галерея</a></li>
             <li><a href="#">Календарь знаменательных дат</a></li>
         </ul>
             <div style="clear: both;"></div>
@@ -308,11 +308,11 @@
         <a href="#1">Краеведение</a> |
         <a href="#1">Библиотеки области</a> |
         <a href="#1">Профессионалам</a> |
-        <a href="{% url news:frontend:index %}">Новости</a> |
-        <a href="{% url gallery:frontend:index %}">Галерея</a> |
+        <a href="{% url 'news:frontend:index' %}">Новости</a> |
+        <a href="{% url 'gallery:frontend:index' %}">Галерея</a> |
         <a href="#1">Календарь знаменательных дат</a> |
-        <a href="{% url forum:frontend:forums %}">Форум</a> |
-        <a href="{% url guestbook:frontend:index %}">Гостевая книга</a>
+        <a href="{% url 'forum:frontend:forums' %}">Форум</a> |
+        <a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a>
 
     </p>
     Челябинская областная универсальная научная библиотека. Челябинск, 454091, пр. Ленина, 60, (351) 266-05-33,

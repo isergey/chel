@@ -31,12 +31,12 @@
                 'buttonText' : 'Укажите файлы',
                 'fileObjName' : 'image',
                 'swf'      : '{{ STATIC_URL }}gallery/uploadify/uploadify.swf',
-                'uploader' : '{% url gallery:administration:album_upload album.id %}',
+                'uploader' : '{% url 'gallery:administration:album_upload' album.id %}',
                 'onQueueComplete' : function(queueData) {
                     if (queueData.uploadsErrored){
                         alert("Во время загрузки возникла ошибка");
                     }
-                    window.location = "{% url gallery:administration:album_view album.id %}";
+                    window.location = "{% url 'gallery:administration:album_view' album.id %}";
                 }
             });
         });

@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}gallery/adgallery/jquery.ad-gallery.css">
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url gallery:frontend:index %}">Галерея</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'gallery:frontend:index' %}">Галерея</a> <span class="divider">/</span></li>
         <li class="active">{{ album.title }}</li>
 
     </ul>

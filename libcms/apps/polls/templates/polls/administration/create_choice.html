@@ -4,9 +4,9 @@
 {% load breadcrumbs %}
 
 {% block breadcrumb %}
-    <li><a href="{% url polls:administration:index %}">Голосования</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'polls:administration:index' %}">Голосования</a> <span class="divider">/</span></li>
     <li>{{ poll.question }}<span class="divider">/</span></li>
-    <li><a href="{% url polls:administration:view poll.id %}">Управление ответами</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'polls:administration:view' poll.id %}">Управление ответами</a> <span class="divider">/</span></li>
     <li class="active">Создание варианта ответа</li>
 {% endblock %}
 

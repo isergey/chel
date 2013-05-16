@@ -5,7 +5,7 @@
 
     <ul class="breadcrumb">
 
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">Календарь знаменательных дат</li>
 
     </ul>
@@ -72,7 +72,7 @@
         <ul style="list-style: none; margin: 0">
             {% for event in events %}
                 <li>
-                    <a href="{% url cid:frontend:detail event.id %}?back={{ request.get_full_path }}">{{ event }} ({{ event.date }})</a>
+                    <a href="{% url 'cid:frontend:detail' event.id %}?back={{ request.get_full_path }}">{{ event }} ({{ event.date }})</a>
                     <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
                 </li>
             {% endfor %}

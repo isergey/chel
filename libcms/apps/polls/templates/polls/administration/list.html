@@ -41,13 +41,13 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a  title="Упраление ответами"  class="btn" href="{% url polls:administration:view poll.id %}" >
+                    <a  title="Упраление ответами"  class="btn" href="{% url 'polls:administration:view' poll.id %}" >
                         <i class="icon-edit"></i>
                     </a>
-                    <a title="Редактировать голосование" class="btn" href="{% url polls:administration:edit poll.id %}">
+                    <a title="Редактировать голосование" class="btn" href="{% url 'polls:administration:edit' poll.id %}">
                         <i class="icon-pencil"></i>
                     </a>
-                    <a class="btn btn-danger" title="Удалить новость" href="{% url polls:administration:delete poll.id %}">
+                    <a class="btn btn-danger" title="Удалить новость" href="{% url 'polls:administration:delete' poll.id %}">
                         <i class="icon-remove icon-white"></i>
                     </a>
                 </td>

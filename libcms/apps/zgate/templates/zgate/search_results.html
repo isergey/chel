@@ -21,8 +21,8 @@
         }
     </style>
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url zgate_slug_index catalog.latin_title %}">{{ catalog_title.title }}</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'zgate_slug_index' catalog.latin_title %}">{{ catalog_title.title }}</a> <span class="divider">/</span></li>
         <li class="active">Результаты поиска</li>
     </ul>
     <h3>{{ catalog_title }}</h3>
@@ -169,7 +169,7 @@
         $("a.save_document_dialog").fancybox({'hideOnOverlayClick':false, 'speedIn':0, centerOnScroll:true});
         $("#district_select").change(function () {
             $.ajax({
-                url:'{% url participants:frontend:get_branches_by_district %}',
+                url:'{% url 'participants:frontend:get_branches_by_district' %}',
                 type:'GET',
                 dataType:"json",
                 async:false,
@@ -309,7 +309,7 @@
 
             //alert(order.type + ' ' + order.record_id + ' ' + order.zsession + ' '+order.comments + ' '+order.copy_info + ' '+order.catalog_id + ' ');
             $.ajax({
-                url:'{% url zgate_save_document %}',
+                url:'{% url 'zgate_save_document' %}',
                 type:'POST',
                 dataType:"json",
                 async:false,

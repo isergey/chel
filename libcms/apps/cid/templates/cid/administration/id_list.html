@@ -13,9 +13,9 @@
     <ul>
     {% for idate in idates_page.object_list %}
         <li>
-            <div><a href="{% url cid:administration:edit_id idate.id %}">{{ idate }} ({{ idate.date }})</a></div>
+            <div><a href="{% url 'cid:administration:edit_id' idate.id %}">{{ idate }} ({{ idate.date }})</a></div>
             <div>Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
-            <a class="delete btn btn-danger" href="{% url cid:administration:delete_id idate.id  %}"><i class="icon-trash icon-white" title="Удалить"></i></a>
+            <a class="delete btn btn-danger" href="{% url 'cid:administration:delete_id' idate.id  %}"><i class="icon-trash icon-white" title="Удалить"></i></a>
         </li>
     {% endfor %}
     </ul>

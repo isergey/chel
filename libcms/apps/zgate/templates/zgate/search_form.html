@@ -46,7 +46,7 @@
 
     </style>
     <ul class="breadcrumb">
-        <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li class="active">{{ catalog_title.title }}</li>
     </ul>
     <h3>{{ catalog_title }}</h3>
@@ -56,7 +56,7 @@
             {{ catalog.description|safe }}
 
         </div>
-        <div><a href="{% url zgate_help  catalog.id %}">Справка по работе с каталогом</a></div>
+        <div><a href="{% url 'zgate_help'  catalog.id %}">Справка по работе с каталогом</a></div>
         {{ search_form|safe }}
     </div>
     <script type="text/javascript" src="/static/js/zgate.js"></script>

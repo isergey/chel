@@ -3,7 +3,7 @@
 
 <div class="menu">
     <span class="title">Категории вопросов</span>
-    {% url ask_librarian:frontend:index as ask_librarian_index %}
+    {% url 'ask_librarian:frontend:index' as ask_librarian_index %}
     <ul class="items" style="list-style: none; margin: 0">
         {% if nodes %}
             {% recursetree nodes %}

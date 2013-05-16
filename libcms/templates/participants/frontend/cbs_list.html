@@ -9,9 +9,9 @@
     </style>
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url index:frontend:index %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             {% if filter %}
-                <li><a href="{% url participants:frontend:index %}">Библиотеки</a><span class="divider">/</span></li>
+                <li><a href="{% url 'participants:frontend:index' %}">Библиотеки</a><span class="divider">/</span></li>
                 <li class="active">{{ filter_title }}</li>
             {% else %}
                 <li class="active">Библиотеки</li>
@@ -25,13 +25,13 @@
                     {% for cbs in  cbs_list %}
                         {% if cbs.parent_id %}
                             <li>
-                                <a href="#" onclick="modalWin('{% url participants:frontend:detail cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
+                                <a href="#" onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
                                 Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                             {% else %} не указан {% endif %}
                             </li>
                         {% else %}
                             <li>
-                                <a href="{% url participants:frontend:branches cbs.code %}">{{ cbs.name }}<br/></a>
+                                <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}<br/></a>
                                 Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                             {% else %} не указан {% endif %}
                             <li>

@@ -27,15 +27,15 @@
         </div>
         <div class="span4">
             {% if request.user.is_authenticated %}
-                Вы вошли как: {{ request.user.username }} <a href="{% url accounts:frontend:logout %}">Выйти</a>
+                Вы вошли как: {{ request.user.username }} <a href="{% url 'accounts:frontend:logout' %}">Выйти</a>
             {% else %}
-                <a href="{% url accounts:frontend:login %}">Войти</a> <a href="{% url accounts:frontend:registration %}">Зарегистрироваться</a>
+                <a href="{% url 'accounts:frontend:login' %}">Войти</a> <a href="{% url 'accounts:frontend:registration' %}">Зарегистрироваться</a>
             {% endif %}
 
         </div>
         <div class="span12" align="right">
             <span style=" font-size: 18px;">
-                <a href="{% url forum:frontend:forums %}">Форум</a>
+                <a href="{% url 'forum:frontend:forums' %}">Форум</a>
             </span>
             <hr/>
         </div>
