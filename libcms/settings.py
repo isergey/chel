@@ -159,7 +159,7 @@ INSTALLED_APPS = (
     'guestbook',
     'polls',
     'cid',
-    'rbooks',
+    # 'rbooks',
 )
 
 
