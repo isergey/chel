@@ -5,7 +5,7 @@
 {% block title %} {{ topic.subject }} {% endblock %}
 {% block content %}
     {% get_obj_perms request.user for topic as "topic_perms" %}
-    <h3><a href="{% url 'forum:frontend:forums' %}">Форум</a> → <a href="{% url 'forum:frontend:topics topic.forum.slug' %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}(Тема закрыта) {% endif %}
+    <h3><a href="{% url 'forum:frontend:forums' %}">Форум</a> → <a href="{% url 'forum:frontend:topics' topic.forum.slug %}">{{ topic.forum.title }}</a> → {{ topic.subject }} {% if topic.closed %}(Тема закрыта) {% endif %}
     </h3>
     <hr/>
     <div class="span12">
