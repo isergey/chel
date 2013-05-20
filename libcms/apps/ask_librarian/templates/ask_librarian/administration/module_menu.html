@@ -3,7 +3,7 @@
 
 <ul class="nav nav-list">
     <li class="nav-header">Вопросы</li>
-    <li class="{% active 'ask_librarian:administration:questions_list' %}"><a href="{% url ask_librarian:administration:questions_list %}">Список</a></li>
+    <li class="{% active 'ask_librarian:administration:questions_list' %}"><a href="{% url 'ask_librarian:administration:questions_list' %}">Список</a></li>
     <li><ul style="list-style: none; margin-left: 10px;">
         {% url 'ask_librarian:administration:questions_list' as questions_list_url %}
         <li {% if request.GET.status == '0' and request.path == questions_list_url %}class="active"{% endif %}><a class="question_status0" style="text-decoration: none" href="{{ questions_list_url }}?status=0">Новые (<b>{% get_question_status_count 0 %}</b>)</a></li>
