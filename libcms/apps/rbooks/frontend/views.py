@@ -67,6 +67,21 @@ def key(request):
     return responce
 
 
+def picture(request):
+    code = request.GET.get('code', None)
+    if not code:
+        return HttpResponse(u'Нет параметра code', status=400)
+    rbclient = rbooks_client.RBooksWebServiceClient(
+        RBOOKS_SETTINGS['service_url'],
+        RBOOKS_SETTINGS['documents_directory'],
+        code
+    )
+
+    response = HttpResponse(content_type=u'image/png')
+    response.write(rbclient.get_document_picture())
+    return response
+
+
 from django.views.decorators.http import condition
 import time
 @condition(etag_func=None)

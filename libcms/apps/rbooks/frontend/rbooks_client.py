@@ -166,7 +166,7 @@ class RBooksWebServiceClient(object):
         self.__code = code + extension
 
 
-    def get_document_file_info(self):
+    def get_document_file_info(self, enc=True):
         """
         Raw xml file info
         :return: string
@@ -174,7 +174,8 @@ class RBooksWebServiceClient(object):
         path = "file.ashx"
         responce = requests.get(self.__url + path, params={
             'dir': self.__documents_directory,
-            'code': self.__code
+            'code': self.__code,
+            'enc': unicode(enc).lower()
         })
 
         responce.raise_for_status()
@@ -195,8 +196,15 @@ class RBooksWebServiceClient(object):
 
 
     def get_document_picture(self, width=200, height=200):
-        pass
-
+        path = "picture.ashx"
+        responce = requests.post(self.__url + path, params={
+            'dir': self.__documents_directory,
+            'code': self.__code,
+            'w': str(width),
+            'h': str(height)
+        })
+        responce.raise_for_status()
+        return responce.content
 
     def get_documents_list(self):
         pass
