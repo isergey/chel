@@ -3,7 +3,7 @@
 {% block breadcrumb %}
     {% breadcrumb "Галерея" gallery:administration:index %}
     {% breadcrumb "Альбомы" gallery:administration:albums_list  %}
-    {% breadcrumb_url  album_image.album  gallery:administration:album_view album_image.album_id  %}
+    {% breadcrumb_url  album_image.album  'gallery:administration:album_view' album_image.album_id  %}
     {% breadcrumb "Редактирование изображения"  %}
 {% endblock %}
 {% block action_content %}
