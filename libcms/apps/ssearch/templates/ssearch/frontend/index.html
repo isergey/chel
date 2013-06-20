@@ -83,9 +83,9 @@
                 </div>
             </div>
         </div>
-        <div class="navbar-inner" style="padding: 5px; height: auto; margin-bottom: 10px">
+        <div class="navbar-inner1" style="padding: 5px; height: auto; margin-bottom: 10px">
         <form action="{{ request.path }}" method="GET" style="margin: 0">
-            <div class="search-bar searchpage1">
+            <div class="search-bar1 searchpage">
                 Сортировка по: <select class="input-medium" name="sort">
                 {% for sort_attr in sort_attrs %}
                     <option value="{{ sort_attr.attr }}" {% if request.GET.sort == sort_attr.attr %}selected="selected" {% endif %}>{{ sort_attr.title }}</option>
