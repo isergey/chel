@@ -87,7 +87,7 @@ attr_value_title = {
             u'ru': u'Каталог'
         },
         'values': {
-            u'chelreglib.audiovisuals ': {
+            u'chelreglib.audiovisuals': {
                 u'ru': u'Аудиовизуальные документы',
             },
             u'chelreglib.books': {
