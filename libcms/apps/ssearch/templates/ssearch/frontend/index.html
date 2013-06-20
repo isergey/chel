@@ -17,8 +17,8 @@
         padding-left: 10px;
         background: #ebebeb;
     }
-    .facet_group ul ul li{
-        padding-bottom: 1px;
+    .facet_group ul li{
+        padding-bottom: 5px;
     }
     .highlighting em{
         background: #ffe761;
@@ -148,7 +148,7 @@
             {% for facet in facets %}
                 <div class="facet_group" >
                     <h4>{{ facet.title }}</h4>
-                    <ul id="f{{ facet.code }}">
+                    <ul id="f{{ facet.code }}" class="facet">
                         {% for value in facet.values %}
 {#                            <li><a class="drilldown" name="{{ facet.code }}"  rel="{{ value.0 }}"  id="df{{ facet.code }}{{ forloop.counter0 }}" href="#1">{% if facet.code == "subject_heading_s"%} + {% endif %}</a> <a href="{% add_get_append q=value.0 attr=facet.code %}"> {{ value.2 }} (<b>{{ value.1 }}</b>)</a>#}
 {#                            {% if facet.code == "subject_heading_s"%}<ul style="display: none" id="dft{{ facet.code }}{{ forloop.counter0 }}"></ul>{% endif %}#}
