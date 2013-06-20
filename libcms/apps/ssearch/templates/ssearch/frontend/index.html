@@ -56,7 +56,7 @@
         </div>
         <div class="span3" >
             <div class="facet_group" style="padding: 5px;">
-                Найденно записей: {{ info.num_found }}.
+                {% if  info.num_found%} Найденно записей: {{ info.num_found }}. {% endif %}
 {#                Время поиска: {{ info.qtime }} сек.#}
             </div>
         </div>
