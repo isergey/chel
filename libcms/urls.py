@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^polls/', include('polls.urls', namespace='polls')),
     (r'^cid/', include('cid.urls', namespace='cid')),
     (r'^dl/', include('rbooks.urls', namespace='rbooks')),
-#    (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
+   (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
 
     # Uncomment the next line to enable the admin:
     url(r'^radmin/', include(admin.site.urls)),

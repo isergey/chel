@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'polls',
     'cid',
     'rbooks',
+    'ssearch'
 )
 
 

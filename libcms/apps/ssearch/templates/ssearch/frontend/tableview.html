@@ -1,0 +1,102 @@
+{#<p class="item1">{{ forloop.counter0|add:result_page.start_index }}. <a href="#?back={{ request.get_full_path|urlencode }}">{{ record.dict.title.0 }}</a></p>#}
+<table>
+    <tr>
+        <td style="vertical-align: top; min-width: 25px">
+            <span style="padding-right: 3px;">{{ forloop.counter0|add:result_page.start_index }}.</span>
+        </td>
+        <td>
+<p class="item1">
+
+    <div style="float: left; width: auto;">
+        <a href="#?back={{ request.get_full_path|urlencode }}"> {{ record.library_cadr|safe }}</a>
+    </div>
+<div style="clear: both"></div>
+</p>
+<p class="item2">
+    {% for author in record.dict.author %}
+        {{ author }}{% if not forloop.last %}; {% endif %}
+    {% endfor %}
+</p>
+<p class="item3">
+    {% for subject in record.dict.subject_heading %}
+        <span class="label label-success">{{ subject }}</span>
+    {% endfor %}
+</p>
+<p class="item3">
+    {% for subject in record.dict.subject_keywords %}
+        <span class="label label-info">{{ subject }}</span>
+    {% endfor %}
+</p>
+{% if record.dict.code_language %}
+    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:
+        {% for lang in record.dict.code_language %}
+            {% if not forloop.last %}
+                {{ lang }},
+            {% else %}
+                {{ lang }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+{% if record.dict.date_of_publication %}
+    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}:
+        {% for dop in record.dict.date_of_publication %}
+            {% if not forloop.last %}
+                {{ dop }},
+            {% else %}
+                {{ dop }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+{% if record.dict.publisher %}
+    <p class="item4">Издатель:
+        {% for publisher in record.dict.publisher  %}
+            {% if not forloop.last %}
+                {{ publisher }},
+            {% else %}
+                {{ publisher }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+{% if record.dict.content_type %}
+    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content tipe{% endif %}:
+        {% for content_type in record.dict.content_type %}
+            {% if not forloop.last %}
+                {{ content_type }},
+            {% else %}
+                {{ content_type }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+{% if record.dict.catalog %}
+    <p class="item4">Каталог:
+        {% for catalog in record.dict.catalog  %}
+            {% if not forloop.last %}
+                {{ catalog }},
+            {% else %}
+                {{ catalog }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+
+{% if record.dict.holders %}
+    <p class="item4">Держатели:
+        {% for catalog in record.dict.holders  %}
+            {% if not forloop.last %}
+                {{ catalog }},
+            {% else %}
+                {{ catalog }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+        </td>
+    </tr>
+</table>
