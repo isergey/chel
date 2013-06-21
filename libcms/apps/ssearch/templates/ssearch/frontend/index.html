@@ -39,7 +39,7 @@
          </div>
         <div class="span7">
             <div class="input-append">
-                    <input class="spa1n6" style="width: 430px" id="appendedInputButton" type="text" name="q" value="{% if request.GET.attr in attrs %}{{ request.GET.q }}{% endif %}">
+                    <input class="spa1n6" style="width: 430px" id="appendedInputButton" type="text" name="q" value="{{ request.GET.q }}">
                     <input type="submit" value="Поиск" class="btn btn-danger" style="width: 18%"/>
             </div>
             <div>
