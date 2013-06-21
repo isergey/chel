@@ -345,7 +345,6 @@ def construct_query(attrs, values, optimize=True):
                 sc.add_search_criteria(all_sc)
 
 
-    print  sc.to_lucene_query()
     return sc.to_lucene_query()
 
 
@@ -575,7 +574,6 @@ def more_subfacet(request, catalog='uc'):
     attrs = request.GET.getlist('pattr[]', [])[:-1] + attrs
     attrs.append(facet)
     values.append(facet_value)
-    print values
     attrs = reverse_search_attrs(attrs)
     if not values or not attrs:
         return HttpResponse(u'Wrong query params', status='400')
