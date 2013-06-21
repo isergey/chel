@@ -173,7 +173,6 @@ def index(request, catalog='uc'):
     if sort != u'relevance':
         solr_sort.append("%s:%s" % (sort, order))
 
-    print solr_sort
     if not values or not attrs:
         return render(request, 'ssearch/frontend/index.html', {
             'attrs': get_search_attrs(),
@@ -181,23 +180,9 @@ def index(request, catalog='uc'):
             'rubrics': traversing(rubrics)
         })
 
-    #query = construct_query(attrs=attrs, values=values)
+    query = construct_query(attrs=attrs, values=values)
 
-
-    sc = SearchCriteria(u"AND")
-    for i, attr in enumerate(attrs):
-        if attr == 'full_text_tru' and values[i] == '*':
-            sc.add_attr(attr, '\*')
-        else:
-            if attr != 'all_t':
-                sc.add_attr(attr, '"%s"' % values[i])
-            else:
-                sc.add_attr(attr, '%s' % values[i])
-
-    scj = json.dumps(sc.to_dict(), encoding='utf-8', ensure_ascii=False)
-
-    #result = uc.search(query, fields=['id'], faset_params=faset_params, hl=['full_text_tru'])
-    result = uc.search(sc=scj, fields=['id'], faset_params=faset_params, hl=['full_text_tru'], sort=solr_sort)
+    result = uc.search(query=query, fields=['id'], faset_params=faset_params, hl=['full_text_tru'], sort=solr_sort)
 
     paginator = Paginator(result, 15)
 
@@ -226,7 +211,7 @@ def index(request, catalog='uc'):
             record['library_cadr'] = get_library_card(content_tree)
         else:
             record['dict'] = get_content_dict(content_tree)
-            record['library_cadr'] = get_library_card(content_tree)
+            # record['library_cadr'] = get_library_card(content_tree)
         record['marc_dump'] = get_marc_dump(content_tree)
         if highlighting and record['id'] in highlighting:
             record['highlighting'] = highlighting[record['id']]
@@ -334,52 +319,34 @@ def get_orderd_facets(facets):
 
 
 def construct_query(attrs, values, optimize=True):
-    pairs = get_pairs(attrs, values)
-    query = []
-    for pair in pairs:
-        attr = pair[0]
-        value = pair[1]
-        if not value.strip():
-            break
+    sc = SearchCriteria(u"AND")
 
-        term_operator = u'AND'
 
-        # атрибуты, термы которых будут объеденын чере OR
-        or_operators_attrs = [
-            'all_tru',
-        ]
-        if attr in or_operators_attrs:
-            term_operator = u'OR'
+    for i, attr in enumerate(attrs):
+        value = values[i].strip()
+        if value != u'*':
+            value = escape(value)
 
-        attr_type = get_attr_type(attr)
-        # если атрибут имеет строковой тип, то представляем его как фразу
-        if attr_type[-1] == u's':
-            value = terms_as_phrase(pair[1])
+        if attr == 'full_text_tru' and value == '*':
+            sc.add_attr(attr, '\*')
         else:
-            value = terms_as_group(pair[1], term_operator)
+            if attr != 'all_t':
+                sc.add_attr(attr, '"%s"' % value)
+            else:
+                term_relation_attr = u' AND '
 
-        # если поиск осуществляется по всем записям, то мен яем атрибут на *
-        # if len(pairs) == 1 and value == u'(*)':
-        #     attr = u'*'
-        # если поиск осуществляется по всему атрибуту, то отбрасываем его
-        # elif len(pairs) > 1 and value == u'(*)':
-        #     continue
+                relation_value = u'(%s)' % term_relation_attr.join(value.split())
+                all_sc = SearchCriteria(u"OR")
+                all_sc.add_attr(u'author_t','%s^24' % relation_value)
+                all_sc.add_attr(u'title_t','%s^16' % relation_value)
+                all_sc.add_attr(u'title_tru','%s^14' % relation_value)
+                all_sc.add_attr(u'subject_heading_tru','%s^8' % relation_value)
+                all_sc.add_attr(u'subject_subheading_tru','%s^5' % relation_value)
+                sc.add_search_criteria(all_sc)
 
-        all_fields = []
-        if attr == 'all_tru':
-            all_fields.append(u'author_t:%s^24' % value)
-            all_fields.append(u'author_t:%s^22' % value)
-            all_fields.append(u'title_t:%s^16' % value)
-            all_fields.append(u'title_tru:%s^14' % value)
-            all_fields.append(u'subject_keywords_t:%s^4' % value)
-            all_fields.append(u'subject_keywords_tru:%s^4' % value)
-            # all_fields.append(u'subject_keywords_tru:%s^4' % value)
-            # all_fields.append(u'all_tru:%s^2' % value)
-            query.append(u'(%s)' % u' '.join(all_fields))
-        else:
-            query.append(u'%s:%s' % (attr, value))
 
-    return u' AND '.join(query)
+    print  sc.to_lucene_query()
+    return sc.to_lucene_query()
 
 
 def make_search_breadcumbs(attrs, values):
@@ -579,19 +546,8 @@ def more_facet(request, catalog='uc'):
     if not values or not attrs:
         return HttpResponse(u'Wrong query params', status='400')
 
-    #query = construct_query(attrs=attrs, values=values)
-    sc = SearchCriteria(u"AND")
-    for i, attr in enumerate(attrs):
-        if attr == 'full_text_tru' and values[i] == '*':
-            sc.add_attr(attr, '\*')
-        else:
-            if attr != 'all_t':
-                sc.add_attr(attr, '"%s"' % values[i])
-            else:
-                sc.add_attr(attr, '%s' % values[i])
-    scj = json.dumps(sc.to_dict(), encoding='utf-8', ensure_ascii=False)
-    result = uc.load_more_facets(sc=scj, faset_params=faset_params)
-    #result = uc.load_more_facets(query, faset_params=faset_params)
+    query = construct_query(attrs=attrs, values=values)
+    result = uc.load_more_facets(query, faset_params=faset_params)
     facets = result.get_facets()
 
     facets = replace_facet_values(facets)
@@ -600,7 +556,6 @@ def more_facet(request, catalog='uc'):
 
 
 def more_subfacet(request, catalog='uc'):
-    print request.GET
     facet = request.GET.get('facet', None)
     facet_value = request.GET.get('facet_value', None)
     subfacet = request.GET.get('sub_facet', None)

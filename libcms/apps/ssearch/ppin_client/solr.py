@@ -376,7 +376,7 @@ class SearchCriteria:
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:"%s"' % (query_part['key'], query_part['value']))
+                query_string_parts.append(u'%s:%s' % (query_part['key'], query_part['value']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_lucene_query())
             if i < len(self.query) - 1:
