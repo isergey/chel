@@ -341,7 +341,7 @@ def construct_query(attrs, values, optimize=True):
                         filetered_terms.append(term)
 
 
-                relation_value = u'(%s)' % term_relation_attr.join(filetered_terms)
+                relation_value = u'(%s)' % term_relation_attr.join(terms)
                 # print relation_value
                 all_sc = SearchCriteria(u"OR")
                 all_sc.add_attr(u'author_t','%s^24' % relation_value)
