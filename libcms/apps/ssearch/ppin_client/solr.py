@@ -353,7 +353,7 @@ class SearchCriteria:
         """
         self.operator = operator
         self.query = []
-
+        self.boost = 0
     def add_attr(self, key, value):
         """
         :param criteria_part: CriteriaPart object
@@ -382,6 +382,8 @@ class SearchCriteria:
             if i < len(self.query) - 1:
                 query_string_parts.append(u' ' + self.operator + u' ')
         query_string_parts.append(u')')
+        if self.boost:
+            query_string_parts.append(u'^' + str(self.boost))
         return u''.join(query_string_parts)
 
     def to_dict(self):
