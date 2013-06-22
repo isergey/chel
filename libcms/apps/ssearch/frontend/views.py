@@ -341,7 +341,6 @@ def construct_query(attrs, values, optimize=True):
                     relation_value = u'(%s)' % ('%s AND (%s)' % ( terms[0], u' OR '.join(terms[1:])))
 
                 # relation_value = u'(%s)' % term_relation_attr.join(value.split())
-                print relation_value
                 all_sc = SearchCriteria(u"OR")
                 all_sc.add_attr(u'author_t','%s^24' % relation_value)
                 all_sc.add_attr(u'title_t','%s^16' % relation_value)
