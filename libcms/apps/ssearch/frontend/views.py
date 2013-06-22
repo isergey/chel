@@ -334,8 +334,14 @@ def construct_query(attrs, values, optimize=True):
                 sc.add_attr(attr, '"%s"' % value)
             else:
                 term_relation_attr = u' AND '
+                terms = value.split()
+                if len(terms) < 3:
+                     relation_value = u'(%s)' % term_relation_attr.join(terms)
+                else:
+                    relation_value = u'(%s)' % ('%s AND (%s)' % ( terms[0], u' OR '.join(terms[1:])))
 
-                relation_value = u'(%s)' % term_relation_attr.join(value.split())
+                # relation_value = u'(%s)' % term_relation_attr.join(value.split())
+                print relation_value
                 all_sc = SearchCriteria(u"OR")
                 all_sc.add_attr(u'author_t','%s^24' % relation_value)
                 all_sc.add_attr(u'title_t','%s^16' % relation_value)
