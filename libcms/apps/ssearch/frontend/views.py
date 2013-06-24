@@ -349,6 +349,7 @@ def construct_query(attrs, values, optimize=True):
                 all_sc.add_attr(u'title_tru','%s^14' % relation_value)
                 all_sc.add_attr(u'subject_heading_tru','%s^8' % relation_value)
                 all_sc.add_attr(u'subject_subheading_tru','%s^5' % relation_value)
+                all_sc.add_attr(u'all_tru','%s^5' % relation_value)
                 sc.add_search_criteria(all_sc)
 
 
