@@ -2,38 +2,41 @@
 import datetime
 
 from django import forms
-from common.forms import CoolForm
-from apps.zgate.models import ZCatalog
-from apps.zgate.models import get_search_attributes_in_log
-
-from common.access.choices import get_groups_choices
-from common.access.shortcuts import  check_perm_for_model
 from django.contrib.admin import widgets
+from common.forms import CoolForm
+from ..models import ZCatalog
+from ..models import get_search_attributes_in_log
 
-class ZCatalogForm(forms.ModelForm):
-
-    view_catalog_groups = forms.MultipleChoiceField(choices=get_groups_choices(),
-                                       label=u"Группы пользователей, имеющие доступ к каталогу",
-                                       widget=forms.CheckboxSelectMultiple)
-
-    def clean_view_page_groups(self):
-        groups = self.cleaned_data['view_catalog_groups']
-        if check_perm_for_model('view_zcatalog', ZCatalog):
-            return groups
-
-        raise forms.ValidationError(u'Model ZCatalog not have "view_zcatalog" perm')
-    class Meta:
-        model = ZCatalog
-
-        
-    def __init__(self, *args, **kwargs):
-        super(ZCatalogForm, self).__init__(*args, **kwargs)
-        self.fields['title'].widget = forms.TextInput(attrs={'class':'text span-18'})
-        self.fields['description'].widget = forms.Textarea(attrs={'class':'text span-18'})
-        self.fields['help'].widget = forms.Textarea(attrs={'class':'text span-18'})
-        self.fields['url'].widget = forms.TextInput(attrs={'class':'text span-18'})
-        self.fields['xml'].widget = forms.TextInput(attrs={'class':'text span-18'})
-        self.fields['xsl'].widget = forms.TextInput(attrs={'class':'text span-18'})
+#
+# from common.access.choices import get_groups_choices
+# from common.access.shortcuts import  check_perm_for_model
+#
+#
+#
+# class ZCatalogForm(forms.ModelForm):
+#
+#     view_catalog_groups = forms.MultipleChoiceField(choices=get_groups_choices(),
+#                                        label=u"Группы пользователей, имеющие доступ к каталогу",
+#                                        widget=forms.CheckboxSelectMultiple)
+#
+#     def clean_view_page_groups(self):
+#         groups = self.cleaned_data['view_catalog_groups']
+#         if check_perm_for_model('view_zcatalog', ZCatalog):
+#             return groups
+#
+#         raise forms.ValidationError(u'Model ZCatalog not have "view_zcatalog" perm')
+#     class Meta:
+#         model = ZCatalog
+#
+#
+#     def __init__(self, *args, **kwargs):
+#         super(ZCatalogForm, self).__init__(*args, **kwargs)
+#         self.fields['title'].widget = forms.TextInput(attrs={'class':'text span-18'})
+#         self.fields['description'].widget = forms.Textarea(attrs={'class':'text span-18'})
+#         self.fields['help'].widget = forms.Textarea(attrs={'class':'text span-18'})
+#         self.fields['url'].widget = forms.TextInput(attrs={'class':'text span-18'})
+#         self.fields['xml'].widget = forms.TextInput(attrs={'class':'text span-18'})
+#         self.fields['xsl'].widget = forms.TextInput(attrs={'class':'text span-18'})
 
 
 

@@ -2,7 +2,8 @@
 from django.conf.urls import *
 import views
 
-urlpatterns = patterns('zgate.views',
+urlpatterns = patterns('',
+    (r'^admin/', include('zgate.administration.urls')),
     url(r'^(?P<catalog_id>\d+)/$', views.index, name="zgate_index"),
     url(r'^(?P<catalog_id>\d+)/order/$', views.draw_order, name="draw_order"),
     url(r'^(?P<catalog_id>\d+)/help/$', views.help, name="zgate_help"),

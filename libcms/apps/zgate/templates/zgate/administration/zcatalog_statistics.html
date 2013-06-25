@@ -2,14 +2,22 @@
 {% load adminmedia %}
 {% block module_action %}статистика{% endblock %}
 {% block module_page %}
-    <script type="text/javascript" src="/admin/jsi18n/"></script>
-    <script type="text/javascript" src="/media/admin/js/core.js"></script>
-    <script type="text/javascript" src="/media/admin/js/calendar.js"></script>
-    <script type="text/javascript" src="/media/admin/js/admin/DateTimeShortcuts.js"></script>
-    <link rel="stylesheet" type="text/css" href="/media/admin/css/widgets.css"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
+
     <script type="text/javascript">
-        window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
     </script>
+
+
+
+
+
 
     <div class="module_actions column prepend-1 last">
         <a href="?statistics=attributes" class="button">Статистика по поисковым атрибутам</a>
@@ -17,8 +25,8 @@
         <a href="?statistics=terms" class="button">Статистика по фразам</a>
     </div>
     <hr/>
-    <div class="column span-19 prepend-1 last">
-        <form action="" method="POST">
+    <div class="">
+        <form action="" method="POST">{% csrf_token %}
             <fieldset>
                 {{ catalog_form }}
                 {{ period_form.as_div }}
@@ -27,7 +35,7 @@
             </fieldset>
             <input type="submit" value="Показать" class="btn"/>
         </form>
-        <div id="container"></div>
+        <div id="chart_container" class="" style="width: 100%"></div>
         {#{{ zcatalog.requests_by_day }}#}
     </div>
     <hr class="space"/>

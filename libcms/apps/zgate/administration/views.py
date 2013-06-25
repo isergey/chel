@@ -9,14 +9,14 @@ from django.core.urlresolvers import reverse
 from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
-from zgate.models import ZCatalog
-from zgate.models import requests_count, requests_by_attributes, requests_by_term
+from ..models import ZCatalog
+from ..models import requests_count, requests_by_attributes, requests_by_term
 from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm, ZCatalogForm
 from django.forms.models import model_to_dict
 
-from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
+# from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
 
-@permission_required_or_403('zgate.add_zcatalog')
+# @permission_required_or_403('zgate.add_zcatalog')
 def index(request):
     zcatalogs = ZCatalog.objects.all().order_by('-id')
     paginator = Paginator(zcatalogs, 20)
@@ -92,7 +92,7 @@ def delete(request, id):
     return HttpResponseRedirect(reverse('administration_zgate_index'))
 
 
-@permission_required_or_403('zgate.change_zcatalog')
+# @permission_required_or_403('zgate.change_zcatalog')
 def statistics(request):
     """
     тип графика
