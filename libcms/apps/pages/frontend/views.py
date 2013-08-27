@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import translation
 from django.contrib.auth.models import Group
 from guardian.shortcuts import get_perms
-from pages.models import Page, Content
+from ..models import Page, Content, ViewLog
 
 
 def index(request):
@@ -52,6 +52,13 @@ def show(request, slug):
 #            if contend_page.page_id in cd:
 #                cd[contend_page.page_id].content = contend_page
 
+    user =  request.user
+    log = ViewLog(page=page)
+    if not user.id:
+        log.user_id = -1
+    else:
+        log.user = user
+    log.save()
     return render(request, 'pages/frontend/show.html', {
         'page': page,
         'content': content,

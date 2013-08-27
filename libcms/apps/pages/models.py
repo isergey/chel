@@ -111,3 +111,10 @@ class Content(models.Model):
 
     def return_in_lang(self):
         pass
+
+
+
+class ViewLog(models.Model):
+    user = models.ForeignKey(User)
+    page = models.ForeignKey(Page)
+    datetime = models.DateTimeField(auto_now_add=True, db_index=True)
