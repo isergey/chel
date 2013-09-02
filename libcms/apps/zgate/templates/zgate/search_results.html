@@ -206,7 +206,7 @@
             order.org_id = org_id
             $('#reserve_record').text($('.record').text());
             $.ajax({
-                url:'/orders/orgbycode/',
+                url:'{% url 'orders:frontend:org_by_code' %}',
                 type:'POST',
                 dataType:"json",
                 async:false,
@@ -256,7 +256,7 @@
 
             //alert(order.type + ' ' + order.record_id + ' ' + order.zsession + ' '+order.comments + ' '+order.copy_info + ' '+order.catalog_id + ' ');
             $.ajax({
-                url:'/orders/makeorder/',
+                url:'{% url 'orders:frontend:make_order' %}',
                 type:'POST',
                 dataType:"json",
                 async:false,

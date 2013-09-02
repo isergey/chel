@@ -607,13 +607,13 @@ def get_document_owners(xml_record):
     owners_dicts = []
     if owners:
         owners = list(set(owners))
-        libraries = Library.objects.filter(code__in=owners)
+        libraries = Library.objects.filter(sigla__in=owners)
         for org in libraries:
             owners_dicts.append({
                 'code':org.code,
                 'name': org.name
             })
-    print owners_dicts
+
     return owners_dicts
 
 """

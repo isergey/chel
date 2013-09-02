@@ -2,10 +2,14 @@
 import datetime
 import simplejson
 from lxml import etree
+import xml.etree.cElementTree as ET
 import urllib2
 from django.conf import settings
 from django.shortcuts import HttpResponse, render, get_object_or_404, Http404, redirect, urlresolvers
 from django.contrib.auth.decorators import login_required
+
+from ..ill import ILLRequest
+from ..manager import OrderManager
 
 from zgate.models import ZCatalog
 from zgate import zworker
@@ -30,6 +34,31 @@ class MBAOrderException(Exception):
 
 xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
 xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
+
+
+def set_cookies_to_response(cookies, response):
+    for key in cookies:
+        response.set_cookie(key, cookies[key])
+    return response
+
+
+def ajax_login_required(view_func):
+    def wrap(request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return view_func(request, *args, **kwargs)
+        json = simplejson.dumps({'status': 'error', 'error': u'Необходимо войти в систему'}, ensure_ascii=False)
+        return HttpResponse(json, mimetype='application/json')
+
+    wrap.__doc__ = view_func.__doc__
+    wrap.__dict__ = view_func.__dict__
+    return wrap
+
+
+def json_error(error):
+    return simplejson.dumps({'status': 'error',
+                             'error': error},
+        ensure_ascii=False)
+
 #
 #@login_required
 #def index(request):
@@ -392,6 +421,36 @@ def mba_orders(request):
 
 
 
+def mba_order_reserve(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+
+    if request.method == "POST":
+        form = CopyOrderForm(request.POST, prefix='copy')
+        if form.is_valid():
+            try:
+                _make_mba_order(
+                    gen_id=form.cleaned_data['gen_id'],
+                    user_id=request.user.id,
+                    order_type='copy',
+                    order_manager_id=form.cleaned_data['manager_id'],
+                    copy_info=form.cleaned_data['copy_info'],
+                    comments=form.cleaned_data['comments'],
+                )
+            except MBAOrderException as e:
+                return HttpResponse(u'{"status":"error", "error":"%s"}' % e.message)
+
+            return HttpResponse(u'{"status":"ok"}')
+        else:
+            response = {
+                'status': 'error',
+                'errors': form.errors
+            }
+            return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
+    else:
+        return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
+
+
 
 def mba_order_copy(request):
     if not request.user.is_authenticated():
@@ -560,3 +619,142 @@ def delete_order(request, order_id=''):
     order_manager.delete_order(order_id=order_id.encode('utf-8'), user_id=unicode(request.user.id))
 
     return redirect(urlresolvers.reverse('orders:frontend:mba_orders'))
+
+
+
+
+
+
+
+def org_by_code(request):
+    if request.method == 'POST' and 'code' in request.POST:
+        library = get_object_or_404(Library, code=request.POST['code'])
+
+        org = {
+            'code': library.code,
+            'title': library.name,
+            'postal_address': getattr(library, 'postal_address', u'не указан'),
+            'phone': getattr(library, 'phone', u'не указан'),
+            'email': getattr(library, 'mail', u'не указан')
+        }
+
+        json = simplejson.dumps({'status': 'ok', 'org_info': org}, ensure_ascii=False)
+        return HttpResponse(json)
+
+    else:
+        return HttpResponse('Only post requests')
+
+
+
+def make_order(request):
+    if request.method != 'POST':
+        return HttpResponse('Only post requests');
+    order_type = request.POST.get('type', None)
+    order_manager_id = request.POST.get('org_id', None) # организация, которая получит заказ
+
+    order_time = datetime.datetime.now()
+
+    order_copy_limit = 1
+    order_document_limit = 2
+    order_reserve_limit = 3
+
+    user_order_times = UserOrderTimes.objects.filter(
+        user=request.user,
+        order_manager_id=order_manager_id,
+        order_type=order_type,
+        order_time__year=order_time.year,
+        order_time__month=order_time.month,
+        order_time__day=order_time.day
+    ).count()
+
+    if order_type == 'document':
+        if user_order_times >= order_document_limit:
+            return HttpResponse(simplejson.dumps(
+                    {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на доставку в эту библиотеку исчерпан'},
+                ensure_ascii=False))
+    elif order_type == 'copy':
+        if user_order_times >= order_copy_limit:
+            return HttpResponse(simplejson.dumps(
+                    {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на копию в эту библиотеку исчерпан'},
+                ensure_ascii=False))
+    elif order_type == 'reserve':
+        if user_order_times >= order_reserve_limit:
+            return HttpResponse(simplejson.dumps({'status': 'error',
+                                                  'error': 'На сегодня Ваш лимит заказов на бронирование в эту библиотеку исчерпан'}
+                ,
+                ensure_ascii=False))
+
+    else:
+        return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Неизвестный тип заказа'},
+            ensure_ascii=False))
+
+    catalog = get_object_or_404(ZCatalog, latin_title=request.POST['catalog_id'])
+    zgate_url = catalog.url
+
+    zstate = 'present+' + request.POST['zsession'] +\
+             '+default+' + request.POST['zoffset'] +\
+             '+1+X+1.2.840.10003.5.28+' + catalog.default_lang
+
+    (xml_record, cookies) = zworker.request(zgate_url + '?' + zstate, cookies=request.COOKIES)
+
+    #определяем, сколько раз пользователь сдлела заказ за сегодня
+
+
+    try:
+        tree = ET.XML(xml_record)
+    except SyntaxError as e:
+        return HttpResponse(json_error(u'Заказ не выполнен. Возможно, время сессии истекло'))
+
+    order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
+
+    library = None
+    try:
+        library = Library.objects.get(code=order_manager_id)
+    except Library.DoesNotExist:
+        return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не найдена'}))
+
+    def get_first_recivier_code(library):
+        ancestors = library.get_ancestors()
+        for ancestor in ancestors:
+            if ancestor.ill_service and ancestor.ill_service.strip():
+                return ancestor.code
+        return None
+
+    # если у библиотеки указан ill адрес доставки, то пересылаем заказ ей
+    if library.ill_service and library.ill_service.strip():
+        manager_id = ''
+        reciver_id = library.code
+
+    # иначе ищем родителя, у которого есть адрес доставки
+    else:
+        manager_id = library.code
+        reciver_id = get_first_recivier_code(library)
+
+        if not reciver_id:
+            return  HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не может получать заявки'}))
+
+    sender_id = request.user.username #id отправителя
+    copy_info = request.POST.get('copy_info', '')
+
+    try:
+        order_manager.order_document(
+            order_type=order_type,
+            sender_id=sender_id,
+            reciver_id=reciver_id,
+            manager_id=manager_id,
+            xml_record=xml_record,
+            comments=request.POST.get('comments', ''),
+            copy_info=copy_info
+        )
+        user_order_times = UserOrderTimes(user=request.user, order_type=order_type, order_manager_id=order_manager_id)
+        user_order_times.save()
+    except Exception as e:
+        if settings.DEBUG == True:
+            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа' + str(e)},
+                ensure_ascii=False))
+        else:
+            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа'},
+                ensure_ascii=False))
+            #result = u'Заказ сделан '+ order_type +'<br/>'+xml_record.decode('utf-8')
+
+    return HttpResponse(simplejson.dumps({'status': 'ok'}, ensure_ascii=False));
