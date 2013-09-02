@@ -202,3 +202,44 @@ YANDEX_OAUTH2_CLIENT_SECRET       = ''
 YANDEX_OAUTH2_API_URL             = 'https://api-yaru.yandex.ru/me/' # http://api.moikrug.ru/v1/my/ for Moi Krug
 
 
+SSEARCH = {
+    'catalogs':{
+        'uc':{
+            'to_index_doc_transformer': PROJECT_PATH + '/transformers/rustam_xml_indexing.xsl',
+            'solr_server': {
+                'url': 'http://127.0.0.1:8080/SNSApi/search/',
+                'collection': 'uc',
+            },
+            'base':{
+                'name': 'spstu',
+                'table': 'spstu'
+            }
+        },
+        'authorities':{
+            'to_index_doc_transformer': PROJECT_PATH + '/transformers/rustam_xml_indexing_auth.xsl',
+            'solr_server': {
+                'url': 'http://localhost:8983/solr/',
+                'collection': 'authorities',
+                },
+            'base':{
+                'name': 'spstu',
+                'table': 'authorities'
+            }
+        }
+    },
+    'transformers':{
+        'libcard': PROJECT_PATH + '/transformers/rusmarc/full_document.xsl',
+        'record_dict': PROJECT_PATH + '/transformers/record_in_search.xsl',
+        'marc_dump': PROJECT_PATH + '/transformers/marc_dump.xsl',
+        'authority': PROJECT_PATH + '/transformers/rustam_xml_in_search_auth.xsl',
+    }
+}
+
+
+ORDERS = {
+    'db_catalog':  PROJECT_PATH + '../var/orders/',
+    'rdx_path': PROJECT_PATH + 'rdx',
+    'xsl_templates':{
+        'marc': PROJECT_PATH + 'xslt/marc.xsl',
+    }
+}
