@@ -48,7 +48,6 @@ class OrderManager(object):
 
 
         transactions =  proc.stdout.read()
-
         error = proc.stderr.read()
         if error:
             raise OrderManagerException(error)

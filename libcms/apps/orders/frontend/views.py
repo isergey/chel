@@ -3,7 +3,8 @@ import datetime
 import simplejson
 from lxml import etree
 import xml.etree.cElementTree as ET
-import urllib2
+
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.shortcuts import HttpResponse, render, get_object_or_404, Http404, redirect, urlresolvers
 from django.contrib.auth.decorators import login_required
@@ -311,11 +312,11 @@ def check_for_can_delete(transaction):
     return False
 
 import time
-from order_manager.ill import ILLRequest
 from ..templatetags.order_tags import org_by_id
 @login_required
-def mba_orders(request):
-    user_id = request.user.id
+def index(request):
+    user_id = request.user.username
+
     def format_time(datestr='', timestr=''):
         if datestr:
             datestr = time.strptime(datestr, "%Y%m%d")
@@ -363,7 +364,9 @@ def mba_orders(request):
             apdu_map['datetime'] = format_time(apdu.delivery_status.service_date_time['dtots']['date'],
                 apdu.delivery_status.service_date_time['dtots']['time'])
 
+            print apdu.delivery_status
             if isinstance(apdu.delivery_status, ILLRequest):
+
                 order['order_id'] = apdu.delivery_status.transaction_id['tq']
                 order['org_info'] = org_by_id(apdu.delivery_status.responder_id['pois']['is'])
                 if apdu.delivery_status.third_party_info_type['tpit']['stl']['stlt']['si']:
@@ -388,7 +391,7 @@ def mba_orders(request):
 
             else:
                 #print apdu.delivery_status.type
-                apdu_map['responder_note'] = apdu.delivery_status.responder_note
+                apdu_map['responder_note'] = getattr(apdu.delivery_status, 'responder_note', None)
                 if apdu.delivery_status.type == 'ILLAnswer':
                     apdu_map['reason_will_supply'] = apdu.delivery_status.results_explanation['wsr']['rws']
                     apdu_map['reason_will_supply_title'] = ''
@@ -404,7 +407,6 @@ def mba_orders(request):
 
             #apdu_map['record'] = res
             order['apdus'].append(apdu_map)
-
         orders.append(order)
         #if org_id in settings.LIBS:
     #    orgs[org_id] = settings.LIBS[org_id]
@@ -625,7 +627,7 @@ def delete_order(request, order_id=''):
 
 
 
-
+@csrf_exempt
 def org_by_code(request):
     if request.method == 'POST' and 'code' in request.POST:
         library = get_object_or_404(Library, code=request.POST['code'])
@@ -649,9 +651,8 @@ def org_by_code(request):
 def make_order(request):
     if request.method != 'POST':
         return HttpResponse('Only post requests');
-    order_type = request.POST.get('type', None)
-    order_manager_id = request.POST.get('org_id', None) # организация, которая получит заказ
-
+    order_type = request.POST.get('type')
+    order_manager_id = request.POST.get('org_id') # организация, которая получит заказ
     order_time = datetime.datetime.now()
 
     order_copy_limit = 1
@@ -735,6 +736,7 @@ def make_order(request):
 
     sender_id = request.user.username #id отправителя
     copy_info = request.POST.get('copy_info', '')
+
 
     try:
         order_manager.order_document(
