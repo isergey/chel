@@ -90,6 +90,7 @@
             {% if request.user.is_authenticated %}
                 Вы вошли как: {{ request.user.username }} <a href="{% url 'accounts:frontend:logout' %}">Выйти</a>
                 <ul>
+                    <li><a href="{% url 'orders:frontend:index' %}">Мои заказы</a></li>
                     <li><a href="{% url 'events:frontend:favorit_events' %}">Мои события</a></li>
                     <li><a href="{% url 'zgate_saved_document_list' %}">Мои документы</a></li>
                     <li><a href="{% url 'zgate_saved_requests' %}">Мои запросы</a></li>
