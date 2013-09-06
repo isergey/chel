@@ -81,10 +81,10 @@ class ApiLibrary(object):
         self.postal_address = postal_address
 
         self.http_service = http_service
-        self.ill_service = ill_service
-        self.edd_service = edd_service
+        self.ill_service = u'ill%s@localhost' % self.code
+        self.edd_service = u'edd%s@localhost' % self.code
         self.mail = mail
-        self.mail_access = mail_access
+        self.mail_access = u'imap://ill%s:password@localhost.local:993' % self.code
 
         self.latitude = latitude
         self.longitude = longitude

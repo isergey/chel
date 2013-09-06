@@ -129,8 +129,8 @@ class UserLibrary(models.Model):
             library = self.library
         except Library.DoesNotExist:
             raise ValidationError(u'Укажите организацию к которой принадлежит пользователь.')
-        if not library.ill_service:
-            raise ValidationError(u'У библиотеки нет ill адреса, она не сможет получать заказы. ill адрес необходимо узнать у администратора службы МБА и присвоить его библиотеке.')
+        #if not library.ill_service:
+        #    raise ValidationError(u'У библиотеки нет ill адреса, она не сможет получать заказы. ill адрес необходимо узнать у администратора службы МБА и присвоить его библиотеке.')
 
     class Meta:
         verbose_name = u"Пользователь МБА"
