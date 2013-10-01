@@ -24,7 +24,7 @@ search_attrs = [
     (u'subject_subheading_t', u'subject_subheading_tru'),
     (u'subject_keywords_t', u'subject_keywords_tru'),
     (u'date_of_publication_t', u'date_of_publication_t'),
-    # (u'full_text_tru', u'full_text_tru'),
+    (u'full_text_tru', u'full_text_tru'),
     #(u'catalog_s', u'catalog_s'),
 #    (u'authority_number', u'linked_authority_number_s'),
 #    (u'$3', u'linked_record-number_s'),
