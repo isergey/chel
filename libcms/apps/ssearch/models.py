@@ -14,7 +14,7 @@ class ZippedTextField(models.TextField):
     def to_python(self, value):
         fp = StringIO(value)
         zfp = zipfile.ZipFile(fp, "r")
-        value = zfp.open("record").read()
+        value = zfp.open("record.json").read()
         value = value.decode('utf-8')
 
         return value
@@ -115,8 +115,8 @@ class ZippedTextField(models.TextField):
 #         db_table = 'record'
 
 class RecordContent(models.Model):
-    id = models.IntegerField(primary_key=True)
-    record_id = models.CharField(max_length=32L)
+    record_id = models.CharField(max_length=32L,db_column='original_id_hash')
+    source_id = models.CharField(max_length=32L)
     content = ZippedTextField()
     class Meta:
-        db_table = 'record_content'
+        db_table = 'records'

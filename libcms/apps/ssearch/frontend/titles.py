@@ -82,12 +82,12 @@ attr_value_title = {
             },
         }
     },
-    u'collection':{
+    u'source':{
         'title': {
             u'ru': u'Каталог'
         },
         'values': {
-            u'chelreglib.audiovisuals': {
+            u'chelreglib.chelreglib': {
                 u'ru': u'Аудиовизуальные документы',
             },
             u'chelreglib.books': {

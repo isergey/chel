@@ -1,0 +1,64 @@
+{% load ssearch_tags %}
+<p class="item1">
+    {{ record.dict.title.0 }}
+</p>
+<p class="item2">
+    {% for author in record.dict.author %}
+        {{ author }}{% if not forloop.last %}; {% endif %}
+    {% endfor %}
+</p>
+<p class="item3">
+    {% for subject in record.dict.subject_heading %}
+        <span class="label label-success">{{ subject }}</span>
+    {% endfor %}
+</p>
+<p class="item3">
+    {% for subject in record.dict.subject_keywords %}
+        <span class="label label-info">{{ subject }}</span>
+    {% endfor %}
+</p>
+{% if record.dict.code_language %}
+    <p class="item4">Язык:
+        {% for lang in record.dict.code_language %}
+            {{ lang|attr_title:"code_language" }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+{% if record.dict.date_of_publication %}
+    <p class="item4">Год публикации:
+        {% for dop in record.dict.date_of_publication %}
+            {{ dop }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+{% if record.dict.publisher %}
+    <p class="item4">Издатель:
+        {% for publisher in record.dict.publisher  %}
+            {{ publisher }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+{% if record.dict.content_type %}
+    <p class="item4">Тип содержания:
+        {% for content_type in record.dict.content_type %}
+            {{ content_type|attr_title:"content_type" }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+{% if record.dict.holders %}
+    <p class="item4">Держатели:
+        {% for catalog in record.dict.holders  %}
+            {{ catalog }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+{% if record.dict.url %}
+    <p class="item4">Почитать:
+        {% for url in record.dict.url  %}
+            <a href="{{ url }}">Ссылка на полный текст</a>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+

@@ -60,6 +60,7 @@
         <xsl:call-template name="Cover"/>
         <xsl:call-template name="Linked-record-number"/>
         <xsl:call-template name="Catalog"/>
+        <xsl:call-template name="URL"/>
     </doc>
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -445,7 +446,15 @@
         </field>
     </xsl:for-each>
 </xsl:template>
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
+<xsl:template name="URL">
+    <xsl:for-each select="field[@id='856']/subfield[@id='u']">
+        <field name="url">
+            <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
 </xsl:stylesheet>
 
 
