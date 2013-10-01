@@ -31,7 +31,7 @@ search_attrs = [
 ]
 
 facet_attrs = [
-    (u'collection_s', u'collection_s'),
+    #(u'source_id_s', u'source_id_s'),
      (u'has_e_version_b', u'has_e_version_b'),
     # (u'owner_s', u'owner_s'),
     (u'author_s', u'author_s'),
@@ -212,7 +212,6 @@ def index(request, catalog='uc'):
         else:
             record['dict'] = get_content_dict(content_tree)
             # record['library_cadr'] = get_library_card(content_tree)
-        record['marc_dump'] = get_marc_dump(content_tree)
         if highlighting and record['id'] in highlighting:
             record['highlighting'] = highlighting[record['id']]
 
@@ -252,6 +251,28 @@ def index(request, catalog='uc'):
         'rubrics': traversing(rubrics),
         'sort_attrs': sort_attrs
     })
+
+
+
+def detail(request):
+    record_id = request.GET.get('id', None)
+    if not record_id:
+        raise Http404(u'Запись не найдена')
+
+    records = get_records([record_id])
+    if not records:
+        raise Http404(u'Запись не найдена')
+
+    record =  records[0]
+    content_tree = record['tree']
+    record['library_cadr'] = get_library_card(content_tree)
+    record['dict'] = get_content_dict(content_tree)
+    record['marc_dump'] = get_marc_dump(content_tree)
+
+    return render(request, 'ssearch/frontend/detail.html', {
+        'record': record
+    })
+
 
 
 def extract_request_query_attrs(request):
@@ -344,12 +365,12 @@ def construct_query(attrs, values, optimize=True):
                 relation_value = u'(%s)' % term_relation_attr.join(terms)
                 # print relation_value
                 all_sc = SearchCriteria(u"OR")
-                all_sc.add_attr(u'author_t','%s^24' % relation_value)
-                all_sc.add_attr(u'title_t','%s^16' % relation_value)
-                all_sc.add_attr(u'title_tru','%s^14' % relation_value)
+                all_sc.add_attr(u'author_t','%s^96' % relation_value)
+                all_sc.add_attr(u'title_t','%s^64' % relation_value)
+                all_sc.add_attr(u'title_tru','%s^30' % relation_value)
                 all_sc.add_attr(u'subject_heading_tru','%s^8' % relation_value)
-                all_sc.add_attr(u'subject_subheading_tru','%s^5' % relation_value)
-                all_sc.add_attr(u'all_tru','%s^5' % relation_value)
+                #all_sc.add_attr(u'subject_subheading_tru','%s^5' % relation_value)
+                all_sc.add_attr(u'all_tru','%s^2' % relation_value)
                 sc.add_search_criteria(all_sc)
 
 
@@ -438,7 +459,7 @@ def get_records(record_ids):
     records = []
     for record in records_objects:
         records.append({
-            'id': record.id,
+            'id': record.record_id,
             'tree': record_to_ruslan_xml(json.loads(record.content))
         })
         #record.tree = record_to_ruslan_xml(json.loads(record.content))

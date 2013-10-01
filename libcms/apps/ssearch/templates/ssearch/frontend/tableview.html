@@ -7,7 +7,7 @@
         <td>
 <p class="item1">
     <div style="float: left; width: auto;">
-        <h4><a href="#?back={{ request.get_full_path|urlencode }}">{{ record.dict.title.0 }}</a></h4>
+        <h4><a href="{% url 'ssearch:frontend:detail' %}?id={{ record.id }}&back={{ request.get_full_path|urlencode }}">{{ record.dict.title.0 }} </a></h4>
     </div>
     <div style="float: left; width: auto;">
         <a href="#?back={{ request.get_full_path|urlencode }}"> {{ record.library_cadr|safe }}</a>
