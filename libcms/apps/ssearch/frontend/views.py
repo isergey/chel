@@ -31,8 +31,8 @@ search_attrs = [
 ]
 
 facet_attrs = [
-    #(u'source_id_s', u'source_id_s'),
-     (u'has_e_version_b', u'has_e_version_b'),
+    (u'collection_s', u'collection_s'),
+    (u'has_e_version_b', u'has_e_version_b'),
     # (u'owner_s', u'owner_s'),
     (u'author_s', u'author_s'),
     # (u'bbk_sci', u'bbk_sci'),
@@ -48,6 +48,12 @@ facet_attrs = [
     #(u'fauthority_number', u'linked_authority_number_s'),
 ]
 
+pivot_facet_attrs = [
+     (u'collection_level0_s,collection_level1_s', u'collection_level0_s,collection_level1_s'),
+    # (u'owner_s', u'owner_s'),
+
+    #(u'fauthority_number', u'linked_authority_number_s'),
+]
 
 sort_attrs = [
     {
@@ -144,6 +150,24 @@ def init_solr_collection(catalog):
 
 from ..ppin_client.solr import SearchCriteria
 
+def collections():
+    uc = init_solr_collection('uc')
+    faset_params = FacetParams()
+    faset_params.fields = ['collection_s']
+
+    result = uc.search(query='*:*', faset_params=faset_params)
+    facets = result.get_facets()
+    facets = replace_facet_values(facets)
+    collection_values = facets['collection_s']['values']
+
+
+    # return render(request, 'ssearch/frontend/collections.html', {
+    #     'collection_values': collection_values
+    # })
+
+    return  collection_values
+
+
 def index(request, catalog='uc'):
     # sc = SearchCriteria(u"AND")
     # sc.add_attr(u'name', u'zi zi')
@@ -177,7 +201,8 @@ def index(request, catalog='uc'):
         return render(request, 'ssearch/frontend/index.html', {
             'attrs': get_search_attrs(),
             'pattr': request.GET.getlist('pattr', None),
-            'rubrics': traversing(rubrics)
+            'rubrics': traversing(rubrics),
+            'collection_values': collections()
         })
 
     query = construct_query(attrs=attrs, values=values)
@@ -251,6 +276,7 @@ def index(request, catalog='uc'):
         'rubrics': traversing(rubrics),
         'sort_attrs': sort_attrs
     })
+
 
 
 

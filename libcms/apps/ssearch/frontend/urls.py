@@ -2,9 +2,9 @@
 from django.conf.urls import *
 import views
 
-urlpatterns = patterns('ssearch.frontend.views',
-
+urlpatterns = patterns('',
     url(r'^$', views.index, name="index"),
+    url(r'^collections/$', views.collections, name="collections"),
     url(r'^detail$', views.detail, name="detail"),
     url(r'^m_f$', views.more_facet, name="more_facet"),
     url(r'^m_sf$', views.more_subfacet, name="more_subfacet"),
