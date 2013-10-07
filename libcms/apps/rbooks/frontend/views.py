@@ -1,190 +1,232 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+import os
+import json
+import cStringIO
+from zipfile import ZipFile, ZIP_DEFLATED
 from lxml import etree
-import urllib
-from hashlib import md5
 from django.conf import settings
-from django.shortcuts import render, HttpResponse, urlresolvers, Http404, redirect
-from django.views.decorators.cache import cache_control
-import rbooks_client
-from in_memory_zip import InMemoryZip
+from django.core.cache import cache
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import translation
+from django.contrib.auth.decorators import login_required
+from django.utils.translation import to_locale, get_language
+from django.shortcuts import HttpResponse, Http404
+from django.views.decorators.cache import never_cache
+# from ssearch.models import  Record, Ebook
+#from ..models import Bookmarc, in_internal_ip
+from forms import BookmarcForm
+# from common.xslt_transformers import xslt_bib_draw_transformer
 
-RBOOKS_SETTINGS = settings.RBOOKS
 
-def index(request):
-    code = request.GET.get('code', None)
-    if not code:
-        raise Http404(u'Файл книги не найден')
-    # li = rbooks_client.LinkInfo('weded', 'edwed')
-    # pi = rbooks_client.PermissionsInfo(True, True, 'ewdwed')
-    # di = rbooks_client.DownloadInfo('gergerg', 'rferf', 1212, 'wefwef')
-    # doc_info = rbooks_client.DocumentInfo(li, 'wefweffg', 'wefwef', 'rgergrg', pi, 'token1', 'token2', 'provider_key1', [di])
+class AccessDenied(Exception): pass
 
-    # print etree.tostring(doc_info.to_xml_element())
+# def add_to_bookmarc(request):
+#     if not request.user.is_authenticated():
+#         return HttpResponse(u'Вы должны быть войти на портал', status=401)
+#     if request.method == 'POST':
 
-    return render(request, 'rbooks/frontend/index.html', {
-        'code': code
+
+@never_cache
+def show(request):
+    file_name = request.GET.get('code', None)
+    try:
+        book_path = settings.RBOOKS['documents_directory'] + '/'
+        #book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    except AccessDenied as e:
+        return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    if not book_path:
+        raise Http404(u'Книга не найдена')
+
+    cur_language = translation.get_language()
+    locale_titles = {
+        'ru': 'ru_RU',
+        'en': 'en_US',
+        'tt': 'tt_RU'
+    }
+
+    locale_chain = locale_titles.get(cur_language, 'en_US')
+    gen_id = request.GET.get('gen_id', None)
+    initial = None
+    if gen_id:
+        initial = {'gen_id': gen_id, 'book_id': book}
+
+    #bookmarc_form = BookmarcForm(initial)
+    return render(request, 'rbooks/frontend/show.html', {
+        'file_name': file_name,
+        'locale_chain': locale_chain,
+        #'bookmarc_form': bookmarc_form
     })
+@never_cache
+def book(request, book):
+    try:
+        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    except AccessDenied as e:
+        return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    if not book_path:
+        raise Http404(u'Книга не найдена')
+    token1 = request.GET.get('token1')
+    xml = """\
+<Document Version="1.0">\
+<Source File="source.xml" URL="http://%s/dl/%s/draw/?part=Part0.zip&amp;book=%s&amp;version=1285566137"/>\
+<FileURL>http://%s/dl/%s/draw/?part={part}&amp;book=%s</FileURL>\
+<Token1>%s</Token1>\
+<Permissions><AllowCopyToClipboard>true</AllowCopyToClipboard><AllowPrint>true</AllowPrint></Permissions>\
+</Document>""" % (request.META['HTTP_HOST'],book, book, request.META['HTTP_HOST'], book, book, token1)
 
-@cache_control(must_revalidate=True, max_age=86400)
-def edoc(request):
-    code = request.GET.get('code', None)
-    if not code:
-        raise Http404(u'Файл книги не найден')
-    token1 = request.GET.get('token1', None)
+    zip_file_content = cStringIO.StringIO()
 
-    # if not token1:
-    #     return HttpResponse(u'Нет параметра token1', status=400)
+    zip_file = ZipFile(zip_file_content, 'w')
+    zip_file.writestr('doc.xml', xml)
+    zip_file.close()
 
-    part = request.GET.get('part', None)
+    response = HttpResponse(mimetype="application/zip")
+    response["Content-Disposition"] = "attachment; filename=%s.zip" % book
+    zip_file_content.seek(0)
+    response.write(zip_file_content.read())
 
-    if not part:
-        return create_content_result_document_read_head(token1, code)
+    return response
+
+
+@never_cache
+def draw(request, book):
+    part = request.GET.get('part')
+
+    try:
+        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+    except AccessDenied as e:
+        return HttpResponse(e.message)
+
+
+    if not book_path:
+        raise Http404(u'Книга не найдена')
+    zf = ZipFile(book_path)
+
+    response = HttpResponse(mimetype="application/zip")
+    response["Content-Disposition"] = "attachment; filename=%s" % part
+    response.write(zf.read(part))
+
+    return response
+
+
+def get_book_path(book, remote_adrr):
+     return settings.RBOOKS['documents_directory'] + '/' + book + '.edoc'
+"""
+def add_page_bookmarc(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if request.method == 'POST':
+        form = BookmarcForm(request.POST)
+        if form.is_valid():
+            if Bookmarc.objects.filter(user=request.user, gen_id=form.cleaned_data['gen_id']):
+                return HttpResponse(u'{"status":"ok"}')
+            doc = None
+            try:
+                doc = Record.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
+            except Record.DoesNotExist:
+                pass
+            if not doc:
+                try:
+                    doc = Ebook.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
+                except Ebook.DoesNotExist:
+                    raise Http404(u'Record not founded')
+
+            saved_bookmarc = form.save(commit=False)
+            saved_bookmarc.user = request.user
+            saved_bookmarc.gen_id = doc.gen_id
+
+            saved_bookmarc.save()
+            if request.is_ajax():
+                return HttpResponse(u'{"status":"ok"}')
+        else:
+            if request.is_ajax():
+                response = {
+                    'status': 'error',
+                    'errors': form.errors
+                }
+                return HttpResponse(json.dumps(response, ensure_ascii=False))
+
+
+
+    return HttpResponse(u'{"status":"ok"}')
+
+
+"""
+
+"""
+@login_required
+def bookmarcs(request):
+    #print list(Bookmarc.objects.raw("SELECT id, gen_id FROM rbooks_bookmarc WHERE user_id=%s GROUP BY gen_id ORDER BY add_date DESC", params=[request.user.id]))
+    bookmarcs = Bookmarc.objects.values('id', 'gen_id').filter(user=request.user).order_by('-add_date')
+    gen_ids = {}
+    for bookmarc in bookmarcs:
+        gen_ids[bookmarc.gen_id] = {'bookmarc': bookmarc}
+
+
+    for record in Record.objects.using('records').filter(gen_id__in=gen_ids.keys()):
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_bib_draw_transformer(doc_tree)
+        gen_ids[record.gen_id]['record']= record
+        gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
+
+    for record in Ebook.objects.using('records').filter(gen_id__in=gen_ids):
+        doc_tree = etree.XML(record.content)
+        doc_tree = xslt_bib_draw_transformer(doc_tree)
+        gen_ids[record.gen_id]['record'] = record
+        gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
+
+    records = []
+    for bookmarc in bookmarcs:
+        records.append(gen_ids[bookmarc.gen_id])
+
+    return render(request, 'rbooks/frontend/bookmarcs.html', {
+        'records': records
+    })
+"""
+
+"""
+def get_book_path(book, remote_addr):
+    internal_ip = cache.get('internal_ip' + remote_addr, None)
+    if internal_ip == None:
+        internal_ip = in_internal_ip(remote_addr)
+        cache.set('internal_ip' + remote_addr, internal_ip)
+
+    book_path_internet = None
+    book_path_internal = None
+
+    book_path = None
+
+    internet_books = (
+        settings.RBOOKS.get('dl_path') + book +'.1.edoc',
+        settings.RBOOKS.get('dl_path') + book +'.edoc',
+        )
+    iternal_books = (
+                        settings.RBOOKS.get('dl_path') + book +'.2.edoc',
+                        ) + internet_books
+
+    if not internal_ip:
+        for internet_book in internet_books:
+            if os.path.isfile(internet_book):
+                book_path_internet =  internet_book
+                break
+
+        if  book_path_internet:
+            book_path = book_path_internet
     else:
-        return create_content_result_document_read_part_x(code, part)
+        for iternal_book in iternal_books:
+            if os.path.isfile(iternal_book):
+                book_path_internal =  iternal_book
+                break
+
+        if book_path_internal:
+            book_path = book_path_internal
+
+    if not book_path_internal and not book_path_internet:
+        raise AccessDenied(u'Просмотр с вашего ip ареса запрещен.')
 
 
 
-def key(request):
-    code = request.GET.get('code', None)
-    if not code:
-        return HttpResponse(u'Нет параметра code', status=400)
+    if not book_path:
+        return None
 
-    dh = request.GET.get('dh', None)
-    if not dh:
-        return HttpResponse(u'Нет параметра dh', status=400)
-
-    sign = request.GET.get('sign', None)
-    if not dh:
-        return HttpResponse(u'Нет параметра sign', status=400)
-
-    rbclient = rbooks_client.RBooksWebServiceClient(
-        RBOOKS_SETTINGS['service_url'],
-        RBOOKS_SETTINGS['documents_directory'],
-        code, extension=''
-    )
-    responce = HttpResponse(content_type=u'text/plain')
-    responce.write(rbclient.get_document_key(dh, sign))
-    return responce
-
-
-def picture(request):
-    code = request.GET.get('code', None)
-    if not code:
-        return HttpResponse(u'Нет параметра code', status=400)
-    rbclient = rbooks_client.RBooksWebServiceClient(
-        RBOOKS_SETTINGS['service_url'],
-        RBOOKS_SETTINGS['documents_directory'],
-        code
-    )
-
-    response = HttpResponse(content_type=u'image/png')
-    response.write(rbclient.get_document_picture())
-    return response
-
-
-from django.views.decorators.http import condition
-import time
-@condition(etag_func=None)
-def edoc_stream(request):
-    code = request.GET.get('code', None)
-    if not code:
-        return HttpResponse(u'Нет параметра code', status=400)
-
-    part = request.GET.get('part', None)
-    if not part:
-        return HttpResponse(u'Нет параметра part', status=400)
-
-    resp = HttpResponse( stream_response_generator(code, part), mimetype='application/octet-stream')
-    return resp
-
-def stream_response_generator(code, part):
-    rbclient = rbooks_client.RBooksWebServiceClient(
-        RBOOKS_SETTINGS['service_url'],
-        RBOOKS_SETTINGS['documents_directory'],
-        code
-    )
-    iter_lines = rbclient.get_document_part_stream(part)
-    for line in iter_lines:
-        if line:
-            yield line
-
-    # yield "<html><body>\n"
-    # for x in range(1,11):
-    #     yield "<div>%s</div>\n" % x
-    #     yield " " * 1024  # Encourage browser to render incrementally
-    #     time.sleep(1)
-    # yield "</body></html>\n"
-
-
-def create_content_result_document_read_head(token1, code):
-    rbclient = rbooks_client.RBooksWebServiceClient(
-        RBOOKS_SETTINGS['service_url'],
-        RBOOKS_SETTINGS['documents_directory'],
-        code
-    )
-    fd = rbclient.get_document_file_info()
-    document_info = create_document_info(rbclient, code, fd, token1)
-    sign = rbclient.sign_data(document_info)
-    imz = InMemoryZip()
-    imz.append("doc.xml", document_info).append("doc.sig", sign)
-    responce = HttpResponse(content_type='application/zip')
-    responce.write(imz.read())
-    return responce
-
-def create_content_result_document_read_part_x(code, part):
-    rbclient = rbooks_client.RBooksWebServiceClient(
-        RBOOKS_SETTINGS['service_url'],
-        RBOOKS_SETTINGS['documents_directory'],
-        code
-    )
-    part = rbclient.get_document_part(part)
-    #return redirect(part)
-    response = HttpResponse(content_type='application/octet-stream')
-    response.write(part)
-    response['Cache-Control'] = 'private, max-age = 86400'
-    return response
-
-
-
-def create_document_info(rbclient, code, fd, token1):
-    edoc_path =  urlresolvers.reverse('rbooks:frontend:edoc')
-    key_path = urlresolvers.reverse('rbooks:frontend:key')
-
-
-    ver = md5(fd).hexdigest()
-    li = rbooks_client.LinkInfo(
-        file='source.xml',
-        url= edoc_path + '?code=%s&part=part0.zip&version=%s' % (code, ver)
-    )
-
-    file_url = edoc_path + '?code=%s&part={part}&version=%s' % (
-        code,
-        ver
-    )
-
-    pi = rbooks_client.PermissionsInfo(True, True)
-
-
-    token2 = '1234567890'
-
-    provider_key1 = rbclient.get_public_key1_string()
-
-    key_url = key_path + '?code={code}&dh={dh}&sign={sign}'
-
-
-    #di = rbooks_client.DownloadInfo('gergerg', 'rferf', 1212, 'wefwef')
-
-
-    doc_info = rbooks_client.DocumentInfo(
-        link_info=li,
-        file_url=file_url,
-        permissions_info=pi,
-        token1=token1,
-        token2=token2,
-        provider_key1=provider_key1,
-        key_url=key_url,
-        print_url='111',
-        downloads=[]
-    )
-
-    return etree.tostring(doc_info.to_xml_element(), encoding='utf-8', xml_declaration=True)
+    return book_path
+"""

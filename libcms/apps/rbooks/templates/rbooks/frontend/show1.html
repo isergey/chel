@@ -1,0 +1,281 @@
+<html>
+<head id="Head1">
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <title>
+        ЧЕЛЯБИНСКАЯ ОБЛАСТНАЯ УНИВЕРСАЛЬНАЯ НАУЧНАЯ БИБЛИОТЕКА
+    </title>
+
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}rbooks/AC_OETags.js" type="text/javascript"></script>
+    <link href="{{ STATIC_URL }}rbooks/ebook.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        // -----------------------------------------------------------------------------
+        // Globals
+        // Major version of Flash requi red
+        var requiredMajorVersion = 10;
+        // Minor version of Flash required
+        var requiredMinorVersion = 0;
+        // Minor version of Flash required
+        var requiredRevision = 1;
+        // -----------------------------------------------------------------------------
+
+
+        function updateSize() {
+            //  var IE = '\v' == 'v';
+            //   if (IE) {
+            elfViewer.height = viewContainer.clientHeight - viewHeader.offsetHeight;
+            //    }
+        }
+
+
+    </script>
+</head>
+
+<body onload="updateSize()" onResize="updateSize()">
+
+<div id="viewContainer">
+
+    <div id="viewHeader">
+
+        <h1>
+            ЧЕЛЯБИНСКАЯ ОБЛАСТНАЯ УНИВЕРСАЛЬНАЯ НАУЧНАЯ БИБЛИОТЕКА
+            <!-- <input type="textarea" onMouseOver=alert(elfViewer.getViewPositionPage())> -->
+{#        {% if request.user.id %}#}
+{#            <a class="btn" data-toggle="modal" href="#save_doc_modal" id="save_doc_button" ><i class="icon-star"></i> Добавить страницу в закладки</a>#}
+{#        {% else %}#}
+{#            <a class="btn disabled" href="#1" id="save_doc_button" onclick="alert('Необходимо войти на портал')" ><i class="icon-star"></i> Добавить страницу в закладки</a>#}
+{#        {% endif %}#}
+        </h1>
+
+
+    </div>
+</div>
+
+<script language="JavaScript" type="text/javascript">
+
+
+    <!--
+    // Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
+    var hasProductInstall = DetectFlashVer(6, 0, 65);
+
+    // Version check based upon the values defined in globals
+    var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+
+    if (hasProductInstall && !hasRequestedVersion) {
+        // DO NOT MODIFY THE FOLLOWING FOUR LINES
+        // Location visited after installation is complete if installation is required
+        var MMPlayerType = (isIE == true) ? "ActiveX" : "PlugIn";
+        var MMredirectURL = window.location;
+        document.title = document.title.slice(0, 47) + " - Flash Player Installation";
+        var MMdoctitle = document.title;
+
+        AC_FL_RunContent(
+                "src", "playerProductInstall",
+                "FlashVars", "MMredirectURL=" + MMredirectURL + '&MMplayerType=' + MMPlayerType + '&MMdoctitle=' + MMdoctitle + "",
+                "align", "middle",
+                "id", "elfViewer",
+                "quality", "high",
+                "bgcolor", "#869ca7",
+                "name", "FEPViewer",
+                "allowScriptAccess", "sameDomain",
+                "type", "application/x-shockwave-flash",
+                "pluginspage", "http://www.adobe.com/go/getflashplayer"
+        );
+    } else if (hasRequestedVersion) {
+        // if we've detected an acceptable version
+        // embed the Flash Content SWF when all tests are passed
+        AC_FL_RunContent(
+                "src", "{{STATIC_URL}}rbooks/RBooks.swf",
+                "align", "middle",
+                "id", "elfViewer",
+                "quality", "high",
+                "bgcolor", "#869ca7",
+                "name", "elfViewer",
+                "allowScriptAccess", "sameDomain",
+                "allowFullScreen", "true",
+                "type", "application/x-shockwave-flash",
+                "pluginspage", "http://www.adobe.com/go/getflashplayer",
+                {#                "FlashVars", "documentURL={% url rbooks:frontend:show file_name %}{{/component/doc.php?book=r321}}&amp;documentType=1&amp;settingsURL={{/component/settings.zip}}&amp;localeChain={{ru_RU,}}en_US"#}
+                "FlashVars", "documentURL=http://{{ request.META.HTTP_HOST }}{% url 'rbooks:frontend:book' file_name %}?book={{ file_name }}&amp;documentType=2&amp;settingsURL=http://{{ request.META.HTTP_HOST }}{{STATIC_URL}}rbooks/settings.zip&amp;localeChain={{ locale_chain }},en_US{% if request.GET.page_number %}&amp;page={{ request.GET.page_number }}{% endif %}"
+
+        );
+    } else {  // flash is too old or we can't detect the plugin
+        var alternateContent = 'Alternate HTML content should be placed here. '
+                + 'This content requires the Adobe Flash Player. '
+                + '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
+        document.write(alternateContent);  // insert non-flash content
+    }
+    // -->
+</script>
+
+<noscript>
+    <h1>У вас отключен JavaScript. Необходимо его включить или обновить браузер.</h1>
+
+</noscript>
+
+<style>
+            #save_bookmarc_form textarea {
+                width: 99%;
+            }
+        </style>
+
+{#        <div class="modal hide" id="save_doc_modal" style="display: none">#}
+{#            <form action="{% url rbooks:frontend:add_page_bookmarc %}" method="POST" id="save_bookmarc_form" style="margin: 0">#}
+{#                <div class="modal-header">#}
+{#                    <a class="close" data-dismiss="modal">×</a>#}
+{##}
+{#                    <h3>Добавление страницы № <span id="page_number"></span> в закладки</h3>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                    <fieldset>#}
+{#                        {% include 'frontend/base_form_fields.html' with form=bookmarc_form %}#}
+{#                    </fieldset>#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>#}
+{#                    <input type="submit" value="Добавить" class="btn" id='save_bookmarc_submit'/>#}
+{#                </div>#}
+{#            </form>#}
+{#        </div>#}
+
+{#        <script type="text/javascript">#}
+{#            $('#save_bookmarc_form').submit(function () {#}
+{#                $('#save_bookmarc_form #id_page_number').attr('value', elfViewer.getViewPositionPage());#}
+{#                $('#save_bookmarc_form #id_position_x').attr('value', elfViewer.getViewPositionX());#}
+{#                $('#save_bookmarc_form #id_position_y').attr('value', elfViewer.getViewPositionY());#}
+{#                $.ajax({#}
+{#                    url:'{% url rbooks:frontend:add_page_bookmarc %}',#}
+{#                    type:'POST',#}
+{#                    dataType:"json",#}
+{#                    async:false,#}
+{#                    data:$(this).serialize(),#}
+{#                    statusCode: {#}
+{#                        401: function() {#}
+{#                            alert("Вы должны войти на портал.");#}
+{#                        },#}
+{#                        403: function() {#}
+{#                            alert("Действие запрещено.");#}
+{#                        },#}
+{#                        500: function() {#}
+{#                            alert("На сервере возникла ошибка. Администраторы оповещены.");#}
+{#                        }#}
+{#                    },#}
+{#                    success:function (response) {#}
+{#                        if (response.status == 'error') {#}
+{#                            alert("При сохранении возникла ошибка");#}
+{#                        }#}
+{#                        if (response.status == 'ok') {#}
+{#                            $('#save_bookmarc_submit').addClass('btn-success');#}
+{#                            $('#save_bookmarc_submit').attr('disabled','disabled');#}
+{#                            $('#save_bookmarc_submit').attr('value','Сохранено');#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+{##}
+{#                return false;#}
+{#            });#}
+{#        </script>#}
+
+{#<script type="text/javascript">#}
+{#    $('#save_doc_button').click(function(){#}
+{#       $('#page_number').text(elfViewer.getViewPositionPage());#}
+{#        //alert(elfViewer.getViewPositionPage() + " " + elfViewer.getViewPositionX()   + " " + elfViewer.getViewPositionY() );#}
+{#    });#}
+{##}
+{#</script>#}
+
+{#{% if request.GET.page_number %}#}
+{#    <script type="text/javascript">#}
+{#    $(document).ready(function() {#}
+{#    alert("wefwef");#}
+{#        var page_number = parseInt({{ request.GET.page_number }});#}
+{#        var position_x = 0;#}
+{#        var position_y = 0;#}
+{#        {% if request.GET.position_x and request.GET.position_y %}#}
+{#            position_x = {{ request.GET.position_x }};#}
+{#            position_y = {{ request.GET.position_y }};#}
+{#        {% endif %}#}
+{#        elfViewer.setViewPosition(page_number, position_x, position_y);#}
+{#    });#}
+{#    </script>#}
+{#{% endif %}#}
+
+<script type="text/javascript">
+    jQuery(document).ajaxSend(function(event, xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function sameOrigin(url) {
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+        }
+        function safeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+
+    (function(){
+        var cache = {};
+
+        this.tmpl = function tmpl(str, data){
+            // Figure out if we're getting a template, or if we need to
+            // load the template - and be sure to cache the result.
+            var fn = !/\W/.test(str) ?
+                    cache[str] = cache[str] ||
+                            tmpl(document.getElementById(str).innerHTML) :
+
+                // Generate a reusable function that will serve as a template
+                // generator (and which will be cached).
+                    new Function("obj",
+                            "var p=[],print=function(){p.push.apply(p,arguments);};" +
+
+                                // Introduce the data as local variables using with(){}
+                                    "with(obj){p.push('" +
+
+                                // Convert the template into pure JavaScript
+                                    str
+                                            .replace(/[\r\t\n]/g, " ")
+                                            .split("<%").join("\t")
+                                            .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                                            .replace(/\t=(.*?)%>/g, "',$1,'")
+                                            .split("\t").join("');")
+                                            .split("%>").join("p.push('")
+                                            .split("\r").join("\\'")
+                                    + "');}return p.join('');");
+
+            // Provide some basic currying to the user
+            return data ? fn( data ) : fn;
+        };
+    })();
+</script>
+</body>
+</html>
