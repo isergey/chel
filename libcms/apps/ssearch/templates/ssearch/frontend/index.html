@@ -82,6 +82,14 @@
         {% endfor %}
         </form>
     </div>
+
+    {% if not records %}
+        <div class="row1">
+        <div class="span9">
+            {% include 'ssearch/frontend/collections.html' %}
+        </div>
+        </div>
+    {% endif %}
     {% if records %}
     <div class="row1">
         <div class="span9">

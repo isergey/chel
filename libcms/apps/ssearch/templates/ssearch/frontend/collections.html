@@ -1,0 +1,18 @@
+<h4>Уральская электронная библиотека</h4>
+<ul id="f{{ facet.code }}" class="facet">
+    {% for value in collection_values %}
+
+        {% if value.2 != '' %}
+            <li><a href="{% url 'ssearch:frontend:index' %}?q={{ value.0|urlencode }}&attr=collection_s">{{ value.2 }} (<b>{{ value.1 }}</b>)</a>
+            </li>{% endif %}
+    {% empty %}
+        <li>У найденных записей атрибут отсутвует</li>
+    {% endfor %}
+</ul>
+{% if facet.values %}
+    <div align="left">
+        <a href="#f{{ facet.code }}" class="load_facet_fwd btn btn-mini" style="a: right" id="{{ facet.code }}">показать
+            больше ↴</a> <a class="collaps" rel="{{ facet.code }}" href="#f{{ facet.code }}">свернуть</a>
+    </div>
+
+{% endif %}
