@@ -83,7 +83,7 @@
         </form>
     </div>
 
-    {% if not records %}
+    {% if not request.GET.q %}
         <div class="row1">
         <div class="span9">
             {% include 'ssearch/frontend/collections.html' %}
