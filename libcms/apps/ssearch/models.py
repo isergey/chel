@@ -1,6 +1,19 @@
 import zipfile
 from cStringIO import StringIO
 from django.db import models
+from django.contrib.auth.models import User
+
+
+
+class ViewDocLog(models.Model):
+    record_id = models.CharField(max_length=32, db_index=True)
+    user = models.ForeignKey(User, null=True, db_index=True)
+    view_date_time = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+
+
+
 
 class ZippedTextField(models.TextField):
     __metaclass__ = models.SubfieldBase
