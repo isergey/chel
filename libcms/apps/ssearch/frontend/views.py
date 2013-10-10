@@ -12,7 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ..ppin_client.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
-from ..models import RecordContent
+from ..models import RecordContent, ViewDocLog
 
 transformers = dict()
 
@@ -307,9 +307,17 @@ def detail(request):
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
     record['marc_dump'] = get_marc_dump(content_tree)
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
 
+    view_count = ViewDocLog.objects.filter(record_id=record_id).count()
+
+    log = ViewDocLog(record_id=record_id,user=user)
+    log.save()
     return render(request, 'ssearch/frontend/detail.html', {
-        'record': record
+        'record': record,
+        'view_count': view_count
     })
 
 

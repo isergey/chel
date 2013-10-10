@@ -1,11 +1,12 @@
-{%  extends 'themed_frontend_base.html' %}
+{% extends 'themed_frontend_base.html' %}
 {% block index_content %}
 
-   <style type="text/css">
-       .marc_dump {
-           font-weight: normal;
-           font-size: 12px;
-       }
+    <style type="text/css">
+        .marc_dump {
+            font-weight: normal;
+            font-size: 12px;
+        }
+
         .marc_dump span.fieldlabel, span.subfieldlabel {
             font-family: monospace;
             color: #5b8ee0;
@@ -18,6 +19,7 @@
         .marc_dump span.label {
             font-family: monospace;
         }
+
         .record {
             font-weight: normal;
         }
@@ -33,24 +35,31 @@
             <li class="active">Детальная информация</li>
 
         </ul>
-
-        <ul class="nav nav-tabs">
-        <li class="dropdown active">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вид записи <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#attrs" data-toggle="tab">Атрибуты</a></li>
-                    <li><a href="#card" data-toggle="tab">Карточка</a></li>
-                    <li><a href="#marc" data-toggle="tab">Marc</a></li>
-                </ul>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="attrs">
-                {% include 'ssearch/frontend/tableview_in_detail.html' %}
+        <div class="row">
+            <div class="span2">
+                <b>Количество обращений:</b> {{ view_count }}
             </div>
-            <div class="tab-pane" id="card">{{ record.library_cadr|safe }}</div>
-            <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
+            <div class="span10">
+                <ul class="nav nav-tabs">
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вид записи <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#attrs" data-toggle="tab">Атрибуты</a></li>
+                            <li><a href="#card" data-toggle="tab">Карточка</a></li>
+                            <li><a href="#marc" data-toggle="tab">Marc</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="attrs">
+                        {% include 'ssearch/frontend/tableview_in_detail.html' %}
+                    </div>
+                    <div class="tab-pane" id="card">{{ record.library_cadr|safe }}</div>
+                    <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
+                </div>
+            </div>
         </div>
+
 
     </div>
 {% endblock %}
