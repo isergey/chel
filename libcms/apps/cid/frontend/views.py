@@ -2,11 +2,11 @@
 import datetime
 import re
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from common.pagination import get_page
-from ..models import ImportantDate, Type
+from ..models import ImportantDate, Type, update_doc
 from solr.solr import Solr, SolrError, escape
 
 def index(request):
@@ -257,3 +257,10 @@ def extract_request_query_attrs(request):
         attrs = request.GET.getlist('pattr', []) + attrs
 
     return (attrs, values)
+
+
+def index_sid(request):
+    dates = ImportantDate.objects.all()
+    for date in dates:
+        update_doc(sender=None, instance=date)
+    return HttpResponse(u'Indexed' + str(len(dates)))
