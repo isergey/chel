@@ -46,15 +46,12 @@ search_attrs = [
 facet_attrs = [
     (u'collection_s', u'collection_s'),
     (u'has_e_version_b', u'has_e_version_b'),
-    # (u'owner_s', u'owner_s'),
     (u'author_s', u'author_s'),
-    # (u'bbk_sci', u'bbk_sci'),
-    # (u'udk_sci', u'udk_sci'),
-    # (u'grnti_sci', u'grnti_sci'),
     (u'subject_heading_s', u'subject_heading_s'),
-    # (u'subject_subheading_s', u'subject_subheading_s'),
     (u'subject_keywords_s', u'subject_keywords_s'),
+    (u'subject_name_geographical_s', u'subject_name_geographical_s'),
     (u'date_of_publication_s', u'date_of_publication_s'),
+    (u'date_of_publication_of_original_s', u'date_of_publication_of_original_s'),
     (u'code_language_s', u'code_language_s'),
     (u'content_type_s', u'content_type_s'),
 
