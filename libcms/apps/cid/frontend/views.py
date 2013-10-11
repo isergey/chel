@@ -27,6 +27,7 @@ def index(request):
         solr_conf = settings.CID['solr']
         solr = Solr(solr_conf['addr'])
         collection = solr.get_collection(solr_conf['collection'])
+        print query
         result = collection.search(query, ['id'])
 
         paginator = Paginator(result, 15)
@@ -195,7 +196,7 @@ def construct_query(attrs, values, optimize=True):
 #            all_fields.append(u'subject_subheading_tru:%s^4' % value)
 #            all_fields.append(u'subject_keywords_tru:%s^4' % value)
 #            all_fields.append(u'all_tru:%s^2' % value)
-            query.append(u'(%s)' % u' '.join(all_fields))
+            query.append(u'(%s)' % (u' %s ' % term_operator).join(all_fields))
         else:
             query.append(u'%s:%s' % (attr, value))
 
