@@ -74,6 +74,7 @@
                 <li>
                     <a href="{% url 'cid:frontend:detail' event.id %}?back={{ request.get_full_path }}">{{ event }} ({{ event.date }})</a>
                     <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
+                    {% if not forloop.last %}<hr/>{% endif %}
                 </li>
             {% endfor %}
         </ul>
