@@ -26,6 +26,12 @@
 
             {#                <div style="font-size: 16px; color: #D11314; padding-top: 5px;">Каталоги</div>#}
             <h3 style="color: #D11314; font-weight: normal; margin-top: 3px;">Каталоги</h3>
+            <form action="{% url 'ssearch:frontend:index' %}" method="GET" style="margin: 0">
+                <div id="search_panel">
+                    <input placeholder="Поиск" type="text" name="q"/><button class="search_btn" ><i class="icon-search"></i></button>
+                    <input type="hidden" name="attr" value="all_t"/>
+                </div>
+            </form>
             <ul>
                 <li><a href="{% url 'zgate_slug_index' 'group1' %}">Челябинская ОУНБ</a></li>
                 <li><a href="{% url 'zgate_slug_index' 'group2' %}">Библиотеки Челябинской области</a></li>
