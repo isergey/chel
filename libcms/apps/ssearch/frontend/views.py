@@ -31,12 +31,11 @@ search_attrs = [
     (u'subject_keywords_t', u'subject_keywords_tru'),
     (u'place_publication_t', u'place_publication_t'),
     (u'publisher_t', u'publisher_t'),
-    (u'date_of_publication_t', u'date_of_publication_t'),
+    (u'date_of_publication_s', u'date_of_publication_s'),
     (u'autograph_t', u'autograph_t'),
     (u'issn_s', u'issn_s'),
     (u'isbn_s', u'isbn_s'),
-    (u'isbn_s', u'isbn_s'),
-    (u'date_time_added_to_db_t', u'date_time_added_to_db_t'),
+    (u'date_time_added_to_db_s', u'date_time_added_to_db_s'),
     (u'full_text_tru', u'full_text_tru'),
     #(u'catalog_s', u'catalog_s'),
 #    (u'authority_number', u'linked_authority_number_s'),
@@ -274,7 +273,7 @@ def index(request, catalog='uc'):
     }
 
     facets = get_orderd_facets(facets)
-
+    print facets
     return render(request, 'ssearch/frontend/index.html', {
         'records': records,
         'facets': facets,

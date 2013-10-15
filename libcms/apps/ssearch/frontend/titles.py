@@ -229,7 +229,7 @@ attr_value_title = {
         }
     },
     #########################################################
-    u'date_time_added_to_db_t': {
+    u'date_time_added_to_db': {
         'title': {
             u'ru': u'Дата ввода в БД'
         }
