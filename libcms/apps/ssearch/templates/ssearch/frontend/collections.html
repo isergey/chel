@@ -1,18 +1,45 @@
-<h4>Уральская электронная библиотека</h4>
-<ul id="f{{ facet.code }}" class="facet">
-    {% for value in collection_values %}
+<div class="row">
+    <div class="span6">
+        <h4 style="display: inline">Уральская электронная библиотека</h4> <a href="/ru/pages/kray/resources/urelib/neweldoc">Новые поступления</a>
 
-        {% if value.2 != '' %}
-            <li><a href="{% url 'ssearch:frontend:index' %}?q={{ value.0|urlencode }}&attr=collection_s">{{ value.2 }} (<b>{{ value.1 }}</b>)</a>
-            </li>{% endif %}
-    {% empty %}
-        <li>У найденных записей атрибут отсутвует</li>
-    {% endfor %}
-</ul>
-{% if facet.values %}
-    <div align="left">
-        <a href="#f{{ facet.code }}" class="load_facet_fwd btn btn-mini" style="a: right" id="{{ facet.code }}">показать
-            больше ↴</a> <a class="collaps" rel="{{ facet.code }}" href="#f{{ facet.code }}">свернуть</a>
+        <ul id="f{{ facet.code }}" class="facet">
+            {% for value in collection_values %}
+
+                {% if value.2 != '' %}
+                    <li><a href="{% url 'ssearch:frontend:index' %}?q={{ value.0|urlencode }}&attr=collection_s">{{ value.2 }} (<b>{{ value.1 }}</b>)</a>
+                    </li>{% endif %}
+            {% empty %}
+                <li>У найденных записей атрибут отсутвует</li>
+            {% endfor %}
+        </ul>
     </div>
+<div class="span6">
+    <h4>О проекте</h4>
+    <p>
+        Уральская электронная библиотека ведется с 2007 года с целью формирования репертуара электронных документов об
+        Урале, обеспечения полноты коллекций за счет регионального подхода к их формированию, представления в сети
+        Интернет достоверных источников краеведческой информации.
+    </p>
+    <p>
+        Содержит материалы о природе края, по истории, народному образованию, экономической, научной и культурной жизни
+        Урала XIX – XXI вв., коллекции уральской периодической печати.
+    </p>
+    <p>
+        УЭБ состоит из тематических коллекций.
+    </p>
+    <p>
+        Пополнение ресурса осуществляется за счет оцифровки фондов Челябинской областной универсальной научной
+        библиотеки и отдельных изданий, предоставленных библиотеками Уральского региона, поступлений электронных
+        копий документов в дар от авторов/правообладателей.
+    </p>
+    <p>
+        Выражаем благодарность авторам и организациям, предоставившим материалы для Уральской электронной библиотеки.
+    </p>
+    <ul>
+        <li><a style="font-weight: bold" href="/ru/pages/kray/resources/urelib/partners">Участники проекта</a></li>
+        <li><a style="font-weight: bold" href="/ru/pages/about/lib/div/kraeved/">Контакты</a></li>
+    </ul>
+</div>
+</div>
 
-{% endif %}
+
