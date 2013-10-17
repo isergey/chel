@@ -27,14 +27,13 @@
     }
     </style>
     <div class="span12">
-                <ul class="breadcrumb">
-
+        <ul class="breadcrumb">
             <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
             {% if request.GET.q  %}
-                <li><a href="{% url 'ssearch:frontend:index' %}">Поиск</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a> <span class="divider">/</span></li>
                 <li class="active">Результаты поиска</li>
             {% else %}
-                <li class="active">Поиск</li>
+                <li class="active">Электронная библиотека</li>
             {% endif %}
 
         </ul>
