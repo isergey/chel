@@ -6,7 +6,6 @@ def subject_render(record_dict):
                 row = []
                 for subfield in field['sf']:
                     if subfield['id'] in ('a', 'x', 'y', 'z'):
-                        print subfield['d']
                         row.append(subfield['d'])
                 rows.append(row)
     except KeyError:
