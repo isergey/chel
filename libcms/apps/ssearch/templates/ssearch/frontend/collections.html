@@ -1,12 +1,12 @@
 <div class="row">
     <div class="span6">
-        <h4 style="display: inline">Уральская электронная библиотека</h4> <a href="/ru/pages/kray/resources/urelib/neweldoc">Новые поступления</a>
+        <h4 style="display: inline"><a href="{% url 'ssearch:frontend:index' %}?q=*&attr=collection_s&in=on">Уральская электронная библиотека</a></h4> <a style="padding-left: 50px" href="/ru/pages/kray/resources/urelib/neweldoc">Новые поступления</a>
 
         <ul id="f{{ facet.code }}" class="facet">
             {% for value in collection_values %}
 
                 {% if value.2 != '' %}
-                    <li><a href="{% url 'ssearch:frontend:index' %}?q={{ value.0|urlencode }}&attr=collection_s">{{ value.2 }} (<b>{{ value.1 }}</b>)</a>
+                    <li><a href="{% url 'ssearch:frontend:index' %}?q={{ value.0|urlencode }}&attr=collection_s&in=on">{{ value.2 }} (<b>{{ value.1 }}</b>)</a>
                     </li>{% endif %}
             {% empty %}
                 <li>У найденных записей атрибут отсутвует</li>

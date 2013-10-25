@@ -48,6 +48,7 @@
         <xsl:call-template name="Title"/>
         <xsl:call-template name="Author"/>
         <xsl:call-template name="Subject-heading"/>
+        <xsl:call-template name="Subject-subheading"/>
         <xsl:call-template name="Date-of-publication"/>
         <xsl:call-template name="Code-language"/>
         <xsl:call-template name="Publisher"/>
@@ -349,17 +350,20 @@
             </xsl:for-each>
         </xsl:if>
     </xsl:for-each>
-    <xsl:for-each select="field[@id='606' or @id='610']">
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="Subject-subheading">
+    <xsl:for-each select="field[@id='610']">
         <xsl:if test="indicator[@id ='2'][1]= ' '">
             <xsl:for-each select="subfield[@id='a']">
-                <field name="subject-heading">
+                <field name="subject-subheading">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
         </xsl:if>
     </xsl:for-each>
 </xsl:template>
-
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Date-of-publication">

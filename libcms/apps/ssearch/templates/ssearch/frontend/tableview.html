@@ -1,4 +1,4 @@
-{#<p class="item1">{{ forloop.counter0|add:result_page.start_index }}. <a href="#?back={{ request.get_full_path|urlencode }}">{{ record.dict.title.0 }}</a></p>#}
+{% load add_get_tag %}
 <table>
     <tr>
         <td style="vertical-align: top; min-width: 25px">
@@ -19,14 +19,24 @@
         {{ author }}{% if not forloop.last %}; {% endif %}
     {% endfor %}
 </p>
+{#<p class="item3">#}
+{#    {% for subject in record.dict.subject_heading %}#}
+{#        <span class="label label-success">{{ subject }}</span>#}
+{#    {% endfor %}#}
+{#</p>#}
+{#<p class="item3">#}
+{#    {% for subject in record.dict.subject_subheading %}#}
+{#        <span>{{ subject }}</span>#}
+{#    {% endfor %}#}
+{#</p>#}
 <p class="item3">
-    {% for subject in record.dict.subject_heading %}
-        <span class="label label-success">{{ subject }}</span>
-    {% endfor %}
-</p>
-<p class="item3">
-    {% for subject in record.dict.subject_keywords %}
-        <span class="label label-info">{{ subject }}</span>
+    — —{% for subject_row in record.extended.subject_heading %}
+        {% for subject_part in subject_row %}
+            <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject_part attr='subject_heading_t' in='on' %}">{{ subject_part }}</a>{% if not forloop.last %} — {% else %}; {% endif %}
+        {% endfor %}
+        {% for subject in record.dict.subject_keywords %}
+            <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject attr='subject_keywords_t' in='on' %}">{{ subject }}</a>{% if not forloop.last %}; {% else %}. {% endif %}
+        {% endfor %}
     {% endfor %}
 </p>
 {% if record.dict.code_language %}
