@@ -264,32 +264,32 @@
         </style>
         <iframe id="slider_frame" src="{% url 'index:frontend:slider' %}" frameBorder="0"></iframe>
     </div>
-<div class="row">
-    <div class="span12">
-        <div style="height: 20px;">
-        <ul id="service_menu">
-            <li><a href="{% url 'news:frontend:index' %}">Новости</a></li>
-            <li><a href="{% url 'forum:frontend:forums' %}">Форум</a></li>
-            <li><a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a></li>
-            <li><a href="{% url 'gallery:frontend:index' %}">Галерея</a></li>
-            <li><a href="#">Календарь знаменательных дат</a></li>
-        </ul>
-            <div style="clear: both;"></div>
+    <div class="row">
+        <div class="span12">
+            <div style="height: 20px;">
+            <ul id="service_menu">
+                <li><a href="{% url 'news:frontend:index' %}">Новости</a></li>
+                <li><a href="{% url 'forum:frontend:forums' %}">Форум</a></li>
+                <li><a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a></li>
+                <li><a href="{% url 'gallery:frontend:index' %}">Галерея</a></li>
+                <li><a href="#">Календарь знаменательных дат</a></li>
+            </ul>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="menu" style="background: #d11314; height: 33px">
+                {% cache 120 'main' LANGUAGE_CODE %}
+                {% drow_menu 'main' %}
+                {% endcache %}
+            </div>
+            {#            <hr style="clear: both;"/>#}
         </div>
     </div>
-    <div class="span12">
-        <div class="menu" style="background: #d11314; height: 33px">
-            {% cache 120 'main' LANGUAGE_CODE %}
-            {% drow_menu 'main' %}
-            {% endcache %}
-        </div>
-        {#            <hr style="clear: both;"/>#}
-    </div>
-</div>
 <div class="row">
-
+    <div class="span12">
     {% block index_content %}wefwefwef{% endblock %}
-
+</div>
 </div>
 {#    </div>#}
 <hr/>

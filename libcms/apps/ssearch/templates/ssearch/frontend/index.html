@@ -26,21 +26,23 @@
         font-weight: bolder;
     }
     </style>
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            {% if request.GET.q  %}
-                <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a> <span class="divider">/</span></li>
-                <li class="active">Результаты поиска</li>
-            {% else %}
-                <li class="active">Электронная библиотека</li>
-            {% endif %}
+    <div class="row">
+        <div class="span12">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                {% if request.GET.q  %}
+                    <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a> <span class="divider">/</span></li>
+                    <li class="active">Результаты поиска</li>
+                {% else %}
+                    <li class="active">Электронная библиотека</li>
+                {% endif %}
 
-        </ul>
+            </ul>
+        </div>
     </div>
 {#    <hr/>#}
 
-    <div class="row1">
+    <div class="row">
 
         <form action="{% url 'ssearch:frontend:index' %}" method="GET">
         <div class="span2">
@@ -57,7 +59,7 @@
             </div>
              {% if  info.num_found %}
             <div>
-                <input type="checkbox" name="in" > искать в найденном
+                <input type="checkbox" name="in" {% if request.GET.in == 'on' %}checked="checked" {% endif %}> искать в найденном
             </div>
             {% endif %}
 {#        <div>#}
@@ -71,7 +73,7 @@
         </div>
         <div class="span3" >
             <div class="facet_group" style="padding: 5px;">
-                {% if  info.num_found %} Найденно записей: {{ info.num_found }}. {% endif %}
+                {% if  info.num_found > -1%} Найденно записей: {{ info.num_found }}. {% endif %}
 {#                Время поиска: {{ info.qtime }} сек.#}
             </div>
         </div>
@@ -81,89 +83,80 @@
         {% endfor %}
         </form>
     </div>
-
-    {% if not request.GET.q %}
-        <div class="row1">
-        <div class="span12">
-            {% include 'ssearch/frontend/collections.html' %}
-        </div>
-        </div>
-    {% endif %}
-    {% if records %}
-    <div class="row1">
+    <div class="row">
         <div class="span9">
-
-        <div class="row">
-            <div class="span9">
-                <div class="search-info" style="padding: 10px;">
-                    {% for search_breadcumb in search_breadcumbs %}
-                        {% if not forloop.last %}
-                            <a href="{{ search_breadcumb.href }}"><b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}</a> →
-                        {% else %}
-                            <span><b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}</span>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="navbar-inner1" style="padding: 5px; height: auto; margin-bottom: 10px">
-        <form action="{{ request.path }}" method="GET" style="margin: 0">
-            <div class="search-bar1 searchpage">
-                Сортировка по: <select class="input-medium" name="sort">
-                {% for sort_attr in sort_attrs %}
-                    <option value="{{ sort_attr.attr }}" {% if request.GET.sort == sort_attr.attr %}selected="selected" {% endif %}>{{ sort_attr.title }}</option>
+            <div class="search-info" style="padding: 10px;">
+                {% for search_breadcumb in search_breadcumbs %}
+                    {% if not forloop.last %}
+                        <a href="{{ search_breadcumb.href }}"><b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}</a> →
+                    {% else %}
+                        <span><b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}</span>
+                    {% endif %}
                 {% endfor %}
-            </select>
-             Порядок: <select class="input-medium" name="order">
-
-                <option value="asc" {% if not request.GET.order or request.GET.order == 'asc' %}selected="selected" {% endif %}>по возрастанию</option>
-                <option value="desc" {% if request.GET.order == 'desc' %}selected="selected" {% endif %}>по убыванию</option>
-            </select>
-{#                <button class="btn btn-mini" type="button">Добавить</button>#}
-                <input  class="btn btn-mini" type="submit" value="Сортировать"/>
             </div>
-            {% for search_breadcumb in search_breadcumbs %}
-                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
-                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
-            {% endfor %}
-        </form>
         </div>
-        <div class="row">
-            <div class="span9 results">
-            <div>
-                <div class="btn-group" style="float: right">
-                    <a title="Табличный вывод" class="btn{% if request.GET.view == 'table' or not request.GET.view %} active{% endif %}" href="{% add_get view='table' %}"><i class="icon-align-left"></i></a>
-                    <a title="Библиографическая запись" class="btn{% if request.GET.view == 'card' %} active{% endif %}" href="{% add_get view='card' %}"><i class="icon-th-list"></i></a>
-                </div>
-{#                <div style="clear: both"></div>#}
-                <hr style="clear: both"/>
-            </div>
-                <ul class="records">
-                    {% for record in records %}
-                        <li>
-                        {% if record.dict %}
-                        <div>
-                            {% include 'ssearch/frontend/tableview.html' %}
-                        </div>
-                            {% if record.highlighting %}
-                                <div style="background: #ebebeb" class="highlighting">
-                                <b>Нашлось в полном тексте</b>: {{ record.highlighting.full_text_tru.0|safe }}
-                                </div>
-                            {% endif %}
-                        {% else %}
-                        <div style="margin-bottom: 5px;">
-                            {{ record.library_cadr|safe }}
-                        </div>
-                        {% endif %}
-                        {% if not forloop.last %}<hr/>{% endif %}
-                        </li>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <div class="navbar-inner1" style="padding: 5px; height: auto; margin-bottom: 10px">
+            <form action="{{ request.path }}" method="GET" style="margin: 0">
+                <div class="search-bar1 searchpage">
+                    Сортировка по: <select class="input-medium" name="sort">
+                    {% for sort_attr in sort_attrs %}
+                        <option value="{{ sort_attr.attr }}" {% if request.GET.sort == sort_attr.attr %}selected="selected" {% endif %}>{{ sort_attr.title }}</option>
                     {% endfor %}
-                </ul>
-                {% admin_pagination result_page %}
+                </select>
+                 Порядок: <select class="input-medium" name="order">
+
+                    <option value="asc" {% if not request.GET.order or request.GET.order == 'asc' %}selected="selected" {% endif %}>по возрастанию</option>
+                    <option value="desc" {% if request.GET.order == 'desc' %}selected="selected" {% endif %}>по убыванию</option>
+                </select>
+    {#                <button class="btn btn-mini" type="button">Добавить</button>#}
+                    <input  class="btn btn-mini" type="submit" value="Сортировать"/>
+                </div>
+                {% for search_breadcumb in search_breadcumbs %}
+                    <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
+                    <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                {% endfor %}
+            </form>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="span9 results">
+        <div>
+            <div class="btn-group" style="float: right">
+                <a title="Табличный вывод" class="btn{% if request.GET.view == 'table' or not request.GET.view %} active{% endif %}" href="{% add_get view='table' %}"><i class="icon-align-left"></i></a>
+                <a title="Библиографическая запись" class="btn{% if request.GET.view == 'card' %} active{% endif %}" href="{% add_get view='card' %}"><i class="icon-th-list"></i></a>
+            </div>
+            <hr style="clear: both"/>
         </div>
-        <div class="span3" style="border-left: 1px solid #eee; padding-left: 5px">
+            <ul class="records">
+                {% for record in records %}
+                    <li>
+                    {% if record.dict %}
+                    <div>
+                        {% include 'ssearch/frontend/tableview.html' %}
+                    </div>
+                        {% if record.highlighting %}
+                            <div style="background: #ebebeb" class="highlighting">
+                            <b>Нашлось в полном тексте</b>: {{ record.highlighting.full_text_tru.0|safe }}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                    <div style="margin-bottom: 5px;">
+                        {{ record.library_cadr|safe }}
+                    </div>
+                    {% endif %}
+                    {% if not forloop.last %}<hr/>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% admin_pagination result_page %}
+        </div>
+
+
+        <div class="span3">
             {% for facet in facets %}
                 {% if  facet.values %}
                 <div class="facet_group" >
@@ -189,9 +182,9 @@
                 {% endif %}
             {% endfor %}
         </div>
-
     </div>
-    {% endif %}
+
+
     <script type="text/javascript">
     $('.marc').click(function(){
         var id = $(this).attr('id');

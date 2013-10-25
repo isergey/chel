@@ -13,7 +13,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..ppin_client.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
 from ..models import RecordContent, ViewDocLog
-
+from .extended import subject_render
 transformers = dict()
 
 search_attrs = [
@@ -135,7 +135,6 @@ def traversing(rubrics=list(), level=-1, parent_value=None, fill=u'·', delim=u'
             rubrics_rows += traversing(rubric['childs'], level=level, parent_value=item['value'])
     return rubrics_rows
 
-#print traversing(rubrics)
 
 
 def transformers_init():
@@ -203,11 +202,12 @@ def index(request, catalog='uc'):
     sort = request.GET.get('sort', u'relevance')
     order = request.GET.get('order', u'asc')
     solr_sort = []
+
     if sort != u'relevance':
         solr_sort.append("%s:%s" % (sort, order))
 
     if not values or not attrs:
-        return render(request, 'ssearch/frontend/index.html', {
+        return render(request, 'ssearch/frontend/project.html', {
             'attrs': get_search_attrs(),
             'pattr': request.GET.getlist('pattr', None),
             'rubrics': traversing(rubrics),
@@ -215,8 +215,10 @@ def index(request, catalog='uc'):
         })
 
     query = construct_query(attrs=attrs, values=values)
-
-    result = uc.search(query=query, fields=['id'], faset_params=faset_params, hl=['full_text_tru'], sort=solr_sort)
+    hl = []
+    if request.GET.get('attr', u'') == 'full_text_tru':
+        hl.append('full_text_tru')
+    result = uc.search(query=query, fields=['id'], faset_params=faset_params, hl=hl, sort=solr_sort)
 
     paginator = Paginator(result, 15)
 
@@ -239,7 +241,9 @@ def index(request, catalog='uc'):
     view = request.GET.get('view', u'table')
     highlighting = result.get_highlighting()
     for record in records:
-        #content_tree = etree.XML(record.content)
+        record['extended'] = {
+            'subject_heading': subject_render(record['dict'])
+        }
         content_tree = record['tree']
         if view == 'card':
             record['library_cadr'] = get_library_card(content_tree)
@@ -273,7 +277,6 @@ def index(request, catalog='uc'):
     }
 
     facets = get_orderd_facets(facets)
-    print facets
     return render(request, 'ssearch/frontend/index.html', {
         'records': records,
         'facets': facets,
@@ -288,7 +291,6 @@ def index(request, catalog='uc'):
 
 
 
-
 def detail(request):
     record_id = request.GET.get('id', None)
     if not record_id:
@@ -299,6 +301,9 @@ def detail(request):
         raise Http404(u'Запись не найдена')
 
     record =  records[0]
+    record['extended'] = {
+        'subject_heading': subject_render(record['dict'])
+    }
     content_tree = record['tree']
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
@@ -395,7 +400,9 @@ def construct_query(attrs, values, optimize=True):
             sc.add_attr(attr, '\*')
         else:
             if attr != 'all_t':
-                sc.add_attr(attr, '"%s"' % value)
+                if value != '*':
+                    value = '"%s"' % value
+                sc.add_attr(attr, value)
             else:
                 term_relation_attr = u' AND '
                 terms = value.split()
@@ -404,9 +411,8 @@ def construct_query(attrs, values, optimize=True):
                     if term not in set([u'бы', u'ли', u'что' u'за', u'a', u'на', u'в', u'до', u'из' u'к' u'о' u'об' u'от', u'по', u'при', u'про', u'с', u'у']):
                         filetered_terms.append(term)
 
-
+                relation_value =  term_relation_attr.join(terms)
                 relation_value = u'(%s)' % term_relation_attr.join(terms)
-                # print relation_value
                 all_sc = SearchCriteria(u"OR")
                 all_sc.add_attr(u'author_t','%s^96' % relation_value)
                 all_sc.add_attr(u'title_t','%s^64' % relation_value)
@@ -501,9 +507,11 @@ def get_records(record_ids):
     records_objects = list(RecordContent.objects.using('harvester').filter(record_id__in=record_ids))
     records = []
     for record in records_objects:
+        rdict = json.loads(record.content)
         records.append({
             'id': record.record_id,
-            'tree': record_to_ruslan_xml(json.loads(record.content))
+            'dict': rdict,
+            'tree': record_to_ruslan_xml(rdict)
         })
         #record.tree = record_to_ruslan_xml(json.loads(record.content))
     # records_dict = {}
@@ -515,29 +523,6 @@ def get_records(record_ids):
     #     if record:
     #         nrecords.append(record)
     return records
-
-# import couchdb
-# import json
-# def get_records(record_ids):
-#     db = couchdb.Database('http://193.233.14.12:5984/mddb_bibliographicrecord')
-#     rows = db.view('_all_docs', keys=record_ids, include_docs=True)
-#     docs = [row.doc for row in rows]
-#     records = []
-#     for doc in docs:
-#         #print doc.id
-#         records.append({
-#             'id': doc.id,
-#             'tree': record_to_ruslan_xml(json.loads(doc['Content']))
-#         })
-#     return records
-# from ..yaharv_client import client
-# import json
-# def get_records(record_ids):
-#     yaharv_client = client.Client("http://localhost:8080/yaharvREST")
-#     records = yaharv_client.get_records(record_ids)
-#     for record in records:
-#         record['tree'] = record_to_ruslan_xml(json.loads(record['content']))
-#     return records
 
 
 
@@ -688,7 +673,6 @@ def author_key_replace(facet):
             values[record.record_id] = person_name[0]
     new_values = []
     for value in facet['values']:
-        #print value[0], value[1]
         new_values.append((values[value[0]], value[1], value[0]))
     facet['values'] = new_values
     return facet

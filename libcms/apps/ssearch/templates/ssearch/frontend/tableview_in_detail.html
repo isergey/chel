@@ -8,14 +8,17 @@
     {% endfor %}
 </p>
 <p class="item3">
-    {% for subject in record.dict.subject_heading %}
-        <span class="label label-success">{{ subject }}</span>
+    — —{% for subject_row in record.extended.subject_heading %}
+        {% for subject_part in subject_row %}
+            <a href="#">{{ subject_part }}</a>{% if not forloop.last %} — {% else %}; {% endif %}
+        {% endfor %}
+        {% for subject in record.dict.subject_keywords %}
+            <a href="#1">{{ subject }}</a>{% if not forloop.last %}; {% else %}. {% endif %}
+        {% endfor %}
     {% endfor %}
 </p>
 <p class="item3">
-    {% for subject in record.dict.subject_keywords %}
-        <span class="label label-info">{{ subject }}</span>
-    {% endfor %}
+
 </p>
 {% if record.dict.code_language %}
     <p class="item4">Язык:
