@@ -39,17 +39,17 @@
         {% endfor %}
     {% endfor %}
 </p>
-{% if record.dict.code_language %}
-    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:
-        {% for lang in record.dict.code_language %}
-            {% if not forloop.last %}
-                {{ lang }},
-            {% else %}
-                {{ lang }}
-            {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
+{#{% if record.dict.code_language %}#}
+{#    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:#}
+{#        {% for lang in record.dict.code_language %}#}
+{#            {% if not forloop.last %}#}
+{#                {{ lang }},#}
+{#            {% else %}#}
+{#                {{ lang }}#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    </p>#}
+{#{% endif %}#}
 {% if record.dict.date_of_publication %}
     <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}:
         {% for dop in record.dict.date_of_publication %}
@@ -72,17 +72,17 @@
         {% endfor %}
     </p>
 {% endif %}
-{% if record.dict.content_type %}
-    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content tipe{% endif %}:
-        {% for content_type in record.dict.content_type %}
-            {% if not forloop.last %}
-                {{ content_type }},
-            {% else %}
-                {{ content_type }}
-            {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
+{#{% if record.dict.content_type %}#}
+{#    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content tipe{% endif %}:#}
+{#        {% for content_type in record.dict.content_type %}#}
+{#            {% if not forloop.last %}#}
+{#                {{ content_type }},#}
+{#            {% else %}#}
+{#                {{ content_type }}#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    </p>#}
+{#{% endif %}#}
 
 {% if record.dict.catalog %}
     <p class="item4">Каталог:
@@ -108,6 +108,15 @@
         {% endfor %}
     </p>
 {% endif %}
+
+{% if record.dict.url %}
+    <p class="item4">
+{#        {% for url in record.dict.url  %}#}
+            <span class="label label-success">полный текст</span>{% if not forloop.last %},{% endif %}
+{#        {% endfor %}#}
+    </p>
+{% endif %}
+
 
         </td>
     </tr>
