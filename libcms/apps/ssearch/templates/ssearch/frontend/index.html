@@ -32,7 +32,8 @@
                 <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
                 {% if request.GET.q  %}
                     <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a> <span class="divider">/</span></li>
-                    <li class="active">Результаты поиска</li>
+                    <li class="active">Результаты поиска<span class="divider">/</span></li>
+                    <li>{% if  info.num_found > -1%} Найдено записей: {{ info.num_found }}. {% endif %}</li>
                 {% else %}
                     <li class="active">Электронная библиотека</li>
                 {% endif %}
@@ -70,12 +71,6 @@
 {#            {% endfor %}#}
 {#        </select>#}
 {#        </div>#}
-        </div>
-        <div class="span3" >
-            <div class="facet_group" style="padding: 5px;">
-                {% if  info.num_found > -1%} Найденно записей: {{ info.num_found }}. {% endif %}
-{#                Время поиска: {{ info.qtime }} сек.#}
-            </div>
         </div>
         {% for search_breadcumb in search_breadcumbs %}
             <input type="hidden" value="{{ search_breadcumb.attr }}" name="pattr"/>
