@@ -35,7 +35,7 @@
                 <input type="submit" value="Перейти" class="btn"/>
             </form>
         </div>
-        <div class="span5">
+        <div class="span4">
             <form action="" method="POST">{% csrf_token %}
                 Найти вопросы по дате:
                 {% for field in date_filter_form.visible_fields %}

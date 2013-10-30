@@ -9,7 +9,15 @@ from ..models import News, NewsContent
 
 
 def index(request):
-    news_page = get_page(request, News.objects.filter(publicated=True).exclude(type=1).order_by('-create_date'))
+    news_type = request.GET.get('type', '')
+    query = Q(publicated=True)
+
+    if news_type == 'chel':
+        query = query & Q(type=0)
+    if news_type == 'lib':
+        query = query & Q(type=1)
+
+    news_page = get_page(request, News.objects.filter(query).order_by('-create_date'))
 
     news_contents = list(NewsContent.objects.filter(news__in=list(news_page.object_list), lang=get_language()[:2]))
 

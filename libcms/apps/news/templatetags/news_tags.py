@@ -6,8 +6,8 @@ from ..models import News, NewsContent
 
 register = template.Library()
 @register.inclusion_tag('news/tags/news_feed.html')
-def news_feed(count=5):
-    news_list = list(News.objects.filter(publicated=True).exclude(type=1).order_by('-create_date')[:count])
+def news_feed(count=5, type=0):
+    news_list = list(News.objects.filter(publicated=True, type=type).order_by('-create_date')[:count])
     lang=get_language()[:2]
     news_contents = NewsContent.objects.filter(news__in=news_list, lang=lang)
     nd = {}
@@ -19,6 +19,7 @@ def news_feed(count=5):
 
     if not news_contents:
         news_list = []
+
     return ({
         'news_list': news_list,
         'MEDIA_URL': settings.MEDIA_URL
