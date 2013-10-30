@@ -6,7 +6,11 @@
     <ul class="breadcrumb">
 
         <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Новости</li>
+        <li class="active">Новости
+        {% if request.GET.type == 'chel' %} ЧОУНБ {% endif %}
+        {% if request.GET.type == 'lib' %} библиотек области {% endif %}
+        </li>
+
 
     </ul>
     <style>

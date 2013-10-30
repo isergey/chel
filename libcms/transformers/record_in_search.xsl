@@ -86,8 +86,10 @@
             </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-            <xsl:for-each select="field[@id &gt; '399' and @id &lt; '500']/subfield[@id=1]">
-                <xsl:call-template name="Title-former"/>
+            <xsl:for-each select="field[@id &gt; '359' and @id &lt; '500']/subfield[@id=1]">
+                <xsl:call-template name="Title-former">
+                    <xsl:with-param name="inner">inner</xsl:with-param>
+                </xsl:call-template>
             </xsl:for-each>
         </xsl:otherwise>
     </xsl:choose>
@@ -96,6 +98,7 @@
     </field>
 </xsl:template>
 <xsl:template name="Title-former">
+    <xsl:param name="inner" />
     <xsl:for-each select="field[@id='200']">
         <!--
         2001#$a{. $h, $i}
@@ -131,38 +134,40 @@
 
         </xsl:if>
     </xsl:for-each>
-    <xsl:for-each select="field[@id='225']">
-        <!--
-        2250#$a{. $h, $i}
-        2251#$a{. $h, $i}
-        2251#$i
-        -->
-        <xsl:if test="subfield[@id='a'] and indicator[@id='1'][1] = '1' or indicator[@id='0'][1]">
-        <!--<field name="title">-->
-                <xsl:value-of select="subfield[@id='a']"/>
-                <xsl:for-each select="subfield[@id='h']">
-                    <xsl:text>. </xsl:text>
-                    <xsl:value-of select="."/>
-                    <xsl:if test="@id='i'">
-                        <xsl:text>, </xsl:text>
-                        <xsl:value-of select="subfield[@id='i']"/>
-                    </xsl:if>
+    <xsl:if test="$inner!='inner'">
+        <xsl:for-each select="field[@id='225']">
+            <!--
+            2250#$a{. $h, $i}
+            2251#$a{. $h, $i}
+            2251#$i
+            -->
+            <xsl:if test="subfield[@id='a'] and indicator[@id='1'][1] = '1' or indicator[@id='0'][1]">
+            <!--<field name="title">-->
+                    <xsl:value-of select="subfield[@id='a']"/>
+                    <xsl:for-each select="subfield[@id='h']">
+                        <xsl:text>. </xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:if test="@id='i'">
+                            <xsl:text>, </xsl:text>
+                            <xsl:value-of select="subfield[@id='i']"/>
+                        </xsl:if>
 
-                </xsl:for-each>
-        <!--</field>-->
-        </xsl:if>
-        <!--
-        2252#$i
-        -->
-        <xsl:if test="indicator[@id='1'][1] = '2'">
-            <xsl:for-each select="subfield[@id='i']">
-                <!--<field name="title">-->
-                    <xsl:value-of select="."/>
-                    <xsl:text> </xsl:text>
-                <!--</field>-->
-          </xsl:for-each>
-      </xsl:if>
-  </xsl:for-each>
+                    </xsl:for-each>
+            <!--</field>-->
+            </xsl:if>
+            <!--
+            2252#$i
+            -->
+            <xsl:if test="indicator[@id='1'][1] = '2'">
+                <xsl:for-each select="subfield[@id='i']">
+                    <!--<field name="title">-->
+                        <xsl:value-of select="."/>
+                        <xsl:text> </xsl:text>
+                    <!--</field>-->
+              </xsl:for-each>
+          </xsl:if>
+      </xsl:for-each>
+    </xsl:if>
 </xsl:template>
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->

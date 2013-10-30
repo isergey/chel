@@ -4,6 +4,7 @@
 {% block title %}Спроси библиотекаря{% endblock %}
 
 {% block index_content %}
+    <div class="row">
         <div class="span12">
             {% block breadcrumb %}
                 <ul class="breadcrumb">
@@ -12,7 +13,8 @@
                 </ul>
             {% endblock %}
         </div>
-
+    </div>
+    <div class="row">
         <div class="span3">
         <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
             {% cache 30 questions_category_menu %}
@@ -24,4 +26,5 @@
 
             {% endblock %}
         </div>
+    </div>
 {% endblock %}

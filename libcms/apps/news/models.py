@@ -4,8 +4,8 @@ from django.conf import settings
 from django.db import models
 
 NEWS_TYPE_CHOICES = (
-    (0, u'Публичные'),
-    (1, u'Профессиональные'),
+    (0, u'Новости ЧОУНБ'),
+    (1, u'Новости библиотек области'),
     (2, u'Общие'),
 )
 
