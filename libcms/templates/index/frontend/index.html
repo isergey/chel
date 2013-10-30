@@ -77,25 +77,25 @@
     <div class="center">
         <div style="padding: 0 5px;">
             {% block content %}
+                {% cache 60 'news' LANGUAGE_CODE %}
+                <div class="news">
+                        <h3 style="color: #D11314; font-weight: normal;">Новости ЧОУНБ<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
 
-                <div class="news">
-                    <h3 style="color: #D11314; font-weight: normal;">Новости ЧОУНБ<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
-                    {% cache 60 'news' LANGUAGE_CODE %}
-                        {% news_feed 3 0 %}
-                    {% endcache %}
-                <hr/>
-                    <a href="{% url 'news:frontend:index' %}?type=chel">Остальные новости >></a>
-                </div>
-                <hr/>
-                <div class="news">
-                    <h3 style="color: #D11314; font-weight: normal;">Новости библиотек области<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
-                    {% cache 60 'news' LANGUAGE_CODE %}
-                        {% news_feed 5 1 %}
-                    {% endcache %}
-                <hr/>
-                    <a href="{% url 'news:frontend:index' %}?type=lib">Остальные новости >></a>
-                </div>
+                            {% news_feed 3 0 %}
+
+                    <hr/>
+                        <a href="{% url 'news:frontend:index' %}?type=chel">Остальные новости >></a>
+                    </div>
+                    <hr/>
+                    <div class="news">
+                        <h3 style="color: #D11314; font-weight: normal;">Новости библиотек области<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
+                            {% news_feed 5 1 %}
+                    <hr/>
+                        <a href="{% url 'news:frontend:index' %}?type=lib">Остальные новости >></a>
+                    </div>
+                {% endcache %}
             {% endblock %}
+        
         </div>
     </div>
     <div class="left">
