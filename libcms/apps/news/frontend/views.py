@@ -38,7 +38,7 @@ def index(request):
 def show(request, id):
     cur_language = translation.get_language()
     try:
-        news = News.objects.get(Q(type=0)|Q(type=2),id=id)
+        news = News.objects.get(id=id)
     except News.DoesNotExist:
         raise Http404()
 
