@@ -1,11 +1,15 @@
+from __future__ import unicode_literals
 from django.conf import settings
-from django.test import TestCase
-from django.template import Template, Context, TemplateSyntaxError
-from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.auth.models import Group, AnonymousUser
 from django.contrib.contenttypes.models import ContentType
+from django.template import Template, Context, TemplateSyntaxError
+from django.test import TestCase
 
+from guardian.compat import get_user_model
 from guardian.exceptions import NotUserNorGroup
 from guardian.models import UserObjectPermission, GroupObjectPermission
+
+User = get_user_model()
 
 def render(template, context):
     """
@@ -48,6 +52,15 @@ class GetObjPermsTagTest(TestCase):
             except TemplateSyntaxError:
                 pass
 
+    def test_obj_none(self):
+        template = ''.join((
+            '{% load guardian_tags %}',
+            '{% get_obj_perms user for object as "obj_perms" %}{{ perms }}',
+        ))
+        context = {'user': User.get_anonymous(), 'object': None}
+        output = render(template, context)
+        self.assertEqual(output, '')
+
     def test_anonymous_user(self):
         template = ''.join((
             '{% load guardian_tags %}',
@@ -86,9 +99,9 @@ class GetObjPermsTagTest(TestCase):
             self.assertTrue(perm in output)
 
     def test_user(self):
-        UserObjectPermission.objects.assign("change_contenttype", self.user,
+        UserObjectPermission.objects.assign_perm("change_contenttype", self.user,
             self.ctype)
-        GroupObjectPermission.objects.assign("delete_contenttype", self.group,
+        GroupObjectPermission.objects.assign_perm("delete_contenttype", self.group,
             self.ctype)
 
         template = ''.join((
@@ -104,7 +117,7 @@ class GetObjPermsTagTest(TestCase):
             set('change_contenttype delete_contenttype'.split(' ')))
 
     def test_group(self):
-        GroupObjectPermission.objects.assign("delete_contenttype", self.group,
+        GroupObjectPermission.objects.assign_perm("delete_contenttype", self.group,
             self.ctype)
 
         template = ''.join((

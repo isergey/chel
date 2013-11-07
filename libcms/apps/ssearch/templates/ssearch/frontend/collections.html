@@ -1,17 +1,26 @@
-<div class="row">
+<style>
+    .backlight {
+        background: #eeeeee;
+    }
+</style>
+<div class="row" xmlns="http://www.w3.org/1999/html">
     <div class="span6">
         <h4 style="display: inline"><a href="{% url 'ssearch:frontend:index' %}?q=*&attr=collection_s&in=on">Уральская электронная библиотека</a></h4> <a style="padding-left: 50px" href="/ru/pages/kray/resources/urelib/neweldoc">Новые поступления</a>
 
         <ul id="f{{ facet.code }}" class="facet">
-            {% for value in collection_values %}
+            {% for coll in stat.coll_stat %}
 
-                {% if value.2 != '' %}
-                    <li><a href="{% url 'ssearch:frontend:index' %}?q={{ value.0|urlencode }}&attr=collection_s&in=on">{{ value.2 }} (<b>{{ value.1 }}</b>)</a>
-                    </li>{% endif %}
+                    <li style="margin-bottom: 10px;">
+                        <a href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</a><br/>
+                        <div><span class="backlight">Документов:  {{ coll.docs }}</span> <span style="margin-left: 30px" class="backlight">Прсмотров: {{ coll.views }}</span></div>
+                    </li>
             {% empty %}
                 <li>У найденных записей атрибут отсутвует</li>
             {% endfor %}
         </ul>
+        <p>
+            <span class="backlight">Всего документов в коллекциях: {{ stat.all_documents_count }}</span>
+        </p>
     </div>
 <div class="span6">
     <h4>О проекте</h4>

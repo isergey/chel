@@ -1,10 +1,15 @@
+from __future__ import unicode_literals
+
 from itertools import chain
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q, F
 
 from guardian.utils import get_identity
+from guardian.utils import get_user_obj_perms_model
+from guardian.utils import get_group_obj_perms_model
+from guardian.compat import get_user_model
+
 
 class ObjectPermissionChecker(object):
     """
@@ -55,9 +60,29 @@ class ObjectPermissionChecker(object):
         :param obj: Django model instance for which permission should be checked
 
         """
+        User = get_user_model()
         ctype = ContentType.objects.get_for_model(obj)
         key = self.get_local_cache_key(obj)
         if not key in self._obj_perms_cache:
+
+            group_model = get_group_obj_perms_model(obj)
+            group_rel_name = group_model.permission.field.related_query_name()
+            if self.user:
+                fieldname = '%s__group__%s' % (
+                    group_rel_name,
+                    User.groups.field.related_query_name(),
+                )
+                group_filters = {fieldname: self.user}
+            else:
+                group_filters = {'%s__group' % group_rel_name: self.group}
+            if group_model.objects.is_generic():
+                group_filters.update({
+                    '%s__content_type' % group_rel_name: ctype,
+                    '%s__object_pk' % group_rel_name: obj.pk,
+                })
+            else:
+                group_filters['%s__content_object' % group_rel_name] = obj
+
             if self.user and not self.user.is_active:
                 return []
             elif self.user and self.user.is_superuser:
@@ -65,23 +90,28 @@ class ObjectPermissionChecker(object):
                     .filter(content_type=ctype)
                     .values_list("codename")))
             elif self.user:
-                perms = list(set(chain(*Permission.objects
-                    .filter(content_type=ctype)
-                    .filter(
-                        Q(userobjectpermission__content_type=F('content_type'),
-                            userobjectpermission__user=self.user,
-                            userobjectpermission__object_pk=obj.pk) |
-                        Q(groupobjectpermission__content_type=F('content_type'),
-                            groupobjectpermission__group__user=self.user,
-                            groupobjectpermission__object_pk=obj.pk))
-                    .values_list("codename"))))
+                model = get_user_obj_perms_model(obj)
+                related_name = model.permission.field.related_query_name()
+                user_filters = {'%s__user' % related_name: self.user}
+                if model.objects.is_generic():
+                    user_filters.update({
+                        '%s__content_type' % related_name: ctype,
+                        '%s__object_pk' % related_name: obj.pk,
+                    })
+                else:
+                    user_filters['%s__content_object' % related_name] = obj
+                perms_qs = Permission.objects.filter(content_type=ctype)
+                # Query user and group permissions separately and then combine
+                # the results to avoid a slow query
+                user_perms_qs = perms_qs.filter(**user_filters)
+                user_perms = user_perms_qs.values_list("codename", flat=True)
+                group_perms_qs = perms_qs.filter(**group_filters)
+                group_perms = group_perms_qs.values_list("codename", flat=True)
+                perms = list(set(chain(user_perms, group_perms)))
             else:
                 perms = list(set(chain(*Permission.objects
                     .filter(content_type=ctype)
-                    .filter(
-                        groupobjectpermission__content_type=F('content_type'),
-                        groupobjectpermission__group=self.group,
-                        groupobjectpermission__object_pk=obj.pk)
+                    .filter(**group_filters)
                     .values_list("codename"))))
             self._obj_perms_cache[key] = perms
         return self._obj_perms_cache[key]

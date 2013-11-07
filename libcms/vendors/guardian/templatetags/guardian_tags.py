@@ -5,13 +5,54 @@
     {% load guardian_tags %}
 
 """
+from __future__ import unicode_literals
 from django import template
-from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.auth.models import Group, AnonymousUser
+from django.template import get_library
+from django.template import InvalidTemplateLibrary
+from django.template.defaulttags import LoadNode
 
+from guardian.compat import get_user_model
 from guardian.exceptions import NotUserNorGroup
 from guardian.core import ObjectPermissionChecker
 
 register = template.Library()
+
+
+@register.tag
+def friendly_load(parser, token):
+    '''
+    Tries to load a custom template tag set. Non existing tag libraries
+    are ignored.
+
+    This means that, if used in conjuction with ``if_has_tag``, you can try to
+    load the comments template tag library to enable comments even if the
+    comments framework is not installed.
+
+    For example::
+
+        {% load friendly_loader %}
+        {% friendly_load comments webdesign %}
+
+        {% if_has_tag render_comment_list %}
+            {% render_comment_list for obj %}
+        {% else %}
+            {% if_has_tag lorem %}
+                {% lorem %}
+            {% endif_has_tag %}
+        {% endif_has_tag %}
+    '''
+    bits = token.contents.split()
+    for taglib in bits[1:]:
+        try:
+            lib = get_library(taglib)
+            parser.add_library(lib)
+        except InvalidTemplateLibrary:
+            pass
+    return LoadNode()
+
+
+
 
 class ObjectPermissionsNode(template.Node):
     def __init__(self, for_whom, obj, context_var):
@@ -21,11 +62,11 @@ class ObjectPermissionsNode(template.Node):
 
     def render(self, context):
         for_whom = self.for_whom.resolve(context)
-        if isinstance(for_whom, User):
+        if isinstance(for_whom, get_user_model()):
             self.user = for_whom
             self.group = None
         elif isinstance(for_whom, AnonymousUser):
-            self.user = User.get_anonymous()
+            self.user = get_user_model().get_anonymous()
             self.group = None
         elif isinstance(for_whom, Group):
             self.user = None
@@ -34,6 +75,8 @@ class ObjectPermissionsNode(template.Node):
             raise NotUserNorGroup("User or Group instance required (got %s)"
                 % for_whom.__class__)
         obj = self.obj.resolve(context)
+        if not obj:
+            return ''
 
         check = ObjectPermissionChecker(for_whom)
         perms = check.get_perms(obj)
@@ -51,6 +94,10 @@ def get_obj_perms(parser, token):
 
         {% get_obj_perms user/group for obj as "context_var" %}
 
+    .. note::
+       Make sure that you set and use those permissions in same template
+       block (``{% block %}``).
+
     Example of usage (assuming ``flatpage`` and ``perm`` objects are
     available from *context*)::
 
@@ -63,6 +110,11 @@ def get_obj_perms(parser, token):
     .. note::
        Please remember that superusers would always get full list of permissions
        for a given object.
+
+    .. versionadded:: 1.2
+
+    As of v1.2, passing ``None`` as ``obj`` for this template tag won't rise
+    obfuscated exception and would return empty permissions set instead.
 
     """
     bits = token.split_contents()

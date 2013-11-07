@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group
-from django.utils.hashcompat import md5_constructor
+from hashlib import md5 as md5_constructor
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.api import get_messages

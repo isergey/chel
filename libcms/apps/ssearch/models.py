@@ -7,10 +7,13 @@ from django.contrib.auth.models import User
 
 class ViewDocLog(models.Model):
     record_id = models.CharField(max_length=32, db_index=True)
-    # source_id = models.CharField(max_length=32L, db_index=True)
+    collection_id = models.CharField(max_length=64, db_index=True, null=True)
     user = models.ForeignKey(User, null=True, db_index=True)
     view_date_time = models.DateTimeField(auto_now_add=True, db_index=True)
 
+    @staticmethod
+    def get_view_count(collection_id):
+        return ViewDocLog.objects.filter(collection_id=collection_id.lower().strip()).count()
 
 
 

@@ -24,42 +24,42 @@
             font-weight: normal;
         }
     </style>
-    <div class="span12">
-        <ul class="breadcrumb">
+    <div class="row">
+        <div class="span12">
+            <ul class="breadcrumb">
 
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'ssearch:frontend:index' %}">Поиск</a> <span class="divider">/</span></li>
-            {% if request.GET.back %}
-                <li><a href="{{ request.GET.back }}">Результаты поиска</a> <span class="divider">/</span></li>
-            {% endif %}
-            <li class="active">Детальная информация</li>
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                <li><a href="{% url 'ssearch:frontend:index' %}">Поиск</a> <span class="divider">/</span></li>
+                {% if request.GET.back %}
+                    <li><a href="{{ request.GET.back }}">Результаты поиска</a> <span class="divider">/</span></li>
+                {% endif %}
+                <li class="active">Детальная информация</li>
 
-        </ul>
-        <div class="row">
-            <div class="span2">
-                <b>Количество обращений:</b> {{ view_count }}
-            </div>
-            <div class="span10">
-                <ul class="nav nav-tabs">
-                    <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вид записи <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#attrs" data-toggle="tab">Атрибуты</a></li>
-                            <li><a href="#card" data-toggle="tab">Карточка</a></li>
-                            <li><a href="#marc" data-toggle="tab">Marc</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="attrs">
-                        {% include 'ssearch/frontend/tableview_in_detail.html' %}
+            </ul>
+            <div class="row">
+                <div class="span2">
+                    <b>Количество обращений:</b> {{ view_count }}
+                </div>
+                <div class="span10">
+                    <ul class="nav nav-tabs">
+                        <li class="dropdown active">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вид записи <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#attrs" data-toggle="tab">Атрибуты</a></li>
+                                <li><a href="#card" data-toggle="tab">Карточка</a></li>
+                                <li><a href="#marc" data-toggle="tab">Marc</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="attrs">
+                            {% include 'ssearch/frontend/tableview_in_detail.html' %}
+                        </div>
+                        <div class="tab-pane" id="card">{{ record.library_cadr|safe }}</div>
+                        <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
                     </div>
-                    <div class="tab-pane" id="card">{{ record.library_cadr|safe }}</div>
-                    <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
                 </div>
             </div>
         </div>
-
-
     </div>
 {% endblock %}

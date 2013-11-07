@@ -1,6 +1,7 @@
 {% extends "admin/change_form.html" %}
 {% load i18n %}
-{% load adminmedia %}
+{% load guardian_tags %}
+{% friendly_load adminmedia %}
 
 {% block extrahead %}{{ block.super }}
 <style type="text/css">
@@ -51,14 +52,14 @@
                         {% for perm in model_perms %}
                         <td>
                             {% if perm.codename in user_perms %}
-                            <img src="{% admin_media_prefix %}img/admin/icon-yes.gif"/>
+                            {% include "admin/guardian/model/obj_perms_yes.html" %}
                             {% else %}
-                            <img src="{% admin_media_prefix %}img/admin/icon-no.gif"/>
+                            {% include "admin/guardian/model/obj_perms_no.html" %}
                             {% endif %}
                         </td>
                         {% endfor %}
                         <td>
-                            <a href="user-manage/{{ user.id }}/">{% trans "Edit" %}</a>
+                            <a href="user-manage/{{ user.id|safe }}/">{% trans "Edit" %}</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -105,14 +106,14 @@
                         {% for perm in model_perms %}
                         <td>
                             {% if perm.codename in group_perms %}
-                            <img src="{% admin_media_prefix %}img/admin/icon-yes.gif"/>
+                            {% include "admin/guardian/model/obj_perms_yes.html" %}
                             {% else %}
-                            <img src="{% admin_media_prefix %}img/admin/icon-no.gif"/>
+                            {% include "admin/guardian/model/obj_perms_no.html" %}
                             {% endif %}
                         </td>
                         {% endfor %}
                         <td>
-                            <a href="group-manage/{{ group.id }}/">{% trans "Edit" %}</a>
+                            <a href="group-manage/{{ group.id|safe }}/">{% trans "Edit" %}</a>
                         </td>            
                     </tr>
                     {% endfor %}
@@ -125,6 +126,7 @@
         <div>
             <input name="submit_manage_group" type="submit" value="{% trans "Manage group" %}"/>
         </div>
+    </fieldset>
 </form>
 
 </div>

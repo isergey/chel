@@ -4,6 +4,7 @@ import simplejson
 from lxml import etree
 import requests
 import json
+import datetime
 
 from django.utils.http import urlquote
 from django.conf import settings
@@ -207,11 +208,32 @@ def index(request, catalog='uc'):
         solr_sort.append("%s:%s" % (sort, order))
 
     if not values or not attrs:
+
+        colls = collections()
+        coll_stat = []
+        all_documents_count = 0
+        for coll in colls:
+            coll_info = {
+                'name': coll[0],
+                'docs': coll[1],
+                'views': ViewDocLog.get_view_count(coll[0])
+            }
+            all_documents_count += int(coll[1])
+            coll_stat.append(coll_info)
+        #
+
+        now = datetime.date.today()
+        past = now - datetime.timedelta(30)
+        RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
+        stat = {
+            'all_documents_count': all_documents_count,
+            'coll_stat': coll_stat
+        }
         return render(request, 'ssearch/frontend/project.html', {
             'attrs': get_search_attrs(),
             'pattr': request.GET.getlist('pattr', None),
             'rubrics': traversing(rubrics),
-            'collection_values': collections()
+            'stat': stat
         })
 
     query = construct_query(attrs=attrs, values=values)
@@ -313,8 +335,11 @@ def detail(request):
         user = request.user
 
     view_count = ViewDocLog.objects.filter(record_id=record_id).count()
-
-    log = ViewDocLog(record_id=record_id,user=user)
+    collection_id = None
+    catalogs =  record['dict'].get('catalog',[])
+    if catalogs:
+        collection_id = catalogs[0].lower().strip()
+    log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
     log.save()
     return render(request, 'ssearch/frontend/detail.html', {
         'record': record,

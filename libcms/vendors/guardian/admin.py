@@ -1,22 +1,25 @@
+from __future__ import unicode_literals
+
 from django import forms
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url
+from guardian.compat import url, patterns
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from guardian.compat import get_user_model
 from guardian.forms import UserObjectPermissionsForm
 from guardian.forms import GroupObjectPermissionsForm
 from guardian.shortcuts import get_perms
 from guardian.shortcuts import get_users_with_perms
 from guardian.shortcuts import get_groups_with_perms
 from guardian.shortcuts import get_perms_for_model
+from guardian.models import Group
 
 
 class AdminUserObjectPermissionsForm(UserObjectPermissionsForm):
@@ -68,15 +71,28 @@ class GuardedModelAdmin(admin.ModelAdmin):
         If this would be set to ``True``, ``request.user`` would be used to
         filter out objects he or she doesn't own (checking ``user`` field
         of used model - field name may be overridden by
-        ``user_owned_objects_field`` option.
+        ``user_owned_objects_field`` option).
 
         .. note::
            Please remember that this will **NOT** affect superusers!
            Admins would still see all items.
 
-    ``GuardedModelAdmin.user_owned_objects_field``
+    ``GuardedModelAdmin.user_can_access_owned_by_group_objects_only``
 
-        *Default*: ``user``
+        *Default*: ``False``
+
+        If this would be set to ``True``, ``request.user`` would be used to
+        filter out objects her or his group doesn't own (checking if any group
+        user belongs to is set as ``group`` field of the object; name of the
+        field can be changed by overriding ``group_owned_objects_field``).
+
+        .. note::
+           Please remember that this will **NOT** affect superusers!
+           Admins would still see all items.
+
+    ``GuardedModelAdmin.group_owned_objects_field``
+
+        *Default*: ``group``
 
     **Usage example**
 
@@ -106,12 +122,22 @@ class GuardedModelAdmin(admin.ModelAdmin):
         'admin/guardian/model/obj_perms_manage_group.html'
     user_can_access_owned_objects_only = False
     user_owned_objects_field = 'user'
+    user_can_access_owned_by_group_objects_only = False
+    group_owned_objects_field = 'group'
 
     def queryset(self, request):
         qs = super(GuardedModelAdmin, self).queryset(request)
-        if self.user_can_access_owned_objects_only and \
-            not request.user.is_superuser:
+        if request.user.is_superuser:
+            return qs
+
+        if self.user_can_access_owned_objects_only:
             filters = {self.user_owned_objects_field: request.user}
+            qs = qs.filter(**filters)
+        if self.user_can_access_owned_by_group_objects_only:
+            User = get_user_model()
+            user_rel_name = User.groups.field.related_query_name()
+            qs_key = '%s__%s' % (self.group_owned_objects_field, user_rel_name)
+            filters = {qs_key: request.user}
             qs = qs.filter(**filters)
         return qs
 
@@ -119,9 +145,9 @@ class GuardedModelAdmin(admin.ModelAdmin):
         """
         Extends standard admin model urls with the following:
 
-        - ``.../permissions/``
-        - ``.../permissions/user-manage/<user_id>/``
-        - ``.../permissions/group-manage/<group_id>/``
+        - ``.../permissions/`` under ``app_mdodel_permissions`` url name (params: object_pk)
+        - ``.../permissions/user-manage/<user_id>/`` under ``app_model_permissions_manage_user`` url name (params: object_pk, user_pk)
+        - ``.../permissions/group-manage/<group_id>/`` under ``app_model_permissions_manage_group`` url name (params: object_pk, group_pk)
 
         .. note::
            ``...`` above are standard, instance detail url (i.e.
@@ -152,6 +178,7 @@ class GuardedModelAdmin(admin.ModelAdmin):
         """
         context = {
             'adminform': {'model_admin': self},
+            'media': self.media,
             'object': obj,
             'app_label': self.model._meta.app_label,
             'opts': self.model._meta,
@@ -241,7 +268,7 @@ class GuardedModelAdmin(admin.ModelAdmin):
         """
         Manages selected users' permissions for current object.
         """
-        user = get_object_or_404(User, id=user_id)
+        user = get_object_or_404(get_user_model(), id=user_id)
         obj = get_object_or_404(self.queryset(request), pk=object_pk)
         form_class = self.get_obj_perms_manage_user_form()
         form = form_class(user, obj, request.POST or None)
@@ -358,9 +385,9 @@ class UserManage(forms.Form):
         """
         username = self.cleaned_data['user']
         try:
-            user = User.objects.get(username=username)
+            user = get_user_model().objects.get(username=username)
             return user
-        except User.DoesNotExist:
+        except get_user_model().DoesNotExist:
             raise forms.ValidationError(
                 self.fields['user'].error_messages['does_not_exist'])
 
