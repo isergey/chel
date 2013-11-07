@@ -14,15 +14,15 @@
 
 
     {% if request.GET.type ==  'public' or not request.GET.type %}
-        <b><a href="{% add_get type='public' %}">Публичные</a></b>
+        <b><a href="{% add_get type='public' %}">Новости ЧОУНБ</a></b>
     {% else %}
-        <a href="{% add_get type='public' %}">Публичные</a>
+        <a href="{% add_get type='public' %}">Новости ЧОУНБ</a>
     {% endif %}
 
     {% if request.GET.type ==  'prof' %}
-        | <b><a href="{% add_get type='prof' %}">Профессиональные</a></b>
+        | <b><a href="{% add_get type='prof' %}">Новости библиотек области</a></b>
     {% else %}
-        | <a href="{% add_get type='prof' %}">Профессиональные</a>
+        | <a href="{% add_get type='prof' %}">Новости библиотек области</a>
     {% endif %}
     {% if request.GET.type ==  'all' %}
         | <b><a href="{% add_get type='all' %}">Общие</a></b>

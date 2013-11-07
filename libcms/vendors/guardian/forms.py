@@ -1,7 +1,9 @@
+from __future__ import unicode_literals
+
 from django import forms
 from django.utils.translation import ugettext as _
 
-from guardian.shortcuts import assign
+from guardian.shortcuts import assign_perm
 from guardian.shortcuts import remove_perm
 from guardian.shortcuts import get_perms
 from guardian.shortcuts import get_perms_for_model
@@ -103,10 +105,10 @@ class UserObjectPermissionsForm(BaseObjectPermissionsForm):
 
     Example usage::
 
-        from django.contrib.auth.models import User
         from django.shortcuts import get_object_or_404
         from myapp.models import Post
         from guardian.forms import UserObjectPermissionsForm
+        from django.contrib.auth.models import User
 
         def my_view(request, post_slug, user_id):
             user = get_object_or_404(User, id=user_id)
@@ -141,7 +143,7 @@ class UserObjectPermissionsForm(BaseObjectPermissionsForm):
             remove_perm(perm, self.user, self.obj)
 
         for perm in perms:
-            assign(perm, self.user, self.obj)
+            assign_perm(perm, self.user, self.obj)
 
 
 class GroupObjectPermissionsForm(BaseObjectPermissionsForm):
@@ -150,10 +152,10 @@ class GroupObjectPermissionsForm(BaseObjectPermissionsForm):
 
     Example usage::
 
-        from django.contrib.auth.models import Group
         from django.shortcuts import get_object_or_404
         from myapp.models import Post
         from guardian.forms import GroupObjectPermissionsForm
+        from guardian.models import Group
 
         def my_view(request, post_slug, group_id):
             group = get_object_or_404(Group, id=group_id)
@@ -188,5 +190,5 @@ class GroupObjectPermissionsForm(BaseObjectPermissionsForm):
             remove_perm(perm, self.group, self.obj)
 
         for perm in perms:
-            assign(perm, self.group, self.obj)
+            assign_perm(perm, self.group, self.obj)
 

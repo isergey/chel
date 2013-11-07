@@ -1,16 +1,20 @@
+from __future__ import unicode_literals
 from itertools import chain
 
 from django.conf import settings
 from django.contrib.auth import models as auth_app
 from django.contrib.auth.management import create_permissions
-from django.contrib.auth.models import User, Group, Permission, AnonymousUser
+from django.contrib.auth.models import Group, Permission, AnonymousUser
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
 from guardian.core import ObjectPermissionChecker
+from guardian.compat import get_user_model
 from guardian.exceptions import NotUserNorGroup
 from guardian.models import UserObjectPermission, GroupObjectPermission
-from guardian.shortcuts import assign
+from guardian.shortcuts import assign_perm
+
+User = get_user_model()
 
 class ObjectPermissionTestCase(TestCase):
 
@@ -40,11 +44,13 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
             ContentType.objects.clear_cache()
             checker = ObjectPermissionChecker(self.user)
 
-            # has_perm on Checker should spawn only one query plus one extra for
-            # fetching the content type first time we check for specific model
+            # has_perm on Checker should spawn only two queries plus one extra
+            # for fetching the content type first time we check for specific
+            # model and two more content types as there are additional checks
+            # at get_user_obj_perms_model and get_group_obj_perms_model
             query_count = len(connection.queries)
             res = checker.has_perm("change_group", self.group)
-            self.assertEqual(len(connection.queries), query_count + 2)
+            self.assertEqual(len(connection.queries), query_count + 5)
 
             # Checking again shouldn't spawn any queries
             query_count = len(connection.queries)
@@ -58,17 +64,17 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
             checker.has_perm("delete_group", self.group)
             self.assertEqual(len(connection.queries), query_count)
 
-            # Checking for same model but other instance should spawn 1 query
+            # Checking for same model but other instance should spawn 2 queries
             new_group = Group.objects.create(name='new-group')
             query_count = len(connection.queries)
             checker.has_perm("change_group", new_group)
-            self.assertEqual(len(connection.queries), query_count + 1)
+            self.assertEqual(len(connection.queries), query_count + 2)
 
-            # Checking for permission for other model should spawn 2 queries
-            # (again: content type and actual permissions for the object)
+            # Checking for permission for other model should spawn 3 queries
+            # (again: content type and actual permissions for the object...
             query_count = len(connection.queries)
             checker.has_perm("change_user", self.user)
-            self.assertEqual(len(connection.queries), query_count + 2)
+            self.assertEqual(len(connection.queries), query_count + 3)
 
         finally:
             settings.DEBUG = False
@@ -109,7 +115,7 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
 
     def test_not_active_user(self):
         user = User.objects.create(username='notactive')
-        assign("change_contenttype", user, self.ctype)
+        assign_perm("change_contenttype", user, self.ctype)
 
         # new ObjectPermissionChecker is created for each User.has_perm call
         self.assertTrue(user.has_perm("change_contenttype", self.ctype))
@@ -119,7 +125,7 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
         # use on one checker only (as user's is_active attr should be checked
         # before try to use cache
         user = User.objects.create(username='notactive-cache')
-        assign("change_contenttype", user, self.ctype)
+        assign_perm("change_contenttype", user, self.ctype)
 
         check = ObjectPermissionChecker(user)
         self.assertTrue(check.has_perm("change_contenttype", self.ctype))
@@ -143,13 +149,13 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
 
         for obj, perms in assign_perms.items():
             for perm in perms:
-                UserObjectPermission.objects.assign(perm, self.user, obj)
+                UserObjectPermission.objects.assign_perm(perm, self.user, obj)
             self.assertEqual(sorted(perms), sorted(check.get_perms(obj)))
 
         check = ObjectPermissionChecker(self.group)
 
         for obj, perms in assign_perms.items():
             for perm in perms:
-                GroupObjectPermission.objects.assign(perm, self.group, obj)
+                GroupObjectPermission.objects.assign_perm(perm, self.group, obj)
             self.assertEqual(sorted(perms), sorted(check.get_perms(obj)))
 

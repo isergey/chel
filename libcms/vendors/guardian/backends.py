@@ -1,6 +1,8 @@
-from django.contrib.auth.models import User
+from __future__ import unicode_literals
+
 from django.db import models
 
+from guardian.compat import get_user_model
 from guardian.conf import settings
 from guardian.exceptions import WrongAppError
 from guardian.core import ObjectPermissionChecker
@@ -43,7 +45,7 @@ class ObjectPermissionBackend(object):
         # This is how we support anonymous users - simply try to retrieve User
         # instance and perform checks for that predefined user
         if not user_obj.is_authenticated():
-            user_obj = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
+            user_obj = get_user_model().objects.get(pk=settings.ANONYMOUS_USER_ID)
 
         # Do not check any further if user is not active
         if not user_obj.is_active:

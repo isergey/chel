@@ -1,25 +1,36 @@
-import guardian
+from __future__ import unicode_literals
+
+from itertools import chain
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+
+import guardian
 from guardian.backends import ObjectPermissionBackend
+from guardian.compat import get_user_model
+from guardian.compat import get_user_model_path
+from guardian.compat import get_user_permission_codename
+from guardian.compat import basestring
+from guardian.compat import unicode
 from guardian.exceptions import GuardianError
 from guardian.exceptions import NotUserNorGroup
 from guardian.exceptions import ObjectNotPersisted
 from guardian.exceptions import WrongAppError
 from guardian.models import GroupObjectPermission
 from guardian.models import UserObjectPermission
-from itertools import chain
+from guardian.tests.conf import TestDataMixin
+
+User = get_user_model()
+user_model_path = get_user_model_path()
 
 
-class UserPermissionTests(TestCase):
-    fixtures = ['tests.json']
+class UserPermissionTests(TestDataMixin, TestCase):
 
     def setUp(self):
+        super(UserPermissionTests, self).setUp()
         self.user = User.objects.get(username='jack')
         self.ctype = ContentType.objects.create(name='foo', model='bar',
             app_label='fake-for-guardian-tests')
@@ -31,14 +42,14 @@ class UserPermissionTests(TestCase):
     def test_assignement(self):
         self.assertFalse(self.user.has_perm('change_contenttype', self.ctype))
 
-        UserObjectPermission.objects.assign('change_contenttype', self.user,
+        UserObjectPermission.objects.assign_perm('change_contenttype', self.user,
             self.ctype)
         self.assertTrue(self.user.has_perm('change_contenttype', self.ctype))
         self.assertTrue(self.user.has_perm('contenttypes.change_contenttype',
             self.ctype))
 
     def test_assignement_and_remove(self):
-        UserObjectPermission.objects.assign('change_contenttype', self.user,
+        UserObjectPermission.objects.assign_perm('change_contenttype', self.user,
             self.ctype)
         self.assertTrue(self.user.has_perm('change_contenttype', self.ctype))
 
@@ -47,17 +58,17 @@ class UserPermissionTests(TestCase):
         self.assertFalse(self.user.has_perm('change_contenttype', self.ctype))
 
     def test_ctypes(self):
-        UserObjectPermission.objects.assign('change_contenttype', self.user, self.obj1)
+        UserObjectPermission.objects.assign_perm('change_contenttype', self.user, self.obj1)
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj1))
         self.assertFalse(self.user.has_perm('change_contenttype', self.obj2))
 
         UserObjectPermission.objects.remove_perm('change_contenttype', self.user, self.obj1)
-        UserObjectPermission.objects.assign('change_contenttype', self.user, self.obj2)
+        UserObjectPermission.objects.assign_perm('change_contenttype', self.user, self.obj2)
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj2))
         self.assertFalse(self.user.has_perm('change_contenttype', self.obj1))
 
-        UserObjectPermission.objects.assign('change_contenttype', self.user, self.obj1)
-        UserObjectPermission.objects.assign('change_contenttype', self.user, self.obj2)
+        UserObjectPermission.objects.assign_perm('change_contenttype', self.user, self.obj1)
+        UserObjectPermission.objects.assign_perm('change_contenttype', self.user, self.obj2)
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj2))
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj1))
 
@@ -76,21 +87,22 @@ class UserPermissionTests(TestCase):
         ])
 
         for perm in to_assign:
-            UserObjectPermission.objects.assign(perm, self.user, self.ctype)
+            UserObjectPermission.objects.assign_perm(perm, self.user, self.ctype)
 
         perms = UserObjectPermission.objects.get_for_object(self.user, self.ctype)
         codenames = sorted(chain(*perms.values_list('permission__codename')))
 
         self.assertEqual(to_assign, codenames)
 
-    def test_assign_validation(self):
+    def test_assign_perm_validation(self):
         self.assertRaises(Permission.DoesNotExist,
-            UserObjectPermission.objects.assign, 'change_group', self.user,
+            UserObjectPermission.objects.assign_perm, 'change_group', self.user,
             self.user)
 
-        group = Group.objects.create(name='test_group_assign_validation')
+        group = Group.objects.create(name='test_group_assign_perm_validation')
         ctype = ContentType.objects.get_for_model(group)
-        perm = Permission.objects.get(codename='change_user')
+        codename = codename=get_user_permission_codename('change')
+        perm = Permission.objects.get(codename=codename)
 
         create_info = dict(
             permission = perm,
@@ -102,26 +114,28 @@ class UserPermissionTests(TestCase):
             **create_info)
 
     def test_unicode(self):
-        obj_perm = UserObjectPermission.objects.assign("change_user",
+        codename = get_user_permission_codename('change')
+        obj_perm = UserObjectPermission.objects.assign_perm(codename,
             self.user, self.user)
         self.assertTrue(isinstance(obj_perm.__unicode__(), unicode))
 
     def test_errors(self):
         not_saved_user = User(username='not_saved_user')
+        codename = get_user_permission_codename('change')
         self.assertRaises(ObjectNotPersisted,
-            UserObjectPermission.objects.assign,
-            "change_user", self.user, not_saved_user)
+            UserObjectPermission.objects.assign_perm,
+            codename, self.user, not_saved_user)
         self.assertRaises(ObjectNotPersisted,
             UserObjectPermission.objects.remove_perm,
-            "change_user", self.user, not_saved_user)
+                codename, self.user, not_saved_user)
         self.assertRaises(ObjectNotPersisted,
             UserObjectPermission.objects.get_for_object,
-            "change_user", not_saved_user)
+            codename, not_saved_user)
 
-class GroupPermissionTests(TestCase):
-    fixtures = ['tests.json']
+class GroupPermissionTests(TestDataMixin, TestCase):
 
     def setUp(self):
+        super(GroupPermissionTests, self).setUp()
         self.user = User.objects.get(username='jack')
         self.group, created = Group.objects.get_or_create(name='jackGroup')
         self.user.groups.add(self.group)
@@ -137,14 +151,14 @@ class GroupPermissionTests(TestCase):
         self.assertFalse(self.user.has_perm('contenttypes.change_contenttype',
             self.ctype))
 
-        GroupObjectPermission.objects.assign('change_contenttype', self.group,
+        GroupObjectPermission.objects.assign_perm('change_contenttype', self.group,
             self.ctype)
         self.assertTrue(self.user.has_perm('change_contenttype', self.ctype))
         self.assertTrue(self.user.has_perm('contenttypes.change_contenttype',
             self.ctype))
 
     def test_assignement_and_remove(self):
-        GroupObjectPermission.objects.assign('change_contenttype', self.group,
+        GroupObjectPermission.objects.assign_perm('change_contenttype', self.group,
             self.ctype)
         self.assertTrue(self.user.has_perm('change_contenttype', self.ctype))
 
@@ -153,21 +167,21 @@ class GroupPermissionTests(TestCase):
         self.assertFalse(self.user.has_perm('change_contenttype', self.ctype))
 
     def test_ctypes(self):
-        GroupObjectPermission.objects.assign('change_contenttype', self.group,
+        GroupObjectPermission.objects.assign_perm('change_contenttype', self.group,
             self.obj1)
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj1))
         self.assertFalse(self.user.has_perm('change_contenttype', self.obj2))
 
         GroupObjectPermission.objects.remove_perm('change_contenttype',
             self.group, self.obj1)
-        GroupObjectPermission.objects.assign('change_contenttype', self.group,
+        GroupObjectPermission.objects.assign_perm('change_contenttype', self.group,
             self.obj2)
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj2))
         self.assertFalse(self.user.has_perm('change_contenttype', self.obj1))
 
-        GroupObjectPermission.objects.assign('change_contenttype', self.group,
+        GroupObjectPermission.objects.assign_perm('change_contenttype', self.group,
             self.obj1)
-        GroupObjectPermission.objects.assign('change_contenttype', self.group,
+        GroupObjectPermission.objects.assign_perm('change_contenttype', self.group,
             self.obj2)
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj2))
         self.assertTrue(self.user.has_perm('change_contenttype', self.obj1))
@@ -192,19 +206,19 @@ class GroupPermissionTests(TestCase):
         ])
 
         for perm in to_assign:
-            GroupObjectPermission.objects.assign(perm, group, self.ctype)
+            GroupObjectPermission.objects.assign_perm(perm, group, self.ctype)
 
         perms = GroupObjectPermission.objects.get_for_object(group, self.ctype)
         codenames = sorted(chain(*perms.values_list('permission__codename')))
 
         self.assertEqual(to_assign, codenames)
 
-    def test_assign_validation(self):
+    def test_assign_perm_validation(self):
         self.assertRaises(Permission.DoesNotExist,
-            GroupObjectPermission.objects.assign, 'change_user', self.group,
+            GroupObjectPermission.objects.assign_perm, 'change_user', self.group,
             self.group)
 
-        user = User.objects.create(username='test_user_assign_validation')
+        user = User.objects.create(username='test_user_assign_perm_validation')
         ctype = ContentType.objects.get_for_model(user)
         perm = Permission.objects.get(codename='change_group')
 
@@ -218,14 +232,14 @@ class GroupPermissionTests(TestCase):
             **create_info)
 
     def test_unicode(self):
-        obj_perm = GroupObjectPermission.objects.assign("change_group",
+        obj_perm = GroupObjectPermission.objects.assign_perm("change_group",
             self.group, self.group)
         self.assertTrue(isinstance(obj_perm.__unicode__(), unicode))
 
     def test_errors(self):
         not_saved_group = Group(name='not_saved_group')
         self.assertRaises(ObjectNotPersisted,
-            GroupObjectPermission.objects.assign,
+            GroupObjectPermission.objects.assign_perm,
             "change_group", self.group, not_saved_group)
         self.assertRaises(ObjectNotPersisted,
             GroupObjectPermission.objects.remove_perm,
@@ -271,7 +285,7 @@ class ObjectPermissionBackendTests(TestCase):
         ctype = ContentType.objects.create(name='foo', model='bar',
             app_label='fake-for-guardian-tests')
         perm = 'change_contenttype'
-        UserObjectPermission.objects.assign(perm, user, ctype)
+        UserObjectPermission.objects.assign_perm(perm, user, ctype)
         self.assertTrue(self.backend.has_perm(user, perm, ctype))
         user.is_active = False
         user.save()
@@ -285,10 +299,10 @@ class GuardianBaseTests(TestCase):
 
     def test_version(self):
         for x in guardian.VERSION:
-            self.assertTrue(isinstance(x, (int, str)))
+            self.assertTrue(isinstance(x, (int, basestring)))
 
     def test_get_version(self):
-        self.assertTrue(isinstance(guardian.get_version(), str))
+        self.assertTrue(isinstance(guardian.get_version(), basestring))
 
 
 class TestExceptions(TestCase):

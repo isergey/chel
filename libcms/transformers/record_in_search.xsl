@@ -445,7 +445,7 @@
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <xsl:template name="Catalog">
-    <xsl:for-each select="field[@id='966']/subfield[@id='a' or @id='A']">
+    <xsl:for-each select="field[@id='908']/subfield[@id='a' or @id='A']">
         <field name="catalog">
             <xsl:value-of select="."/>
         </field>
