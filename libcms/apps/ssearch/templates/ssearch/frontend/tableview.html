@@ -112,7 +112,7 @@
 {% if record.dict.url %}
     <p class="item4">
 {#        {% for url in record.dict.url  %}#}
-            <span class="label label-success">полный текст</span>
+            <a href="{{record.dict.url.0}}" target="_blank" class="label label-success">полный текст</a>
 {#        {% endfor %}#}
     </p>
 {% endif %}
