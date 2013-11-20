@@ -61,6 +61,7 @@
         <xsl:call-template name="Linked-record-number"/>
         <xsl:call-template name="Catalog"/>
         <xsl:call-template name="URL"/>
+        <xsl:call-template name="date_of_publication_of_original"/>
     </doc>
 </xsl:template>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -457,6 +458,16 @@
     <xsl:for-each select="field[@id='856']/subfield[@id='u']">
         <field name="url">
             <xsl:value-of select="."/>
+        </field>
+    </xsl:for-each>
+</xsl:template>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<xsl:template name="date_of_publication_of_original">
+    <xsl:for-each
+        select="field[@id='455']/subfield[@id='1']/field[@id='210']/subfield[@id='d']">
+        <field name="date_of_publication_of_original">
+            <xsl:value-of select="." />
         </field>
     </xsl:for-each>
 </xsl:template>
