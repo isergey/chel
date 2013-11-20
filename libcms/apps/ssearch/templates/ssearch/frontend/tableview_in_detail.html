@@ -9,13 +9,13 @@
 </p>
 <p class="item3">
     — —{% for subject_row in record.extended.subject_heading %}
-        {% for subject_part in subject_row %}
-            <a href="#">{{ subject_part }}</a>{% if not forloop.last %} — {% else %}; {% endif %}
-        {% endfor %}
-        {% for subject in record.dict.subject_keywords %}
-            <a href="#1">{{ subject }}</a>{% if not forloop.last %}; {% else %}. {% endif %}
-        {% endfor %}
+    {% for subject_part in subject_row %}
+        <a href="#">{{ subject_part }}</a>{% if not forloop.last %} — {% else %}; {% endif %}
     {% endfor %}
+    {% for subject in record.dict.subject_keywords %}
+        <a href="#1">{{ subject }}</a>{% if not forloop.last %}; {% else %}. {% endif %}
+    {% endfor %}
+{% endfor %}
 </p>
 <p class="item3">
 
@@ -27,6 +27,19 @@
         {% endfor %}
     </p>
 {% endif %}
+
+{% if record.dict.date_of_publication_of_original %}
+    <p class="item4">Год издания оригинала:
+        {% for dop in record.dict.date_of_publication_of_original %}
+            {% if not forloop.last %}
+                {{ dop }},
+            {% else %}
+                {{ dop }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
 {% if record.dict.date_of_publication %}
     <p class="item4">Год публикации:
         {% for dop in record.dict.date_of_publication %}
@@ -34,13 +47,15 @@
         {% endfor %}
     </p>
 {% endif %}
+
 {% if record.dict.publisher %}
     <p class="item4">Издатель:
-        {% for publisher in record.dict.publisher  %}
+        {% for publisher in record.dict.publisher %}
             {{ publisher }}{% if not forloop.last %},{% endif %}
         {% endfor %}
     </p>
 {% endif %}
+
 {% if record.dict.content_type %}
     <p class="item4">Тип содержания:
         {% for content_type in record.dict.content_type %}
@@ -51,7 +66,7 @@
 
 {% if record.dict.holders %}
     <p class="item4">Держатели:
-        {% for catalog in record.dict.holders  %}
+        {% for catalog in record.dict.holders %}
             {{ catalog }}{% if not forloop.last %},{% endif %}
         {% endfor %}
     </p>
@@ -59,7 +74,7 @@
 
 {% if record.dict.url %}
     <p class="item4">Почитать:
-        {% for url in record.dict.url  %}
+        {% for url in record.dict.url %}
             <a href="{{ url }}">Ссылка на полный текст</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
     </p>

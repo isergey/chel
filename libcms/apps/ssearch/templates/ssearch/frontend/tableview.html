@@ -51,7 +51,7 @@
 {#    </p>#}
 {#{% endif %}#}
 {% if record.dict.date_of_publication %}
-    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Год публикации{% elif LANGUAGE_CODE == 'tt' %}Бастырып чыгару елы{% else %}Publication year{% endif %}:
+    <p class="item4">Год публикации:
         {% for dop in record.dict.date_of_publication %}
             {% if not forloop.last %}
                 {{ dop }},
@@ -61,6 +61,19 @@
         {% endfor %}
     </p>
 {% endif %}
+
+{% if record.dict.date_of_publication_of_original %}
+    <p class="item4">Год издания оригинала:
+        {% for dop in record.dict.date_of_publication_of_original %}
+            {% if not forloop.last %}
+                {{ dop }},
+            {% else %}
+                {{ dop }}
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
 {% if record.dict.publisher %}
     <p class="item4">Издатель:
         {% for publisher in record.dict.publisher  %}
