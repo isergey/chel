@@ -31,7 +31,7 @@ def show(request):
         raise Http404(u'Книга не найдена')
 
     if not os.path.isfile(book_path):
-        raise Http404(u'Не найден edoc контейнер')
+        return  HttpResponse(u'Не найден edoc контейнер')
 
     cur_language = translation.get_language()
     locale_titles = {
