@@ -75,7 +75,7 @@
 {% if record.dict.url %}
     <p class="item4">Почитать:
         {% for url in record.dict.url %}
-            <a href="{{ url }}">Ссылка на полный текст</a>{% if not forloop.last %},{% endif %}
+            <a href="{{ url }}&id={{ record.id }}">Ссылка на полный текст</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
     </p>
 {% endif %}

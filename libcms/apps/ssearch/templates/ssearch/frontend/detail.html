@@ -38,7 +38,10 @@
             </ul>
             <div class="row">
                 <div class="span2">
-                    <b>Количество обращений:</b> {{ view_count }}
+                    <p><b>Количество обращений:</b> {{ view_count }}</p>
+                    <p>{% if edoc_view_count != 0 %}
+                        <b>Количество просмотров:</b> {{ edoc_view_count }}
+                    {% endif %}</p>
                 </div>
                 <div class="span10">
                     <ul class="nav nav-tabs">

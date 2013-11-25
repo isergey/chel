@@ -14,6 +14,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..ppin_client.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
 from ..models import RecordContent, ViewDocLog
+from rbooks.models import ViewLog
 from .extended import subject_render
 transformers = dict()
 
@@ -341,9 +342,12 @@ def detail(request):
         collection_id = catalogs[0].lower().strip()
     log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
     log.save()
+
+    edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
     return render(request, 'ssearch/frontend/detail.html', {
         'record': record,
-        'view_count': view_count
+        'view_count': view_count,
+        'edoc_view_count': edoc_view_count
     })
 
 

@@ -1,21 +1,12 @@
 # -*- coding: utf-8 -*-
-import os
-import json
 import cStringIO
-from zipfile import ZipFile, ZIP_DEFLATED
-from lxml import etree
+from zipfile import ZipFile
 from django.conf import settings
-from django.core.cache import cache
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.utils import translation
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import to_locale, get_language
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
-# from ssearch.models import  Record, Ebook
-#from ..models import Bookmarc, in_internal_ip
-# from forms import BookmarcForm
-# from common.xslt_transformers import xslt_bib_draw_transformer
+from ..models import ViewLog
 
 
 class AccessDenied(Exception): pass
@@ -29,6 +20,7 @@ class AccessDenied(Exception): pass
 @never_cache
 def show(request):
     file_name = request.GET.get('code', None)
+
     try:
         book_path = settings.RBOOKS['documents_directory'] + '/'
         #book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
@@ -45,16 +37,16 @@ def show(request):
     }
 
     locale_chain = locale_titles.get(cur_language, 'en_US')
-    gen_id = request.GET.get('gen_id', None)
-    initial = None
-    if gen_id:
-        initial = {'gen_id': gen_id, 'book_id': book}
+    id = request.GET.get('id', u'')
+    if id:
 
-    #bookmarc_form = BookmarcForm(initial)
+        view_log = ViewLog(doc_id=id)
+        if request.user.is_authenticated():
+            view_log.user_id = request.user.id
+        view_log.save()
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': file_name,
         'locale_chain': locale_chain,
-        #'bookmarc_form': bookmarc_form
     })
 @never_cache
 def book(request, book):
