@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import cStringIO
 from zipfile import ZipFile
 from django.conf import settings
@@ -28,6 +29,9 @@ def show(request):
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
     if not book_path:
         raise Http404(u'Книга не найдена')
+
+    if not os.path.isfile(book_path):
+        raise Http404(u'Не найден edoc контейнер')
 
     cur_language = translation.get_language()
     locale_titles = {
