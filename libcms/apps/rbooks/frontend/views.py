@@ -20,10 +20,10 @@ class AccessDenied(Exception): pass
 
 @never_cache
 def show(request):
-    file_name = request.GET.get('code', None)
+    code = request.GET.get('code', None)
 
     try:
-        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+        book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
     if not book_path:
@@ -48,7 +48,7 @@ def show(request):
             view_log.user_id = request.user.id
         view_log.save()
     return render(request, 'rbooks/frontend/show.html', {
-        'file_name': file_name,
+        'file_name': code,
         'locale_chain': locale_chain,
     })
 @never_cache
