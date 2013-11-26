@@ -23,9 +23,7 @@ def show(request):
     file_name = request.GET.get('code', None)
 
     try:
-        book_path = settings.RBOOKS['documents_directory'] + '/'
-        print book_path
-        #book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
+        book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
     if not book_path:
@@ -59,7 +57,7 @@ def book(request, book):
         book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
-    if not book_path:
+    if not book_path or not os.path.isfile(book_path):
         raise Http404(u'Книга не найдена')
     token1 = request.GET.get('token1')
     xml = """\
@@ -94,7 +92,7 @@ def draw(request, book):
         return HttpResponse(e.message)
 
 
-    if not book_path:
+    if not book_path or not os.path.isfile(book_path):
         raise Http404(u'Книга не найдена')
     zf = ZipFile(book_path)
 
