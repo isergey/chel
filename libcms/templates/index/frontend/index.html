@@ -81,7 +81,7 @@
                 <div class="news">
                         <h3 style="color: #D11314; font-weight: normal;">Новости ЧОУНБ<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
 
-                            {% news_feed 3 0 %}
+                            {% news_feed 4 0 %}
 
                     <hr/>
                         <a href="{% url 'news:frontend:index' %}?type=chel">Остальные новости >></a>
@@ -89,7 +89,7 @@
                     <hr/>
                     <div class="news">
                         <h3 style="color: #D11314; font-weight: normal;">Новости библиотек области<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
-                            {% news_feed 5 1 %}
+                            {% news_feed 4 1 %}
                     <hr/>
                         <a href="{% url 'news:frontend:index' %}?type=lib">Остальные новости >></a>
                     </div>
