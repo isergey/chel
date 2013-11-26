@@ -24,6 +24,7 @@ def show(request):
 
     try:
         book_path = settings.RBOOKS['documents_directory'] + '/'
+        print book_path
         #book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(e.message + u' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
