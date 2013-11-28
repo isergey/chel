@@ -335,18 +335,18 @@ def detail(request):
     if request.user.is_authenticated():
         user = request.user
 
-    view_count = ViewDocLog.objects.filter(record_id=record_id).count()
+    # view_count = ViewDocLog.objects.filter(record_id=record_id).count()
     collection_id = None
     catalogs =  record['dict'].get('catalog',[])
     if catalogs:
         collection_id = catalogs[0].lower().strip()
-    log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
-    log.save()
+    # log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
+    # log.save()
 
     edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
     return render(request, 'ssearch/frontend/detail.html', {
         'record': record,
-        'view_count': view_count,
+        # 'view_count': view_count,
         'edoc_view_count': edoc_view_count
     })
 
