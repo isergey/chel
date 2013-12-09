@@ -1,7 +1,7 @@
 {% extends 'professionals/frontend/index.html' %}
 {% load localeurl_tags %}
 {% block title %}{{ content.title }}{% endblock %}
-{% block content %}
+{% block breadcrumb %}
     <ul class="breadcrumb">
         <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
         <li><a href="{% url 'index:frontend:index' %}">Профессионалам</a> <span class="divider">/</span></li>
@@ -22,6 +22,9 @@
             {% endif %}
         </li>
     </ul>
+{% endblock %}
+{% block content %}
+
     {#    {% if not children %}#}
     {{ content.content|safe }}
     {#    {% else %}#}

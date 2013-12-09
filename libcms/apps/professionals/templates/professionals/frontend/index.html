@@ -1,11 +1,11 @@
-{% extends 'themed_frontend_base.html' %}
+{% extends 'index/frontend/index.html' %}
 {% load menu_tags %}
 {% load news_tags %}
 {% load events_tags %}
 {% load cache %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% block index_content %}
+{% block content %}
     <style type="text/css">
         .prof_menu ul{
             list-style: none;
