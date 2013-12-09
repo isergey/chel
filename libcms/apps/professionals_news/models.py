@@ -14,6 +14,7 @@ class News(models.Model):
     def get_absolute_url(self):
         return urlresolvers.reverse('news:frontend:show', args=[self.id])
 
+
 class NewsContent(models.Model):
     news = models.ForeignKey(News)
     lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
