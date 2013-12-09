@@ -13,7 +13,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ..ppin_client.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
-from ..models import RecordContent, ViewDocLog
+from ..models import RecordContent
 from rbooks.models import ViewLog
 from .extended import subject_render
 transformers = dict()
@@ -217,7 +217,7 @@ def index(request, catalog='uc'):
             coll_info = {
                 'name': coll[0],
                 'docs': coll[1],
-                'views': ViewDocLog.get_view_count(coll[0])
+                # 'views': ViewDocLog.get_view_count(coll[0])
             }
             all_documents_count += int(coll[1])
             coll_stat.append(coll_info)
