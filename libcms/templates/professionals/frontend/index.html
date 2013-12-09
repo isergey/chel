@@ -13,18 +13,23 @@
             margin: 0;
         }
     </style>
-
+    {% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Проффесионалам</li>
+    </ul>
+    {% endblock %}
+    <div class="row">
         <div class="span2">
-
-                <div class="prof_menu">
-                    {% drow_menu_default 'professionals' %}
-                    <hr/>
-                </div>
+            <div class="prof_menu">
+                {% drow_menu_default 'professionals' %}
+                <hr/>
+            </div>
         </div>
         <div class="span10">
             {% block content %}
                 {% news_feed %}
             {% endblock %}
         </div>
-
+    </div>
 {% endblock %}
