@@ -7,7 +7,7 @@ from guardian.decorators import permission_required_or_403
 from guardian.shortcuts import get_perms
 from ..models import Page, Content
 
-@permission_required_or_403('professionals_news.view_page')
+@permission_required_or_403('professionals_pages.view_page')
 def index(request):
     cur_language = translation.get_language()
     page = get_object_or_404(Page, slug='index')
@@ -21,7 +21,7 @@ def index(request):
         'content': content
     })
 
-@permission_required_or_403('professionals_news.view_page')
+@permission_required_or_403('professionals_pages.view_page')
 def show(request, slug):
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug)
