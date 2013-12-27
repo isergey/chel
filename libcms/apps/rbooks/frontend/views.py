@@ -8,7 +8,7 @@ from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
 from ..models import ViewLog
-
+from  ssearch.frontend.views import get_records, get_content_dict
 
 class AccessDenied(Exception): pass
 
@@ -21,6 +21,7 @@ class AccessDenied(Exception): pass
 @never_cache
 def show(request):
     code = request.GET.get('code', None)
+    id = request.GET.get('id', None)
 
     try:
         book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
@@ -42,8 +43,13 @@ def show(request):
     locale_chain = locale_titles.get(cur_language, 'en_US')
     id = request.GET.get('id', u'')
     if id:
-
-        view_log = ViewLog(doc_id=id)
+        collection = u''
+        records = get_records([id])
+        if records:
+            catalogs = get_content_dict(records[0]['tree']).get('catalog', [])
+            if catalogs:
+                collection = catalogs[0]
+        view_log = ViewLog(doc_id=id, collection=collection)
         if request.user.is_authenticated():
             view_log.user_id = request.user.id
         view_log.save()
@@ -51,6 +57,7 @@ def show(request):
         'file_name': code,
         'locale_chain': locale_chain,
     })
+
 @never_cache
 def book(request, book):
     try:
@@ -105,123 +112,9 @@ def draw(request, book):
 
 def get_book_path(book, remote_adrr):
      return settings.RBOOKS['documents_directory'] + '/' + book + '.edoc'
-"""
-def add_page_bookmarc(request):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
-    if request.method == 'POST':
-        form = BookmarcForm(request.POST)
-        if form.is_valid():
-            if Bookmarc.objects.filter(user=request.user, gen_id=form.cleaned_data['gen_id']):
-                return HttpResponse(u'{"status":"ok"}')
-            doc = None
-            try:
-                doc = Record.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
-            except Record.DoesNotExist:
-                pass
-            if not doc:
-                try:
-                    doc = Ebook.objects.using('records').get(gen_id=form.cleaned_data['gen_id'])
-                except Ebook.DoesNotExist:
-                    raise Http404(u'Record not founded')
-
-            saved_bookmarc = form.save(commit=False)
-            saved_bookmarc.user = request.user
-            saved_bookmarc.gen_id = doc.gen_id
-
-            saved_bookmarc.save()
-            if request.is_ajax():
-                return HttpResponse(u'{"status":"ok"}')
-        else:
-            if request.is_ajax():
-                response = {
-                    'status': 'error',
-                    'errors': form.errors
-                }
-                return HttpResponse(json.dumps(response, ensure_ascii=False))
 
 
 
-    return HttpResponse(u'{"status":"ok"}')
+def stats(request):
 
-
-"""
-
-"""
-@login_required
-def bookmarcs(request):
-    #print list(Bookmarc.objects.raw("SELECT id, gen_id FROM rbooks_bookmarc WHERE user_id=%s GROUP BY gen_id ORDER BY add_date DESC", params=[request.user.id]))
-    bookmarcs = Bookmarc.objects.values('id', 'gen_id').filter(user=request.user).order_by('-add_date')
-    gen_ids = {}
-    for bookmarc in bookmarcs:
-        gen_ids[bookmarc.gen_id] = {'bookmarc': bookmarc}
-
-
-    for record in Record.objects.using('records').filter(gen_id__in=gen_ids.keys()):
-        doc_tree = etree.XML(record.content)
-        doc_tree = xslt_bib_draw_transformer(doc_tree)
-        gen_ids[record.gen_id]['record']= record
-        gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
-
-    for record in Ebook.objects.using('records').filter(gen_id__in=gen_ids):
-        doc_tree = etree.XML(record.content)
-        doc_tree = xslt_bib_draw_transformer(doc_tree)
-        gen_ids[record.gen_id]['record'] = record
-        gen_ids[record.gen_id]['bib'] = etree.tostring(doc_tree).replace(u'<b/>', u' '),
-
-    records = []
-    for bookmarc in bookmarcs:
-        records.append(gen_ids[bookmarc.gen_id])
-
-    return render(request, 'rbooks/frontend/bookmarcs.html', {
-        'records': records
-    })
-"""
-
-"""
-def get_book_path(book, remote_addr):
-    internal_ip = cache.get('internal_ip' + remote_addr, None)
-    if internal_ip == None:
-        internal_ip = in_internal_ip(remote_addr)
-        cache.set('internal_ip' + remote_addr, internal_ip)
-
-    book_path_internet = None
-    book_path_internal = None
-
-    book_path = None
-
-    internet_books = (
-        settings.RBOOKS.get('dl_path') + book +'.1.edoc',
-        settings.RBOOKS.get('dl_path') + book +'.edoc',
-        )
-    iternal_books = (
-                        settings.RBOOKS.get('dl_path') + book +'.2.edoc',
-                        ) + internet_books
-
-    if not internal_ip:
-        for internet_book in internet_books:
-            if os.path.isfile(internet_book):
-                book_path_internet =  internet_book
-                break
-
-        if  book_path_internet:
-            book_path = book_path_internet
-    else:
-        for iternal_book in iternal_books:
-            if os.path.isfile(iternal_book):
-                book_path_internal =  iternal_book
-                break
-
-        if book_path_internal:
-            book_path = book_path_internal
-
-    if not book_path_internal and not book_path_internet:
-        raise AccessDenied(u'Просмотр с вашего ip ареса запрещен.')
-
-
-
-    if not book_path:
-        return None
-
-    return book_path
-"""
+    pass

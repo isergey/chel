@@ -19,7 +19,11 @@ class Type(models.Model):
 
 
 class ImportantDate(models.Model):
-    date = models.DateField(verbose_name=u'Дата события', db_index=True)
+    date = models.DateField(verbose_name=u'Дата события', db_index=True,
+                            help_text=u'Если неизвестен день или месяц даты, то выставлять 01. 01.01.1061')
+    count_day = models.BooleanField(verbose_name=u'Учитывать день даты', db_index=True, default=True)
+    count_month = models.BooleanField(verbose_name=u'Учитывать месяц даты', db_index=True, default=True)
+    count_year = models.BooleanField(verbose_name=u'Учитывать год даты', db_index=True, default=True)
     type = models.ManyToManyField(Type, verbose_name=u'Тип события')
     fio = models.CharField(verbose_name=u'ФИО персоналии', max_length=512, blank=True, null=True)
     org_title = models.CharField(verbose_name=u'Название организации', max_length=512, blank=True, null=True)
