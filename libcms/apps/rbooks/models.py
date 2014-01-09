@@ -8,3 +8,6 @@ class ViewLog(models.Model):
     view_dt = models.DateTimeField(verbose_name=u'Время просмотра', db_index=True,auto_now_add=True)
     user_id = models.BigIntegerField(verbose_name=u'Пользователь', db_index=True, default=-1)
 
+    @staticmethod
+    def get_view_count(collection_id):
+        return ViewLog.objects.filter(collection_id=collection_id.lower().strip()).count()
