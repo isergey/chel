@@ -17,6 +17,10 @@ def index(request):
     type = request.GET.get('type', None)
     events = []
     errors = []
+    limit_on_page = 15
+    prnt = request.GET.get('print', None)
+    if prnt:
+        limit_on_page = 1000
 
     attr = request.GET.get('attr', None)
     search=False
@@ -32,7 +36,7 @@ def index(request):
         collection = solr.get_collection(solr_conf['collection'])
         result = collection.search(query, ['id'])
 
-        paginator = Paginator(result, 15)
+        paginator = Paginator(result, limit_on_page)
 
         page = request.GET.get('page')
         try:
@@ -89,7 +93,7 @@ def index(request):
             pass
 
         if not errors:
-            events_page = get_page(request, ImportantDate.objects.select_related('theme').filter(q).order_by('-date'))
+            events_page = get_page(request, ImportantDate.objects.select_related('theme').filter(q).order_by('-date'), limit_on_page)
             events = events_page.object_list
 
 
@@ -97,7 +101,11 @@ def index(request):
 
     #themes = Theme.objects.all()
     types = Type.objects.all()
-    return render(request, 'cid/frontend/index.html', {
+
+    template = 'cid/frontend/index.html'
+    if prnt:
+        template = 'cid/frontend/print.html'
+    return render(request, template, {
         'now': now,
         'events': events,
         'events_page': events_page,

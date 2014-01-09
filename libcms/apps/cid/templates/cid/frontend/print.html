@@ -1,0 +1,21 @@
+<script type="text/javascript">
+    window.print();
+</script>
+<ul style="list-style: none; margin: 0">
+    {% for event in events %}
+        <li>
+            <b>
+                {% if event.count_day %}{{ event.date|date:"d"}}{% endif %}
+                {% if event.count_month %}{{ event.date|date:"N"}} {% endif %}
+                {% if event.count_year %}{{ event.date|date:"Y"}} г.{% endif %}
+                {{ event }}
+            </b>
+
+            <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %},
+            {% endif %}{% endfor %}.
+            </div>
+            {% if not forloop.last %}
+                <hr/>{% endif %}
+        </li>
+    {% endfor %}
+</ul>
