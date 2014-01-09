@@ -10,4 +10,4 @@ class ViewLog(models.Model):
 
     @staticmethod
     def get_view_count(collection_id):
-        return ViewLog.objects.filter(collection_id=collection_id.lower().strip()).count()
+        return ViewLog.objects.filter(collection=collection_id.lower().strip()).count()
