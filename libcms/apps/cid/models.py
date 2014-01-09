@@ -1,7 +1,9 @@
 # encoding: utf-8
 from django.conf import settings
 from django.db import models
-
+from django.db.models.signals import post_save, post_delete
+from django.utils.html import strip_tags
+from solr.solr import Solr, SolrError
 
 types = (
     (0, u'Персоналия'),
@@ -54,10 +56,10 @@ class ImportantDate(models.Model):
 
         return u'. '.join(lines)
 
+    @staticmethod
+    def get_ids_by_year(year, mod=5):
+        return ImportantDate.objects.raw('SELECT * FROM libcms.cid_importantdate where mod((%s - year(date)), %s) = 0;', [year, mod])
 
-from django.db.models.signals import post_save, post_delete
-from django.utils.html import strip_tags
-from solr.solr import Solr, SolrError
 
 def update_doc(sender, **kwargs):
 

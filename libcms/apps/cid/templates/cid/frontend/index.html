@@ -52,19 +52,24 @@
 
                         <div><input type="submit" value="Показать" class="btn"/></div>
                     </form>
-                        <b>Поиск по событиям</b>:
-                        <form method="GET">
-                            <select name="attr" style="width: 120px">
-                                <option value="all_t">Везде</option>
-                                <option value="fio_t">Персоналия</option>
-                                <option value="org_title_t">Организация</option>
-                                <option value="event_title_t">Мероприятие</option>
-                                <option value="geo_title_t">Географический объект</option>
-                                <option value="theme_t">Тема</option>
-                            </select>
-                            <input class="span5" id="appendedInputButton" type="text" value="{{ request.GET.q }}" name="q">
-                            <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
-                        </form>
+                    <b>Поиск по событиям</b>:
+                    <form method="GET">
+                        <select name="attr" style="width: 120px">
+                            <option value="all_t">Везде</option>
+                            <option value="fio_t">Персоналия</option>
+                            <option value="org_title_t">Организация</option>
+                            <option value="event_title_t">Мероприятие</option>
+                            <option value="geo_title_t">Географический объект</option>
+                            <option value="theme_t">Тема</option>
+                        </select>
+                        <input class="span5" id="appendedInputButton" type="text" value="{{ request.GET.q }}" name="q">
+                        <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
+                    </form>
+                    <b>Поиск по году</b>:
+                    <form method="GET">
+                        <input class="span1" id="appendedInputButton" type="text" value="{{ request.GET.y }}" name="y">
+                        <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
+                    </form>
                 </div>
                 <div style="clear: both"></div>
             </div>
@@ -79,7 +84,8 @@
                             {% if event.count_day %}{{ event.date|date:"d"}}{% endif %}
                             {% if event.count_month %}{{ event.date|date:"N"}} {% endif %}
                             {% if event.count_year %}{{ event.date|date:"Y"}} г.{% endif %}
-                            {{ event }} </a>
+                            {{ event }}
+                        </a>
 
                         <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %},
                         {% endif %}{% endfor %}.

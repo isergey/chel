@@ -21,6 +21,9 @@ def index(request):
     attr = request.GET.get('attr', None)
     search=False
     q = request.GET.get('q', None)
+    y = request.GET.get('y', None)
+
+
     if attr and q:
         attrs, values = extract_request_query_attrs(request)
         query = construct_query(attrs=attrs, values=values)
@@ -85,6 +88,9 @@ def index(request):
         if not errors:
             events_page = get_page(request, ImportantDate.objects.select_related('theme').filter(q).order_by('-date'))
             events = events_page.object_list
+    if y:
+        events = ImportantDate.get_ids_by_year(year=y)
+
     now = datetime.datetime.now()
 
     #themes = Theme.objects.all()
