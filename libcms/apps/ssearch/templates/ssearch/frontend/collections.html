@@ -13,7 +13,7 @@
                     <li style="margin-bottom: 10px;">
                         <a href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</a><br/>
                         <div><span class="backlight">Документов:  {{ coll.docs }}</span>
-{#                            <span style="margin-left: 30px" class="backlight">Просмотров: {{ coll.views }}</span><#}
+                            <span style="margin-left: 30px" class="backlight">Просмотров: {{ coll.views }}</span>
                             </div>
                     </li>
             {% empty %}

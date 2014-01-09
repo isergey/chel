@@ -217,7 +217,7 @@ def index(request, catalog='uc'):
             coll_info = {
                 'name': coll[0],
                 'docs': coll[1],
-                # 'views': ViewDocLog.get_view_count(coll[0])
+                'views': ViewLog.get_view_count(coll[0])
             }
             all_documents_count += int(coll[1])
             coll_stat.append(coll_info)
