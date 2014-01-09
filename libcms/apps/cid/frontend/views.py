@@ -52,8 +52,11 @@ def index(request):
         search = True
 
             #events_page = result
+    if y:
+        events_page = None
+        events = ImportantDate.get_ids_by_year(year=y)
 
-    if not search:
+    if not search and not y:
         q = Q()
         try:
             if year:
@@ -88,8 +91,7 @@ def index(request):
         if not errors:
             events_page = get_page(request, ImportantDate.objects.select_related('theme').filter(q).order_by('-date'))
             events = events_page.object_list
-    if y:
-        events = ImportantDate.get_ids_by_year(year=y)
+
 
     now = datetime.datetime.now()
 
