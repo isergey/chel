@@ -58,7 +58,7 @@ class ImportantDate(models.Model):
 
     @staticmethod
     def get_ids_by_year(year, mod=5):
-        return ImportantDate.objects.raw('SELECT * FROM cid_importantdate where year(date) <= %s AND  mod((%s - year(date)), %s) = 0 ORDER BY date;', [year, year, mod])
+        return ImportantDate.objects.raw('SELECT * FROM cid_importantdate where year(date) <= %s AND  mod((%s - year(date)), %s) = 0 ORDER BY date DESC;', [year, year, mod])
 
 
 def update_doc(sender, **kwargs):
