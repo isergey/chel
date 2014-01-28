@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block action_content %}
+    <p>Количество внесенных дат: {{ idates_count }}</p>
     <ul>
     {% for idate in idates_page.object_list %}
         <li>
