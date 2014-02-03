@@ -125,8 +125,8 @@ class FacetParams(object):
 
     def get_dicted_params(self):
         params = {}
-        # if self.fields or self.query:
-        #     params['facet'] = 'on'
+        if self.fields or self.query:
+            params['facet'] = 'on'
 
         if self.fields:
             params['facet'] = self.fields
@@ -134,20 +134,20 @@ class FacetParams(object):
         # if self.query:
         #     params['facet.query'] = self.query
         #
-        # if self.mincount:
-        #     params['facet.mincount'] = self.mincount
-        #
+        if self.mincount:
+            params['facet.mincount'] = self.mincount
+
         if self.limit:
-            params['limit'] = self.limit
+            params['facet.limit'] = self.limit
 
         if self.offset:
-            params['offset'] = self.offset
+            params['facet.offset'] = self.offset
         #
-        # if self.range_start:
-        #     params['facet.range.start'] = self.range_start
-        #
-        # if self.range_end:
-        #     params['facet.range.end'] = self.range_end
+        if self.range_start:
+            params['facet.range.start'] = self.range_start
+
+        if self.range_end:
+            params['facet.range.end'] = self.range_end
         return params
 
 
@@ -279,6 +279,7 @@ class Collection(object):
             #params['hl.simple.post'] = u"</em>"
 
         if faset_params:
+            print faset_params.get_dicted_params()
             params.update(faset_params.get_dicted_params())
 
 

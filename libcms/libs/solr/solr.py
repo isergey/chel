@@ -191,10 +191,8 @@ class SearchResults(object):
             return 9999
 
     def get_docs(self):
-        try:
-            return  self.response_dict['response']['docs']
-        except KeyError:
-            return None
+        return  self.response_dict['response']['docs']
+
 
     def get_qtime(self):
         return self.response_dict['responseHeader']['QTime']
@@ -210,6 +208,8 @@ class SearchResults(object):
                 facets[facet_title].append((facet[i-1], facet[i]))
         return facets
 
+    def get_highlighting(self):
+        return []
 
 class Collection(object):
     def __init__(self, solr, name):
@@ -242,7 +242,7 @@ class Collection(object):
         r = requests.get(address)
         r.raise_for_status()
 
-    def search(self, query, fields=list(), faset_params=None, start=0, rows=10):
+    def search(self, query, fields=list(), faset_params=None, hl=[], sort=[], start=0, rows=10):
         address = self.__solr. get_base_url() + self.__name + '/select/'
         params = {}
         params['q'] = query
