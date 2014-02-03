@@ -11,7 +11,7 @@ from django.conf import settings
 from django.shortcuts import render, HttpResponse, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from ..ppin_client.solr import Solr, FacetParams, escape
+from solr.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
 from ..models import RecordContent
 from rbooks.models import ViewLog
@@ -164,12 +164,12 @@ def collections():
     uc = init_solr_collection('uc')
     faset_params = FacetParams()
     faset_params.fields = ['collection_s']
-
+    faset_params.mincount = 1
+    faset_params.limit = 30
     result = uc.search(query='*:*', faset_params=faset_params)
     facets = result.get_facets()
     facets = replace_facet_values(facets)
     collection_values = facets['collection_s']['values']
-
 
     # return render(request, 'ssearch/frontend/collections.html', {
     #     'collection_values': collection_values
@@ -255,10 +255,9 @@ def index(request, catalog='uc'):
 
     docs = result.get_docs()
     record_ids = []
-
+    print record_ids
     for doc in docs:
-        #record_ids.append(doc['id'])
-        record_ids.append(doc)
+        record_ids.append(doc['id'])
 
     records = get_records(record_ids)
     view = request.GET.get('view', u'table')
@@ -632,7 +631,7 @@ def more_facet(request, catalog='uc'):
         return HttpResponse(u'Wrong query params', status='400')
 
     query = construct_query(attrs=attrs, values=values)
-    result = uc.load_more_facets(query, faset_params=faset_params)
+    result = uc.search(query, faset_params=faset_params)
     facets = result.get_facets()
 
     facets = replace_facet_values(facets)
