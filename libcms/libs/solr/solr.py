@@ -250,6 +250,10 @@ class Collection(object):
         params['wt'] = 'json'
         params['start'] = start
         params['rows'] = rows
+        sort_values = []
+        if sort:
+            params['sort'] = u','.join(sort)
+
         if faset_params:
             params.update(faset_params.get_dicted_params())
 
