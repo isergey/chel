@@ -206,7 +206,7 @@ def index(request, catalog='uc'):
     solr_sort = []
 
     if sort != u'relevance':
-        solr_sort.append("%s:%s" % (sort, order))
+        solr_sort.append("%s %s" % (sort, order))
 
     if not values or not attrs:
 
