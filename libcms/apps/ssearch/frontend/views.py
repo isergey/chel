@@ -255,7 +255,7 @@ def index(request, catalog='uc'):
 
     docs = result.get_docs()
     record_ids = []
-    print record_ids
+
     for doc in docs:
         record_ids.append(doc['id'])
 

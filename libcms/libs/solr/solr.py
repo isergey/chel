@@ -191,7 +191,6 @@ class SearchResults(object):
             return 9999
 
     def get_docs(self):
-        print self.response_dict
         return  self.response_dict['response']['docs']
 
 
