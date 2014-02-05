@@ -354,9 +354,9 @@ def detail(request):
         for  doc in result.get_docs():
             linked_records_ids.append(doc['id'])
         if linked_records_ids:
-            records = get_records(linked_records_ids)
-            for record in records:
-                linked_records.append(record)
+            lrecords = get_records(linked_records_ids)
+            for lrecord in lrecords:
+                linked_records.append(lrecord)
 
     return render(request, 'ssearch/frontend/detail.html', {
         'record': record,
