@@ -66,7 +66,7 @@
                         <h3>Тома/части входящие в это издание:</h3>
                         <ul>
                         {% for linked_record in linked_records %}
-                            <li>{{ linked_record.dict.title.0 }}</li>
+                            <li><a href="#{{ linked_record.id }}">{{ linked_record.dict.title.0 }}</a></li>
                         {% endfor %}
                         </ul>
                     {% endif %}
