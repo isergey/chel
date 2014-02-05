@@ -64,9 +64,11 @@
                     {% if  linked_records %}
                     <hr/>
                         <h3>Тома/части входящие в это издание:</h3>
+                        <ul>
                         {% for linked_record in linked_records %}
-                            {{ linked_record.dict }}
+                            <li>{{ linked_record.dict.title.0 }}</li>
                         {% endfor %}
+                        </ul>
                     {% endif %}
                 </div>
             </div>
