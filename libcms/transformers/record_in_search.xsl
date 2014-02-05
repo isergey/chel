@@ -82,7 +82,7 @@
         -->
         <xsl:when test="leader/leader07 ='a'">
             <xsl:for-each
-                    select="field[(@id &gt; '460' and @id &lt; '460') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
+                    select="field[(@id &gt; '460' and @id &lt; '464') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
                 <xsl:call-template name="Title"/>
             </xsl:for-each>
         </xsl:when>
