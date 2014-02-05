@@ -259,9 +259,11 @@ def index(request, catalog='uc'):
     for doc in docs:
         record_ids.append(doc['id'])
 
-    records = get_records(record_ids)
+
     view = request.GET.get('view', u'table')
     highlighting = result.get_highlighting()
+
+    records = get_records(record_ids)
     for record in records:
         record['extended'] = {
             'subject_heading': subject_render(record['dict'])
@@ -312,7 +314,6 @@ def index(request, catalog='uc'):
     })
 
 
-
 def detail(request):
     record_id = request.GET.get('id', None)
     if not record_id:
@@ -343,10 +344,25 @@ def detail(request):
     # log.save()
 
     edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
+
+    linked_records = []
+    local_numbers = record['dict'].get('local_number', [])
+    if local_numbers:
+        uc = init_solr_collection('uc')
+        result = uc.search('linked_record_number_s:"%s"' % local_numbers[0].replace(u'\\', u'\\\\'), fields=['id'])
+        linked_records_ids = []
+        for  doc in result.get_docs():
+            linked_records_ids.append(doc['id'])
+        if linked_records_ids:
+            records = get_records(linked_records_ids)
+            for record in records:
+                linked_records.append(record)
+
     return render(request, 'ssearch/frontend/detail.html', {
         'record': record,
         # 'view_count': view_count,
-        'edoc_view_count': edoc_view_count
+        'edoc_view_count': edoc_view_count,
+        'linked_records': linked_records
     })
 
 
@@ -421,6 +437,9 @@ def construct_query(attrs, values, optimize=True):
 
     for i, attr in enumerate(attrs):
         value = values[i].strip()
+        if not value:
+            continue
+
         if value != u'*':
             value = escape(value)
 
@@ -451,6 +470,8 @@ def construct_query(attrs, values, optimize=True):
                 sc.add_search_criteria(all_sc)
 
 
+    if not sc.query:
+        return ''
     return sc.to_lucene_query()
 
 

@@ -152,6 +152,7 @@ class FacetParams(object):
 
 
 class SearchResults(object):
+
     def __init__(self, address, params):
         self.__address = address
         self.__params = params
@@ -164,6 +165,7 @@ class SearchResults(object):
         self.__params['start'] = start
         self.__params['rows'] = rows
         self._make_request()
+
 
     def _make_request(self):
 #        if hasattr(self, 'response_dict'):
@@ -196,8 +198,12 @@ class SearchResults(object):
 
     def get_qtime(self):
         return self.response_dict['responseHeader']['QTime']
+
+
     def get_num_found(self):
         return  int(self.response_dict['response']['numFound'])
+
+
     def get_facets(self):
         facets = {}
         facet_fields = self.response_dict['facet_counts']['facet_fields']
@@ -210,6 +216,8 @@ class SearchResults(object):
 
     def get_highlighting(self):
         return []
+
+
 
 class Collection(object):
     def __init__(self, solr, name):
