@@ -364,7 +364,8 @@ def detail(request):
         'record': record,
         # 'view_count': view_count,
         'edoc_view_count': edoc_view_count,
-        'linked_records': linked_records
+        'linked_records': linked_records,
+        'linked_records_ids': linked_records_ids
     })
 
 
