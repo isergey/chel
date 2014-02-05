@@ -356,6 +356,8 @@ def detail(request):
         if linked_records_ids:
             lrecords = get_records(linked_records_ids)
             for lrecord in lrecords:
+                content_tree = record['tree']
+                lrecord['dict'] = get_content_dict(content_tree)
                 linked_records.append(lrecord)
 
     return render(request, 'ssearch/frontend/detail.html', {

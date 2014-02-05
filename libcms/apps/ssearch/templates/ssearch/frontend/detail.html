@@ -61,11 +61,17 @@
                         <div class="tab-pane" id="card">{{ record.library_cadr|safe }}</div>
                         <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
                     </div>
+                    {% if  linked_records %}
+                    <hr/>
+                        <h3>Тома/части входящие в это издание:</h3>
+                        {% for linked_record in linked_records %}
+                            {{ linked_record.dict. }}
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
 
     </div>
-    <hr/>
-    {{ linked_records }}
+
 {% endblock %}
