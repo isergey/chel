@@ -727,25 +727,25 @@ def make_order(request):
     sender_id = request.user.username  #id отправителя
     copy_info = request.POST.get('copy_info', '')
 
-    try:
-        order_manager.order_document(
-            order_type=order_type,
-            sender_id=sender_id,
-            reciver_id=reciver_id,
-            manager_id=manager_id,
-            xml_record=xml_record,
-            comments=request.POST.get('comments', ''),
-            copy_info=copy_info
-        )
-        user_order_times = UserOrderTimes(user=request.user, order_type=order_type, order_manager_id=order_manager_id)
-        user_order_times.save()
-    except Exception as e:
-        if settings.DEBUG == True:
-            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа' + str(e)},
-                                                 ensure_ascii=False))
-        else:
-            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа'},
-                                                 ensure_ascii=False))
+    # try:
+    order_manager.order_document(
+        order_type=order_type,
+        sender_id=sender_id,
+        reciver_id=reciver_id,
+        manager_id=manager_id,
+        xml_record=xml_record,
+        comments=request.POST.get('comments', ''),
+        copy_info=copy_info
+    )
+    user_order_times = UserOrderTimes(user=request.user, order_type=order_type, order_manager_id=order_manager_id)
+    user_order_times.save()
+    # except Exception as e:
+    #     if settings.DEBUG == True:
+    #         return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа' + str(e)},
+    #                                              ensure_ascii=False))
+    #     else:
+    #         return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа'},
+    #                                              ensure_ascii=False))
             #result = u'Заказ сделан '+ order_type +'<br/>'+xml_record.decode('utf-8')
 
     return HttpResponse(simplejson.dumps({'status': 'ok'}, ensure_ascii=False));
