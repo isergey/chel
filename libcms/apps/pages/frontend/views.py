@@ -23,7 +23,6 @@ def index(request):
 
 def show(request, slug):
 
-
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug)
 

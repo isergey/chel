@@ -6,20 +6,19 @@ import xml.etree.cElementTree as ET
 
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.shortcuts import HttpResponse, render, get_object_or_404, Http404, redirect, urlresolvers
+from django.shortcuts import HttpResponse, render, get_object_or_404, redirect, urlresolvers
 from django.contrib.auth.decorators import login_required
 
 from ..ill import ILLRequest
 from ..manager import OrderManager
-
 from zgate.models import ZCatalog
 from zgate import zworker
 
-#from urt.models import LibReader
+
+# from urt.models import LibReader
 from ..models import UserOrderTimes
 
 from participants.models import Library
-from common import ThreadWorker
 #from order_manager.manager import OrderManager
 from forms import DeliveryOrderForm, CopyOrderForm
 #from ssearch.models import  Record, Ebook
@@ -28,6 +27,7 @@ def set_cookies_to_response(cookies, response, domain=None):
     for key in cookies:
         response.set_cookie(key, cookies[key], domain=domain)
     return response
+
 
 class MBAOrderException(Exception):
     pass
@@ -58,7 +58,7 @@ def ajax_login_required(view_func):
 def json_error(error):
     return simplejson.dumps({'status': 'error',
                              'error': error},
-        ensure_ascii=False)
+                            ensure_ascii=False)
 
 #
 #@login_required
@@ -255,16 +255,16 @@ order_statuses_titles = {
     'recall': u'отказ',
     'conditional': u'в обработке',
     'shipped': u'доставлен',
-    'pending': u'в ожидании', #Доставлен
+    'pending': u'в ожидании',  #Доставлен
     'notsupplied': u'выполнение невозможно',
-    }
+}
 
 apdy_type_titles = {
     'ILLRequest': u'Заказ',
     'ILLAnswer': u'Ответ',
     'Shipped': u'Доставлен',
     'Recall': u'Задолженность',
-    }
+}
 
 apdu_reason_will_supply = {
     '1': u'Заказ будет выполнен позднее',
@@ -274,7 +274,7 @@ apdu_reason_will_supply = {
     '5': u'Заказ будет выполнен позднее',
     '6': u'Запрос поставлен в очередь',
     '7': u'Получена информация о стоимости выполнения заказа',
-    }
+}
 apdu_unfilled_results = {
     '1': u'Документ выдан',
     '2': u'Документ в обработке',
@@ -295,10 +295,11 @@ apdu_unfilled_results = {
 
 #Вид и статусы заказов, в зависимоти от которых можно удалять заказ
 can_delete_statuses = {
-    '1': ['shipped', 'received', 'notsupplied', 'checkedin'], #document
-    '2': ['shipped', 'received', 'notsupplied', 'checkedin'], #copy
-    '5': ['shipped', 'notsupplied', 'checkedin'] #reserve
+    '1': ['shipped', 'received', 'notsupplied', 'checkedin'],  #document
+    '2': ['shipped', 'received', 'notsupplied', 'checkedin'],  #copy
+    '5': ['shipped', 'notsupplied', 'checkedin']  #reserve
 }
+
 
 def check_for_can_delete(transaction):
     """
@@ -306,13 +307,16 @@ def check_for_can_delete(transaction):
     """
     for apdu in transaction.illapdus:
         if isinstance(apdu.delivery_status, ILLRequest):
-            if apdu.delivery_status.ill_service_type in can_delete_statuses and\
-               transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
+            if apdu.delivery_status.ill_service_type in can_delete_statuses and \
+                            transaction.status in can_delete_statuses[apdu.delivery_status.ill_service_type]:
                 return True
     return False
 
+
 import time
 from ..templatetags.order_tags import org_by_id
+
+
 @login_required
 def index(request):
     user_id = request.user.username
@@ -335,7 +339,7 @@ def index(request):
         #print ET.tostring(transaction.illapdus[0].delivery_status.supplemental_item_description, encoding="UTF-8")
         try:
             doc = etree.XML(etree.tostring(transaction.illapdus[0].delivery_status.supplemental_item_description,
-                encoding="UTF-8"))
+                                           encoding="UTF-8"))
             result_tree = xslt_bib_draw_transformer(doc)
             res = str(result_tree)
         except Exception, e:
@@ -362,7 +366,7 @@ def index(request):
                 apdu_map['type_title'] = apdu.delivery_status.type
 
             apdu_map['datetime'] = format_time(apdu.delivery_status.service_date_time['dtots']['date'],
-                apdu.delivery_status.service_date_time['dtots']['time'])
+                                               apdu.delivery_status.service_date_time['dtots']['time'])
 
             print apdu.delivery_status
             if isinstance(apdu.delivery_status, ILLRequest):
@@ -384,7 +388,6 @@ def index(request):
                     apdu_map['service_type'] = u'копия'
                     order['type'] = 'copy'
                     order['copy_info'] = apdu.delivery_status.item_id['pagination']
-
 
                 order['type_title'] = apdu_map['service_type']
                 order['can_delete'] = check_for_can_delete(transaction)
@@ -416,11 +419,10 @@ def index(request):
 
 
 
-    return render(request, 'orders/frontend/mba_orders_list.html',{
+    return render(request, 'orders/frontend/mba_orders_list.html', {
         'orders': orders,
         'orgs': orgs
     })
-
 
 
 def mba_order_reserve(request):
@@ -453,7 +455,6 @@ def mba_order_reserve(request):
         return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
 
 
-
 def mba_order_copy(request):
     if not request.user.is_authenticated():
         return HttpResponse(u'Вы должны быть войти на портал', status=401)
@@ -484,8 +485,6 @@ def mba_order_copy(request):
         return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
 
 
-
-
 def mba_order_delivery(request):
     if not request.user.is_authenticated():
         return HttpResponse(u'Вы должны быть войти на портал', status=401)
@@ -514,10 +513,7 @@ def mba_order_delivery(request):
         return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
 
 
-
-
 def _check_order_times(user, order_manager_id, order_type):
-
     order_time = datetime.datetime.now()
 
     order_copy_limit = 10
@@ -543,10 +539,10 @@ def _check_order_times(user, order_manager_id, order_type):
 
     return True
 
+
 def _save_order_time(user):
     user_order_times = UserOrderTimes(user=user, order_type=order_type, order_manager_id=order_manager_id)
     user_order_times.save()
-
 
 
 def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u'', comments=u''):
@@ -566,7 +562,6 @@ def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u''
             doc = Ebook.objects.using('records').get(gen_id=gen_id)
         except Ebook.DoesNotExist:
             raise MBAOrderException(u'Record not founded')
-
 
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
 
@@ -623,10 +618,6 @@ def delete_order(request, order_id):
     return redirect(urlresolvers.reverse('orders:frontend:index'))
 
 
-
-
-
-
 @csrf_exempt
 def org_by_code(request):
     if request.method == 'POST' and 'code' in request.POST:
@@ -647,12 +638,11 @@ def org_by_code(request):
         return HttpResponse('Only post requests')
 
 
-
 def make_order(request):
     if request.method != 'POST':
         return HttpResponse('Only post requests');
     order_type = request.POST.get('type')
-    order_manager_id = request.POST.get('org_id') # организация, которая получит заказ
+    order_manager_id = request.POST.get('org_id')  # организация, которая получит заказ
     order_time = datetime.datetime.now()
 
     order_copy_limit = 5
@@ -671,29 +661,29 @@ def make_order(request):
     if order_type == 'document':
         if user_order_times >= order_document_limit:
             return HttpResponse(simplejson.dumps(
-                    {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на доставку в эту библиотеку исчерпан'},
+                {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на доставку в эту библиотеку исчерпан'},
                 ensure_ascii=False))
     elif order_type == 'copy':
         if user_order_times >= order_copy_limit:
             return HttpResponse(simplejson.dumps(
-                    {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на копию в эту библиотеку исчерпан'},
+                {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на копию в эту библиотеку исчерпан'},
                 ensure_ascii=False))
     elif order_type == 'reserve':
         if user_order_times >= order_reserve_limit:
             return HttpResponse(simplejson.dumps({'status': 'error',
                                                   'error': 'На сегодня Ваш лимит заказов на бронирование в эту библиотеку исчерпан'}
-                ,
-                ensure_ascii=False))
+                                                 ,
+                                                 ensure_ascii=False))
 
     else:
         return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Неизвестный тип заказа'},
-            ensure_ascii=False))
+                                             ensure_ascii=False))
 
     catalog = get_object_or_404(ZCatalog, latin_title=request.POST['catalog_id'])
     zgate_url = catalog.url
 
-    zstate = 'present+' + request.POST['zsession'] +\
-             '+default+' + request.POST['zoffset'] +\
+    zstate = 'present+' + request.POST['zsession'] + \
+             '+default+' + request.POST['zoffset'] + \
              '+1+X+1.2.840.10003.5.28+' + catalog.default_lang
 
     (xml_record, cookies) = zworker.request(zgate_url + '?' + zstate, cookies=request.COOKIES)
@@ -732,11 +722,10 @@ def make_order(request):
         reciver_id = get_first_recivier_code(library)
 
         if not reciver_id:
-            return  HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не может получать заявки'}))
+            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не может получать заявки'}))
 
-    sender_id = request.user.username #id отправителя
+    sender_id = request.user.username  #id отправителя
     copy_info = request.POST.get('copy_info', '')
-
 
     try:
         order_manager.order_document(
@@ -753,10 +742,10 @@ def make_order(request):
     except Exception as e:
         if settings.DEBUG == True:
             return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа' + str(e)},
-                ensure_ascii=False))
+                                                 ensure_ascii=False))
         else:
             return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Ошибка при обработке заказа'},
-                ensure_ascii=False))
+                                                 ensure_ascii=False))
             #result = u'Заказ сделан '+ order_type +'<br/>'+xml_record.decode('utf-8')
 
     return HttpResponse(simplejson.dumps({'status': 'ok'}, ensure_ascii=False));

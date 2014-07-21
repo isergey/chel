@@ -53,6 +53,7 @@ class Page(MPTTModel):
         return translated ancestors
         """
         ancestors = list(self.get_ancestors())
+        print ancestors
         lang=get_language()[:2]
         ad = {}
         for ancestor in ancestors:
