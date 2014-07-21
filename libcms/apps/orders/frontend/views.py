@@ -649,15 +649,15 @@ def make_order(request):
     order_document_limit = 5
     order_reserve_limit = 5
 
-    user_order_times = UserOrderTimes.objects.filter(
-        user=request.user,
-        order_manager_id=order_manager_id,
-        order_type=order_type,
-        order_time__year=order_time.year,
-        order_time__month=order_time.month,
-        order_time__day=order_time.day
-    ).count()
-
+    # user_order_times = UserOrderTimes.objects.filter(
+    #     user=request.user,
+    #     order_manager_id=order_manager_id,
+    #     order_type=order_type,
+    #     order_time__year=order_time.year,
+    #     order_time__month=order_time.month,
+    #     order_time__day=order_time.day
+    # ).count()
+    user_order_times = 0
     if order_type == 'document':
         if user_order_times >= order_document_limit:
             return HttpResponse(simplejson.dumps(
