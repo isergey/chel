@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import simplejson
+import json as simplejson
 from django import template
 from ..models import Library
 register = template.Library()

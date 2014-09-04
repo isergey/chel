@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import simplejson
+import json as simplejson
 import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404

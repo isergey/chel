@@ -1,6 +1,6 @@
 # coding: utf-8
 import re
-import simplejson
+import json as simplejson
 from lxml import etree
 import requests
 import json

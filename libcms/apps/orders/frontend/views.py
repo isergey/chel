@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-import simplejson
+import json as simplejson
 from lxml import etree
 import xml.etree.cElementTree as ET
 
@@ -368,7 +368,6 @@ def index(request):
             apdu_map['datetime'] = format_time(apdu.delivery_status.service_date_time['dtots']['date'],
                                                apdu.delivery_status.service_date_time['dtots']['time'])
 
-            print apdu.delivery_status
             if isinstance(apdu.delivery_status, ILLRequest):
 
                 order['order_id'] = apdu.delivery_status.transaction_id['tq']
@@ -546,7 +545,6 @@ def _save_order_time(user):
 
 
 def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u'', comments=u''):
-    print 'eded', order_manager_id
     user_id = str(user_id)
     order_types = ('delivery', 'copy')
     if order_type not in order_types:
@@ -637,8 +635,9 @@ def org_by_code(request):
     else:
         return HttpResponse('Only post requests')
 
-
 def make_order(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(u'Вы должны быть войти на портал', status=401)
     if request.method != 'POST':
         return HttpResponse('Only post requests');
     order_type = request.POST.get('type')

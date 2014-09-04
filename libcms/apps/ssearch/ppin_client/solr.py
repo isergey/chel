@@ -1,6 +1,6 @@
 # encoding: utf-8
 import requests
-import simplejson
+import json as simplejson
 
 
 class SolrError(Exception): pass

@@ -1,5 +1,5 @@
 # encoding: utf-8
-import simplejson
+import json as simplejson
 from django.http import HttpResponse
 
 
