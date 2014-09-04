@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, get_list_or_404, Http404, HttpResponse
-import simplejson
+import json as simplejson
 from districts import districts_list, find_district
 from models import Library, District
 from django.contrib.auth.decorators import login_required

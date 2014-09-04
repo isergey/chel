@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import simplejson
+import json as simplejson
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse, Http404
 from django.utils import translation
 from django.utils.translation import get_language
