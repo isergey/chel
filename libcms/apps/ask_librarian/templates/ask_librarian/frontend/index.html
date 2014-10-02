@@ -14,7 +14,8 @@
         </div>
 
         <div class="span3">
-        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a><br/>
+        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-info" href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопрос</a>
             {% cache 30 questions_category_menu %}
                 {% drow_categories_tree %}
             {% endcache %}
