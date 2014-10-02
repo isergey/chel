@@ -14,6 +14,9 @@
     </ul>
     <div>
     <div>
+        {% if can_edit %}
+        <div><a class="btn btn-warning" href="{% url 'cid:administration:edit_id' idate.id %}">Редактировать</a></div>
+        {% endif %}
         Дата события: {{ idate.date }}<br/>
         Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}
     </div>

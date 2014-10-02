@@ -117,9 +117,15 @@ def index(request):
 
 
 def detail(request, id):
+    can_edit = False
+
+    if request.user.has_perms('cid.change_importantdate'):
+        can_edit = True
+
     idate = get_object_or_404(ImportantDate, id=id)
     return render(request, 'cid/frontend/show.html', {
-        'idate': idate
+        'idate': idate,
+        'can_edit': can_edit
     })
 
 
