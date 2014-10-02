@@ -19,170 +19,6 @@
     <script type='text/javascript' src='http://yandex.st/jquery/tmpl/1.0.0pre/jquery.tmpl.min.js'></script>
     <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.fancybox.pack.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
-    <style>
-        h3 {
-            font-size: 16px;
-        }
-
-
-        .menu>ul, .news>ul {
-            padding: 0;
-            margin: 0;
-        }
-
-        .menu ul, .news ul {
-            list-style: none;
-        }
-
-        .menu .title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .events #id_month {
-            width: 70px;
-        }
-
-        .events #id_year {
-            width: 70px;
-        }
-
-        .events form {
-            margin: 0;
-        }
-
-        .events table {
-            width: 100%;
-        }
-
-        .news ul li {
-            margin: 0 0 10px 0;
-        }
-
-        #catalogs_menu ul {
-            list-style: none;
-            margin: 0;
-        }
-
-        #catalogs_menu ul li a {
-            text-decoration: none;
-            color: #252525;
-            /*font-weight: bold;*/
-
-        }
-
-        #catalogs_menu ul li {
-            padding: 10px 0 0 0;
-        }
-
-        .left_block {
-            border: #ffffff solid 1px;
-            border-top-color: #b5b5b5;
-            border-right-color: #b5b5b5;
-            border-bottom-width: 0;
-            padding: 0 0 20px 0;
-        }
-
-        .right_block {
-            border: #ffffff solid 1px;
-            border-top-color: #b5b5b5;
-            border-left-color: #b5b5b5;
-            border-bottom-width: 0;
-            padding: 0 0 20px 10px;;
-        }
-
-        #service_menu {
-
-            height: 20px;
-            list-style: none;
-            margin: 0;
-
-        }
-
-        #service_menu li {
-            padding: 3px 10px;
-            float: left;
-            background: #515151;
-
-        }
-
-        #service_menu li a {
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        #search_panel {
-            height: 42px;
-            /*float: right;*/
-            /*padding: 1px 5px 6px 0;*/
-        }
-
-        #search_panel input {
-
-            border-color: #e7e7e7;
-            width: 120px;
-            height: 22px;
-            padding: 4px;
-            font-size: 14px;
-            line-height: 18px;
-            color: #555;
-            /*border: 0;*/
-            -webkit-border-radius: 0;
-            -moz-border-radius: 0;
-            border-radius: 0;
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            margin: 0;
-        }
-
-        #search_panel input:focus {
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            -webkit-transition: none;
-            -moz-transition: none;
-            -ms-transition: none;
-            -o-transition: none;
-            transition: none;
-        }
-
-        #search_panel .search_btn {
-            padding: 0;
-            width: 26px;
-            height: 32px;
-            background: #e7e7e7;
-            border: 0;
-        }
-
-        .label-size-1 {
-            font-size: 80%;
-            filter: alpha(80);
-            opacity: .8;
-        }
-
-        .label-size-2 {
-            font-size: 90%;
-            filter: alpha(90);
-            opacity: .9;
-        }
-
-        .label-size-3 {
-            font-size: 100%;
-        }
-
-        .label-size-4 {
-            font-size: 120%;
-        }
-
-        .label-size-5 {
-            font-size: 160%;
-        }
-
-        .label-size {
-            line-height: 1.2;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -201,40 +37,6 @@
         </div>
     </div>
     <div class="span5">
-        <style>
-
-            .buttons {
-                margin: 0 23px 2px 0;
-            }
-
-            .buttons .home, .buttons .letter, .buttons .map {
-                float: right;
-                width: 20px;
-                height: 20px;
-                margin-left: 10px;
-            }
-
-            .buttons a {
-                display: block;
-                height: 100%;
-            }
-
-            .buttons .home {
-                background: url({{ STATIC_URL }}images/theme/header_buttons.png) no-repeat;
-            }
-
-            .buttons .letter {
-                background: url({{ STATIC_URL }}images/theme/header_buttons.png) -20px no-repeat;
-            }
-
-            .buttons .map {
-                background: url({{ STATIC_URL }}images/theme/header_buttons.png) -42px no-repeat;
-            }
-
-            .jcarousel-skin-tango {
-                /*margin-left: -30px;*/
-            }
-        </style>
         <div class="buttons">
             <div class="map">
                 <a href="{% url 'pages:frontend:show' 'map' %}"></a>
@@ -325,13 +127,42 @@
 </div>
 </div>
 </div>
+<script type="application/javascript">
+    var $menu = $('#main_menu');
+    $menu.on('click', function () {
+        var isHovered = true;
+        if (isHovered == true) {
+            $menu.addClass('opened');
+        }
+
+        $menu.one('mouseleave', function () {
+            isHovered = false;
+            setTimeout(function () {
+                $menu.removeClass('opened');
+            }, 200);
+        });
+    });
+    $menu.on('mouseenter', function () {
+        var isHovered = true;
+        setTimeout(function () {
+            if (isHovered == true) {
+                $menu.addClass('opened');
+            }
+        }, 500);
+        $menu.one('mouseleave', function () {
+            isHovered = false;
+            setTimeout(function () {
+                $menu.removeClass('opened');
+            }, 200);
+        });
+    });
+</script>
 <script type="text/javascript">
 
     //    jQuery(document).ready(function() {
     //        jQuery('#mycarousel').jcarousel();
     //    });
     function mycarousel_initCallback(carousel) {
-        // Disable autoscrolling if the user clicks the prev or next button.
         carousel.buttonNext.bind('click', function () {
             carousel.startAuto(0);
         });
@@ -340,7 +171,6 @@
             carousel.startAuto(0);
         });
 
-        // Pause autoscrolling if the user moves with the cursor over the clip.
         carousel.clip.hover(function () {
             carousel.stopAuto();
         }, function () {
