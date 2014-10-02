@@ -177,6 +177,7 @@ def save_requests(request, catalog):
         'module':'zgate'
     })
 
+@login_required
 def save_document(request):
     if request.method != 'POST':
         return HttpResponse('Only post requests')
