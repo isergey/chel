@@ -277,13 +277,13 @@ ul#main_menu {
         height: 25px;
     }
 
-    ul#main_menu.opened>li>ul {
+    ul#main_menu>li.opened>ul {
         display: block;
         position: absolute;
         left: 0;
 
     }
-    ul#main_menu.opened>li>a {
+    ul#main_menu>li.opened>a {
         color: #252525;
         background-color: #FBFBFB;
     }

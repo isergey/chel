@@ -128,32 +128,45 @@
 </div>
 </div>
 <script type="application/javascript">
-    var $menu = $('#main_menu');
-    $menu.on('click', function () {
-        var isHovered = true;
-        if (isHovered == true) {
-            $menu.addClass('opened');
-        }
+    var mainMenu = {
+        prevLi: false
+    };
+    $('#main_menu').on('mouseleave', function () {
+        mainMenu.prevLi = false;
+    });
 
+    var $menu = $('#main_menu>li');
+
+    $menu.on('click', function (event) {
+
+        var $target = $(event.currentTarget);
+        var isHovered = true;
+        mainMenu.prevLi = true;
+        $target.addClass('opened');
         $menu.one('mouseleave', function () {
             isHovered = false;
-            setTimeout(function () {
-                $menu.removeClass('opened');
-            }, 200);
+            $target.removeClass('opened');
         });
     });
-    $menu.on('mouseenter', function () {
+
+    $menu.on('mouseenter', function (event) {
+
+        var $target = $(event.currentTarget);
         var isHovered = true;
+        var openTimeout = 0;
+
+        if (!mainMenu.prevLi) {
+            openTimeout = 500;
+        }
+        mainMenu.prevLi = true;
         setTimeout(function () {
             if (isHovered == true) {
-                $menu.addClass('opened');
+                $target.addClass('opened');
             }
-        }, 500);
+        }, openTimeout);
         $menu.one('mouseleave', function () {
             isHovered = false;
-            setTimeout(function () {
-                $menu.removeClass('opened');
-            }, 200);
+            $target.removeClass('opened');
         });
     });
 </script>
