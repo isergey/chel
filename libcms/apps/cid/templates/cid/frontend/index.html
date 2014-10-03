@@ -12,7 +12,7 @@
     </ul>
 
     <div>
-        <p style="text-align: right"><a href="#1">Помощь по разделу</a></p>
+        <p style="text-align: right"><a href="#1">Помощь</a></p>
         <div>
 
             {% if errors %}
@@ -67,7 +67,7 @@
                         <input class="span5" id="appendedInputButton" type="text" value="{{ request.GET.q }}" name="q">
                         <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
                     </form>
-                    <b>Поиск по году</b>:
+                    <b>Юбилейные даты года</b>:
                     <form method="GET">
                         <input class="span1" id="appendedInputButton" type="text" value="{{ request.GET.y }}" name="y">
                         <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
@@ -87,7 +87,7 @@
                     <li>
                         <a href="{% url 'cid:frontend:detail' event.id %}?back={{ request.get_full_path }}">
                             {% if event.count_day %}{{ event.date|date:"d"}}{% endif %}
-                            {% if event.count_month %}{{ event.date|date:"N"}} {% endif %}
+                            {% if event.count_month %}{{ event.date|date:"E"}} {% endif %}
                             {% if event.count_year %}{{ event.date|date:"Y"}} г.{% endif %}
                             {{ event }}
                         </a>
