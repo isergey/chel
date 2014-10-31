@@ -76,7 +76,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
-    'social_auth.context_processors.social_auth_by_type_backends',
+    # 'social_auth.context_processors.social_auth_by_type_backends',
     #'django.contrib.messages.context_processors.messages',
 )
 
@@ -97,23 +97,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'libcms.urls'
 WSGI_APPLICATION = 'libcms.wsgi.application'
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
-    'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.contrib.mailru.MailruBackend',
-#    'social_auth.backends.contrib.odnoklassniki.OdnoklassnikiBackend',
-    'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.contrib.yandex.YandexOAuth2Backend',
-#    'social_auth.backends.google.GoogleOAuthBackend',
-    'social_auth.backends.google.GoogleBackend',
-#    'social_auth.backends.yahoo.YahooBackend',
-#    'social_auth.backends.contrib.linkedin.LinkedinBackend',
-#    'social_auth.backends.contrib.flickr.FlickrBackend',
-    'social_auth.backends.OpenIDBackend',
-    'social_auth.backends.contrib.livejournal.LiveJournalBackend',
-#    'social_auth.backends.contrib.vkontakte.VKontakteBackend',
-    'social_auth.backends.contrib.yandex.YandexBackend',
-
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
@@ -140,7 +123,7 @@ INSTALLED_APPS = (
     # cms apps
     'core',
     'accounts',
-    'social_auth',
+    # 'social_auth',
     'filebrowser',
     'menu',
     'pages',

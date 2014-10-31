@@ -8,9 +8,9 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.api import get_messages
 
-from social_auth import __version__ as version
+# from social_auth import __version__ as version
 from forms import RegistrationForm
-from accounts.models import RegConfirm
+from ..models import RegConfirm
 
 def index(request):
     return render(request, 'accounts/frontend/index.html')
@@ -26,32 +26,32 @@ def logout(request):
 def register(request):
     pass
 
-def home(request):
-    """Home view, displays login mechanism"""
-    if request.user.is_authenticated():
-        return redirect('accounts:frontend:done')
-    else:
-        return render(request, 'accounts/frontend/oauth/home.html', {
-            'version': version
-        })
+# def home(request):
+#     """Home view, displays login mechanism"""
+#     if request.user.is_authenticated():
+#         return redirect('accounts:frontend:done')
+#     else:
+#         return render(request, 'accounts/frontend/oauth/home.html', {
+#             'version': version
+#         })
 
-@login_required
-def done(request):
-    """Login complete view, displays user data"""
-    ctx = {
-        'version': version,
-        'last_login': request.session.get('social_auth_last_login_backend')
-    }
-    return render(request, 'accounts/frontend/oauth/done.html', ctx)
+# @login_required
+# def done(request):
+#     """Login complete view, displays user data"""
+#     ctx = {
+#         'version': version,
+#         'last_login': request.session.get('social_auth_last_login_backend')
+#     }
+#     return render(request, 'accounts/frontend/oauth/done.html', ctx)
 
 
-def error(request):
-    """Error view"""
-    messages = get_messages(request)
-    return render(request, 'accounts/frontend/oauth/error.html', {
-        'version': version,
-        'messages': messages
-    })
+# def error(request):
+#     """Error view"""
+#     messages = get_messages(request)
+#     return render(request, 'accounts/frontend/oauth/error.html', {
+#         'version': version,
+#         'messages': messages
+#     })
 
 @transaction.commit_on_success
 def registration(request):
