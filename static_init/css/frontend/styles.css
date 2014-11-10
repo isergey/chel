@@ -194,15 +194,17 @@ h3 {
 }
 
 .buttons .home {
-    background: url(/static/images/theme/header_buttons.png) no-repeat;
+    background: url(../../images/theme/header_buttons.png) no-repeat;
 }
 
 .buttons .letter {
-    background: url(/static/images/theme/header_buttons.png) - 20px no-repeat;
+    background: url(../../images/theme/header_buttons.png) no-repeat;
+    background-position: -20px;
 }
 
 .buttons .map {
-    background: url(/static/images/theme/header_buttons.png) - 42px no-repeat;
+    background: url(../../images/theme/header_buttons.png) no-repeat;
+    background-position: -42px;
 }
 
 .jcarousel-skin-tango {
