@@ -152,7 +152,6 @@ class FacetParams(object):
 
 
 class SearchResults(object):
-
     def __init__(self, address, params):
         self.__address = address
         self.__params = params
@@ -166,11 +165,10 @@ class SearchResults(object):
         self.__params['rows'] = rows
         self._make_request()
 
-
     def _make_request(self):
 #        if hasattr(self, 'response_dict'):
 #            return
-        r = requests.get(self.__address,params=self.__params)
+        r = requests.get(self.__address, params=self.__params)
 
         if r.status_code != 400:
             r.raise_for_status()
@@ -184,7 +182,6 @@ class SearchResults(object):
 
         self.response_dict = response_dict
 
-
     def count(self):
         # для django Paginator
         try:
@@ -193,30 +190,35 @@ class SearchResults(object):
             return 9999
 
     def get_docs(self):
-        return  self.response_dict['response']['docs']
-
+        try:
+            return  self.response_dict['response']['docs']
+        except KeyError:
+            return None
 
     def get_qtime(self):
         return self.response_dict['responseHeader']['QTime']
 
-
     def get_num_found(self):
-        return  int(self.response_dict['response']['numFound'])
-
+        return int(self.response_dict['response']['numFound'])
 
     def get_facets(self):
-        facets = {}
-        facet_fields = self.response_dict['facet_counts']['facet_fields']
-        for facet_title in facet_fields.keys():
-            facet = facet_fields[facet_title]
-            facets[facet_title] = []
-            for i in xrange(1,len(facet), 2):
-                facets[facet_title].append((facet[i-1], facet[i]))
-        return facets
+        try:
+            facets = {}
+            facet_fields = self.response_dict['facet_counts']['facet_fields']
+            for facet_title in facet_fields.keys():
+                facet = facet_fields[facet_title]
+                facets[facet_title] = []
+                for i in xrange(1,len(facet), 2):
+                    facets[facet_title].append((facet[i-1], facet[i]))
+            return facets
+        except KeyError:
+            return {}
 
     def get_highlighting(self):
-        return []
-
+        try:
+            return self.response_dict['highlighting']
+        except KeyError:
+            return {}
 
 
 class Collection(object):
@@ -226,19 +228,14 @@ class Collection(object):
 
     def add(self, docs):
         address = self.__solr.get_base_url() + self.__name + '/update/json'
-        data = simplejson.dumps(docs)
+        data=simplejson.dumps(docs)
         headers = {'content-type': 'application/json'}
         r = requests.post(address, data=data, headers=headers)
         r.raise_for_status()
 
 
-    def delete(self, ids=list()):
-        address = self.__solr.get_base_url() + self.__name + '/update/json'
-        for id in ids:
-            data = simplejson.dumps({'delete':{'id': unicode(id)}})
-            headers = {'content-type': 'application/json'}
-            r = requests.post(address, data=data, headers=headers)
-            r.raise_for_status()
+    def delete(self, collection, ids=list()):
+        pass
 
     def commit(self):
         address = self.__solr. get_base_url() + self.__name + '/update/json?commit=true'
@@ -250,7 +247,7 @@ class Collection(object):
         r = requests.get(address)
         r.raise_for_status()
 
-    def search(self, query, fields=list(), faset_params=None, hl=[], sort=[], start=0, rows=10):
+    def search(self, query, fields=list(), faset_params=None, start=0, hl=list(), rows=10):
         address = self.__solr. get_base_url() + self.__name + '/select/'
         params = {}
         params['q'] = query
@@ -259,8 +256,11 @@ class Collection(object):
         params['start'] = start
         params['rows'] = rows
 
-        if sort:
-            params['sort'] = u','.join(sort)
+        if hl:
+            params['hl'] = 'true'
+            params['hl.fl'] = u",".join(hl)
+            params['hl.simple.pre'] = u"<em>"
+            params['hl.simple.post'] = u"</em>"
 
         if faset_params:
             params.update(faset_params.get_dicted_params())
@@ -290,6 +290,7 @@ class Solr(object):
 
 
 def escape(string):
+    print 'ecefed'
     special = [
         u'\\',
         u'+',
@@ -311,4 +312,106 @@ def escape(string):
     ]
     for s in special:
         string = string.replace(s,'\\'+s)
+        print 's', string
     return string
+
+
+class SearchCriteria:
+
+    def __init__(self, operator):
+        """
+        Init
+        :param operator: String AND|OR
+        :return:
+        """
+        self.operator = operator
+        self.query = []
+
+    def add_attr(self, key, value):
+        """
+        :param criteria_part: CriteriaPart object
+        :return:
+        """
+        self.query.append({
+            'k': key,
+            'v': value
+        })
+
+    def add_search_criteria(self, search_criteria):
+        """
+        :param search_criteria: SearchCriteria object
+        :return:
+        """
+        self.query.append(search_criteria)
+
+    def to_lucene_query(self):
+        query_string_parts = [u"("]
+
+        for i, query_part in enumerate(self.query):
+            if isinstance(query_part, dict):
+                query_string_parts.append(u'%s:"%s"' % (query_part['k'], query_part['v']))
+            elif isinstance(query_part, SearchCriteria):
+                query_string_parts.append(query_part.to_lucene_query())
+            if i < len(self.query) - 1:
+                query_string_parts.append(u' ' + self.operator + u' ')
+        query_string_parts.append(u')')
+        return u''.join(query_string_parts)
+
+    def to_dict(self):
+        dict_criteria = {
+            'op': self.operator,
+            'query': []
+        }
+        for i, query_part in enumerate(self.query):
+            if isinstance(query_part, dict):
+                dict_criteria['query'].append(query_part)
+            elif isinstance(query_part, SearchCriteria):
+                dict_criteria['query'].append(query_part.to_dict())
+
+        return dict_criteria
+
+    @staticmethod
+    def from_dict(dict_criteria):
+        try:
+            sc = SearchCriteria(dict_criteria['op'])
+            for query_part in dict_criteria['query']:
+                if 'k' in query_part and 'v' in query_part:
+                    sc.add_attr(query_part['k'], query_part['v'])
+                else:
+                    sc.add_search_criteria(SearchCriteria.from_dict(query_part))
+            return sc
+        except KeyError as e:
+            raise ValueError(u'Wrong dict_criteria %s. Error:' % (unicode(dict_criteria), unicode(e)))
+
+    def to_human_read(self, parent=None, lang=u'ru'):
+        operators_title = {
+            u'AND': {
+                u'ru': u'И'
+            },
+            u'OR': {
+                u'ru': u'ИЛИ'
+            },
+            u'NOT': {
+                u'ru': u'НЕ'
+            },
+        }
+        query_string_parts = []
+        if parent:
+            query_string_parts.append(u'(')
+
+        for i, query_part in enumerate(self.query):
+            if isinstance(query_part, dict):
+                query_string_parts.append(u'%s:"%s"' % (query_part['k'], query_part['v']))
+            elif isinstance(query_part, SearchCriteria):
+                query_string_parts.append(query_part.to_human_read(parent=True, lang=lang))
+            if i < len(self.query) - 1:
+
+                try:
+                    operator_title = operators_title[self.operator][lang]
+                except KeyError:
+                    operator_title = self.operator
+
+                query_string_parts.append(u' ' + operator_title + u' ')
+        if parent:
+            query_string_parts.append(u')')
+        return u''.join(query_string_parts)
