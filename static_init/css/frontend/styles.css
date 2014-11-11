@@ -181,7 +181,7 @@ h3 {
     margin: 0 23px 2px 0;
 }
 
-.buttons .home, .buttons .letter, .buttons .map {
+.buttons .home, .buttons .letter, .buttons .map, .icon12 {
     float: right;
     width: 20px;
     height: 20px;
@@ -206,6 +206,7 @@ h3 {
     background: url(../../images/theme/header_buttons.png) no-repeat;
     background-position: -42px;
 }
+
 
 .jcarousel-skin-tango {
     /*margin-left: -30px;*/
