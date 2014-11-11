@@ -438,7 +438,7 @@ def saved_document_list(request):
 
 
 def load_documents(request):
-    response = HttpResponse(mimetype='application/txt')
+    response = HttpResponse(content_type='application/txt')
     response['Content-Disposition'] = 'attachment; filename=documents.txt'
     if request.method == 'POST':
         owner_id = ''

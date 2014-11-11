@@ -48,7 +48,7 @@ def ajax_login_required(view_func):
         if request.user.is_authenticated():
             return view_func(request, *args, **kwargs)
         json = simplejson.dumps({'status': 'error', 'error': u'Необходимо войти в систему'}, ensure_ascii=False)
-        return HttpResponse(json, mimetype='application/json')
+        return HttpResponse(json, content_type='application/json')
 
     wrap.__doc__ = view_func.__doc__
     wrap.__dict__ = view_func.__dict__
