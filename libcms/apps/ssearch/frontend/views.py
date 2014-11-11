@@ -11,7 +11,7 @@ from django.conf import settings
 from django.shortcuts import render, HttpResponse, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from solr.solr import Solr, FacetParams, escape
+from ..solr.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
 from ..models import RecordContent
 from rbooks.models import ViewLog
@@ -445,7 +445,6 @@ def construct_query(attrs, values, optimize=True):
 
         if value != u'*':
             value = escape(value)
-
         if attr == 'full_text_tru' and value == '*':
             sc.add_attr(attr, '\*')
         else:
