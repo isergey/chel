@@ -94,13 +94,18 @@
             </xsl:for-each>
         </xsl:otherwise>
     </xsl:choose>-->
+    <xsl:call-template name="Title-former"/>
     <xsl:for-each select="field[@id='461' or @id='463']/subfield[@id=1]">
         <xsl:call-template name="Title-former">
             <xsl:with-param name="inner">inner</xsl:with-param>
         </xsl:call-template>
     </xsl:for-each>
-    <xsl:text> </xsl:text>
-    <xsl:call-template name="Title-former"/>
+    <xsl:for-each select="field[@id='461' or @id='463']/subfield[@id=1]">
+        <xsl:text> — </xsl:text
+        <xsl:call-template name="Title-former">
+            <xsl:with-param name="inner">inner</xsl:with-param>
+        </xsl:call-template>
+    </xsl:for-each>
     </field>
 </xsl:template>
 <xsl:template name="Title-former">
