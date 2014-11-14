@@ -76,10 +76,10 @@
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Title">
     <field name="title">
-    <!--<xsl:choose>
-
+    <xsl:choose>
+        <!--
         Если аналитический уровень, то не индексируем 46* поля
-
+        -->
         <xsl:when test="leader/leader07 ='a'">
             <xsl:for-each
                     select="field[(@id &gt; '460' and @id &lt; '464') or (@id &gt; '469' and @id &lt; '500')]/subfield[@id=1]">
@@ -93,20 +93,9 @@
                 </xsl:call-template>
             </xsl:for-each>
         </xsl:otherwise>
-    </xsl:choose>-->
+    </xsl:choose>
+    <xsl:text> </xsl:text>
     <xsl:call-template name="Title-former"/>
-    <xsl:for-each select="field[@id='461']/subfield[@id=1]">
-        <xsl:text> // </xsl:text>
-        <xsl:call-template name="Title-former">
-            <xsl:with-param name="inner">inner</xsl:with-param>
-        </xsl:call-template>
-    </xsl:for-each>
-    <xsl:for-each select="field[@id='463']/subfield[@id=1]">
-        <xsl:text> — </xsl:text>
-        <xsl:call-template name="Title-former">
-            <xsl:with-param name="inner">inner</xsl:with-param>
-        </xsl:call-template>
-    </xsl:for-each>
     </field>
 </xsl:template>
 <xsl:template name="Title-former">
