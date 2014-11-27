@@ -101,7 +101,7 @@ function scan(ref, db, attr, attrset) {
     var fl = false;
 
     with (document.forms.ZGATE) {
-        ref += "?zstate=action&ACTION=SCAN&SESSION_ID=";
+        ref += '?zstate=action&ACTION=SCAN&SESSION_ID=';
         ref += elements.SESSION_ID.value;
         ref += '&DBNAME=';
         if (db == null) {
