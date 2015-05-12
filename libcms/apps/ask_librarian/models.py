@@ -90,7 +90,7 @@ class Question(models.Model):
     country = models.CharField(verbose_name=u'Страна', blank=True, max_length=64)
     category = models.ForeignKey(Category, null=True, verbose_name=u'Тематика', help_text=u'Укажите тематику, к которой относиться вопрос')
     question = models.TextField(max_length=2048, verbose_name=u'Вопрос')
-    answer = models.TextField(max_length=10000, verbose_name=u'Ответ')
+    answer = models.TextField(max_length=50000, verbose_name=u'Ответ')
     status = models.IntegerField(choices=QUESTION_STATUSES, verbose_name=u'Статус', db_index=True, default=0)
     create_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата создания', db_index=True)
 
