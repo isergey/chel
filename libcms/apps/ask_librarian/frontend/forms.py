@@ -13,6 +13,7 @@ class QuestionForm(forms.ModelForm):
         label=u"Тематика",
         help_text=u'Выберите тему, к которой относиться задаваемый вопрос. Если подходящей темы нет, оставьте поле темы пустым.'
     )
+
     class Meta:
         model = Question
         exclude = ('user', 'answer', 'status', 'create_date', 'manager', 'start_process_date', 'end_process_date')

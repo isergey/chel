@@ -7,8 +7,6 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-
-
 class Page(MPTTModel):
     parent = TreeForeignKey(
         'self',
@@ -28,7 +26,8 @@ class Page(MPTTModel):
         db_index=True,
     )
 
-    public = models.BooleanField(verbose_name=u'Опубликована?', default=False, db_index=True, help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц')
+    public = models.BooleanField(verbose_name=u'Опубликована?', default=False, db_index=True,
+                                 help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц')
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
 
     class Meta:
@@ -36,9 +35,10 @@ class Page(MPTTModel):
         permissions = (
             ("view_page", "Can view page"),
             ("public_page", "Can public page"),
-            )
+        )
+
     def __unicode__(self):
-        return  self.slug
+        return self.slug
 
     def get_cur_lang_content(self):
         cur_language = get_language()
@@ -53,7 +53,7 @@ class Page(MPTTModel):
         return translated ancestors
         """
         ancestors = list(self.get_ancestors())
-        lang=get_language()[:2]
+        lang = get_language()[:2]
         ad = {}
         for ancestor in ancestors:
             ad[ancestor.id] = ancestor
@@ -72,14 +72,14 @@ class Page(MPTTModel):
         else:
             url_pathes = []
             if self.parent:
-                for node in  self.parent.get_ancestors():
+                for node in self.parent.get_ancestors():
                     url_pathes.append(node.slug)
                 url_pathes.append(self.parent.slug)
                 url_pathes.append(self.slug)
             else:
                 url_pathes.append(self.slug)
 
-            self.url_path =  u'/'.join(url_pathes)
+            self.url_path = u'/'.join(url_pathes)
 
         return super(Page, self).save(*args, **kwargs)
 
@@ -94,12 +94,12 @@ class Page(MPTTModel):
             self.move_to(next, position='right')
 
 
-
 class Content(models.Model):
     page = models.ForeignKey(Page, verbose_name=u'Родительская страница')
     lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
     title = models.CharField(verbose_name=u'Заглавие', max_length=512)
-    meta = models.CharField(verbose_name=u"SEO meta", max_length=512, blank=True, help_text=u'Укажите ключевые слова для страницы, желательно на языке контента')
+    meta = models.CharField(verbose_name=u"SEO meta", max_length=512, blank=True,
+                            help_text=u'Укажите ключевые слова для страницы, желательно на языке контента')
     content = models.TextField(verbose_name=u'Контент')
 
     class Meta:
@@ -108,10 +108,8 @@ class Content(models.Model):
     def __unicode__(self):
         return self.title
 
-
     def return_in_lang(self):
         pass
-
 
 
 class ViewLog(models.Model):

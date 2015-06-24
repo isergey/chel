@@ -53,7 +53,7 @@ def register(request):
 #         'messages': messages
 #     })
 
-@transaction.commit_on_success
+@transaction.atomic
 def registration(request):
 
     if request.method == 'POST':
@@ -85,7 +85,7 @@ def registration(request):
     return render(request, 'accounts/frontend/registration.html', {
         'form':form
     })
-@transaction.commit_on_success
+@transaction.atomic
 def confirm_registration(request, hash):
     try:
         confirm = RegConfirm.objects.get(hash=hash)

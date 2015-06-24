@@ -58,7 +58,7 @@ def list(request, parent=None):
 
 
 #@permission_required_or_403('participants.add_library')
-@transaction.commit_on_success
+@transaction.atomic
 def create(request, parent=None):
     if parent:
         LibraryForm = get_library_form(exclude_fields=('parent',))
@@ -104,7 +104,7 @@ def create(request, parent=None):
         })
 
 #@permission_required_or_403('participants.change_library')
-@transaction.commit_on_success
+@transaction.atomic
 def edit(request, id):
     library =  get_object_or_404(Library, id=id)
     parent = library.parent
@@ -144,7 +144,7 @@ def edit(request, id):
 
 
 #@permission_required_or_403('participants.delete_library')
-@transaction.commit_on_success
+@transaction.atomic
 def delete(request, id):
     library = get_object_or_404(Library, id=id)
     parent = library.parent
@@ -195,7 +195,7 @@ def library_type_create(request):
 
 
 @permission_required_or_403('participants.change_library_type')
-@transaction.commit_on_success
+@transaction.atomic
 def library_type_edit(request, id):
     library_type =  get_object_or_404(LibraryType, id=id)
     if request.method == 'POST':
@@ -213,7 +213,7 @@ def library_type_edit(request, id):
 
 
 @permission_required_or_403('participants.delete_library_type')
-@transaction.commit_on_success
+@transaction.atomic
 def library_type_delete(request, id):
     library_type =  get_object_or_404(LibraryType, id=id)
     library_type.delete()
@@ -249,7 +249,7 @@ def district_create(request):
 
 
 @permission_required_or_403('participants.change_district')
-@transaction.commit_on_success
+@transaction.atomic
 def district_edit(request, id):
     district =  get_object_or_404(District, id=id)
     if request.method == 'POST':
@@ -267,7 +267,7 @@ def district_edit(request, id):
 
 
 @permission_required_or_403('participants.delete_district')
-@transaction.commit_on_success
+@transaction.atomic
 def district_delete(request, id):
     district =  get_object_or_404(District, id=id)
     district.delete()

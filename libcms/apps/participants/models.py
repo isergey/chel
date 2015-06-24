@@ -59,7 +59,7 @@ class Library(MPTTModel):
     code = models.CharField(verbose_name=u'Slug', max_length=32, db_index=True, unique=True)
     sigla = models.CharField(verbose_name=u'Сигла', max_length=64, db_index=True, null=True, blank=True, help_text=u'Сигла должна соответвовать сигле держателя, указанной в 899$a')
     main = models.BooleanField(verbose_name=u'Показывать на главной в разделе Библиотеки', default=False, db_index=True)
-    types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True, null=True)
+    types = models.ManyToManyField(LibraryType, verbose_name=u'Тип библиотеки', blank=True)
 
 #    country = models.ForeignKey(Country, verbose_name=u'Страна', db_index=True, blank=True, null=True)
 #    city = models.ForeignKey(City, verbose_name=u'Город', db_index=True, blank=True, null=True)
@@ -118,7 +118,7 @@ class Library(MPTTModel):
 
 class UserLibrary(models.Model):
     library = models.ForeignKey(Library)
-    user = models.ForeignKey(User, unique=True)
+    user = models.OneToOneField(User)
 
     def __unicode__(self):
         return self.user.username

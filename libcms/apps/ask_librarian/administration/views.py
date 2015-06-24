@@ -66,7 +66,7 @@ def questions_list(request, my=None):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def questions_to_process(request, id):
     manager = QuestionManager.get_manager(request.user)
     if not manager:
@@ -139,7 +139,7 @@ def question_edit(request, id):
 
 @login_required
 @permission_required_or_403('ask_librarian.delete_question')
-@transaction.commit_on_success
+@transaction.atomic
 def question_delete(request, id):
     manager = QuestionManager.get_manager(request.user)
     if not manager:
@@ -172,7 +172,7 @@ def categories_list(request):
 
 @login_required
 @permission_required_or_403('ask_librarian.add_category')
-@transaction.commit_on_success
+@transaction.atomic
 def category_create(request, parent=None):
 
     if  parent:
@@ -224,7 +224,7 @@ def category_create(request, parent=None):
 
 @login_required
 @permission_required_or_403('ask_librarian.change_category')
-@transaction.commit_on_success
+@transaction.atomic
 def category_edit(request, id):
 
     category = get_object_or_404(Category, id=id)
@@ -286,7 +286,7 @@ def category_edit(request, id):
 
 @login_required
 @permission_required_or_403('ask_librarian.change_category')
-@transaction.commit_on_success
+@transaction.atomic
 def category_edit(request, id,):
     category = get_object_or_404(Category, id=id)
     category_titles = CategoryTitle.objects.filter(category=category)

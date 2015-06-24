@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
 from django.contrib.auth.models import User, Group
@@ -21,14 +22,27 @@ def index(request):
 
 @permission_required_or_403('accounts.view_users')
 def users_list(request):
-    users_qs = User.objects.all().exclude(id=-1).order_by('-date_joined')
-    users_page = get_page(request,  users_qs)
+    filter_q = request.GET.get('q', u'')
+    q = Q()
+    if filter_q:
+        fio_q = Q()
+        fio_parts = filter_q.split()
+        for fio_part in fio_parts:
+            fio_q = fio_q | Q(first_name__icontains=fio_part) \
+                    | Q(last_name__icontains=fio_part)
+        q = q | fio_q
+
+        q = q | Q(email__icontains=filter_q)
+
+        q = q | Q(username__icontains=filter_q)
+
+    users_qs = User.objects.filter(q).exclude(id=-1).order_by('-date_joined')
+    users_page = get_page(request, users_qs, 20)
 
     return render(request, 'accounts/administration/user_list.html', {
         'users_page': users_page,
         'users': users_qs
     })
-
 
 
 

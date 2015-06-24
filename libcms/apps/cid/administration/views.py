@@ -28,7 +28,7 @@ def id_list(request):
 
 @login_required
 @permission_required_or_403('cid.add_importantdate')
-@transaction.commit_on_success
+@transaction.atomic
 def create_id(request):
     if request.method == 'POST':
         form = ImportantDateForm(request.POST)
@@ -42,7 +42,7 @@ def create_id(request):
     })
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 @permission_required_or_403('cid.change_importantdate')
 def edit_id(request, id):
     idate = get_object_or_404(ImportantDate, id=id)
@@ -58,7 +58,7 @@ def edit_id(request, id):
     })
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 @permission_required_or_403('cid.delete_importantdate')
 def delete_id(request, id):
     idate = get_object_or_404(ImportantDate, id=id)

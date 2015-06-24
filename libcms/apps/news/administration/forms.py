@@ -3,15 +3,14 @@ from django import forms
 
 from ..models import NewsContent, News
 
+
 class NewsForm(forms.ModelForm):
     class Meta:
-        model=News
+        model = News
         exclude = ('avatar_img_name',)
+
 
 class NewsContentForm(forms.ModelForm):
     class Meta:
-        model=NewsContent
+        model = NewsContent
         exclude = ('news', 'lang')
-
-
-

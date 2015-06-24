@@ -49,7 +49,7 @@ def events_list(request):
 
 @login_required
 @permission_required_or_403('events.add_event')
-@transaction.commit_on_success
+@transaction.atomic
 def create_event(request):
 
     if request.method == 'POST':
@@ -98,7 +98,7 @@ def create_event(request):
 
 @login_required
 @permission_required_or_403('events.change_event')
-@transaction.commit_on_success
+@transaction.atomic
 def edit_event(request, id):
     event = get_object_or_404(Event, id=id)
     event_contents = EventContent.objects.filter(event=event)
@@ -168,7 +168,7 @@ def edit_event(request, id):
 
 @login_required
 @permission_required_or_403('events.delete_event')
-@transaction.commit_on_success
+@transaction.atomic
 def delete_event(request, id):
     event = get_object_or_404(Event, id=id)
     event.delete()
