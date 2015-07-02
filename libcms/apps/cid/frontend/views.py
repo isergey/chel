@@ -93,7 +93,7 @@ def index(request):
             pass
 
         if not errors:
-            events_page = get_page(request, ImportantDate.objects.select_related('theme').filter(q).order_by('date'), limit_on_page)
+            events_page = get_page(request, ImportantDate.objects.filter(q).order_by('date'), limit_on_page)
             events = events_page.object_list
 
 
