@@ -1,0 +1,107 @@
+{% load pagination_tag %}
+
+{% for record in records %}
+    <div class="boxer result">
+        <div class="box-row  result-item" rid="{{ record.model.pk }}">
+            <span class="box box-number">
+                {{ record.row_number }}.
+            </span>
+            <div class="box" style="width: 100%">
+                <a class="result-item-title" href="{% url 'search:frontend:detail' %}?id={{ record.model.pk }}&back={{ request.get_full_path|urlencode }}">{{ record.title.title|safe }}</a>
+
+                <div class="result-item-detail">
+                    {% with record.attrs as attrs %}
+                        {% if record.title.parts_of %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">
+                                    Источник:
+                                </div>
+                                <div class="box">
+                                    {% if record.source_link.parent %}
+                                        <a href="{% url 'search:frontend:detail' %}?ln={{ record.source_link.parent }}&source={{ record.source }}">{{ record.title.parts_of }}</a>
+                                        {% else %}
+                                            <span style="font-weight: bold">{{ record.title.parts_of }}</span>
+                                        {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if attrs.document_type %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">Вид документа:</div>
+                                <div class="box">
+                                    {% include 'search/frontend/print_attr.html' with attrs=attrs.document_type %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if attrs.author %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">
+                                    Авторы:
+                                </div>
+                                <div class="box ">
+                                    {% include 'search/frontend/print_attr.html' with attrs=attrs.author %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if attrs.organisation %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">
+                                    Организация:
+                                </div>
+                                <div class="box">
+                                    {% include 'search/frontend/print_attr.html' with attrs=attrs.organisation %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if attrs.date_of_publication %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">
+                                    Дата публикации:
+                                </div>
+                                <div class="box">
+                                    {% include 'search/frontend/print_attr.html' with attrs=attrs.date_of_publication %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if attrs.subject_heading %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">
+                                    Тематика:
+                                </div>
+                                <div class="box">
+                                    {% include 'search/frontend/print_attr.html' with attrs=attrs.subject_heading %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if attrs.subject_keywords %}
+                            <div class="box-row">
+                                <div class="box result-item-detail-title">
+                                    Ключевые слова:
+                                </div>
+                                <div class="box">
+                                    {% include 'search/frontend/print_attr.html' with attrs=attrs.subject_keywords %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+            </div>
+            {% if record.cover %}
+                <div class="box">
+                    <img style="border: 1px solid #d6d6d6" class="box-image" src="{{ record.cover.small }}">
+                </div>
+        {% endif %}
+
+        </div>
+    </div>
+{% endfor %}
+{% if records %}
+{% admin_pagination result_page %}
+{% endif %}

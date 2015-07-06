@@ -1,0 +1,329 @@
+{% extends 'themed_frontend_base.html' %}
+{#{% load humanize %}#}
+{% block index_content %}
+    <div class="row">
+        <div class="span12">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                <li><a class="current"><i class="fa fa-angle-right"></i>Поиск по ресурсам</a><span class="divider">/</span></li>
+                {% if records %}
+                    <li><span>Найдено: {{ total }}</span></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span9">
+            <div class="row">
+                <div class="span9">
+                    <form class="form-search" style="margin: 0">
+                        <div class="">
+                            <select class="span2" name="attr">
+                                {% for attr in titled_attrs %}
+                                    <option value="{{ attr.attr }}" {% if request.GET.attr == attr.attr %}selected{% endif %}>{{ attr.title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <input name="value" value="{{ request.GET.value|default:'' }}"
+                                   placeholder="Введите автора, заглавие, тему..." type="text"
+                                   class="input-medium span6"/>
+                            <button type="submit" class="btn">Найти</button>
+                            {% for prev_attr in prev_attrs %}
+                                <input type="hidden" name="br_attr" value="{{ prev_attr.attr }}"/>
+                                <input type="hidden" name="br_value" value="{{ prev_attr.value }}"/>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {% if records %}
+                                <label>
+                                    <input name="in_results" value="1" type="checkbox"
+                                            {% if request.GET.in_results == '1' %}
+                                           checked="checked" {% endif %}>
+                                    <span style="">Искать в найденном </span>
+                                </label>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span9">
+                    {% if breadcrumbs %}
+                        <a href="{% url 'search:frontend:index' %}" class="label label-warning">Очистить фильтр</a>
+                        {% for bitem in  breadcrumbs %}
+                            {% if not forloop.last %}
+                                <a href="{{ bitem.href }}">
+                                    <i class="fa fa-angle-right"></i> {{ bitem.title }}: {{ bitem.value }}
+                                </a>
+                                <span> > </span>
+                            {% else %}
+                                <span class="current">{{ bitem.title }}: {{ bitem.value }}
+                            </span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="span9">
+                    <div class="results" style="margin-top: 10px">
+                        {% include 'search/frontend/results_block.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="span3">
+            <div class="facets"></div>
+        </div>
+    </div>
+
+    {#    <div class="grid grid-pad">#}
+    {#        <div class="col-9-12 border-left-pages">#}
+    {#            <div class="content ">#}
+    {##}
+    {#                <form>#}
+    {#                    <div id="search-content" style="padding-top: 20px">#}
+    {#                        <div class="search-block">#}
+    {##}
+    {#                            <div class="boxer">#}
+    {#                                <div class="box-row">#}
+    {#                                    <div class="box" style="width: 190px;">#}
+    {##}
+    {#                                        <select class="cs-select cs-skin-border cs-placeholder-search-page" name="attr">#}
+    {#                                            {% for attr in titled_attrs %}#}
+    {#                                                <option value="{{ attr.attr }}"#}
+    {#                                                        {% if request.GET.attr == attr.attr %}selected{% endif %}>{{ attr.title }}#}
+    {#                                                </option>#}
+    {#                                            {% endfor %}#}
+    {#                                        </select>#}
+    {#                                    </div>#}
+    {#                                    <div class="box" style="width: 85%; padding-left: 15px;">#}
+    {##}
+    {#                                        <input type="text" placeholder="Введите автора, заглавие, тему..." name="value"#}
+    {#                                               class="search search-page" value="{{ request.GET.value|default:'' }}">#}
+    {#                                        {% for prev_attr in prev_attrs %}#}
+    {#                                            <input type="hidden" name="br_attr" value="{{ prev_attr.attr }}"/>#}
+    {#                                            <input type="hidden" name="br_value" value="{{ prev_attr.value }}"/>#}
+    {#                                        {% endfor %}#}
+    {#                                        <button class="btn-search btn-search-page" value="">#}
+    {#                                            <i class="fa fa-search"></i>#}
+    {#                                        </button>#}
+    {#                                    </div>#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {##}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                    <div class="search-options-block search-options-block-page">#}
+    {#                        <div class="boxer" style="width: 100%; font-size: 12px">#}
+    {#                            <div class="box-row">#}
+    {#                                <div class="box">#}
+    {#                                    {% if records %}#}
+    {#                                        <label>#}
+    {#                                            <input name="in_results" value="1" type="checkbox"#}
+    {#                                                    {% if request.GET.in_results == '1' %}#}
+    {#                                                   checked="checked" {% endif %}>#}
+    {#                                            <span style="">Искать в найденном </span>#}
+    {#                                        </label>#}
+    {#                                    {% endif %}#}
+    {#                                </div>#}
+    {#                                <div class="box">#}
+    {#                                    <span style="margin: 7px;display: block; white-space: nowrap; float: right"> Найдено записей: {{ total }}</span>#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="boxer">#}
+    {#                            {% if breadcrumbs %}#}
+    {#                                <div class="box-row">#}
+    {#                                    <div class="box">#}
+    {#                                        <ol class="breadcrumbs-search">#}
+    {#                                            <li><a href="{% url 'search:frontend:index' %}" class="btn-clear-facets">Очистить#}
+    {#                                                поиск</a>#}
+    {#                                            </li>#}
+    {#                                            {% for bitem in  breadcrumbs %}#}
+    {#                                                {% if not forloop.last %}#}
+    {#                                                    <li><a href="{{ bitem.href }}"><i#}
+    {#                                                            class="fa fa-angle-right"></i>&nbsp;&nbsp; {{ bitem.title }}: {{ bitem.value }}#}
+    {#                                                    </a>#}
+    {#                                                    </li>#}
+    {#                                                {% else %}#}
+    {#                                                    <li><a class="current"><i#}
+    {#                                                            class="fa fa-angle-right"></i>&nbsp;&nbsp; {{ bitem.title }}: {{ bitem.value }}#}
+    {#                                                    </a></li>#}
+    {#                                                {% endif %}#}
+    {#                                            {% endfor %}#}
+    {#                                        </ol>#}
+    {##}
+    {#                                    </div>#}
+    {#                                </div>#}
+    {#                            {% endif %}#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </form>#}
+    {##}
+    {#                <div class="results">#}
+    {#                    {% include 'search/frontend/results_block.html' %}#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-3-12 border-left-pages">#}
+    {#            <div class="content">#}
+    {#                <div id="block_facet">#}
+    {#                    <div class="help-title" title="Нажмите на значении для уточнения поиска">Уточните поиск#}
+    {#                        <i class="fa fa-level-down"></i>#}
+    {#                    </div>#}
+    {#                    {% if show_priority %}#}
+    {#                        <div class="priorities panel panel-default btn-border"#}
+    {#                             style="margin-bottom: 20px; border: 1px solid #c9c9c9; color: #000">#}
+    {#                            <div class="panel-heading">#}
+    {#                        <span id="id-panel-tit" class="panel-title">#}
+    {#                            <div style="text-align: center;">#}
+    {#                                <span class="panel-btn btn" style="cursor: pointer">#}
+    {#                                    <i class="fa fa-sliders" style="font-size: 140%"></i> Приоритеты#}
+    {#                                </span>#}
+    {#                                <span class="caret">#}
+    {#                                </span>#}
+    {#                            </div>#}
+    {#                        </span>#}
+    {#                            </div>#}
+    {##}
+    {#                            <div class="panel-body" style="display: none; padding: 0 5px 10px 5px">#}
+    {#                                <span class="panel-range-title">Автор:</span>#}
+    {#                                <input class="priority blue" type="range" name="author_t" min="1" max="100" value="1">#}
+    {#                                <span class="panel-range-title">Заглавие:</span>#}
+    {#                                <input class="priority orange" type="range" name="title_t" min="1" max="100" value="1">#}
+    {#                                <span class="panel-range-title">Рубрика:</span>#}
+    {#                                <input class="priority red" type="range" name="subject_heading_t" min="1" max="100"#}
+    {#                                       value="1">#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    {% endif %}#}
+    {##}
+    {##}
+    {#                    <div class="facets"></div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+    {##}
+    {#    <div class="detail_modal modal">#}
+    {#        <div class="modal-dialog" style="width: 100%; max-width: 900px">#}
+    {#            <div class="modal-content">#}
+    {#                <div class="modal-header">#}
+    {#                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>#}
+    {#                    <h4 class="modal-title">Детальная информация</h4>#}
+    {#                </div>#}
+    {#                <div class="modal-body">#}
+    {#                    <p>Загрузка...</p>#}
+    {#                </div>#}
+    {#                <div class="modal-footer">#}
+    {#                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+    <script>
+        $.get('/search/facets/?{{ request.META.QUERY_STRING|safe }}').done(function (result) {
+            $('.facets').html(result);
+        });
+    </script>
+    <script>
+        $(function () {
+            $('input.priority').on('change', function () {
+                var priorityParams = {};
+                $('input.priority').each(function (index, el) {
+                    priorityParams[$(el).attr('name')] = $(el).val();
+                });
+                $.get("{% url 'search:frontend:index' %}?{{ request.META.QUERY_STRING|safe }}&priority=" + JSON.stringify(priorityParams)).done(function (result) {
+                    $('.results').html(result);
+                });
+                console.log(priorityParams);
+            });
+
+            $('.priorities .panel-title').on('click', function () {
+
+
+                var block_height = $('#block-height').height();
+                $('.priorities .panel-body').toggle(100);
+
+                if ($("#id-panel-tit").hasClass("active-panel-title")) {
+                    $("#id-panel-tit").removeClass("active-panel-title");
+                    $('.priorities .panel-body').toggle(false);
+                    $('#block-height').height(block_height - 200);
+                }
+                else {
+                    $('.priorities .panel-body').toggle(true);
+                    $('#block-height').height(block_height + 200);
+                    $("#id-panel-tit").addClass("active-panel-title");
+                }
+            });
+
+        });
+    </script>
+
+    <script src="{{ STATIC_URL }}/site/js/selectFx.js"></script>
+    <script>
+        (function () {
+            [].slice.call(document.querySelectorAll('select.cs-select')).forEach(function (el) {
+                new SelectFx(el);
+            });
+        })();
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var animTime = 200,
+                    clickPolice = false;
+
+            $(document).on('click', '.acc-btn', function () {
+                var currIndex = $(this).index('.acc-btn'),
+                        targetHeight = $('.acc-content-inner').eq(currIndex).outerHeight();
+
+                if ($(this).find('h4').hasClass('open-select')) {
+                    {#                    alert("lolo");#}
+                    $('.acc-content').eq(currIndex).stop().animate({height: 0}, animTime);
+                    $(this).find('h4').removeClass('open-select');
+                    $(this).removeClass('acc-btn-open');
+                }
+                else {
+                    if (!clickPolice) {
+                        clickPolice = true;
+
+                        $(this).addClass('acc-btn-open');
+
+                        $(this).find('h4').addClass('open-select');
+
+                        $(this).find('h4').addClass('selected');
+
+                        {#                    $('.acc-content').stop().animate({height: 0}, animTime);#}
+                        $('.acc-content').eq(currIndex).stop().animate({height: targetHeight}, animTime);
+
+                        setTimeout(function () {
+                            clickPolice = false;
+                        }, animTime);
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            $('.source-select').on('change', function () {
+                var $selectedSource = $(this);
+                var $hiddenInputs = $('.search-form .hidden-inputs');
+                if ($selectedSource.val() === 'spbstu_edoc') {
+                    $hiddenInputs.html(
+                            '<input type="hidden" name="attr" value="source_t" /> ' +
+                            '<input type="hidden" name="value" value="spbstu_edoc" />'
+                    )
+                } else {
+                    $hiddenInputs.html('');
+                }
+            });
+        });
+    </script>
+{% endblock %}
