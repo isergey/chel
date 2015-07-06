@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-
 class ViewDocLog(models.Model):
     record_id = models.CharField(max_length=32, db_index=True)
     collection_id = models.CharField(max_length=64, db_index=True, null=True)
@@ -16,14 +15,12 @@ class ViewDocLog(models.Model):
         return ViewDocLog.objects.filter(collection_id=collection_id.lower().strip()).count()
 
 
-
-
-
 class ZippedTextField(models.TextField):
     __metaclass__ = models.SubfieldBase
 
     def db_type(self, connection):
-        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
+        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict[
+            'ENGINE'] == 'django.db.backends.postgresql':
             return 'bytea'
         else:
             return 'BLOB'
@@ -36,12 +33,11 @@ class ZippedTextField(models.TextField):
 
         return value
 
-
     def get_db_prep_save(self, value, connection):
         if isinstance(value, unicode):
             zvalue = StringIO()
-            myzip =  zipfile.ZipFile(zvalue, 'w')
-            myzip.writestr('record', value.encode('UTF-8'),8)
+            myzip = zipfile.ZipFile(zvalue, 'w')
+            myzip.writestr('record', value.encode('UTF-8'), 8)
             myzip.close()
             value = zvalue.getvalue()
         if value is None:
@@ -52,6 +48,7 @@ class ZippedTextField(models.TextField):
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return value
+
 
 #
 # class Record(models.Model):
@@ -132,9 +129,10 @@ class ZippedTextField(models.TextField):
 #         db_table = 'record'
 
 class RecordContent(models.Model):
-    record_id = models.CharField(max_length=32L,db_column='original_id_hash')
+    record_id = models.CharField(max_length=32L, db_column='original_id_hash')
     source_id = models.CharField(max_length=32L)
     content = ZippedTextField()
     create_date_time = models.DateTimeField()
+
     class Meta:
         db_table = 'records'

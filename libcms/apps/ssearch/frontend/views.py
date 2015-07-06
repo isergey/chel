@@ -197,7 +197,6 @@ def index(request, catalog='uc'):
     faset_params.fields = get_facet_attrs()
     attrs, values = extract_request_query_attrs(request)
 
-
     search_breadcumbs = make_search_breadcumbs(attrs, values)
     attrs = reverse_search_attrs(attrs)
 
@@ -437,7 +436,6 @@ def get_orderd_facets(facets):
 def construct_query(attrs, values, optimize=True):
     sc = SearchCriteria(u"AND")
 
-
     for i, attr in enumerate(attrs):
         value = values[i].strip()
         if not value:
@@ -470,7 +468,6 @@ def construct_query(attrs, values, optimize=True):
                 #all_sc.add_attr(u'subject_subheading_tru','%s^5' % relation_value)
                 all_sc.add_attr(u'all_tru','%s^2' % relation_value)
                 sc.add_search_criteria(all_sc)
-
 
     if not sc.query:
         return ''
@@ -650,6 +647,7 @@ def more_facet(request, catalog='uc'):
     values = request.GET.getlist('pq[]', [])[:-1] + values
     attrs = request.GET.getlist('pattr[]', [])[:-1] + attrs
     attrs = reverse_search_attrs(attrs)
+
     if not values or not attrs:
         return HttpResponse(u'Wrong query params', status='400')
 

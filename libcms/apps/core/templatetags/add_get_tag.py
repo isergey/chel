@@ -61,7 +61,7 @@ class AddGetParameterAppend(Node):
         for key, value in self.values.items():
             old_value = params.getlist(key, None)
             if not old_value:
-                params[key] = value
+                params[key] = value.resolve(context)
             else:
                 old_value.append(value.resolve(context))
         return '?%s' %  params.urlencode()
