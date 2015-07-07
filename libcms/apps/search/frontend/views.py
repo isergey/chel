@@ -587,14 +587,16 @@ def facets(request):
 
     search_conditions = build_search_conditions(kv_dicts)
     query, attrs_summary = build_query(search_conditions)
-    result = solr.search(query, limit=0, offset=0, facets=facets_fields,
+    result = solr.search(query, limit=0, offset=0, facets=facets_fields)
+
+    pivot_result = solr.search(query, limit=0, offset=0, facet_limit=50,
                          pivot_facets=['system_source_s', 'system_database_s', 'system_collection_s'])
     result_facets = []
 
     facets = result.get('facets', {})
-    pivot_facets = result.get('pivot_facets', [])
+    pivot_facets = pivot_result.get('pivot_facets', [])
 
-    root_pivot_order = ['chelreglib', 'cbs']
+    root_pivot_order = ['chelreglib', 'analytics', 'cbs']
 
     ordered_pivot_facets = []
 

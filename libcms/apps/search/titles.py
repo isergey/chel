@@ -244,116 +244,128 @@ attr_value_title = {
             u'chelreglib.chel_elib': {
                 u'ru': u'Электронная библиотека',
             },
-             u'cbs.cbs_cheljabinsk': {
+            u'cbs.cbs_agapov': {
+                u'ru': u'Агаповский МР',
+            },
+            u'cbs.cbs_argayash': {
+                u'ru': u'Аргаяшский МР',
+            },
+            u'cbs.cbs_ashin': {
+                u'ru': u'Ашинский МР',
+            },
+            u'cbs.cbs_bredin': {
+                u'ru': u'Брединский МР',
+            },
+            u'cbs.cbs_warnen': {
+                u'ru': u'Варненский МР',
+            },
+            u'cbs.cbs_vural': {
+                u'ru': u'Верхнеуральский МР',
+            },
+            u'cbs.cbs_vufaley': {
+                u'ru': u'Верхнеуфалейский ГО',
+            },
+            u'cbs.cbs_emanzelin': {
+                u'ru': u'Еманжелинский МР',
+            },
+            u'cbs.cbs_zlatoust': {
+                u'ru': u'Златоустовский ГО',
+            },
+            u'cbs.cbs_karabash': {
+                u'ru': u'Карабашский ГО',
+            },
+            u'cbs.cbs_kartalin': {
+                u'ru': u'Карталинский МР',
+            },
+            u'cbs.cbs_kaslin': {
+                u'ru': u'Каслинский МР',
+            },
+            u'cbs.cbs_katavivanov': {
+                u'ru': u'Катав-Ивановский МР',
+            },
+            u'cbs.cbs_kizil': {
+                u'ru': u'Кизильский МР',
+            },
+            u'cbs.cbs_kopeysk': {
+                u'ru': u'Копейский ГО',
+            },
+            u'cbs.cbs_korkin': {
+                u'ru': u'Коркинский МР',
+            },
+            u'cbs.cbs_krasnoarme': {
+                u'ru': u'Красноармейский МР',
+            },
+            u'cbs.cbs_kunashak': {
+                u'ru': u'Кунашакский МР',
+            },
+            u'cbs.cbs_kusin': {
+                u'ru': u'Кусинский МР',
+            },
+            u'cbs.cbs_kyshtym': {
+                u'ru': u'Кыштымский ГО',
+            },
+            u'cbs.cbs_magnitogorsk': {
+                u'ru': u'Магнитогорский ГО',
+            },
+            u'cbs.cbsd_magnitogorsk': {
+                u'ru': u'Магнитогорский ГО (детская)',
+            },
+            u'cbs.cbs_miass': {
+                u'ru': u'Миасский ГО',
+            },
+            u'cbs.cbs_nagaibak': {
+                u'ru': u'Нагайбакский МР',
+            },
+            u'cbs.cbs_njazepetrov': {
+                u'ru': u'Нязепетровский МР',
+            },
+            u'cbs.cbs_oktyabrsk': {
+                u'ru': u'Октябрьский МР',
+            },
+            u'cbs.cbs_plastov': {
+                u'ru': u'Пластовский МР',
+            },
+            u'cbs.cbs_snezhinsk': {
+                u'ru': u'Снежинский ГО',
+            },
+            u'cbs.cbs_sosnov': {
+                u'ru': u'Сосновский МР',
+            },
+            u'cbs.cbs_trekhgorn': {
+                u'ru': u'Трехгорный ГО',
+            },
+            u'cbs.cbs_troitsk': {
+                u'ru': u'Троицкий ГО',
+            },
+            u'cbs.cbs_troitskr': {
+                u'ru': u'Троицкий МР',
+            },
+            u'cbs.cbs_uvelka': {
+                u'ru': u'Увельский МР',
+            },
+            u'cbs.cbs_uyskoe': {
+                u'ru': u'Уйский МР',
+            },
+            u'cbs.cbs_ustkatav': {
+                u'ru': u'Усть-Катавский ГО',
+            },
+            u'cbs.cbs_chebarkulg': {
+                u'ru': u'Чебаркульский ГО',
+            },
+            u'cbs.cbs_chebarkul': {
+                u'ru': u'Чебаркульский МР',
+            },
+            u'cbs.cbs_cheljabinsk': {
                 u'ru': u'Челябинский ГО',
             },
-            u'epos.ibooks': {
-                u'ru': u'ibooks.ru',
+            u'cbs.cbsd_cheljabinsk': {
+                u'ru': u'Челябинский ГО (детская)',
             },
-            u'epos.uni_altai': {
-                u'ru': u'Барнаульский ГПУ',
+            u'cbs.cbs_chesmen': {
+                u'ru': u'Чесменский МР',
             },
-            u'epos.vsu': {
-                u'ru': u'Воронежский ГУ',
-            },
-            u'epos.ivanovo': {
-                u'ru': u'Ивановский ГУ',
-            },
-            u'epos.ksu': {
-                u'ru': u'Казанский ГТУ',
-            },
-            u'epos.kgu': {
-                u'ru': u'Казанский ГУ',
-            },
-            u'epos.kalmsu': {
-                u'ru': u'Калмыцкий ГУ',
-            },
-            u'epos.usu': {
-                u'ru': u'Уральский ГУ',
-            },
-            u'epos.usue': {
-                u'ru': u'Уральский ГЭУ',
-            },
-            u'spstu.spbstu_edoc': {
-                u'ru': u'Электронная библиотека',
-            },
-            u'spstu.spbstu_uc': {
-                u'ru': u'Электронный каталог',
-            },
-            u'viniti.ab': {
-                u'ru': u'Автоматика и радиоэлектроника',
-            },
-            u'viniti.ac': {
-                u'ru': u'Астрономия',
-            },
-            u'viniti.bi': {
-                u'ru': u'Биология',
-            },
-            u'viniti.vn': {
-                u'ru': u'Вычислительные науки',
-            },
-            u'viniti.gf': {
-                u'ru': u'Геофизика',
-            },
-            u'viniti.gl': {
-                u'ru': u'Геология',
-            },
-            u'viniti.ge': {
-                u'ru': u'Генетика',
-            },
-            u'viniti.ip': {
-                u'ru': u'Издательское дело и полиграфия',
-            },
-            u'viniti.in': {
-                u'ru': u'Информатика',
-            },
-            u'viniti.kr': {
-                u'ru': u'Коррозия и защита от коррозии',
-            },
-            u'viniti.ma': {
-                u'ru': u'Математика',
-            },
-            u'viniti.mh': {
-                u'ru': u'Машиностроение',
-            },
-            u'viniti.md': {
-                u'ru': u'Медицина',
-            },
-            u'viniti.mt': {
-                u'ru': u'Металлургия',
-            },
-            u'viniti.mx': {
-                u'ru': u'Механика',
-            },
-            u'viniti.ex': {
-                u'ru': u'Обеспечение безопасности при чрезвычайных ситуациях',
-            },
-            u'viniti.oc': {
-                u'ru': u'Охрана окружающей среды',
-            },
-            u'viniti.cb': {
-                u'ru': u'Сварка',
-            },
-            u'viniti.tr': {
-                u'ru': u'Транспорт',
-            },
-            u'viniti.fi': {
-                u'ru': u'Физика',
-            },
-            u'viniti.fb': {
-                u'ru': u'Физико-химическая биология и биотехнология',
-            },
-            u'viniti.ch': {
-                u'ru': u'Химия',
-            },
-            u'viniti.ek': {
-                u'ru': u'Экономика промышленности',
-            },
-            u'viniti.el': {
-                u'ru': u'Электротехника',
-            },
-            u'viniti.en': {
-                u'ru': u'Энергетика',
+            u'cbs.cbs_yuzhnouralsk': {
+                u'ru': u'Южноуральский ГО',
             },
         }
     },
@@ -362,6 +374,9 @@ attr_value_title = {
             u'ru': u'Источник'
         },
         'values': {
+            u'analytics': {
+                u'ru': u'Аналитика',
+            },
             u'chelreglib': {
                 u'ru': u'Челябинская ОУНБ',
             },
