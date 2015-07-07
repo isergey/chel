@@ -59,7 +59,7 @@ def search(
         highlighting=list(),
         facet_offset=0, facet_limit=30, facet_sort='count', facet_range=None,
         pivot_facets=[], collection=COLLECTION):
-    print facet_limit
+
     params = {
         'wt': 'json',
         'q': query,
