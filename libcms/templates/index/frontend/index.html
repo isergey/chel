@@ -40,16 +40,12 @@
                 <li><a href="{% url 'zgate_slug_index' 'group2' %}">Библиотеки Челябинской области</a></li>
             </ul>
         </div>
-        <div class="left_block" style="padding-top: 20px; overflow-x: hidden ">
-            {% render_page_content 'common/left_side' %}
-        </div>
-
-{#        <div class="left_block" style="padding-top: 20px ">#}
-{#            <form action="http://yandex.ru/sitesearch" id="site_search_form" method="GET">#}
-{#                <div id="search_panel">#}
-{#                    <input placeholder="Поиск" type="text" name="text"/><button class="search_btn" ><i class="icon-search"></i></button>#}
-{#                    <input type="hidden" name="searchid" value="1969368"/>#}
-{#                </div>#}
+        <div class="left_block" style="padding-top: 20px ">
+            <form action="http://yandex.ru/sitesearch" id="site_search_form" method="GET">
+                <div id="search_panel">
+                    <input placeholder="Поиск по сайту" type="text" name="text"/><button class="search_btn" ><i class="icon-search"></i></button>
+                    <input type="hidden" name="searchid" value="1969368"/>
+                </div>
 {#                <div>#}
 {#                    <input class="search_type" type="radio"  name="search_type" value="site" checked="checked"> поиск по сайту<br/>#}
 {#                    <input class="search_type" type="radio" name="search_type" value="catalog"> поиск по каталогам#}
@@ -71,9 +67,14 @@
 {##}
 {#                });#}
 {#                </script>#}
-{#            </form>#}
+            </form>
 {#            <div class="ya-site-form ya-site-form_inited_no" onclick="return {'bg': '#ffffff', 'target': '_blank', 'language': 'ru', 'suggest': true, 'tld': 'ru', 'site_suggest': true, 'action': 'http://yandex.ru/sitesearch', 'webopt': false, 'fontsize': 12, 'arrow': true, 'fg': '#000000', 'searchid': '1915725', 'logo': 'rb', 'websearch': false, 'type': 2}"><form action="http://yandex.ru/sitesearch" method="get" target="_blank"><input type="hidden" name="searchid" value="1915725" /><input type="hidden" name="l10n" value="ru" /><input type="hidden" name="reqenc" value="" /><input type="text" name="text" value="" /><input type="submit" value="Найти" /></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;(' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1&&(e.className+=' ya-page_js_yes');s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>#}
-{#        </div>#}
+        </div>
+        <div class="left_block" style="padding-top: 20px; overflow-x: hidden ">
+            {% render_page_content 'common/left_side' %}
+        </div>
+
+
 {#        <div class="left_block" style="padding-top: 20px ">#}
 {#            {% include 'tags.html' %}#}
 {#        </div>#}
