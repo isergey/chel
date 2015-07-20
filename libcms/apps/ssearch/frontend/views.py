@@ -555,7 +555,7 @@ def get_records(record_ids):
     records_objects = list(RecordContent.objects.using('harvester').filter(record_id__in=record_ids))
     records = []
     for record in records_objects:
-        rdict = json.loads(record.content)
+        rdict = json.loads(record.unpack_content())
         records.append({
             'id': record.record_id,
             'dict': rdict,

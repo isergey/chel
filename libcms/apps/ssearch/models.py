@@ -131,8 +131,14 @@ class ZippedTextField(models.TextField):
 class RecordContent(models.Model):
     record_id = models.CharField(max_length=32L, db_column='original_id_hash')
     source_id = models.CharField(max_length=32L)
-    content = ZippedTextField()
+    content = models.BinaryField()
     create_date_time = models.DateTimeField()
 
     class Meta:
         db_table = 'records'
+
+    def unpack_content(self):
+        fp = StringIO(self.content)
+        zfp = zipfile.ZipFile(fp, "r")
+        value = zfp.open("record.json").read()
+        return value.decode('utf-8')
