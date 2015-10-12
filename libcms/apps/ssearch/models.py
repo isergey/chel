@@ -19,8 +19,8 @@ class ZippedTextField(models.TextField):
     __metaclass__ = models.SubfieldBase
 
     def db_type(self, connection):
-        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' or connection.settings_dict[
-            'ENGINE'] == 'django.db.backends.postgresql':
+        if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' \
+                or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
             return 'bytea'
         else:
             return 'BLOB'

@@ -23,112 +23,131 @@
 <body>
 
 <div class="container">
-<div class="row">
-
-    <div class="span7">
-        <div class="row">
-            <div id="logo" style="margin: 0 0 10px 0;">
-
-                <a href="/{{ LANGUAGE_CODE }}/"><img src="{{ STATIC_URL }}images/theme/logo.png" style="float: left; margin-right: 20px;"></a>
-
-                <h3 style="font-weight: normal; width: 500px; line-height: 20px; padding: 23px 0 0 0">ЧЕЛЯБИНСКАЯ ОБЛАСТНАЯ <br/> УНИВЕРСАЛЬНАЯ НАУЧНАЯ <br/>БИБЛИОТЕКА</h3>
-                <h4 style="color: #D11314; font-weight: normal; FONT-SIZE: 13px; line-height: 15px; margin: 15px 0 0 ">ИНФОРМАЦИОННЫЙ ПОРТАЛ <br/> БИБЛИОТЕК
-                    ЧЕЛЯБИНСКОЙ ОБЛАСТИ</h4>
-                <div style="clear: both;"></div>
-            </div>
-        </div>
-    </div>
-    <div class="span5">
-        <div class="buttons">
-            <div class="map">
-                <a href="{% url 'pages:frontend:show' 'map' %}"></a>
-            </div>
-            <div class="letter">
-                <a href="mailto:lib@chelreglib.ru" title="lib@chelreglib.ru"></a>
-            </div>
-            <div class="home">
-                <a href="/"></a>
-            </div>
-            <div class="icon12"><img style="width: 24px;" src="{{ STATIC_URL }}images/icons/12.jpg" alt=""></div>
-            <div style="clear: both;"></div>
-        </div>
-
-        <style>
-            #slider_frame {
-                border: 0;
-                width: 390px;
-                height: 116px;
-                /*margin: 0 0 -500px -33px;*/
-                position: relative;
-                top: 18px;
-                right: 30px;
-                overflow: hidden;
-            }
-        </style>
-        <iframe id="slider_frame" src="{% url 'index:frontend:slider' %}" frameBorder="0"></iframe>
-    </div>
     <div class="row">
-        <div class="span12">
-            <div style="height: 20px;">
-            <ul id="service_menu">
-                <li><a href="{% url 'news:frontend:index' %}">Новости</a></li>
-                <li><a href="{% url 'forum:frontend:forums' %}">Форум</a></li>
-                <li><a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a></li>
-                <li><a href="{% url 'gallery:frontend:index' %}">Галерея</a></li>
-                <li><a href="{% url 'cid:frontend:index' %}">Календарь знаменательных дат</a></li>
-            </ul>
+
+        <div class="span7">
+            <div class="row">
+                <div id="logo" style="margin: 0 0 10px 0;">
+
+                    <a href="/{{ LANGUAGE_CODE }}/"><img src="{{ STATIC_URL }}images/theme/logo.png"
+                                                         style="float: left; margin-right: 20px;"></a>
+
+                    <h3 style="font-weight: normal; width: 500px; line-height: 20px; padding: 23px 0 0 0">ЧЕЛЯБИНСКАЯ
+                        ОБЛАСТНАЯ <br/> УНИВЕРСАЛЬНАЯ НАУЧНАЯ <br/>БИБЛИОТЕКА</h3>
+                    <h4 style="color: #D11314; font-weight: normal; FONT-SIZE: 13px; line-height: 15px; margin: 15px 0 0 ">
+                        ИНФОРМАЦИОННЫЙ ПОРТАЛ <br/> БИБЛИОТЕК
+                        ЧЕЛЯБИНСКОЙ ОБЛАСТИ</h4>
+
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="span5">
+            <div class="buttons">
+                <div class="map">
+                    <a href="{% url 'pages:frontend:show' 'map' %}"></a>
+                </div>
+                <div class="letter">
+                    <a href="mailto:lib@chelreglib.ru" title="lib@chelreglib.ru"></a>
+                </div>
+                <div class="home">
+                    <a href="/"></a>
+                </div>
+                <div class="icon12"><img style="width: 24px;" src="{{ STATIC_URL }}images/icons/12.jpg" alt=""></div>
                 <div style="clear: both;"></div>
             </div>
-        </div>
-        <div class="span12">
-            <div class="menu" style="background: #d11314; height: 33px">
-                {% cache 120 'main' LANGUAGE_CODE %}
-                {% drow_menu 'main' %}
-                {% endcache %}
-            </div>
-            {#            <hr style="clear: both;"/>#}
-        </div>
-    </div>
-<div class="row">
-    <div class="span12">
-    {% block index_content %}wefwefwef{% endblock %}
-</div>
-</div>
-{#    </div>#}
-<hr/>
-{% cache 120 gallery_carusel LANGUAGE_CODE %}
-{% gallery_carusel %}
-{% endcache %}
-<hr/>
-<div style="min-height: 50px;">
-    <p style="font-size: 11px">
-        <a href="/ru/pages/about/">О библиотеке</a> |
-        <a href="/ru/pages/resources/">Ресурсы</a> |
-        <a href="/ru/pages/readers/">Читателям</a> |
-        <a href="/ru/pages/about/lib/div/kraeved/">Краеведение</a> |
-        <a href="/ru/participants/">Библиотеки области</a> |
-        <a href="/ru/pages/prof/">Профессионалам</a> |
-        <a href="{% url 'news:frontend:index' %}">Новости</a> |
-        <a href="{% url 'gallery:frontend:index' %}">Галерея</a> |
-        <a href="{% url 'cid:frontend:index' %}">Календарь знаменательных дат</a> |
-        <a href="{% url 'forum:frontend:forums' %}">Форум</a> |
-        <a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a>
 
-    </p>
-    Челябинская областная универсальная научная библиотека. Челябинск, 454091, пр. Ленина, 60, (351) 266-05-33,
-    lib@chelreglib.ru. <br/>
-    Авторские права на содержание ресурса защищены.
-    <div align="right">
-        <a target="_blank" href="http://vk.com/club39715562"><img height="30" src="{{ STATIC_URL }}images/icons/48x48/vkontakte-oauth2.png" alt=""></a>
-        <a target="_blank" href="https://www.facebook.com/pages/%D0%A7%D0%B5%D0%BB%D1%8F%D0%B1%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F-%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D0%BD%D0%B0%D1%8F-%D1%83%D0%BD%D0%B8%D0%B2%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BD%D0%B0%D1%83%D1%87%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0/326427117410395"><img height="30" src="{{ STATIC_URL }}images/icons/48x48/fbk.png" alt=""></a>
-        <a target="_blank" href="http://centrchteniya.blogspot.ru/"><img height="30" src="{{ STATIC_URL }}images/icons/48x48/blogger.png" alt=""></a>
-        <a target="_blank" href="http://my.mail.ru/mail/chounb/"><img height="30" src="{{ STATIC_URL }}images/icons/48x48/mailru-oauth2.png" alt=""></a>
-        <a target="_blank" href="http://chelreglib.ru/ru/news/rss/"><img height="30" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt=""></a>
-        <a target="_blank" href="http://www.youtube.com/user/Publichka74"><img height="30" src="{{ STATIC_URL }}images/icons/48x48/ytbe.png" alt=""></a>
-        <a target="_blank" alt="Челябинская областная универсальная научная библиотека" href="http://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_Urals_District.html"><img style="height: 48px" src="{{ STATIC_URL }}images/icons/48x48/tripadvisor.png" alt="Челябинская областная универсальная научная библиотека"></a>
+            <style>
+                #slider_frame {
+                    border: 0;
+                    width: 390px;
+                    height: 116px;
+                    /*margin: 0 0 -500px -33px;*/
+                    position: relative;
+                    top: 18px;
+                    right: 30px;
+                    overflow: hidden;
+                }
+            </style>
+            <iframe id="slider_frame" src="{% url 'index:frontend:slider' %}" frameBorder="0"></iframe>
+        </div>
+        <div class="row">
+            <div class="span12">
+                <div style="height: 20px;">
+                    <ul id="service_menu">
+                        <li><a href="{% url 'news:frontend:index' %}">Новости</a></li>
+                        <li><a href="{% url 'forum:frontend:forums' %}">Форум</a></li>
+                        <li><a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a></li>
+                        <li><a href="{% url 'gallery:frontend:index' %}">Галерея</a></li>
+                        <li><a href="{% url 'cid:frontend:index' %}">Календарь знаменательных дат</a></li>
+                    </ul>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+            <div class="span12">
+                <div class="menu" style="background: #d11314; height: 33px">
+                    {% cache 120 'main' LANGUAGE_CODE %}
+                        {% drow_menu 'main' %}
+                    {% endcache %}
+                </div>
+                {#            <hr style="clear: both;"/>#}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                {% block index_content %}wefwefwef{% endblock %}
+            </div>
+        </div>
+        {#    </div>#}
+        <hr/>
+        {% cache 120 gallery_carusel LANGUAGE_CODE %}
+            {% gallery_carusel %}
+        {% endcache %}
+        <hr/>
+        <div style="min-height: 50px;">
+            <p style="font-size: 11px">
+                <a href="/ru/pages/about/">О библиотеке</a> |
+                <a href="/ru/pages/resources/">Ресурсы</a> |
+                <a href="/ru/pages/readers/">Читателям</a> |
+                <a href="/ru/pages/about/lib/div/kraeved/">Краеведение</a> |
+                <a href="/ru/participants/">Библиотеки области</a> |
+                <a href="/ru/pages/prof/">Профессионалам</a> |
+                <a href="{% url 'news:frontend:index' %}">Новости</a> |
+                <a href="{% url 'gallery:frontend:index' %}">Галерея</a> |
+                <a href="{% url 'cid:frontend:index' %}">Календарь знаменательных дат</a> |
+                <a href="{% url 'forum:frontend:forums' %}">Форум</a> |
+                <a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a>
+
+            </p>
+            Челябинская областная универсальная научная библиотека. Челябинск, 454091, пр. Ленина, 60, (351) 266-05-33,
+            lib@chelreglib.ru. <br/>
+            Авторские права на содержание ресурса защищены.
+            <div align="right">
+                <a target="_blank" href="http://vk.com/club39715562"><img height="30"
+                                                                          src="{{ STATIC_URL }}images/icons/48x48/vkontakte-oauth2.png"
+                                                                          alt=""></a>
+                <a target="_blank"
+                   href="https://www.facebook.com/pages/%D0%A7%D0%B5%D0%BB%D1%8F%D0%B1%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F-%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D0%BD%D0%B0%D1%8F-%D1%83%D0%BD%D0%B8%D0%B2%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BD%D0%B0%D1%83%D1%87%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0/326427117410395"><img
+                        height="30" src="{{ STATIC_URL }}images/icons/48x48/fbk.png" alt=""></a>
+                <a target="_blank" href="http://centrchteniya.blogspot.ru/"><img height="30"
+                                                                                 src="{{ STATIC_URL }}images/icons/48x48/blogger.png"
+                                                                                 alt=""></a>
+                <a target="_blank" href="http://my.mail.ru/mail/chounb/"><img height="30"
+                                                                              src="{{ STATIC_URL }}images/icons/48x48/mailru-oauth2.png"
+                                                                              alt=""></a>
+                <a target="_blank" href="http://chelreglib.ru/ru/news/rss/"><img height="30"
+                                                                                 src="{{ STATIC_URL }}images/icons/48x48/feed.png"
+                                                                                 alt=""></a>
+                <a target="_blank" href="http://www.youtube.com/user/Publichka74"><img height="30"
+                                                                                       src="{{ STATIC_URL }}images/icons/48x48/ytbe.png"
+                                                                                       alt=""></a>
+                <a target="_blank" alt="Челябинская областная универсальная научная библиотека"
+                   href="http://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_Urals_District.html"><img
+                        style="height: 48px" src="{{ STATIC_URL }}images/icons/48x48/tripadvisor.png"
+                        alt="Челябинская областная универсальная научная библиотека"></a>
+            </div>
+        </div>
     </div>
-</div>
-</div>
 </div>
 <script type="application/javascript">
     var mainMenu = {
@@ -197,16 +216,16 @@
 
     jQuery(document).ready(function () {
         jQuery('#carousel').jcarousel({
-            auto:2,
-            wrap:'last',
+            auto: 2,
+            wrap: 'last',
 //            visible: 5
-            initCallback:mycarousel_initCallback
+            initCallback: mycarousel_initCallback
         });
     });
 </script>
 
 <script type="text/javascript">
-    jQuery(document).ajaxSend(function(event, xhr, settings) {
+    jQuery(document).ajaxSend(function (event, xhr, settings) {
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
@@ -222,6 +241,7 @@
             }
             return cookieValue;
         }
+
         function sameOrigin(url) {
             // url could be relative or scheme relative or absolute
             var host = document.location.host; // host + port
@@ -231,9 +251,10 @@
             // Allow absolute or scheme relative URLs to same origin
             return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
                     (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                // or any other URL that isn't scheme relative or absolute i.e relative.
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
                     !(/^(\/\/|http:|https:).*/.test(url));
         }
+
         function safeMethod(method) {
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
@@ -243,20 +264,38 @@
         }
     });
 </script>
-<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter16630174 = new Ya.Metrika({id:16630174, enableAll: true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/16630174" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function (d, w, c) {
+    (w[c] = w[c] || []).push(function () {
+        try {
+            w.yaCounter16630174 = new Ya.Metrika({id: 16630174, enableAll: true});
+        } catch (e) {
+        }
+    });
+    var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
+        n.parentNode.insertBefore(s, n);
+    };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f);
+    } else {
+        f();
+    }
+})(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+    <div><img src="//mc.yandex.ru/watch/16630174" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
 <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-34208114-1']);
-    _gaq.push(['_setDomainName', 'chelreglib.ru']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-
+    ga('create', 'UA-34208114-1', 'auto');
+    ga('send', 'pageview');
 </script>
 {% block javascript %}
 {% endblock %}
