@@ -27,6 +27,7 @@ def index(request):
     q = request.GET.get('q', None)
     y = request.GET.get('y', None)
 
+    events_page = None
 
     if attr and q:
         attrs, values = extract_request_query_attrs(request)
