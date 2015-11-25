@@ -4,19 +4,16 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from guardian.decorators import permission_required_or_403
-from guardian.models import GroupObjectPermission
-
-from guardian.forms import GroupObjectPermissionsForm
-from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assign, get_groups_with_perms
+from guardian.shortcuts import remove_perm, assign, get_groups_with_perms
 from django.contrib.auth.decorators import login_required
-from common.pagination import get_page
-from django.contrib.auth import login, REDIRECT_FIELD_NAME
-from django.utils.translation import to_locale, get_language
+from django.utils.translation import get_language
 from django.contrib.auth.models import Group
-from django.contrib.contenttypes.models import ContentType
-from core.forms import LanguageForm, get_permissions_form, get_groups_form
+
+from common.pagination import get_page
+from core.forms import LanguageForm, get_groups_form
 from pages.models import Page, Content
 from forms import ContentForm, get_content_form, get_page_form
+
 
 #@permission_required_or_403('accounts.view_users')
 def index(request):
@@ -51,6 +48,7 @@ def pages_list(request, parent=None):
 
 @login_required
 @permission_required_or_403('pages.add_page')
+@transaction.atomic
 def create_page(request, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
@@ -83,6 +81,7 @@ def create_page(request, parent=None):
 
 @login_required
 @permission_required_or_403('pages.change_page')
+@transaction.atomic
 def edit_page(request, id):
     langs = []
     for lang in settings.LANGUAGES:
@@ -125,6 +124,7 @@ def edit_page(request, id):
 
 @login_required
 @permission_required_or_403('pages.delete_page')
+@transaction.atomic
 def delete_page(request, id):
     page = get_object_or_404(Page, id=id)
     page.delete()
@@ -132,6 +132,7 @@ def delete_page(request, id):
 
 @login_required
 @permission_required_or_403('pages.add_page')
+@transaction.atomic
 def create_page_content(request, page_id):
     page = get_object_or_404(Page, id=page_id)
     if request.method == 'POST':
@@ -156,6 +157,7 @@ def create_page_content(request, page_id):
 
 @login_required
 @permission_required_or_403('pages.change_page')
+@transaction.atomic
 def edit_page_content(request, page_id, lang):
     lang_form = LanguageForm({'lang': lang})
     if not lang_form.is_valid():
@@ -190,8 +192,9 @@ def edit_page_content(request, page_id, lang):
         'content_form': content_form,
     })
 
-from guardian.core import ObjectPermissionChecker
+
 @permission_required_or_403('pages.change_page')
+@transaction.atomic
 def page_permissions(request, id):
     obj = get_object_or_404(Page, id=id)
 
@@ -221,7 +224,7 @@ def assign_page_permissions(request, id):
             assign_permission(groups_form.cleaned_data['groups'], obj.get_descendants(), perm)
     return HttpResponse(u'{"status":"ok"}')
 
-
+@transaction.atomic
 def assign_permission(new_groups, objects, perm):
     groups = Group.objects.all()
     for obj in objects:
@@ -230,7 +233,7 @@ def assign_permission(new_groups, objects, perm):
         for new_group in new_groups:
             assign(perm, new_group, obj)
 
-
+@transaction.atomic
 def copy_perms_for_groups(obj, new_obj):
     group_and_perms =  get_groups_with_perms(obj, True)
     for gp in group_and_perms:
@@ -238,7 +241,7 @@ def copy_perms_for_groups(obj, new_obj):
             assign(perm, gp, new_obj)
 
 
-
+@transaction.atomic
 def page_up(request, id):
     page = get_object_or_404(Page, id=id)
     page.up()
@@ -247,7 +250,7 @@ def page_up(request, id):
     else:
         return redirect('pages:administration:pages_list')
 
-
+@transaction.atomic
 def page_down(request, id):
     page = get_object_or_404(Page, id=id)
     page.down()
