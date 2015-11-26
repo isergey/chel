@@ -336,27 +336,14 @@ class MPTTModelBase(ModelBase):
 
                 # make sure we have a tree manager somewhere
                 tree_manager = None
-                attrs = dir(cls)
-                if "objects" in attrs and isinstance(cls.objects, TreeManager):
-                    tree_manager = cls.objects
+                cls_managers = cls._meta.concrete_managers + cls._meta.abstract_managers
+                for __, __, cls_manager in cls_managers:
+                    if isinstance(cls_manager, TreeManager):
+                        # prefer any locally defined manager (i.e. keep going if not local)
+                        if cls_manager.model is cls:
+                            tree_manager = cls_manager
+                            break
 
-                # Go look for it somewhere else
-                else:
-                    for attr in sorted(attrs):
-                        try:
-                            # HACK: avoid using getattr(cls, attr)
-                            # because it calls __get__ on descriptors, which can cause nasty side effects
-                            # with more inconsiderate apps.
-                            # (e.g. django-tagging's TagField is a descriptor which can do db queries on getattr)
-                            # ( ref: http://stackoverflow.com/questions/27790344 )
-                            obj = cls.__dict__[attr]
-                        except KeyError:
-                            continue
-                        if isinstance(obj, TreeManager):
-                            tree_manager = obj
-                            # prefer any locally defined manager (i.e. keep going if not local)
-                            if obj.model is cls:
-                                break
                 if tree_manager and tree_manager.model is not cls:
                     tree_manager = tree_manager._copy_to_model(cls)
                 elif tree_manager is None:
@@ -928,9 +915,9 @@ class MPTTModel(six.with_metaclass(MPTTModelBase, models.Model)):
                     opts.set_raw_field_value(self, opts.parent_attr, parent_id)
             else:
                 opts.set_raw_field_value(self, opts.parent_attr, parent_id)
-                if (not track_updates) and (django.get_version() >= '1.5'):
+                if not track_updates:
                     # When not using delayed/disabled updates,
-                    # populate update_fields (Django 1.5 and later) with user defined model fields.
+                    # populate update_fields with user defined model fields.
                     # This helps preserve tree integrity when saving model on top of a modified tree.
                     if len(args) > 3:
                         if not args[3]:

@@ -80,14 +80,6 @@ class TreeManager(_tree_manager_superclass):
                 # _base_manager is the treemanager on tree_model
                 self._base_manager = self.tree_model._tree_manager
 
-    def get_query_set(self, *args, **kwargs):
-        """
-        Ensures that this manager always returns nodes in tree order.
-
-        This method can be removed when support for Django < 1.6 is dropped.
-        """
-        return TreeQuerySet(self.model, using=self._db).order_by(self.tree_id_attr, self.left_attr)
-
     def get_queryset(self, *args, **kwargs):
         """
         Ensures that this manager always returns nodes in tree order.
@@ -139,9 +131,6 @@ class TreeManager(_tree_manager_superclass):
 
         opts = queryset.model._mptt_meta
 
-        if not queryset:
-            return self.none()
-
         filters = Q()
 
         e = 'e' if include_self else ''
@@ -158,9 +147,18 @@ class TreeManager(_tree_manager_superclass):
         min_key = '%s__%s' % (min_attr, min_op)
         max_key = '%s__%s' % (max_attr, max_op)
 
-        q = queryset.order_by(opts.tree_id_attr, opts.parent_attr, opts.left_attr)
+        q = queryset.order_by(opts.tree_id_attr, opts.parent_attr, opts.left_attr).only(
+            opts.tree_id_attr,
+            opts.left_attr,
+            opts.right_attr,
+            min_attr,
+            max_attr,
+            opts.parent_attr)
 
-        for group in groupby(q, key = lambda n: (getattr(n, opts.tree_id_attr), getattr(n, opts.parent_attr))):
+        if not q:
+            return self.none()
+
+        for group in groupby(q, key = lambda n: (getattr(n, opts.tree_id_attr), getattr(n, opts.parent_attr + '_id'))):
             next_lft = None
             for node in list(group[1]):
                 tree, lft, rght, min_val, max_val = (getattr(node, opts.tree_id_attr),
@@ -170,7 +168,7 @@ class TreeManager(_tree_manager_superclass):
                                                      getattr(node, max_attr))
                 if next_lft is None:
                     next_lft = rght + 1
-                    min_max = {'min': min_val, 'max': max_val} 
+                    min_max = {'min': min_val, 'max': max_val}
                 elif lft == next_lft:
                     if min_val < min_max['min']:
                         min_max['min'] = min_val
