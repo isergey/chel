@@ -15,7 +15,7 @@
     {% if parent %}
         <h3>
         <a href="{% url 'pages:administration:index' %}">Страницы</a> →
-        {% for ancestor in parent.get_ancestors %}
+        {% for ancestor in parent.get_ancestors_titles %}
             <a href="{% url 'pages:administration:pages_list' ancestor.id %}">
                 {% if not ancestor.get_cur_lang_content %}
                     {{ ancestor }}
@@ -35,15 +35,16 @@
         Страницы
         </h3>
     {% endif %}
-    <hr/>
+    <p/>
     <style type="text/css">
         .not_public a{
             color: #ff4500;
         }
     </style>
-    <ul class="list" style="list-style: none; padding: 0; margin: 0">
+    <table class="table">
     {% for page in pages %}
-        <li>
+        <tr>
+            <td>
             <a class="btn btn-warning" title="Настройка прав доступа" href="{% url 'pages:administration:page_permissions' page.id %}"><i class="icon-lock"></i></a>
 
             {% if not page.public %}
@@ -59,19 +60,23 @@
                 {% endif %}
 
             </span>
+            </td>
+            <td>
             {% if not page.is_leaf_node %}
             <a class="btn" href="{% url 'pages:administration:pages_list' page.id %}">Подстраницы</a>
             {% endif %}
-{#            <a href="{% url pages:administration:create_page page.id %}">{% trans 'Add subpage' %}</a>#}
+            </td>
+            <td>
             <span class="buttons">
                 <a class="btn" href="{% url 'pages:administration:create_page' page.id %}"><i class="icon-plus"></i>Создать подстраницу</a>
                 <a class="btn" href="{% url 'pages:administration:page_up' page.id %}" title="передвинуть вверх">↑</a>
                 <a class="btn" href="{% url 'pages:administration:page_down' page.id %}" title="передвинуть вниз">↓</a>
                 <a style="margin-left: 20px" class="btn btn-danger" href="{% url 'pages:administration:delete_page' page.id %}"><i class="icon-trash icon-white"></i></a>
             </span>
-        </li>
+        </td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
     {% admin_pagination pages_page %}
 {% endblock %}
 
