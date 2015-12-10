@@ -19,9 +19,13 @@
     <script type='text/javascript' src='http://yandex.st/jquery/tmpl/1.0.0pre/jquery.tmpl.min.js'></script>
     <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.fancybox.pack.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .sc_icons img {
+            height: 31px;
+        }
+    </style>
 </head>
 <body>
-
 <div class="container">
     <div class="row">
 
@@ -122,40 +126,53 @@
             Государственное казенное учреждение культуры «Челябинская областная универсальная научная библиотека» (ЧОУНБ). Челябинск, 454091, пр. Ленина, 60, (351) 266-05-33,
             lib@chelreglib.ru. <br/>
             Авторские права на содержание ресурса защищены.
-            <div align="right">
+            <div class="sc_icons" align="right">
             <a style="float: left; padding-right: 5px;" href="https://metrika.yandex.ru/stat/?id=16630174&amp;from=informer"
                 target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/16630174/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
                                style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика"
                                title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
                                onclick="try{Ya.Metrika.informer({i:this,id:16630174,lang:'ru'});return false}catch(e){}"/></a>
-                    
+
                 <!-- Rating@Mail.ru logo -->
                 <a style="float: left" href="http://top.mail.ru/jump?from=2709065">
                 <img src="//top-fwz1.mail.ru/counter?id=2709065;t=479;l=1"
                 style="border:0;" height="31" width="88" alt="Рейтинг@Mail.ru" /></a>
                 <!-- //Rating@Mail.ru logo -->
-                <a target="_blank" href="http://vk.com/club39715562"><img height="30"
-                                                                          src="{{ STATIC_URL }}images/icons/48x48/vkontakte-oauth2.png"
-                                                                          alt=""></a>
+                <a target="_blank" href="http://vk.com/club39715562">
+                    <img height="30" src="{{ STATIC_URL }}images/icons/48x48/vkontakte-oauth2.png" alt="">
+                </a>
+                <!--LiveInternet counter-->
+                <script type="text/javascript"><!--
+                document.write("<a style='float: left' href='//www.liveinternet.ru/click' "+
+                "target=_blank><img src='//counter.yadro.ru/hit?t14.4;r"+
+                escape(document.referrer)+((typeof(screen)=="undefined")?"":
+                ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+                screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+                ";"+Math.random()+
+                "' alt='' title='LiveInternet: показано число просмотров за 24"+
+                " часа, посетителей за 24 часа и за сегодня' "+
+                "border='0' width='88' height='31'><\/a>")
+                //--></script>
+                <!--/LiveInternet-->
                 <a target="_blank"
                    href="https://www.facebook.com/pages/%D0%A7%D0%B5%D0%BB%D1%8F%D0%B1%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F-%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D0%BD%D0%B0%D1%8F-%D1%83%D0%BD%D0%B8%D0%B2%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BD%D0%B0%D1%83%D1%87%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0/326427117410395"><img
-                        height="30" src="{{ STATIC_URL }}images/icons/48x48/fbk.png" alt=""></a>
-                <a target="_blank" href="http://centrchteniya.blogspot.ru/"><img height="30"
-                                                                                 src="{{ STATIC_URL }}images/icons/48x48/blogger.png"
-                                                                                 alt=""></a>
-                <a target="_blank" href="http://my.mail.ru/mail/chounb/"><img height="30"
-                                                                              src="{{ STATIC_URL }}images/icons/48x48/mailru-oauth2.png"
-                                                                              alt=""></a>
-                <a target="_blank" href="http://chelreglib.ru/ru/news/rss/"><img height="30"
-                                                                                 src="{{ STATIC_URL }}images/icons/48x48/feed.png"
-                                                                                 alt=""></a>
-                <a target="_blank" href="http://www.youtube.com/user/Publichka74"><img height="30"
-                                                                                       src="{{ STATIC_URL }}images/icons/48x48/ytbe.png"
-                                                                                       alt=""></a>
+                        height="30" src="{{ STATIC_URL }}images/icons/48x48/fbk.png" alt="">
+                </a>
+                <a target="_blank" href="http://centrchteniya.blogspot.ru/">
+                    <img height="30" src="{{ STATIC_URL }}images/icons/48x48/blogger.png" alt=""></a>
+                <a target="_blank" href="http://my.mail.ru/mail/chounb/">
+                    <img height="30" src="{{ STATIC_URL }}images/icons/48x48/mailru-oauth2.png" alt="">
+                </a>
+                <a target="_blank" href="http://chelreglib.ru/ru/news/rss/">
+                    <img height="30" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="">
+                </a>
+                <a target="_blank" href="http://www.youtube.com/user/Publichka74">
+                    <img height="30" src="{{ STATIC_URL }}images/icons/48x48/ytbe.png" alt="">
+                </a>
                 <a target="_blank" alt="Челябинская областная универсальная научная библиотека"
-                   href="http://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_Urals_District.html"><img
-                        style="height: 48px" src="{{ STATIC_URL }}images/icons/48x48/tripadvisor.png"
-                        alt="Челябинская областная универсальная научная библиотека"></a>
+                   href="http://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_Urals_District.html">
+                    <img src="{{ STATIC_URL }}images/icons/48x48/tripadvisor.png"  alt="Челябинская областная универсальная научная библиотека">
+                </a>
             </div>
         </div>
     </div>
@@ -321,8 +338,10 @@
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-34208114-1', 'auto');
-    ga('send', 'pageview');
+    ga('send' +
+            '', 'pageview');
 </script>
+
 {% block javascript %}
 {% endblock %}
 </body>
