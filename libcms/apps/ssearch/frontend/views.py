@@ -17,6 +17,7 @@ from . import record_templates
 from ..models import RecordContent
 from rbooks.models import ViewLog
 from .extended import subject_render
+
 transformers = dict()
 
 search_attrs = [
@@ -40,9 +41,9 @@ search_attrs = [
     (u'isbn_s', u'isbn_s'),
     (u'date_time_added_to_db_s', u'date_time_added_to_db_s'),
     (u'full_text_tru', u'full_text_tru'),
-    #(u'catalog_s', u'catalog_s'),
-#    (u'authority_number', u'linked_authority_number_s'),
-#    (u'$3', u'linked_record-number_s'),
+    # (u'catalog_s', u'catalog_s'),
+    #    (u'authority_number', u'linked_authority_number_s'),
+    #    (u'$3', u'linked_record-number_s'),
 ]
 
 facet_attrs = [
@@ -57,14 +58,14 @@ facet_attrs = [
     (u'date_of_publication_of_original_s', u'date_of_publication_of_original_s'),
     (u'code_language_s', u'code_language_s'),
     (u'content_type_s', u'content_type_s'),
-    #(u'fauthority_number', u'linked_authority_number_s'),
+    # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 
 pivot_facet_attrs = [
-     (u'collection_level0_s,collection_level1_s', u'collection_level0_s,collection_level1_s'),
+    (u'collection_level0_s,collection_level1_s', u'collection_level0_s,collection_level1_s'),
     # (u'owner_s', u'owner_s'),
 
-    #(u'fauthority_number', u'linked_authority_number_s'),
+    # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 
 sort_attrs = [
@@ -81,6 +82,7 @@ sort_attrs = [
         'title': u'по релевантности'
     },
 ]
+
 
 # rubrics = [
 #     {
@@ -158,7 +160,6 @@ def init_solr_collection(catalog):
     return solr.get_collection(collection_name)
 
 
-
 def collections():
     uc = init_solr_collection('uc')
     faset_params = FacetParams()
@@ -169,12 +170,13 @@ def collections():
     facets = result.get_facets()
     facets = replace_facet_values(facets)
     collection_values = facets['collection_s']['values']
-
+    for cv in collection_values:
+        print cv[0], cv[1]
     # return render(request, 'ssearch/frontend/collections.html', {
     #     'collection_values': collection_values
     # })
 
-    return  collection_values
+    return collection_values
 
 
 def index(request, catalog='uc'):
@@ -256,7 +258,6 @@ def index(request, catalog='uc'):
     for doc in docs:
         record_ids.append(doc['id'])
 
-
     view = request.GET.get('view', u'table')
     highlighting = result.get_highlighting()
 
@@ -287,7 +288,7 @@ def index(request, catalog='uc'):
     facets = result.get_facets()
 
     info = {
-        #'qtime': result.get_qtime() / 1000.0,
+        # 'qtime': result.get_qtime() / 1000.0,
         'num_found': result.get_num_found(),
     }
 
@@ -319,6 +320,7 @@ def _add_to_attributes(attributes, title, values):
         'title': title,
         'values': values
     })
+
 
 def detail(request):
     uc = init_solr_collection('uc')
@@ -357,7 +359,7 @@ def detail(request):
 
     # view_count = ViewDocLog.objects.filter(record_id=record_id).count()
     collection_id = None
-    catalogs = record['dict'].get('catalog',[])
+    catalogs = record['dict'].get('catalog', [])
     if catalogs:
         collection_id = catalogs[0].lower().strip()
     # log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
@@ -404,7 +406,6 @@ def detail(request):
     })
 
 
-
 def extract_request_query_attrs(request):
     values = request.GET.getlist('q', None)
     attrs = request.GET.getlist('attr', None)
@@ -415,8 +416,6 @@ def extract_request_query_attrs(request):
         attrs = request.GET.getlist('pattr', []) + attrs
 
     return (attrs, values)
-
-
 
 
 def reverse_search_attrs(attrs):
@@ -491,19 +490,23 @@ def construct_query(attrs, values, optimize=True):
                 terms = value.split()
                 filetered_terms = []
                 for term in terms:
-                    if term not in set([u'бы', u'ли', u'что' u'за', u'a', u'на', u'в', u'до', u'из' u'к' u'о' u'об' u'от', u'по', u'при', u'про', u'с', u'у']):
+                    if term not in set(
+                            [u'бы', u'ли', u'что' u'за', u'a', u'на', u'в', u'до', u'из' u'к' u'о' u'об' u'от', u'по',
+                             u'при', u'про', u'с', u'у']):
                         filetered_terms.append(term)
 
-                relation_value =  term_relation_attr.join(terms)
+                relation_value = term_relation_attr.join(terms)
                 relation_value = u'(%s)' % term_relation_attr.join(terms)
                 all_sc = SearchCriteria(u"OR")
-                all_sc.add_attr(u'author_t','%s^96' % relation_value)
-                all_sc.add_attr(u'title_t','%s^64' % relation_value)
-                all_sc.add_attr(u'title_tru','%s^30' % relation_value)
-                all_sc.add_attr(u'subject_heading_tru','%s^8' % relation_value)
-                all_sc.add_attr(u'subject_subheading_tru','%s^5' % relation_value)
-                all_sc.add_attr(u'date_of_publication_s','%s^5' % relation_value)
-                all_sc.add_attr(u'all_tru','%s^2' % relation_value)
+                all_sc.add_attr(u'author_t', '%s^96' % relation_value)
+                all_sc.add_attr(u'title_t', '%s^64' % relation_value)
+                all_sc.add_attr(u'title_tru', '%s^30' % relation_value)
+                all_sc.add_attr(u'subject_heading_tru', '%s^8' % relation_value)
+                all_sc.add_attr(u'subject_subheading_tru', '%s^5' % relation_value)
+                all_sc.add_attr(u'date_of_publication_s', '%s^5' % relation_value)
+                all_sc.add_attr(u'subject_name_geographical_t', '%s^5' % relation_value)
+                all_sc.add_attr(u'author_name_corporate', '%s^5' % relation_value)
+                all_sc.add_attr(u'all_tru', '%s^2' % relation_value)
                 sc.add_search_criteria(all_sc)
 
     if not sc.query:
@@ -566,6 +569,7 @@ def terms_as_phrase(text_value):
 
 group_spaces = re.compile(ur'\s+')
 
+
 def terms_as_group(text_value, operator=u'OR'):
     """
     Возвращает поисковое выражение в виде строки, где термы объеденены логическим операторм
@@ -582,8 +586,6 @@ def terms_as_group(text_value, operator=u'OR'):
     return u'(%s)' % ((u' ' + operator + u' ').join(terms))
 
 
-
-
 def get_records(record_ids):
     """
     :param record_ids: record_id идентификаторы записей
@@ -598,7 +600,7 @@ def get_records(record_ids):
             'dict': rdict,
             'tree': record_to_ruslan_xml(rdict)
         })
-        #record.tree = record_to_ruslan_xml(json.loads(record.content))
+        # record.tree = record_to_ruslan_xml(json.loads(record.content))
     # records_dict = {}
     # for record in records:
     #     records_dict[record.record_id] = record
@@ -608,8 +610,6 @@ def get_records(record_ids):
     #     if record:
     #         nrecords.append(record)
     return records
-
-
 
 
 def get_library_card(content_tree):
@@ -655,7 +655,7 @@ def make_record_dict(doc_tree):
     for element in doc_tree.getroot().getchildren():
         attrib = element.attrib['name']
         value = element.text
-        #если поле пустое, пропускаем
+        # если поле пустое, пропускаем
         if not value: continue
         #        value = beautify(value)
         values = doc_dict.get(attrib, None)
@@ -765,7 +765,6 @@ def author_key_replace(facet):
     return facet
 
 
-
 def test_solr_request(request):
     SOLR_BASE_URL = 'http://localhost:8983/solr/'
     request = requests.get(SOLR_BASE_URL + 'uc/select', params={'q': 'content_ru:java', 'wt': 'json'})
@@ -787,8 +786,6 @@ def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=Fals
     root = etree.Element('record')
     root.set('syntax', syntax)
     leader = etree.SubElement(root, 'leader')
-
-
 
     length = etree.SubElement(leader, 'length')
     length.text = string_leader[0:5]
@@ -829,58 +826,55 @@ def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=Fals
     entry_map = etree.SubElement(leader, 'entryMap')
     entry_map.text = string_leader[20:23]
 
-
     if 'cf' in map_record:
         for cfield in map_record['cf']:
-                control_field = etree.SubElement(root, 'field')
-                control_field.set('id', cfield['id'])
-                control_field.text = cfield['d']
+            control_field = etree.SubElement(root, 'field')
+            control_field.set('id', cfield['id'])
+            control_field.text = cfield['d']
 
     if 'df' in map_record:
         for field in map_record['df']:
-                data_field = etree.SubElement(root, 'field')
-                data_field.set('id', field['id'])
+            data_field = etree.SubElement(root, 'field')
+            data_field.set('id', field['id'])
 
-                ind1 = etree.SubElement(data_field, 'indicator')
-                ind1.set('id', '1')
-                ind1.text = field['i1']
+            ind1 = etree.SubElement(data_field, 'indicator')
+            ind1.set('id', '1')
+            ind1.text = field['i1']
 
-                ind2 = etree.SubElement(data_field, 'indicator')
-                ind2.set('id', '2')
-                ind2.text = field['i2']
+            ind2 = etree.SubElement(data_field, 'indicator')
+            ind2.set('id', '2')
+            ind2.text = field['i2']
 
-                for subfield in field['sf']:
-                    if 'inner' in subfield:
-                        linked_subfield = etree.SubElement(data_field, 'subfield')
-                        linked_subfield.set('id', subfield['id'])
+            for subfield in field['sf']:
+                if 'inner' in subfield:
+                    linked_subfield = etree.SubElement(data_field, 'subfield')
+                    linked_subfield.set('id', subfield['id'])
 
-                        if  'cf' in subfield['inner']:
-                            for cfield in subfield['inner']['cf']:
-                                linked_control_field = etree.SubElement(linked_subfield, 'field')
-                                linked_control_field.set('id', cfield['id'])
-                                linked_control_field.text = cfield['d']
-                        else:
-                            for lfield in subfield['inner']['df']:
-                                linked_data_field = etree.SubElement(linked_subfield, 'field')
-                                linked_data_field.set('id', lfield['id'])
-
-                                linked_ind1 = etree.SubElement(linked_data_field, 'indicator')
-                                linked_ind1.set('id', '1')
-                                linked_ind1.text = lfield['i1']
-
-                                linked_ind2 = etree.SubElement(linked_data_field, 'indicator')
-                                linked_ind2.set('id', '2')
-                                linked_ind2.text = lfield['i2']
-
-                                for lsubfield in lfield['sf']:
-                                    linkeddata_subfield = etree.SubElement(linked_data_field, 'subfield')
-                                    linkeddata_subfield.set('id', lsubfield['id'])
-                                    linkeddata_subfield.text = lsubfield['d']
-
+                    if 'cf' in subfield['inner']:
+                        for cfield in subfield['inner']['cf']:
+                            linked_control_field = etree.SubElement(linked_subfield, 'field')
+                            linked_control_field.set('id', cfield['id'])
+                            linked_control_field.text = cfield['d']
                     else:
-                        data_subfield = etree.SubElement(data_field, 'subfield')
-                        data_subfield.set('id', subfield['id'])
-                        data_subfield.text = subfield['d']
+                        for lfield in subfield['inner']['df']:
+                            linked_data_field = etree.SubElement(linked_subfield, 'field')
+                            linked_data_field.set('id', lfield['id'])
+
+                            linked_ind1 = etree.SubElement(linked_data_field, 'indicator')
+                            linked_ind1.set('id', '1')
+                            linked_ind1.text = lfield['i1']
+
+                            linked_ind2 = etree.SubElement(linked_data_field, 'indicator')
+                            linked_ind2.set('id', '2')
+                            linked_ind2.text = lfield['i2']
+
+                            for lsubfield in lfield['sf']:
+                                linkeddata_subfield = etree.SubElement(linked_data_field, 'subfield')
+                                linkeddata_subfield.set('id', lsubfield['id'])
+                                linkeddata_subfield.text = lsubfield['d']
+
+                else:
+                    data_subfield = etree.SubElement(data_field, 'subfield')
+                    data_subfield.set('id', subfield['id'])
+                    data_subfield.text = subfield['d']
     return root
-
-

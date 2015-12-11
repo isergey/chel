@@ -206,7 +206,8 @@ class RusmarcTemplate(object):
         fields = self.fields_index.get('610', [])
         for field in fields:
             for sfa in field.get('a', []):
-                items.append(sfa)
+                if not sfa in items:
+                    items.append(sfa)
         return items
 
     def holders(self):
