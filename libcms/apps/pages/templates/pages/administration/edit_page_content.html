@@ -20,7 +20,7 @@
 
     <h3>
         <a href="{% url 'pages:administration:index' %}">Страницы</a> →
-        {% for ancestor in content.page.get_ancestors %}
+        {% for ancestor in content.page.get_ancestors_titles %}
             <a href="{% url 'pages:administration:pages_list' ancestor.id %}">
                 {% if not ancestor.get_cur_lang_content %}
                     {{ ancestor }}
