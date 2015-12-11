@@ -505,7 +505,7 @@ def construct_query(attrs, values, optimize=True):
                 all_sc.add_attr(u'subject_subheading_tru', '%s^5' % relation_value)
                 all_sc.add_attr(u'date_of_publication_s', '%s^5' % relation_value)
                 all_sc.add_attr(u'subject_name_geographical_t', '%s^5' % relation_value)
-                all_sc.add_attr(u'subject_name_personal', '%s^5' % relation_value)
+                all_sc.add_attr(u'subject_name_personal_t', '%s^5' % relation_value)
                 all_sc.add_attr(u'all_tru', '%s^2' % relation_value)
                 sc.add_search_criteria(all_sc)
 
