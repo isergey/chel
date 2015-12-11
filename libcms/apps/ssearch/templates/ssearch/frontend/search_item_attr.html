@@ -1,0 +1,8 @@
+{% if values %}
+        <p class="item4">
+            {% if attr %}{{ attr }}:{% endif %}
+            {% for value in values %}
+                {{ value }} {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+{% endif %}

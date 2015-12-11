@@ -10,9 +10,10 @@ from django.utils.http import urlquote
 from django.conf import settings
 from django.shortcuts import render, HttpResponse, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from ..ppin_client.solr import SearchCriteria
 from ..solr.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
+from . import record_templates
 from ..models import RecordContent
 from rbooks.models import ViewLog
 from .extended import subject_render
@@ -81,62 +82,60 @@ sort_attrs = [
     },
 ]
 
-
-rubrics = [
-    {
-        'title': u'1',
-        'value': u'1',
-        'childs': [
-            {
-                'title': u'1.1',
-                'value': u'1.1',
-                'childs': [
-                    {
-                        'title': u'1.1.1',
-                        'value': u'1.1.1',
-                    }
-                ]
-            },
-            {
-                'title': u'1.2',
-                'value': u'1.2',
-            }
-        ]
-    },
-    {
-        'title': u'2',
-        'value': u'2',
-        'childs': [
-            {
-                'title': u'2.1',
-                'value': u'2.1',
-                'childs': [
-                    {
-                        'title': u'2.1.1',
-                        'value': u'2.1.1',
-                    }
-                ]
-            }
-        ]
-    }
-]
-
-
-def traversing(rubrics=list(), level=-1, parent_value=None, fill=u'·', delim=u'#'):
-    level += 1
-    rubrics_rows = []
-    for rubric in rubrics:
-        item = {}
-        item['title'] = (fill * level) + rubric['title']
-        if parent_value:
-            item['value'] = parent_value + delim + rubric['value']
-        else:
-            item['value'] = rubric['value']
-        rubrics_rows.append(item)
-        if 'childs' in rubric:
-            rubrics_rows += traversing(rubric['childs'], level=level, parent_value=item['value'])
-    return rubrics_rows
-
+# rubrics = [
+#     {
+#         'title': u'1',
+#         'value': u'1',
+#         'childs': [
+#             {
+#                 'title': u'1.1',
+#                 'value': u'1.1',
+#                 'childs': [
+#                     {
+#                         'title': u'1.1.1',
+#                         'value': u'1.1.1',
+#                     }
+#                 ]
+#             },
+#             {
+#                 'title': u'1.2',
+#                 'value': u'1.2',
+#             }
+#         ]
+#     },
+#     {
+#         'title': u'2',
+#         'value': u'2',
+#         'childs': [
+#             {
+#                 'title': u'2.1',
+#                 'value': u'2.1',
+#                 'childs': [
+#                     {
+#                         'title': u'2.1.1',
+#                         'value': u'2.1.1',
+#                     }
+#                 ]
+#             }
+#         ]
+#     }
+# ]
+#
+#
+# def traversing(rubrics=list(), level=-1, parent_value=None, fill=u'·', delim=u'#'):
+#     level += 1
+#     rubrics_rows = []
+#     for rubric in rubrics:
+#         item = {}
+#         item['title'] = (fill * level) + rubric['title']
+#         if parent_value:
+#             item['value'] = parent_value + delim + rubric['value']
+#         else:
+#             item['value'] = rubric['value']
+#         rubrics_rows.append(item)
+#         if 'childs' in rubric:
+#             rubrics_rows += traversing(rubric['childs'], level=level, parent_value=item['value'])
+#     return rubrics_rows
 
 
 def transformers_init():
@@ -158,7 +157,7 @@ def init_solr_collection(catalog):
     solr = Solr(catalog_settings['solr_server']['url'])
     return solr.get_collection(collection_name)
 
-from ..ppin_client.solr import SearchCriteria
+
 
 def collections():
     uc = init_solr_collection('uc')
@@ -232,7 +231,6 @@ def index(request, catalog='uc'):
         return render(request, 'ssearch/frontend/project.html', {
             'attrs': get_search_attrs(),
             'pattr': request.GET.getlist('pattr', None),
-            'rubrics': traversing(rubrics),
             'stat': stat
         })
 
@@ -264,6 +262,8 @@ def index(request, catalog='uc'):
 
     records = get_records(record_ids)
     for record in records:
+        record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
+        record['tpl'] = record_template
         record['extended'] = {
             'subject_heading': subject_render(record['dict'])
         }
@@ -308,13 +308,30 @@ def index(request, catalog='uc'):
         'search_breadcumbs': search_breadcumbs,
         'request_params': simplejson.dumps(request_params, ensure_ascii=False),
         'result_page': result_page,
-        'rubrics': traversing(rubrics),
         'sort_attrs': sort_attrs
     })
 
 
+def _add_to_attributes(attributes, title, values):
+    if not values:
+        return
+    attributes.append({
+        'title': title,
+        'values': values
+    })
+
 def detail(request):
+    uc = init_solr_collection('uc')
     record_id = request.GET.get('id', None)
+    local_number = request.GET.get('ln', None)
+
+    if local_number:
+        result = uc.search('local_number_s:"%s"' % local_number.replace(u'\\', u'\\\\'), fields=['id'])
+        for doc in result.get_docs():
+            if doc.get('id'):
+                record_id = doc.get('id')
+
+    view = request.GET.get('view', '')
     if not record_id:
         raise Http404(u'Запись не найдена')
 
@@ -322,11 +339,15 @@ def detail(request):
     if not records:
         raise Http404(u'Запись не найдена')
 
-    record =  records[0]
+    record = records[0]
+    record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
+    record['tpl'] = record_template
     record['extended'] = {
         'subject_heading': subject_render(record['dict'])
     }
     content_tree = record['tree']
+    if view == 'xml':
+        return HttpResponse(etree.tostring(content_tree), content_type='text/xml')
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
     record['marc_dump'] = get_marc_dump(content_tree)
@@ -336,7 +357,7 @@ def detail(request):
 
     # view_count = ViewDocLog.objects.filter(record_id=record_id).count()
     collection_id = None
-    catalogs =  record['dict'].get('catalog',[])
+    catalogs = record['dict'].get('catalog',[])
     if catalogs:
         collection_id = catalogs[0].lower().strip()
     # log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
@@ -347,10 +368,9 @@ def detail(request):
     linked_records = []
     local_numbers = record['dict'].get('local_number', [])
     if local_numbers:
-        uc = init_solr_collection('uc')
         result = uc.search('linked_record_number_s:"%s"' % local_numbers[0].replace(u'\\', u'\\\\'), fields=['id'])
         linked_records_ids = []
-        for  doc in result.get_docs():
+        for doc in result.get_docs():
             linked_records_ids.append(doc['id'])
         if linked_records_ids:
             lrecords = get_records(linked_records_ids)
@@ -359,12 +379,28 @@ def detail(request):
                 lrecord['dict'] = get_content_dict(content_tree)
                 linked_records.append(lrecord)
 
+    attributes = []
+    _add_to_attributes(attributes, u'Источник', record_template.get_source())
+    _add_to_attributes(attributes, u'См. так же', record_template.at_same_storage())
+    _add_to_attributes(attributes, u'См. так же', record_template.at_another_storage())
+    _add_to_attributes(attributes, u'Перевод', record_template.translate_link())
+    _add_to_attributes(attributes, u'Оригинал перевода', record_template.translate_original_link())
+    _add_to_attributes(attributes, u'Копия оригинала', record_template.copy_original())
+    _add_to_attributes(attributes, u'Репродуцировано в', record_template.reproduction())
+    _add_to_attributes(attributes, u'Предмет', record_template.subject_heading())
+    _add_to_attributes(attributes, u'Ключевые слова', record_template.subject_keywords())
+    _add_to_attributes(attributes, u'Год публикации', record['dict'].get('date_of_publication_of_original', []))
+    _add_to_attributes(attributes, u'Год издания оригинала', record['dict'].get('date_of_publication_of_original', []))
+    _add_to_attributes(attributes, u'Издатель', record['dict'].get('publisher', []))
+    _add_to_attributes(attributes, u'Коллекция', record['dict'].get('catalog', []))
+    _add_to_attributes(attributes, u'Держатели', record['dict'].get('holders', []))
     return render(request, 'ssearch/frontend/detail.html', {
         'record': record,
         # 'view_count': view_count,
         'edoc_view_count': edoc_view_count,
         'linked_records': linked_records,
-        'linked_records_ids': linked_records_ids
+        'linked_records_ids': linked_records_ids,
+        'attributes': attributes,
     })
 
 
@@ -692,6 +728,7 @@ def more_subfacet(request, catalog='uc'):
 
     return HttpResponse(simplejson.dumps(facets, ensure_ascii=False))
 
+
 def replace_facet_values(facets, key=None, replacer=None):
     titled_facets = {}
     for facet in facets.keys():
@@ -738,8 +775,6 @@ def test_solr_luke_request(request):
     SOLR_BASE_URL = 'http://localhost:8983/s1olr/'
     request = requests.get(SOLR_BASE_URL + 'admin/luke', params={'wt': 'json'})
     return HttpResponse('ok')
-
-
 
 
 def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=False):
@@ -846,3 +881,5 @@ def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=Fals
                         data_subfield.set('id', subfield['id'])
                         data_subfield.text = subfield['d']
     return root
+
+

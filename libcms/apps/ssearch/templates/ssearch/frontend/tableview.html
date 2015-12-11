@@ -5,130 +5,54 @@
             <span style="padding-right: 3px;">{{ forloop.counter0|add:result_page.start_index }}.</span>
         </td>
         <td>
-<p class="item1">
-    <div style="float: left; width: auto;">
-        <h4><a href="{% url 'ssearch:frontend:detail' %}?id={{ record.id }}&back={{ request.get_full_path|urlencode }}">{{ record.dict.title.0 }} </a></h4>
-    </div>
-    <div style="float: left; width: auto;">
-        <a href="#?back={{ request.get_full_path|urlencode }}"> {{ record.library_cadr|safe }}</a>
-    </div>
-<div style="clear: both"></div>
-</p>
-<p class="item2">
-    {% for author in record.dict.author %}
-        {{ author }}{% if not forloop.last %}; {% endif %}
-    {% endfor %}
-</p>
-{#<p class="item3">#}
-{#    {% for subject in record.dict.subject_heading %}#}
-{#        <span class="label label-success">{{ subject }}</span>#}
-{#    {% endfor %}#}
-{#</p>#}
-{#<p class="item3">#}
-{#    {% for subject in record.dict.subject_subheading %}#}
-{#        <span>{{ subject }}</span>#}
-{#    {% endfor %}#}
-{#</p>#}
-<p class="item3">
-    — —{% for subject_row in record.extended.subject_heading %}
-        {% for subject_part in subject_row %}
-            <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject_part attr='subject_heading_t' in='on' %}">{{ subject_part }}</a>{% if not forloop.last %} — {% else %}; {% endif %}
-        {% endfor %}
-        {% for subject in record.dict.subject_keywords %}
-            <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject attr='subject_keywords_t' in='on' %}">{{ subject }}</a>{% if not forloop.last %}; {% else %}. {% endif %}
-        {% endfor %}
-    {% endfor %}
-</p>
-{#{% if record.dict.code_language %}#}
-{#    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Язык{% elif LANGUAGE_CODE == 'tt' %}Тел{% else %}Language{% endif %}:#}
-{#        {% for lang in record.dict.code_language %}#}
-{#            {% if not forloop.last %}#}
-{#                {{ lang }},#}
-{#            {% else %}#}
-{#                {{ lang }}#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
-{#    </p>#}
-{#{% endif %}#}
-{% if record.dict.date_of_publication %}
-    <p class="item4">Год публикации:
-        {% for dop in record.dict.date_of_publication %}
-            {% if not forloop.last %}
-                {{ dop }},
-            {% else %}
-                {{ dop }}
+            <p class="item1">
+
+            <div style="float: left; width: auto;">
+                <h4>
+                    <a href="{% url 'ssearch:frontend:detail' %}?id={{ record.id }}&back={{ request.get_full_path|urlencode }}">{{ record.tpl.get_title }} </a>
+                </h4>
+            </div>
+            <div style="float: left; width: auto;">
+                <a href="#?back={{ request.get_full_path|urlencode }}"> {{ record.library_cadr|safe }}</a>
+            </div>
+            <div style="clear: both"></div>
+            </p>
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='Источник' links=record.tpl.get_source %}
+            {% include 'ssearch/frontend/search_item_attr.html' with attr='' values=record.dict.author %}
+            <p class="item3">
+                {% for subject_row in record.extended.subject_heading %}
+                {% if forloop.first %}— —{% endif %}
+                {% for subject_part in subject_row %}
+                    <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject_part attr='subject_heading_t' in='on' %}">{{ subject_part }}</a>
+                    {% if not forloop.last %} — {% else %}; {% endif %}
+                {% endfor %}
+                {% for subject in record.dict.subject_keywords %}
+                    <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject attr='subject_keywords_t' in='on' %}">{{ subject }}</a>
+                    {% if not forloop.last %};{% endif %}
+                {% endfor %}
+            {% endfor %}
+            </p>
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='См. так же' links=record.tpl.at_same_storage %}
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='См. так же' links=record.tpl.at_another_storage %}
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='Перевод' links=record.tpl.translate_link %}
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='Оригинал перевода' links=record.tpl.translate_original_link %}
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='Оригинал перевода' links=record.tpl.translate_original_link %}
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='Копия оригинала' links=record.tpl.copy_original %}
+            {% include 'ssearch/frontend/search_item_link_attr.html' with attr='Репродуцировано в' links=record.tpl.reproduction %}
+            {% include 'ssearch/frontend/search_item_attr.html' with attr='Год публикации' values=record.dict.date_of_publication %}
+            {% include 'ssearch/frontend/search_item_attr.html' with attr='Год издания оригинала' values=record.dict.date_of_publication_of_original %}
+            {% include 'ssearch/frontend/search_item_attr.html' with attr='Издатель' values=record.dict.publisher %}
+            {% include 'ssearch/frontend/search_item_attr.html' with attr='Коллекция' values=record.dict.catalog %}
+            {% include 'ssearch/frontend/search_item_attr.html' with attr='Держатели' values=record.dict.holders %}
+
+
+            {% if record.dict.url %}
+                <p class="item4">
+                    <a href="{{ record.dict.url.0 }}&id={{ record.id }}" target="_blank" class="label label-success">
+                        полный текст
+                    </a>
+                </p>
             {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
-
-{% if record.dict.date_of_publication_of_original %}
-    <p class="item4">Год издания оригинала:
-        {% for dop in record.dict.date_of_publication_of_original %}
-            {% if not forloop.last %}
-                {{ dop }},
-            {% else %}
-                {{ dop }}
-            {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
-
-{% if record.dict.publisher %}
-    <p class="item4">Издатель:
-        {% for publisher in record.dict.publisher  %}
-            {% if not forloop.last %}
-                {{ publisher }},
-            {% else %}
-                {{ publisher }}
-            {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
-{#{% if record.dict.content_type %}#}
-{#    <p class="item4">{% if LANGUAGE_CODE == 'ru' %}Тип содержания{% elif LANGUAGE_CODE == 'tt' %}Эчтәлек тибы{% else %}Content tipe{% endif %}:#}
-{#        {% for content_type in record.dict.content_type %}#}
-{#            {% if not forloop.last %}#}
-{#                {{ content_type }},#}
-{#            {% else %}#}
-{#                {{ content_type }}#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
-{#    </p>#}
-{#{% endif %}#}
-
-{% if record.dict.catalog %}
-    <p class="item4">Коллекция:
-        {% for catalog in record.dict.catalog  %}
-            {% if not forloop.last %}
-                {{ catalog }},
-            {% else %}
-                {{ catalog }}
-            {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
-
-
-{% if record.dict.holders %}
-    <p class="item4">Держатели:
-        {% for catalog in record.dict.holders  %}
-            {% if not forloop.last %}
-                {{ catalog }},
-            {% else %}
-                {{ catalog }}
-            {% endif %}
-        {% endfor %}
-    </p>
-{% endif %}
-
-{% if record.dict.url %}
-    <p class="item4">
-{#        {% for url in record.dict.url  %}#}
-            <a href="{{record.dict.url.0}}&id={{ record.id }}" target="_blank" class="label label-success">полный текст</a>
-{#        {% endfor %}#}
-    </p>
-{% endif %}
 
 
         </td>

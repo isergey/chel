@@ -1,0 +1,12 @@
+{% for value in values %}
+    {% if value.link_id %}
+        <a href="{% url 'ssearch:frontend:detail' %}?ln={{ value.link_id|urlencode }}">{{ value.title }}</a>
+    {% else %}
+        {% if value.title %}
+            <span>{{ value.title }}</span>
+        {% else %}
+            <span>{{ value }}</span>
+        {% endif %}
+    {% endif %}
+    {% if not forloop.last %}, {% endif %}
+{% endfor %}

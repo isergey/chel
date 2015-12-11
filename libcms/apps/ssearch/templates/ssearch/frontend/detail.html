@@ -38,7 +38,7 @@
             </ul>
             <div class="row">
                 <div class="span2">
-{#                    <p><b>Количество обращений:</b> {{ view_count }}</p>#}
+                    {#                    <p><b>Количество обращений:</b> {{ view_count }}</p>#}
                     <p>{% if edoc_view_count != 0 %}
                         <b>Количество просмотров:</b> {{ edoc_view_count }}
                     {% endif %}</p>
@@ -48,26 +48,52 @@
                         <li class="dropdown active">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вид записи <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#attrs" data-toggle="tab">Атрибуты</a></li>
                                 <li><a href="#card" data-toggle="tab">Карточка</a></li>
                                 <li><a href="#marc" data-toggle="tab">Marc</a></li>
                             </ul>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="attrs">
-                            {% include 'ssearch/frontend/tableview_in_detail.html' %}
-                        </div>
-                        <div class="tab-pane" id="card">{{ record.library_cadr|safe }}</div>
+                        <div class="tab-pane active" id="card">{{ record.library_cadr|safe }}</div>
                         <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
                     </div>
-                    {% if  linked_records %}
+                    {% if attributes %}
+                        <table class="table" style="margin-top: 10px">
+                            {% for attribute in attributes %}
+                                <tr>
+                                    <td style="width: 150px">{{ attribute.title }}</td>
+                                    <td>{% include 'ssearch/frontend/print_attribute_values.html' with values=attribute.values %}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
                     <hr/>
+                    {% with annotations=record.tpl.annotations %}
+                        {% if annotations %}
+                            <h4>Примечания:</h4>
+                            {% for annotation in annotations %}
+                                <p>{{ annotation }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+{##}
+{#                    {% with holders=record.tpl.holders %}#}
+{#                        {% if holders %}#}
+{#                            <h4>Держатели:</h4>#}
+{#                            {% for holder in holders %}#}
+{#                                <p>{{ holder.title }}</p>#}
+{#                            {% endfor %}#}
+{#                        {% endif %}#}
+{#                    {% endwith %}#}
+                    {% if  linked_records %}
+                        <hr/>
                         <h3>Тома/части входящие в это издание:</h3>
                         <ul>
-                        {% for linked_record in linked_records %}
-                            <li><a target="_blank" href="{% url 'ssearch:frontend:detail' %}?id={{ linked_record.id }}">{{ linked_record.dict.title.0 }}</a></li>
-                        {% endfor %}
+                            {% for linked_record in linked_records %}
+                                <li><a target="_blank"
+                                       href="{% url 'ssearch:frontend:detail' %}?id={{ linked_record.id }}">{{ linked_record.dict.title.0 }}</a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     {% endif %}
                 </div>
