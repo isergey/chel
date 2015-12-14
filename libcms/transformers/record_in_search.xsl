@@ -275,13 +275,11 @@
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="Subject-keywords">
     <xsl:for-each select="field[@id='610']">
-        <xsl:if test="indicator[@id ='2'][1]= ' '">
             <xsl:for-each select="subfield[@id='a']">
                 <field name="subject_keywords">
                     <xsl:value-of select="."/>
                 </field>
             </xsl:for-each>
-        </xsl:if>
     </xsl:for-each>
 </xsl:template>
 
