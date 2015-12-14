@@ -170,8 +170,6 @@ def collections():
     facets = result.get_facets()
     facets = replace_facet_values(facets)
     collection_values = facets['collection_s']['values']
-    for cv in collection_values:
-        print cv[0], cv[1]
     # return render(request, 'ssearch/frontend/collections.html', {
     #     'collection_values': collection_values
     # })
@@ -490,7 +488,7 @@ def construct_query(attrs, values, optimize=True):
                 terms = value.split()
                 filetered_terms = []
                 for term in terms:
-                    if term not in set(
+                    if term not in (
                             [u'бы', u'ли', u'что' u'за', u'a', u'на', u'в', u'до', u'из' u'к' u'о' u'об' u'от', u'по',
                              u'при', u'про', u'с', u'у']):
                         filetered_terms.append(term)

@@ -22,9 +22,7 @@ class IndexStatus(object):
         pass
 
 
-
 class FacetParams(object):
-
     def __init__(self):
         self.__fields = []
         self.__query = None
@@ -40,11 +38,9 @@ class FacetParams(object):
         """
         self.__fields.append(field)
 
-
     @property
     def fields(self):
         return self.__fields
-
 
     @fields.setter
     def fields(self, fields):
@@ -53,11 +49,9 @@ class FacetParams(object):
         """
         self.__fields = list(fields)
 
-
     @property
     def query(self):
         return self.__query
-
 
     @query.setter
     def query(self, query):
@@ -66,11 +60,9 @@ class FacetParams(object):
         """
         self.__query = query
 
-
     @property
     def limit(self):
         return self.__limit
-
 
     @limit.setter
     def limit(self, limit):
@@ -83,7 +75,6 @@ class FacetParams(object):
     def offset(self):
         return self.__offset
 
-
     @offset.setter
     def offset(self, offset):
         """
@@ -94,7 +85,6 @@ class FacetParams(object):
     @property
     def mincount(self):
         return self.__mincount
-
 
     @mincount.setter
     def mincount(self, mincount):
@@ -110,7 +100,6 @@ class FacetParams(object):
         range_start (int)
         """
         self.__range_start = range_start
-
 
     @property
     def range_end(self):
@@ -152,12 +141,10 @@ class FacetParams(object):
 
 
 class SearchResults(object):
-
     def __init__(self, address, params):
         self.__address = address
         self.__params = params
         self._make_request()
-
 
     def __getitem__(self, slice):
         start = slice.start
@@ -166,11 +153,10 @@ class SearchResults(object):
         self.__params['rows'] = rows
         self._make_request()
 
-
     def _make_request(self):
-#        if hasattr(self, 'response_dict'):
-#            return
-        r = requests.get(self.__address,params=self.__params)
+        #        if hasattr(self, 'response_dict'):
+        #            return
+        r = requests.get(self.__address, params=self.__params)
 
         if r.status_code != 400:
             r.raise_for_status()
@@ -184,7 +170,6 @@ class SearchResults(object):
 
         self.response_dict = response_dict
 
-
     def count(self):
         # для django Paginator
         try:
@@ -193,16 +178,13 @@ class SearchResults(object):
             return 9999
 
     def get_docs(self):
-        return  self.response_dict['response']['docs']
-
+        return self.response_dict['response']['docs']
 
     def get_qtime(self):
         return self.response_dict['responseHeader']['QTime']
 
-
     def get_num_found(self):
-        return  int(self.response_dict['response']['numFound'])
-
+        return int(self.response_dict['response']['numFound'])
 
     def get_facets(self):
         facets = {}
@@ -210,13 +192,12 @@ class SearchResults(object):
         for facet_title in facet_fields.keys():
             facet = facet_fields[facet_title]
             facets[facet_title] = []
-            for i in xrange(1,len(facet), 2):
-                facets[facet_title].append((facet[i-1], facet[i]))
+            for i in xrange(1, len(facet), 2):
+                facets[facet_title].append((facet[i - 1], facet[i]))
         return facets
 
     def get_highlighting(self):
         return []
-
 
 
 class Collection(object):
@@ -231,27 +212,26 @@ class Collection(object):
         r = requests.post(address, data=data, headers=headers)
         r.raise_for_status()
 
-
     def delete(self, ids=list()):
         address = self.__solr.get_base_url() + self.__name + '/update/json'
         for id in ids:
-            data = simplejson.dumps({'delete':{'id': unicode(id)}})
+            data = simplejson.dumps({'delete': {'id': unicode(id)}})
             headers = {'content-type': 'application/json'}
             r = requests.post(address, data=data, headers=headers)
             r.raise_for_status()
 
     def commit(self):
-        address = self.__solr. get_base_url() + self.__name + '/update/json?commit=true'
+        address = self.__solr.get_base_url() + self.__name + '/update/json?commit=true'
         r = requests.get(address)
         r.raise_for_status()
 
     def rollback(self):
-        address = self.__solr. get_base_url() + self.__name + '/update/json?rollback=true'
+        address = self.__solr.get_base_url() + self.__name + '/update/json?rollback=true'
         r = requests.get(address)
         r.raise_for_status()
 
     def search(self, query, fields=list(), faset_params=None, hl=[], sort=[], start=0, rows=10):
-        address = self.__solr. get_base_url() + self.__name + '/select/'
+        address = self.__solr.get_base_url() + self.__name + '/select/'
         params = {}
         params['q'] = query
         params['fl'] = u','.join(fields)
@@ -265,20 +245,19 @@ class Collection(object):
         if faset_params:
             params.update(faset_params.get_dicted_params())
 
-
-
         return SearchResults(address, params)
 
-class Solr(object):
 
+class Solr(object):
     """
     Класс для работы с Solr
 
     base_url - адрес solr.
     """
+
     def __init__(self, base_url):
         if base_url[-1] != '/':
-            base_url+='/'
+            base_url += '/'
         self.__base_url = base_url
 
     def get_base_url(self):
@@ -286,7 +265,6 @@ class Solr(object):
 
     def get_collection(self, name):
         return Collection(self, name)
-
 
 
 def escape(string):
@@ -310,5 +288,5 @@ def escape(string):
         u':'
     ]
     for s in special:
-        string = string.replace(s,'\\'+s)
+        string = string.replace(s, '\\' + s)
     return string
