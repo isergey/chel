@@ -20,7 +20,7 @@ def id_list(request):
     if not request.user.has_module_perms('cid'):
         return HttpResponseForbidden()
     idates_count = ImportantDate.objects.all().count()
-    idates_page =  get_page(request, ImportantDate.objects.select_related('theme').all().order_by('-id'))
+    idates_page =  get_page(request, ImportantDate.objects.all().order_by('-id'))
     return render(request, 'cid/administration/id_list.html', {
         'idates_page': idates_page,
         'idates_count': idates_count
