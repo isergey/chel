@@ -104,8 +104,10 @@ class Content(models.Model):
     page = models.ForeignKey(Page, verbose_name=u'Родительская страница')
     lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
     title = models.CharField(verbose_name=u'Заглавие', max_length=512)
-    meta = models.CharField(verbose_name=u"SEO meta", max_length=512, blank=True,
-                            help_text=u'Укажите ключевые слова для страницы, желательно на языке контента')
+    meta = models.CharField(verbose_name=u"Meta keywords", max_length=512, blank=True,
+                            help_text=u'Укажите ключевые слова для страницы')
+    meta_description = models.CharField(verbose_name=u"Meta description", max_length=512, blank=True,
+                            help_text=u'Краткое описаие страницы')
     content = models.TextField(verbose_name=u'Контент')
 
     class Meta:
