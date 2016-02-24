@@ -10,18 +10,18 @@
 
 {% block action_content %}
     <p>Количество внесенных дат: {{ idates_count }}</p>
-    <ul>
+    <table class="table">
     {% for idate in idates_page.object_list %}
-        <li>
-            <div><a href="{% url 'cid:administration:edit_id' idate.id %}">
+        <tr>
+            <td><a href="{% url 'cid:administration:edit_id' idate.id %}">
                 {% if idate.count_day %}{{ idate.date|date:"d"}}{% endif %}
                 {% if idate.count_month %}{{ idate.date|date:"N"}} {% endif %}
                 {% if idate.count_year %}{{ idate.date|date:"Y"}} г.{% endif %}
                 {{ idate }} </a></div>
-            <div>Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</div>
-            <a class="delete btn btn-danger" href="{% url 'cid:administration:delete_id' idate.id  %}"><i class="icon-trash icon-white" title="Удалить"></i></a>
-        </li>
+            <td>Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %}, {% endif %}{% endfor %}.</td>
+            <td><a class="delete btn btn-danger" href="{% url 'cid:administration:delete_id' idate.id  %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+        </tr>
     {% endfor %}
-    </ul>
+    </table>
     {% admin_pagination idates_page %}
 {% endblock %}
