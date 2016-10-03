@@ -1,23 +1,26 @@
 # -*- encoding: utf-8 -*-
 import os
 import shutil
-import Image
+try:
+    import Image
+except ImportError:
+    from PIL import Image
 import time
 from django.conf import settings
 from django.db import models
 
+
 def get_album_dir(slug):
-    return settings.MEDIA_ROOT +  'gallery/'  + slug + '/'
+    return settings.MEDIA_ROOT + 'gallery/' + slug + '/'
+
 
 def image_file_name(instance, filename):
-
     if instance.id:
         gen_name = unicode(instance.id) + u'.jpg'
     else:
-        gen_name = (u"%.9f" % time.time()).replace(u'.',u'') + u'.jpg'
+        gen_name = (u"%.9f" % time.time()).replace(u'.', u'') + u'.jpg'
 
     return (get_album_dir(instance.album.slug) + gen_name)
-
 
 
 class Album(models.Model):
@@ -29,11 +32,12 @@ class Album(models.Model):
     )
     title = models.CharField(max_length=512, verbose_name=u'Название')
     description = models.TextField(verbose_name=u'Описание', blank=True)
-    public = models.BooleanField(verbose_name=u'Опубликован', default=False, db_index=True )
+    public = models.BooleanField(verbose_name=u'Опубликован', default=False, db_index=True)
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
-#    def save(self):
-#        if getattr(self, 'id', None):
-#            self.slug = Album.objects.get(id=self.id).slug
+
+    #    def save(self):
+    #        if getattr(self, 'id', None):
+    #            self.slug = Album.objects.get(id=self.id).slug
     def __unicode__(self):
         return self.title
 
@@ -41,13 +45,14 @@ class Album(models.Model):
         ordering = ['-create_date']
         permissions = (
             ("public_album", "Can public album"),
-            )
+        )
 
     def get_dir(self):
         return get_album_dir(self.slug)
 
     def get_description(self):
-        return self.description.replace(u'\n',u'<br/>')
+        return self.description.replace(u'\n', u'<br/>')
+
 
 class AlbumImage(models.Model):
     album = models.ForeignKey(Album)
@@ -75,9 +80,9 @@ class AlbumImage(models.Model):
         if os.path.isfile(get_thumbinail_path):
             os.remove(get_thumbinail_path)
 
+
 from django.db.models.signals import post_save, post_delete, pre_delete
 from django.dispatch import receiver
-
 
 
 @receiver(pre_delete, sender=Album)
@@ -96,6 +101,7 @@ def album_pre_delete(instance, **kwargs):
 def image_post_save(instance, **kwargs):
     handle_uploaded_file(instance)
 
+
 @receiver(pre_delete, sender=AlbumImage)
 def image_pre_delete(instance, **kwargs):
     if os.path.isfile(unicode(instance.image)):
@@ -104,6 +110,7 @@ def image_pre_delete(instance, **kwargs):
     get_thumbinail_path = instance.get_thumbinail_path()
     if os.path.isfile(get_thumbinail_path):
         os.remove(get_thumbinail_path)
+
 
 def handle_uploaded_file(instance):
     thumbinail_path = instance.get_thumbinail_path()
@@ -118,7 +125,7 @@ def handle_uploaded_file(instance):
         image_ratio = float(im.size[0]) / im.size[1]
         final_width = int((image_ratio * final_hight))
         im.thumbnail((final_width, final_hight), Image.ANTIALIAS)
-        im.save(image_file_path, "JPEG", quality = 95)
+        im.save(image_file_path, "JPEG", quality=95)
     except IOError as e:
         return None
 
@@ -158,8 +165,7 @@ def handle_uploaded_file(instance):
         image_ratio = float(im.size[0]) / im.size[1]
         final_width = int((image_ratio * final_hight))
         im.thumbnail((final_width, final_hight), Image.ANTIALIAS)
-        im.save(thumbinail_path, "JPEG", quality = 95)
+        im.save(thumbinail_path, "JPEG", quality=95)
     except IOError as e:
         return None
     return image_file_path
-

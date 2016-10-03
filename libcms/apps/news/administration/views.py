@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
-from django.db import transaction
-from django.utils.translation import ugettext as _
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
-from guardian.decorators import permission_required_or_403
-from django.contrib.auth.decorators import login_required
+import os
+try:
+    import Image
+except ImportError:
+    from PIL import Image
+import uuid
+from datetime import datetime
 from common.pagination import get_page
-from django.contrib.auth import login, REDIRECT_FIELD_NAME
-from django.utils.translation import to_locale, get_language
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.utils.translation import get_language
+from guardian.decorators import permission_required_or_403
 
-from core.forms import LanguageForm
-from ..models import News, NewsContent
 from forms import NewsForm, NewsContentForm
+from ..models import News, NewsContent
+
 
 @login_required
 @permission_required_or_403('news.add_news')
@@ -188,10 +193,6 @@ def delete_news(request, id):
 
 
 
-import os
-import Image
-import uuid
-from datetime import datetime
 #def handle_uploaded_file(f, old_name=None):
 #    upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
 #    now = datetime.now()

@@ -119,7 +119,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'django_sorting',
     'captcha',
-
+    'explorer',
     # cms apps
     'core',
     'accounts',

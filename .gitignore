@@ -8,3 +8,4 @@ local_settings.py
 media_data
 orders_data
 var
+venv
