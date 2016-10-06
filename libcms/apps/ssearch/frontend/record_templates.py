@@ -1,6 +1,6 @@
 # coding=utf-8
 from collections import OrderedDict
-
+from junimarc.record import Record
 
 def _get_df_index(field):
     index = OrderedDict()
