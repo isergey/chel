@@ -62,6 +62,7 @@ facet_attrs = [
 ]
 
 FACET_SORT = [
+    {'collection_s': 'index'},
     {'subject_heading_s': 'index'},
     {'subject_keywords_s': 'index'},
     {'subject_name_personal_s': 'index'},
