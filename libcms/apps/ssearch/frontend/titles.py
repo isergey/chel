@@ -364,7 +364,7 @@ attr_value_title = {
     },
     u'collection': {
         'title': {
-            u'ru': u'Электронная библиотека'
+            u'ru': u'Коллекция'
         },
         # 'values': {
         #     u'Уральская область.Уральская электронная библиотека': {
@@ -372,6 +372,26 @@ attr_value_title = {
         #     }
         # }
     },
+    u'collection2': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
+    },
+    u'collection2': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
+    },
+    u'collection3': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
+    },
+    u'collection4': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
+    }
 }
 
 def get_attr_title(attr, lang=u'ru'):

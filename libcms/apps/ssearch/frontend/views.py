@@ -5,7 +5,7 @@ from lxml import etree
 import requests
 import json
 import datetime
-
+from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.conf import settings
 from django.shortcuts import render, HttpResponse, Http404, urlresolvers
@@ -61,12 +61,12 @@ facet_attrs = [
     # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 
-pivot_facet_attrs = [
-    (u'collection_level0_s,collection_level1_s', u'collection_level0_s,collection_level1_s'),
-    # (u'owner_s', u'owner_s'),
-
-    # (u'fauthority_number', u'linked_authority_number_s'),
-]
+# extended_attrs = [
+#
+#     # (u'owner_s', u'owner_s'),
+#
+#     # (u'fauthority_number', u'linked_authority_number_s'),
+# ]
 
 sort_attrs = [
     {
@@ -160,21 +160,133 @@ def init_solr_collection(catalog):
     return solr.get_collection(collection_name)
 
 
+class PivotNode(object):
+    base_url = None
+
+    def __init__(self, parent, field, value, count=0, pivot=None):
+        self.parent = parent
+        self.field = field or ''
+        self.value = value or ''
+        self.count = count
+        self.pivot = pivot or []
+        if not PivotNode.base_url:
+            PivotNode.base_url = reverse('ssearch:frontend:index')
+
+    def add_pivot(self, pivot):
+        self.pivot.append(pivot)
+
+    def get_parents(self, include_self=False):
+        parents = []
+        if include_self and self.parent:
+            parents.append(self)
+        if self.parent:
+            parents = self.parent.get_parents(True) + parents
+        return parents
+
+    def to_li(self):
+        href = PivotNode.base_url
+        parents = self.get_parents()
+        url_parts = []
+
+        if parents:
+            url_parts.append(u'&in=on')
+
+        for parent in parents:
+            url_parts += u''.join([u'&pattr=', urlquote(parent.field), u'&pq=', urlquote(parent.value)])
+
+        item_li = [u'<li class="pivot__element">']
+        href += u''.join([u'?attr=', urlquote(self.field), u'&q=', urlquote(self.value)])
+
+        if url_parts:
+            href += u''.join(url_parts)
+        item_li.append(
+            u'<a href="%s" class="pivot__title" id="pt_%s">%s</a>' % (href, self.field, self.value)
+        )
+        item_li.append(u'<span class="pivot__count">%s</span>' % (self.count,))
+
+        if self.pivot:
+            item_li.append(self.children_to_html())
+        item_li.append(u'</li>')
+
+        return u''.join(item_li)
+
+    def children_to_html(self, is_root=False):
+        className = u"pivot"
+        if is_root:
+            className += u" pivot_root"
+        ul = [u'<ul class="', className, u'">']
+
+        for child in self.pivot:
+            ul.append(child.to_li())
+
+        ul.append(u'</ul>')
+        return u''.join(ul)
+
+    def to_html(self):
+        return self.children_to_html(True)
+
+    @staticmethod
+    def from_dict(item, parent=None):
+        node = PivotNode(
+            parent=parent,
+            field=item.get('field', ''),
+            value=item.get('value', ''),
+            count=item.get('count', 0)
+        )
+
+        for child in item.get('pivot', []):
+            node.add_pivot(PivotNode.from_dict(child, parent=node))
+        return node
+
+
+# def draw_pivot_tree(pivot):
+#     SEARCH_PATH = reverse('ssearch:frontend:index')
+#
+#     tree = ['<ul class="pivot">']
+#     for item in pivot:
+#         href = SEARCH_PATH
+#         href += u''.join(['?attr', '=', urlquote(item.get('field', '')), '&q', '=', urlquote(item.get('value', ''))])
+#
+#         item_li = ['<li>']
+#         item_li.append(
+#             '<a href="%s" class="pivot__title" id="pt_%s">%s</a>' % (href, item.get('field', ''), item.get('value', ''))
+#         )
+#         item_li.append('<span class="pivot__count">%s</span>' % (item.get('count', ''),))
+#         child_pivot = item.get('pivot', [])
+#         if child_pivot:
+#             item_li.append(draw_pivot_tree(child_pivot))
+#         item_li.append('</li>')
+#         tree.append(u''.join(item_li))
+#     tree.append('</ul>')
+#     return u''.join(tree)
+
+
+def build_pivot_tree(pivot):
+    root = PivotNode(None, 'root', 'root')
+    for item in pivot:
+        root.add_pivot(PivotNode.from_dict(item, parent=root))
+    return root
+
+
 def collections():
+    pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s'
     uc = init_solr_collection('uc')
     faset_params = FacetParams()
     faset_params.fields = ['collection_s']
-    faset_params.mincount = 1
-    faset_params.limit = 30
-    result = uc.search(query='*:*', faset_params=faset_params)
+    faset_params.pivot = [pivot_collections]
+    faset_params.mincount = 0
+    faset_params.limit = 30000
+    result = uc.search(query='*:*', faset_params=faset_params, rows=0)
     facets = result.get_facets()
+    pivot = result.get_pivot().get(pivot_collections)
+    pivote_root = build_pivot_tree(pivot)
     facets = replace_facet_values(facets)
     collection_values = facets['collection_s']['values']
     # return render(request, 'ssearch/frontend/collections.html', {
     #     'collection_values': collection_values
     # })
 
-    return collection_values
+    return collection_values, pivote_root
 
 
 def index(request, catalog='uc'):
@@ -195,10 +307,8 @@ def index(request, catalog='uc'):
     faset_params = FacetParams()
     faset_params.fields = get_facet_attrs()
     attrs, values = extract_request_query_attrs(request)
-
     search_breadcumbs = make_search_breadcumbs(attrs, values)
     attrs = reverse_search_attrs(attrs)
-
     sort = request.GET.get('sort', u'relevance')
     order = request.GET.get('order', u'asc')
     solr_sort = []
@@ -207,8 +317,7 @@ def index(request, catalog='uc'):
         solr_sort.append("%s %s" % (sort, order))
 
     if not values or not attrs:
-
-        colls = collections()
+        (colls, pivote_root) = collections()
         coll_stat = []
         all_documents_count = 0
         for coll in colls:
@@ -231,7 +340,8 @@ def index(request, catalog='uc'):
         return render(request, 'ssearch/frontend/project.html', {
             'attrs': get_search_attrs(),
             'pattr': request.GET.getlist('pattr', None),
-            'stat': stat
+            'stat': stat,
+            'pivot_tree': pivote_root.to_html(),
         })
 
     query = construct_query(attrs=attrs, values=values)
@@ -407,7 +517,6 @@ def detail(request):
 def extract_request_query_attrs(request):
     values = request.GET.getlist('q', None)
     attrs = request.GET.getlist('attr', None)
-
     # Если указано искать в найденном
     if request.GET.get('in', None):
         values = request.GET.getlist('pq', []) + values
@@ -424,7 +533,7 @@ def reverse_search_attrs(attrs):
             if search_attr[0] == attr:
                 new_attrs.append(search_attr[1])
                 break
-    return new_attrs
+    return attrs
 
 
 def get_search_attrs():

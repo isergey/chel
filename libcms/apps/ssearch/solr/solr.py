@@ -31,6 +31,7 @@ class FacetParams(object):
         self.__mincount = 1
         self.__range_start = None
         self.__range_end = None
+        self.__pivot = []
 
     def add_field(self, field):
         """
@@ -112,6 +113,14 @@ class FacetParams(object):
         """
         self.__range_end = range_end
 
+    @property
+    def pivot(self):
+        return self.__pivot
+
+    @pivot.setter
+    def pivot(self, pivot_fields):
+        self.__pivot = pivot_fields
+
     def get_dicted_params(self):
         params = {}
         if self.fields or self.query:
@@ -137,6 +146,10 @@ class FacetParams(object):
 
         if self.range_end:
             params['facet.range.end'] = self.range_end
+
+        if self.__pivot:
+            params['facet.pivot'] = self.__pivot
+
         return params
 
 
@@ -157,7 +170,7 @@ class SearchResults(object):
         #        if hasattr(self, 'response_dict'):
         #            return
         r = requests.get(self.__address, params=self.__params)
-
+        # print r.url
         if r.status_code != 400:
             r.raise_for_status()
 
@@ -195,6 +208,9 @@ class SearchResults(object):
             for i in xrange(1, len(facet), 2):
                 facets[facet_title].append((facet[i - 1], facet[i]))
         return facets
+
+    def get_pivot(self):
+        return self.response_dict.get('facet_counts', {}).get('facet_pivot', {})
 
     def get_highlighting(self):
         return []
@@ -244,7 +260,6 @@ class Collection(object):
 
         if faset_params:
             params.update(faset_params.get_dicted_params())
-
         return SearchResults(address, params)
 
 
