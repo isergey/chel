@@ -216,7 +216,7 @@ class PivotNode(object):
             className += u" pivot_root"
         ul = [u'<ul class="', className, u'">']
 
-        for child in self.pivot:
+        for child in sorted(self.pivot, key=lambda item: PivotNode.clean_value(item.value)):
             ul.append(child.to_li())
 
         ul.append(u'</ul>')
@@ -238,6 +238,9 @@ class PivotNode(object):
             node.add_pivot(PivotNode.from_dict(child, parent=node))
         return node
 
+    @staticmethod
+    def clean_value(value):
+        return value.lower().strip().replace(u'"', u'').replace(u'.', u'').replace(u'«', u'').replace(u'»', u'')
 
 # def draw_pivot_tree(pivot):
 #     SEARCH_PATH = reverse('ssearch:frontend:index')
