@@ -32,6 +32,7 @@ class FacetParams(object):
         self.__range_start = None
         self.__range_end = None
         self.__pivot = []
+        self.__facet_sort = []
 
     def add_field(self, field):
         """
@@ -121,6 +122,22 @@ class FacetParams(object):
     def pivot(self, pivot_fields):
         self.__pivot = pivot_fields
 
+    @property
+    def facet_sort(self):
+        return self.__facet_sort
+
+    @facet_sort.setter
+    def facet_sort(self, facet_sort):
+        """
+        range_end (int)
+        """
+        for facet_sort_item in self.facet_sort:
+            facet_sort_name = facet_sort_item.keys()[0]
+            order = facet_sort_item.get(facet_sort_name, 'count')
+            if order not in ['count', 'index']:
+                raise ValueError('Facet sort order must be "count" or "index"')
+        self.__facet_sort = facet_sort
+
     def get_dicted_params(self):
         params = {}
         if self.fields or self.query:
@@ -149,6 +166,11 @@ class FacetParams(object):
 
         if self.__pivot:
             params['facet.pivot'] = self.__pivot
+
+        if self.facet_sort:
+            for facet_sort_item in self.facet_sort:
+                facet_sort_name = facet_sort_item.keys()[0]
+                params['f.' + facet_sort_name + '.facet.sort'] = facet_sort_item.get(facet_sort_name, 'count')
 
         return params
 

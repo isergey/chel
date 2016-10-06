@@ -61,6 +61,16 @@ facet_attrs = [
     # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 
+FACET_SORT = [
+    {'subject_heading_s': 'index'},
+    {'subject_keywords_s': 'index'},
+    {'subject_name_personal_s': 'index'},
+    {'author_s': 'index'},
+    {'date_of_publication_s': 'index'},
+    {'subject_name_geographical_s': 'index'},
+    {'date_of_publication_of_original_s': 'index'},
+]
+
 # extended_attrs = [
 #
 #     # (u'owner_s', u'owner_s'),
@@ -309,6 +319,7 @@ def index(request, catalog='uc'):
     uc = init_solr_collection(catalog)
     faset_params = FacetParams()
     faset_params.fields = get_facet_attrs()
+    faset_params.facet_sort = FACET_SORT
     attrs, values = extract_request_query_attrs(request)
     search_breadcumbs = make_search_breadcumbs(attrs, values)
     attrs = reverse_search_attrs(attrs)
@@ -784,6 +795,7 @@ def more_facet(request, catalog='uc'):
 
     uc = init_solr_collection(catalog)
     faset_params = FacetParams()
+    faset_params.facet_sort = FACET_SORT
     faset_params.fields = reverse_search_attrs([facet])
     faset_params.limit = str(int(request.GET.get('facet_limit', 15)))
     faset_params.offset = str(int(request.GET.get('facet_offset', 0)))

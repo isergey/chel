@@ -24,7 +24,6 @@ class IndexStatus(object):
 
 
 class FacetParams(object):
-
     def __init__(self):
         self.__fields = []
         self.__query = None
@@ -33,6 +32,8 @@ class FacetParams(object):
         self.__mincount = 1
         self.__range_start = None
         self.__range_end = None
+
+
 
     def add_field(self, field):
         """
@@ -123,6 +124,7 @@ class FacetParams(object):
         """
         self.__range_end = range_end
 
+
     def get_dicted_params(self):
         params = {}
         if self.fields or self.query:
@@ -148,6 +150,7 @@ class FacetParams(object):
 
         if self.range_end:
             params['facet.range.end'] = self.range_end
+
         return params
 
 
