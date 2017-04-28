@@ -10,25 +10,23 @@
 
 {% block action_content %}
 
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/forms.css" />
-<script type="text/javascript">window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";</script>
-<script type="text/javascript">window.__admin_utc_offset__ = "10800";</script>
+    <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/widgets.css"/>
 
-<script type="text/javascript" src="/ru/radmin/jsi18n/"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/actions.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/calendar.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/DateTimeShortcuts.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/inlines.js"></script>
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
+    </script>
     <style>
     form input[type=text], textarea{
         width: 95%;
     }
     </style>
-    <form class="form" method="POST">{% csrf_token %}
-        <legend>Редактирование события</legend>
+    <form class="form-horizontal" method="POST">{% csrf_token %}
+        <legend>Создание события</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=event_form %}
             {% for event_content_form in event_content_forms %}

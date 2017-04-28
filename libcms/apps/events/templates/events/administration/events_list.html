@@ -10,6 +10,16 @@
 {% endblock %}
 
 {% block action_content %}
+
+    <div class="well well-sm">
+        <div class="btn-group" role="group" aria-label="...">
+            <button class="filter-btn btn" data-toggle="modal" data-target="#filter-modal"><i class="icon-filter" title="Удалить"></i> Фильтрация</button>
+            {% if request.GET.filter == 'on' %}
+                <a class="btn btn-warning" href="{% url 'events:administration:events_list' %}">Очистить фильтр</a>
+            {% endif %}
+        </div>
+    </div>
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -23,21 +33,53 @@
         {% for event in events_list %}
 
             <tr>
-                <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a></td>
+                <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a>
+                </td>
                 <td>{{ event.start_date }}</td>
                 <td>{{ event.end_date }}</td>
-                <td><a class="delete btn btn-danger"  href="{% url 'events:administration:delete_event' event.id %}"><i class="icon-trash icon-white" title="Удалить"></i></a></td>
+                <td><a class="delete btn btn-danger" href="{% url 'events:administration:delete_event' event.id %}"><i
+                        class="icon-trash icon-white" title="Удалить"></i></a></td>
             </tr>
 
         {% endfor %}
         </tbody>
     </table>
+    <div class="modal" style="display: none" role="dialog" id="filter-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Фильтрация</h4>
+                </div>
+                <form style="margin: 0" method="get">
+                    <div class="modal-body">
+                        {% include 'administration/base_form_fields.html' with form=filter_form %}
+                        <input type="hidden" name="filter" value="on">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-default">Сбросить</button>
+                        <button type="submit" class="btn btn-primary">Фильтровать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {% admin_pagination events_page %}
     <script type="text/javascript">
         $("a.delete").click(function () {
             if (!confirm('Вы уверены, что хотите удалить?')) return false;
         });
     </script>
+    {#    <script>#}
+    {#        $(function () {#}
+    {#            $('.filter-btn').on('click', function () {#}
+    {#                $('#myModal').modal(options)#}
+    {#            });#}
+    {#        });#}
+    {#    </script>#}
 {% endblock %}
 
 
