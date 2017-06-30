@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from django.contrib.auth.models import User
-
+from captcha.fields import ReCaptchaField
 
 class RegistrationForm(forms.ModelForm):
     class Meta:
@@ -18,7 +18,8 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(label=u"Электронная почта")
     first_name = forms.CharField(max_length=50, label=u"Имя")
     last_name = forms.CharField(max_length=50, label=u"Фамилия")
-
+    agree = forms.BooleanField(label=u"Согласен на обработку персональных данных")
+    captcha = ReCaptchaField(label=u'Введите текст на картинке')
     def clean_username(self):
         import re
 
@@ -49,3 +50,9 @@ class RegistrationForm(forms.Form):
         if password != password2:
             raise forms.ValidationError(u'пароли не совпадают')
         return password2
+
+    def clean_agree(self):
+        agree = self.cleaned_data.get("agree", False)
+        if not agree:
+            raise forms.ValidationError(u'Необходимо дать согласие на обработку персональных данных')
+        return agree
