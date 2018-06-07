@@ -5,14 +5,14 @@
     <socket>127.0.0.1:3032</socket>
 
     <!-- Путь к виртуальному окружению -->
-    <!-- <home>/home/klen/Projects/klen.github.com/_code/uwsgi/.virtualenv</home> -->
+    <home>/mnt/portal_systems/portal/venv</home>
 
     <!-- Нам понадобится включенный python плагин -->
     <plugins>python</plugins>
 
     <!-- Дополнительный python-путь -->
-    <pythonpath>/var/www/portal/chel/libcms</pythonpath>
-    <pythonpath>/var/www/portal/chel</pythonpath>
+    <pythonpath>/mnt/portal_systems/portal/chel/libcms</pythonpath>
+    <pythonpath>/mnt/portal_systems/portal/chel</pythonpath>
     <!-- Модуль python с определением wsgi приложения -->
     <module>wsgi</module>
 
