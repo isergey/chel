@@ -5,5 +5,6 @@ import feeds
 urlpatterns = patterns(views,
     url(r'^$', views.index , name="index"),
     url(r'^(?P<id>\d+)/$', views.show , name="show"),
+    url(r'sitemap.xml$', views.sitemap, name="sitemap"),
     url(r'^rss/$', feeds.LatestEntriesFeed(), name='rss'),
 )

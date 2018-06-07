@@ -144,7 +144,9 @@ INSTALLED_APPS = (
     'cid',
     'rbooks',
     'ssearch',
-    'search'
+    'search',
+    'sitemap',
+    'robots_txt'
 )
 
 
@@ -172,6 +174,9 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
 )
 
+LOCALE_INDEPENDENT_PATHS = (
+    r'^/robots\.txt$',
+)
 
 
 from local_settings import *

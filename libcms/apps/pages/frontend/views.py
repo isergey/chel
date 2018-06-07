@@ -65,3 +65,13 @@ def show(request, slug):
         'page': page,
         'content': content,
     })
+
+
+def sitemap(request):
+    pages = Page.objects.values('url_path').filter(public=True)
+    return render(
+        request, 'pages/frontend/sitemap.html', {
+            'pages': pages
+        },
+        content_type='application/xml'
+    )

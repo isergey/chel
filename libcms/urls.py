@@ -7,6 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^', include('index.urls', namespace='index')),
+    url(r'^robots.txt', include('robots_txt.urls')),
+    url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),
     (r'^core/', include('core.urls', namespace='core')),
     (r'^accounts/', include('accounts.urls', namespace='accounts')),
     (r'^filebrowser/', include('filebrowser.urls', namespace='filebrowser')),

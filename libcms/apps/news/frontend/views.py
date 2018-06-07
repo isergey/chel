@@ -7,7 +7,6 @@ from common.pagination import get_page
 from ..models import News, NewsContent
 
 
-
 def index(request):
     news_type = request.GET.get('type', '')
     query = Q(publicated=True)
@@ -33,7 +32,8 @@ def index(request):
     return render(request, 'news/frontend/list.html', {
         'news_list': news_page.object_list,
         'news_page': news_page,
-        })
+    })
+
 
 def show(request, id):
     cur_language = translation.get_language()
@@ -52,3 +52,12 @@ def show(request, id):
         'content': content
     })
 
+
+def sitemap(request):
+    news = News.objects.values('id').filter(publicated=True).order_by('-create_date')
+    return render(
+        request, 'news/frontend/sitemap.html', {
+            'news': news
+        },
+        content_type='application/xml'
+    )
