@@ -8,4 +8,5 @@ urlpatterns = patterns(views,
     url(r'^favorits/$', views.favorit_events , name="favorit_events"),
     url(r'^favorits/(?P<id>\d+)/$', views.favorite_show , name="favorite_show"),
     url(r'^(?P<id>\d+)/add_to_favorite/$', views.add_to_favorits , name="add_to_favorits"),
+    url(r'^(?P<id>\d+)/delete_from_favorite/$', views.delete_from_favorite , name="delete_from_favorite"),
 )

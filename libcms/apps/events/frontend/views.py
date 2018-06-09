@@ -111,3 +111,13 @@ def favorite_show(request, id):
         'event': event,
         'content': content
     })
+
+@login_required
+def delete_from_favorite(request, id):
+    event = get_object_or_404(Event, id=id)
+    try:
+        favorite_event = FavoriteEvent.objects.get(user=request.user, event=event)
+        favorite_event.delete()
+    except FavoriteEvent.DoesNotExist:
+        FavoriteEvent(user=request.user, event=event).save()
+    return redirect('events:frontend:favorit_events')
