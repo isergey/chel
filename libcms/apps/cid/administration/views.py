@@ -24,6 +24,8 @@ def index(request):
 def id_list(request):
     limit_on_page = 15
     prnt = request.GET.get('print')
+    if prnt:
+        limit_on_page = 1000
     page = int(request.GET.get('page', 1))
     if page < 1:
         page = 1
