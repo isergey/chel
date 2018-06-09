@@ -1,0 +1,20 @@
+<script type="text/javascript">
+    window.print();
+</script>
+<table class="table">
+    {% for idate in idates %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><a href="{% url 'cid:administration:edit_id' idate.id %}">
+                {% if idate.count_day %}{{ idate.date|date:"d" }}{% endif %}
+                {% if idate.count_month %}{{ idate.date|date:"N" }} {% endif %}
+                {% if idate.count_year %}{{ idate.date|date:"Y" }} г.{% endif %}
+                {{ idate }} </a>
+                <div>
+                    Тип: {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %},
+                {% endif %}{% endfor %}
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+</table>

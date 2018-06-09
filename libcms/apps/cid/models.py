@@ -16,6 +16,7 @@ types = (
 
 class Type(models.Model):
     variant = models.IntegerField(choices=types, unique=True, db_index=True)
+
     def __unicode__(self):
         return self.get_variant_display()
 
@@ -47,7 +48,6 @@ class ImportantDate(models.Model):
         if self.event_title:
             lines.append(self.event_title)
 
-
         if self.geo_title:
             lines.append(self.geo_title)
 
@@ -58,18 +58,21 @@ class ImportantDate(models.Model):
 
     @staticmethod
     def get_ids_by_year(year, mod=5):
-        return ImportantDate.objects.raw('SELECT * FROM cid_importantdate where year(date) <= %s AND  mod((%s - year(date)), %s) = 0 ORDER BY date asc;', [year, year, mod])
+        return ImportantDate.objects.raw(
+            'SELECT * FROM cid_importantdate where year(date) <= %s AND  mod((%s - year(date)), %s) = 0 ORDER BY date asc;',
+            [year, year, mod])
 
 
-def update_doc(sender, **kwargs):
+def important_date_to_index_doc(idmodel):
 
-    idmodel = (kwargs['instance'])
     types = []
+
     for type in idmodel.type.all():
         types.append(type.get_variant_display())
 
     doc = {
         'id': idmodel.id,
+        'id_ls': idmodel.id,
     }
 
     if types:
@@ -95,7 +98,11 @@ def update_doc(sender, **kwargs):
 
     if idmodel.literature:
         doc['literature_t'] = strip_tags(idmodel.literature)
+    return doc
 
+def update_doc(sender, **kwargs):
+    idmodel = (kwargs['instance'])
+    doc = important_date_to_index_doc(idmodel)
 
     try:
         solr_conf = settings.CID['solr']
@@ -110,9 +117,7 @@ def update_doc(sender, **kwargs):
 post_save.connect(update_doc, sender=ImportantDate)
 
 
-
 def delete_doc(sender, **kwargs):
-
     idmodel = (kwargs['instance'])
     try:
         solr_conf = settings.CID['solr']
@@ -125,3 +130,22 @@ def delete_doc(sender, **kwargs):
 
 
 post_delete.connect(delete_doc, sender=ImportantDate)
+
+
+def index_important_dates():
+    solr_conf = settings.CID['solr']
+    solr = Solr(solr_conf['addr'])
+    collection = solr.get_collection(solr_conf['collection'])
+    docs = []
+    for idmodel in ImportantDate.objects.all().iterator():
+        doc = important_date_to_index_doc(idmodel)
+        docs.append(doc)
+        if len(docs) > 10:
+            collection.add(docs)
+            docs = []
+
+    if docs:
+        collection.add(docs)
+
+    collection.commit()
+
