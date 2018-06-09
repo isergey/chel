@@ -3,11 +3,15 @@ from django.db import transaction
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from guardian.decorators import permission_required_or_403
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
-from ..models import ImportantDate
-from forms import TypeForm, ImportantDateForm
+from .. import models
+from ..frontend import views
+from forms import TypeForm, ImportantDateForm, FilterForm
+from .. import search
+
 
 @login_required
 def index(request):
@@ -15,16 +19,55 @@ def index(request):
         return HttpResponseForbidden()
     return render(request, 'cid/administration/index.html')
 
+
 @login_required
 def id_list(request):
+    limit_on_page = 15
+    prnt = request.GET.get('print')
+    page = int(request.GET.get('page', 1))
+    if page < 1:
+        page = 1
+
     if not request.user.has_module_perms('cid'):
         return HttpResponseForbidden()
-    idates_count = ImportantDate.objects.all().count()
-    idates_page =  get_page(request, ImportantDate.objects.all().order_by('-id'))
-    return render(request, 'cid/administration/id_list.html', {
-        'idates_page': idates_page,
-        'idates_count': idates_count
+
+    idates_count = models.ImportantDate.objects.all().count()
+
+    attribute = '*'
+    value = '*'
+    type = ''
+
+    filter_form = FilterForm(request.GET)
+    if filter_form.is_valid():
+        attribute = filter_form.cleaned_data.get('attribute') or attribute
+        value = filter_form.cleaned_data.get('value') or value
+        type = filter_form.cleaned_data.get('type') or type
+
+    query = search.construct_query(attr=attribute, value=value, type=type)
+    result = search.search(query, start=limit_on_page * (page - 1), rows=limit_on_page, sort=['id_ls desc'])
+    paginator = Paginator(result, limit_on_page)
+
+    try:
+        paginator_page = paginator.page(page)
+    except PageNotAnInteger:
+        paginator_page = paginator.page(1)
+    except EmptyPage:
+        paginator_page = paginator.page(paginator.num_pages)
+
+    ids = [doc['id'] for doc in result.get_docs()]
+    idates = search.get_records(ids)
+    template = 'cid/administration/id_list.html'
+    if prnt:
+        template = 'cid/administration/print.html'
+    # idates_page = get_page(request, models.ImportantDate.objects.all().order_by('-id'))
+    return render(request, template, {
+        'idates': idates,
+        'num_found': result.get_num_found(),
+        'idates_page': paginator_page,
+        'idates_count': idates_count,
+        'filter_form': filter_form,
     })
+
 
 @login_required
 @permission_required_or_403('cid.add_importantdate')
@@ -41,11 +84,12 @@ def create_id(request):
         'form': form
     })
 
+
 @login_required
 @transaction.atomic
 @permission_required_or_403('cid.change_importantdate')
 def edit_id(request, id):
-    idate = get_object_or_404(ImportantDate, id=id)
+    idate = get_object_or_404(models.ImportantDate, id=id)
     if request.method == 'POST':
         form = ImportantDateForm(request.POST, instance=idate)
         if form.is_valid():
@@ -57,45 +101,16 @@ def edit_id(request, id):
         'form': form
     })
 
+
 @login_required
 @transaction.atomic
 @permission_required_or_403('cid.delete_importantdate')
 def delete_id(request, id):
-    idate = get_object_or_404(ImportantDate, id=id)
+    idate = get_object_or_404(models.ImportantDate, id=id)
     idate.delete()
     return redirect('cid:administration:id_list')
 
-#def theme_list(request):
-#    themes_page = get_page(request, Theme.objects.all().order_by('-id'))
-#    return render(request, 'cid/administration/theme_list.html', {
-#        'themes_page': themes_page
-#    })
 
-#def create_theme(request):
-#
-#    if request.method == 'POST':
-#        form = ThemeForm(request.POST)
-#        if form.is_valid():
-#            form.save()
-#            return redirect('cid:administration:theme_list')
-#    else:
-#        form = ThemeForm()
-#
-#    return render(request, 'cid/administration/create_theme.html', {
-#        'form': form
-#    })
-
-
-#def edit_theme(request, id):
-#    theme = get_object_or_404(Theme, id=id)
-#    if request.method == 'POST':
-#        form = ThemeForm(request.POST, instance=theme)
-#        if form.is_valid():
-#            form.save()
-#            return redirect('cid:administration:theme_list')
-#    else:
-#        form = ThemeForm(instance=theme)
-#
-#    return render(request, 'cid/administration/edit_theme.html', {
-#        'form': form
-#    })
+def index_important_dates(request):
+    models.index_important_dates()
+    return redirect('cid:administration:id_list')

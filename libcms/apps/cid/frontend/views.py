@@ -9,6 +9,7 @@ from common.pagination import get_page
 from ..models import ImportantDate, Type, update_doc
 from solr.solr import Solr, SolrError, escape
 
+
 def index(request):
     year = request.GET.get('year', None)
     month = request.GET.get('month', None)
@@ -23,7 +24,7 @@ def index(request):
         limit_on_page = 1000
 
     attr = request.GET.get('attr', None)
-    search=False
+    search = False
     q = request.GET.get('q', None)
     y = request.GET.get('y', None)
 
@@ -47,7 +48,6 @@ def index(request):
         except EmptyPage:
             events_page = paginator.page(paginator.num_pages)
 
-
         docs = result.get_docs()
         ids = []
         for doc in docs:
@@ -56,7 +56,7 @@ def index(request):
         events_page.object_list = events
         search = True
 
-            #events_page = result
+        # events_page = result
     if y:
         events_page = None
         events = ImportantDate.get_ids_by_year(year=y)
@@ -97,10 +97,9 @@ def index(request):
             events_page = get_page(request, ImportantDate.objects.filter(q).order_by('date'), limit_on_page)
             events = events_page.object_list
 
-
     now = datetime.datetime.now()
 
-    #themes = Theme.objects.all()
+    # themes = Theme.objects.all()
     types = Type.objects.all()
 
     template = 'cid/frontend/index.html'
@@ -110,11 +109,10 @@ def index(request):
         'now': now,
         'events': events,
         'events_page': events_page,
-        #'themes': themes,
+        # 'themes': themes,
         'types': types,
         'errors': errors
     })
-
 
 
 def detail(request, id):
@@ -184,7 +182,7 @@ def construct_query(attrs, values, optimize=True):
         # атрибуты, термы которых будут объеденын чере OR
         or_operators_attrs = [
             'all_t',
-            ]
+        ]
         if attr in or_operators_attrs:
             term_operator = u'OR'
 
@@ -203,7 +201,7 @@ def construct_query(attrs, values, optimize=True):
             continue
         all_fields = []
         if attr == 'all_t':
-            #all_fields.append(u'author_t:%s^22' % value)
+            # all_fields.append(u'author_t:%s^22' % value)
             all_fields.append(u'fio_t:%s^16' % value)
             all_fields.append(u'fio_tru:%s^8' % value)
             all_fields.append(u'org_title_t:%s^16' % value)
@@ -214,10 +212,10 @@ def construct_query(attrs, values, optimize=True):
             all_fields.append(u'geo_title_tru:%s^8' % value)
             all_fields.append(u'theme_t:%s^16' % value)
             all_fields.append(u'theme_tru:%s^8' % value)
-#            all_fields.append(u'subject_heading_tru:%s^4' % value)
-#            all_fields.append(u'subject_subheading_tru:%s^4' % value)
-#            all_fields.append(u'subject_keywords_tru:%s^4' % value)
-#            all_fields.append(u'all_tru:%s^2' % value)
+            #            all_fields.append(u'subject_heading_tru:%s^4' % value)
+            #            all_fields.append(u'subject_subheading_tru:%s^4' % value)
+            #            all_fields.append(u'subject_keywords_tru:%s^4' % value)
+            #            all_fields.append(u'all_tru:%s^2' % value)
             query.append(u'(%s)' % (u' %s ' % term_operator).join(all_fields))
         else:
             query.append(u'%s:%s' % (attr, value))
@@ -252,6 +250,7 @@ def terms_as_phrase(text_value):
 
 
 group_spaces = re.compile(ur'\s+')
+
 
 def terms_as_group(text_value, operator=u'OR'):
     """
