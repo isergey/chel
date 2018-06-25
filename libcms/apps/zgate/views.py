@@ -238,9 +238,9 @@ def save_document(request):
 
 import uuid
 from models import SearchRequestLog
-morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
-def log_search_request(request, catalog):
 
+def log_search_request(request, catalog):
+    morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
     def clean_term(term):
         """
         Возвращает кортеж из ненормализованног и нормализованного терма
