@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
+
+from django.conf.urls.static import static
 from django.conf.urls import patterns, include, url
 from django.contrib.admin.sites import site
 # Uncomment the next two lines to enable the admin:
@@ -38,21 +41,5 @@ urlpatterns = patterns('',
     # url(r'^sauth/', include('social_auth.urls')),
     # url(r'^captcha/', include('captcha.urls')),
     url(r'^sql/', include('explorer.urls')),
-)
+) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-
-
-from django.conf import settings
-
-
-urlpatterns += patterns('',
-    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.MEDIA_ROOT,
-        }),
-)
-
-urlpatterns += patterns('',
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.STATIC_ROOT,
-        }),
-)
