@@ -1,8 +1,5 @@
 # encoding: utf-8
-from docx import Document
-from docx.shared import Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-import tempfile
+
 from django.db import transaction
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
@@ -10,13 +7,13 @@ from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 
-from django.template import defaultfilters
 from common.pagination import get_page
 
 from .. import models
 from ..frontend import views
 from forms import TypeForm, ImportantDateForm, FilterForm
 from .. import search
+from .. import exporting
 
 
 @login_required
@@ -67,9 +64,10 @@ def id_list(request):
     template = 'cid/administration/id_list.html'
     if prnt:
         if prnt == 'docx':
-            with _idates_to_word(idates) as fl:
-                response = HttpResponse(fl,
-                                        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            with exporting._idates_to_word(idates) as fl:
+                response = HttpResponse(
+                    fl,
+                    content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
                 response['Content-Disposition'] = 'attachment; filename=dates.docx'
                 return response
         else:
@@ -130,43 +128,3 @@ def delete_id(request, id):
 def index_important_dates(request):
     models.index_important_dates()
     return redirect('cid:administration:id_list')
-
-
-def _idates_to_word(idates):
-    document = Document()
-
-    def style_run(run):
-        run.font.name = 'Times New Roman'
-        run.font.size = Pt(10)
-
-    for idate in sorted(idates, key=lambda x: x.date):
-        paragraph = document.add_paragraph('')
-        paragraph_format = paragraph.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-
-        format = []
-
-        if idate.count_day:
-            format.append('j')
-
-        if idate.count_month:
-            format.append('E')
-
-        if idate.count_year:
-            format.append('Y')
-
-        format = ' '.join(format)
-
-        run = paragraph.add_run((defaultfilters.date(idate.date, format) + u' г').replace(' ', u'\u00A0'))
-        run.bold = True
-        style_run(run)
-        run = paragraph.add_run(u'. ')
-        style_run(run)
-        run = paragraph.add_run(unicode(idate).strip().strip('.').strip())
-        style_run(run)
-        run = paragraph.add_run(u'.')
-        style_run(run)
-    doc_file = tempfile.TemporaryFile()
-    document.save(doc_file)
-    doc_file.seek(0)
-    return doc_file
