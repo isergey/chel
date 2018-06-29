@@ -7,7 +7,7 @@
         <li>
             <b>
                 {% if idate.count_day %}{{ idate.date|date:"d"}}{% endif %}
-                {% if idate.count_month %}{{ idate.date|date:"N"}} {% endif %}
+                {% if idate.count_month %}{{ idate.date|date:"E"}} {% endif %}
                 {% if idate.count_year %}{{ idate.date|date:"Y"}} г.{% endif %}
                 {{ idate }}
             </b>

@@ -37,6 +37,7 @@
             </div>
             <div class="teaser">{{ event.event_content.teaser }}</div>
             <div class="create_date">Начало: <b>{{ event.start_date }}</b></div>
+            <div class="create_date">Окончание: <b>{{ event.end_date }}</b></div>
             <div>
                 <a href="{% url 'events:frontend:delete_from_favorite' event.id %}"
                    class="btn btn-danger btn-small delete"

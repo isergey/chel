@@ -1,16 +1,19 @@
 # encoding: utf-8
+
 from django.db import transaction
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
+
 from common.pagination import get_page
 
 from .. import models
 from ..frontend import views
 from forms import TypeForm, ImportantDateForm, FilterForm
 from .. import search
+from .. import exporting
 
 
 @login_required
@@ -60,7 +63,16 @@ def id_list(request):
     idates = search.get_records(ids)
     template = 'cid/administration/id_list.html'
     if prnt:
-        template = 'cid/administration/print.html'
+        if prnt == 'docx':
+            with exporting._idates_to_word(idates) as fl:
+                response = HttpResponse(
+                    fl,
+                    content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                response['Content-Disposition'] = 'attachment; filename=dates.docx'
+                return response
+        else:
+            template = 'cid/administration/print.html'
+
     # idates_page = get_page(request, models.ImportantDate.objects.all().order_by('-id'))
     return render(request, template, {
         'idates': idates,

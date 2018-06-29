@@ -227,7 +227,7 @@ class PivotNode(object):
             className += u" pivot_root"
         ul = [u'<ul class="', className, u'">']
 
-        for child in sorted(self.pivot, key=lambda item: PivotNode.clean_value(item.value)):
+        for child in sorted(self.pivot, key=PivotNode.cmp):
             ul.append(child.to_li())
 
         ul.append(u'</ul>')
@@ -252,6 +252,34 @@ class PivotNode(object):
     @staticmethod
     def clean_value(value):
         return value.lower().strip().replace(u'"', u'').replace(u'.', u'').replace(u'«', u'').replace(u'»', u'')
+
+    @staticmethod
+    def cmp(x):
+        """
+        Сортировка по месяцам и по числам. Если значение не является месяцем или числом, сортировка по строкам
+        """
+        value = PivotNode.clean_value(x.value)
+        t = {
+            u'январь': 'a',
+            u'февраль': 'b',
+            u'март': 'c',
+            u'апрель': 'd',
+            u'май': 'e',
+            u'июнь': 'f',
+            u'июль': 'g',
+            u'август': 'h',
+            u'сентябрь': 'i',
+            u'октябрь': 'j',
+            u'ноябрь': 'k',
+            u'декабрь': 'l',
+
+        }
+        res = t.get(value, value)
+        try:
+            return float(res)
+        except ValueError:
+            pass
+        return res
 
 # def draw_pivot_tree(pivot):
 #     SEARCH_PATH = reverse('ssearch:frontend:index')
@@ -283,7 +311,7 @@ def build_pivot_tree(pivot):
 
 
 def collections():
-    pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s'
+    pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s,collection5_s,collection6_s,'
     uc = init_solr_collection('uc')
     faset_params = FacetParams()
     faset_params.fields = ['collection_s']

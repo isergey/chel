@@ -19,7 +19,8 @@
             <a class="btn btn-warning" href="{% url 'cid:administration:id_list' %}">Очистить фильтр</a>
             <span>найдено: {{ num_found }}</span>
         {% endif %}
-        <a href="{% add_get print='1' %}" target="_blank">Печать</a>
+        <a class="btn btn-small" href="{% add_get print='print' %}" target="_blank">Печать</a>
+        <a class="btn btn-small" href="{% add_get print='docx' %}">Скачать DOCX</a>
         <a title="Переиндексация записей в поисковике. Может занять длительное время"
            class="btn btn-info" style="float: right"
            href="{% url 'cid:administration:index_important_dates' %}"

@@ -8,7 +8,7 @@ from django.db.models import Q
 from common.pagination import get_page
 from ..models import ImportantDate, Type, update_doc
 from solr.solr import Solr, SolrError, escape
-
+from .. import exporting
 
 def index(request):
     year = request.GET.get('year', None)
@@ -104,7 +104,15 @@ def index(request):
 
     template = 'cid/frontend/index.html'
     if prnt:
-        template = 'cid/frontend/print.html'
+        if prnt == 'docx':
+            with exporting._idates_to_word(events) as fl:
+                response = HttpResponse(
+                    fl,
+                    content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                response['Content-Disposition'] = 'attachment; filename=dates.docx'
+                return response
+        else:
+            template = 'cid/frontend/print.html'
     return render(request, template, {
         'now': now,
         'events': events,
