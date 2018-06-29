@@ -1,0 +1,28 @@
+<style type="text/css">
+    .controls ul li label input {
+        display: inline;
+    }
+    .controls ul {
+        list-style: none;
+    }
+</style>
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+{% for field in form.visible_fields %}
+    <div class="control-group {% if field.errors %}error{% endif %}">
+
+        {% if field.field.required %}<label class="control-label" for="{{ field.auto_id }}"><b>{{ field.label }} *</b></label>
+        {% else %}
+            <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+        {% endif %}
+        <div class="controls">
+            {{ field }}
+            {% if field.errors %}
+                {{ field.errors }}
+            {% endif %}
+            <p class="help-block">{{ field.help_text }}</p>
+        </div>
+
+    </div>
+{% endfor %}

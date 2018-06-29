@@ -1,0 +1,30 @@
+<style>
+    ul.news {
+        list-style: none;
+        margin: 0;
+    }
+    .news .title{
+        font-size: 14px;
+        /*font-weight: bold;*/
+    }
+    .news .teaser{
+        padding: 5px 0;
+    }
+    .news .create_date{
+        color: #8c8c8c;
+    }
+</style>
+
+<ul class="news">
+    {% for news in news_list %}
+        {% if news.avatar_img_name %}
+            <img src="{{ MEDIA_URL }}uploads/newsavatars/{{ news.avatar_img_name }}" alt="" style="float: left; margin-right: 5px;">
+        {% endif %}
+        <div class="title"><a href="{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a></div>
+        <div class="teaser">{{ news.news_content.teaser }}</div>
+        <div class="create_date">{{ news.create_date|date:"j E Y" }}</div>
+        <div style="clear: both;"></div>
+        {% if not forloop.last %}<hr/>{% endif %}
+    {% endfor %}
+</ul>
+

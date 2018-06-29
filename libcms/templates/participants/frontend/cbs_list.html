@@ -1,7 +1,7 @@
 {% extends 'themed_frontend_base.html' %}
 {% load pagination_tag %}
 {% block title %}Библиотеки{% endblock %}
-{% block index_content %}
+{% block content %}
     <style>
         ul.participants li {
             margin-bottom: 10px;
@@ -9,7 +9,7 @@
     </style>
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+            <li><a href="{% url 'index:frontend:index' %}">asdasdasdasd</a> <span class="divider">/</span></li>
             {% if filter %}
                 <li><a href="{% url 'participants:frontend:index' %}">Библиотеки</a><span class="divider">/</span></li>
                 <li class="active">{{ filter_title }}</li>

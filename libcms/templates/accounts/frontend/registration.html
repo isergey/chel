@@ -1,0 +1,33 @@
+{% extends 'index/frontend/index.html' %}
+{% load i18n %}
+{% block title %}
+    Регистрация
+{% endblock %}
+{% block content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">Регистрация</span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">Регистрация</h1>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="content">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% include 'frontend/base_form_fields.html' %}
+                            <button type="submit" class="btn">Регистрация</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <main class="main main_bg-white">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    {% if request.GEckT.ba %}
+                        <li>
+                            <a href="{{ request.GET.back }}">Афиша событий</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'events:frontend:index' %}">Афиша событий</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <span class="crumb__current">
+                        {{ content.title }}
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">{{ content.title }}</h1>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <p class="content-teaser">
+                        {{ content.teaser }}
+                    </p>
+                    <div class="content">
+                        <p><b>Место проведения</b>: {{ event.address }}<br/></p>
+                        <p><b>Начало</b>: {{ event.start_date }}</p>
+                        {{ content.content|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

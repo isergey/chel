@@ -1,0 +1,275 @@
+{% extends 'themed_frontend_base.html' %}
+{% load pagination_tag %}
+{% block title %}Детальная информация{% endblock %}
+{% block index_content %}
+    <div class="row">
+        <div class="span12">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+                <li>
+                    <a href="{% url 'search:frontend:index' %}">Поиск по ресурсам</a> <span class="divider">/</span>
+                </li>
+                {% if request.GET.back %}
+                    <li>
+                        <a href="{{ request.GET.back }}">Результаты</a> <span class="divider">/</span>
+                    </li>
+                {% endif %}
+                <li><a class="current">Детальная информация</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span9">
+            {{ record.libcard|safe }}
+
+                {% with annotation=record.object.330.0.a.0.get_data %}
+                    {% if annotation %}
+                        <hr/>
+                        <h4>Аннотация:</h4>
+                        <p>{{ annotation }}</p>
+                    {% endif %}
+                {% endwith %}
+
+                <div id="holdings_info"></div>
+                {#                {% if record.source.onwer %}#}
+                {#                    <hr/>#}
+                {#                    <h4>Входит в состав:</h4>#}
+                {#                    <p>{{ record.source.onwer }}</p>#}
+                {#                    <p>{{ record.source.union }}</p>#}
+                {#                {% endif %}#}
+                {% if linked_records.linked_records %}
+                    <hr/>
+                    <h4>Содержит:</h4>
+                    <ul style="padding: 0; list-style: none">
+                        {% for linked_record in linked_records.linked_records %}
+                            <li>
+                                <div>
+                                    {{ forloop.counter }}. <a target="_blank"
+                                                              href="{% url 'search:frontend:detail' %}?id={{ linked_record.model.record_id }}">
+                                    {{ linked_record.title.title }}
+                                </a>
+                                </div>
+                                {% if inked_record.attrs.author %}
+                                    <div>Автор:
+                                        {% for author in linked_record.attrs.author %}{{ author }}{% endfor %}</div>
+                                {% endif %}
+
+                                <div>
+                                    {% if linked_record.attrs.date_of_publication %}
+                                        {% if linked_record.attrs.document_type.0 != 'статья' %}
+                                            Дата публикации: {{ linked_record.attrs.date_of_publication.0 }}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if linked_record.attrs.document_type %}
+                                        Тип документа: {{ linked_record.attrs.document_type.0 }}
+                                    {% endif %}
+                                    {{ linked_record.attrs.url }}
+                                </div>
+                                {% if not forloop.last %}
+                                    <hr/>{% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% pagination linked_records.result_page %}
+                {% endif %}
+                {% if record.cover %}
+                    <img style="display: block; border: #eee solid 3px; margin-top: 20px"
+                         src="{{ record.cover.large }}"/>
+                {% endif %}
+        </div>
+    </div>
+{#    <div class="grid grid-pad">#}
+{#        <div class="col-9-12 border-left-pages">#}
+{#            <div class="content ">#}
+{#                <ul class="breadcrumbs-one" style="margin-bottom: 20px">#}
+{#                    <li><a href="{% url 'index:frontend:index' %}"><i class="fa fa-home"></i></a></li>#}
+{#                    <li><a href="{% url 'search:frontend:index' %}"><i class="fa fa-angle-right"></i>&nbsp;&nbsp; Поиск#}
+{#                        по ресурсам</a></li>#}
+{#                    {% if request.GET.back %}#}
+{#                        <li>#}
+{#                            <a href="{{ request.GET.back }}"><i class="fa fa-angle-right"></i>&nbsp;&nbsp;#}
+{#                                Результаты</a>#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                    <li><a class="current"><i class="fa fa-angle-right"></i>&nbsp;&nbsp; Детальная информация</a></li>#}
+{#                </ul>#}
+{#                {{ record.libcard|safe }}#}
+{##}
+{#                {% with annotation=record.object.330.0.a.0.get_data %}#}
+{#                    {% if annotation %}#}
+{#                        <hr/>#}
+{#                        <h4>Аннотация:</h4>#}
+{#                        <p>{{ annotation }}</p>#}
+{#                    {% endif %}#}
+{#                {% endwith %}#}
+{##}
+{#                <div id="holdings_info"></div>#}
+                {#                {% if record.source.onwer %}#}
+                {#                    <hr/>#}
+                {#                    <h4>Входит в состав:</h4>#}
+                {#                    <p>{{ record.source.onwer }}</p>#}
+                {#                    <p>{{ record.source.union }}</p>#}
+                {#                {% endif %}#}
+{#                {% if linked_records.linked_records %}#}
+{#                    <hr/>#}
+{#                    <h4>Содержит:</h4>#}
+{#                    <ul style="padding: 0; list-style: none">#}
+{#                        {% for linked_record in linked_records.linked_records %}#}
+{#                            <li>#}
+{#                                <div>#}
+{#                                    {{ forloop.counter }}. <a target="_blank"#}
+{#                                                              href="{% url 'search:frontend:detail' %}?id={{ linked_record.model.record_id }}">#}
+{#                                    {{ linked_record.title.title }}#}
+{#                                </a>#}
+{#                                </div>#}
+{#                                {% if inked_record.attrs.author %}#}
+{#                                    <div>Автор:#}
+{#                                        {% for author in linked_record.attrs.author %}{{ author }}{% endfor %}</div>#}
+{#                                {% endif %}#}
+{##}
+{#                                <div>#}
+{#                                    {% if linked_record.attrs.date_of_publication %}#}
+{#                                        {% if linked_record.attrs.document_type.0 != 'статья' %}#}
+{#                                            Дата публикации: {{ linked_record.attrs.date_of_publication.0 }}#}
+{#                                        {% endif %}#}
+{#                                    {% endif %}#}
+{#                                    {% if linked_record.attrs.document_type %}#}
+{#                                        Тип документа: {{ linked_record.attrs.document_type.0 }}#}
+{#                                    {% endif %}#}
+{#                                    {{ linked_record.attrs.url }}#}
+{#                                </div>#}
+{#                                {% if not forloop.last %}#}
+{#                                    <hr/>{% endif %}#}
+{#                            </li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                    {% pagination linked_records.result_page %}#}
+{#                {% endif %}#}
+{#                {% if record.cover %}#}
+{#                    <img style="display: block; border: #eee solid 3px; margin-top: 20px"#}
+{#                         src="{{ record.cover.large }}"/>#}
+{#                {% endif %}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col-3-12 border-left-pages">#}
+{#            <div class="content ">#}
+{#                Сервисы:#}
+{#                <div class="detail-block-button">#}
+{#                    {% if request.user.is_authenticated %}#}
+{##}
+{#                        <a href="#1" class="save_doc_btn appbtn btn-border btn-blue">#}
+{#                            <i class="fa fa-bookmark" style="font-size: 18px"></i>&nbsp;&nbsp Сохранить#}
+{#                        </a>#}
+{#                    {% else %}#}
+{#                        <div title="Для сохранения документа в избранном, необходимо выполнить вход в свою учетную запись">#}
+{#                            <a href="#1" class="btn btn-primary disabled">#}
+{#                                <i class="fa fa-bookmark" style="font-size: 18px"></i>&nbsp;&nbsp Сохранить#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{#                    <hr/>#}
+{#                    Поделиться:#}
+{#                    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="small"#}
+{#                         data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir"#}
+{#                         data-yashareTheme="counter"></div>#}
+{#                    <hr/>#}
+{##}
+{#                    {% if request.user.is_staff or resquest.user.is_superuser %}#}
+{#                        <a href="#rusmarc" class="btn" data-toggle="modal" data-target="#rusmarcModal">MARC запись</a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+    {#    {% if request.user.is_staff or resquest.user.is_superuser %}#}
+    {#        <div class="modal" id="rusmarcModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"#}
+    {#             aria-hidden="true">#}
+    {#            <div class="modal-dialog" style="width: 100%; max-width: 800px">#}
+    {#                <div class="modal-content">#}
+    {#                    <div class="modal-body">#}
+    {#                        {{ record.object.to_html|safe }}#}
+    {#                    </div>#}
+    {#                    <div class="modal-footer">#}
+    {#                        <button type="button" class="btn btn-border btn-blue" data-dismiss="modal">Закрыть</button>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    {% endif %}#}
+    {#    <div class="modal" id="saveDocModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+    {#        <div class="modal-dialog" style="width: 100%; max-width: 800px">#}
+    {#            <div class="modal-content">#}
+    {#                <div class="modal-header">#}
+    {#                    <h4 class="modal-title">Добавление записи в избранное</h4>#}
+    {#                </div>#}
+    {#                <div class="modal-body">#}
+    {#                    <form id="saveDocForm">#}
+    {#                        <div class="form-group">#}
+    {#                            <input type="hidden" name="genid" value="{{ record.model.record_id }}">#}
+    {#                            <label>Комментарии</label>#}
+    {#                            <textarea class="form-control" rows="3" name="comments"></textarea>#}
+    {#                        </div>#}
+    {#                        <button type="submit" class="btn btn-border btn-blue">Добавить</button>#}
+    {#                        <a href="#1" class="btn" data-dismiss="modal">Закрыть</a>#}
+    {#                    </form>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+
+
+{% endblock %}
+{#{% block javascript %}#}
+{#    {{ block.super }}#}
+{#    <script>#}
+{#        (function () {#}
+{#            $(function () {#}
+{#                var $saveDocModal = $('#saveDocModal');#}
+{#                var $saveDocForm = $('#saveDocForm');#}
+{##}
+{#                $('.save_doc_btn').on('click', function () {#}
+{#                    $saveDocModal.modal();#}
+{#                });#}
+{##}
+{#                $saveDocForm.on('submit', function (event) {#}
+{#                    event.preventDefault();#}
+{#                    $.ajax({#}
+{#                        type: "POST",#}
+{#                        url: '{% url 'mydocs:frontend:save' %}',#}
+{#                        data: $saveDocForm.serialize()#}
+{#                    }).done(function (data) {#}
+{#                        alert('Докумет успешно сохранён');#}
+{#                        $saveDocModal.modal('hide');#}
+{#                    }).error(function (error) {#}
+{#                        alert('При сохранении возникла ошибка');#}
+{#                    });#}
+{#                });#}
+{#            });#}
+{#        })();#}
+{#    </script>#}
+{#    {% if holders %}#}
+{#        <script type="text/jsx" src="{{ STATIC_URL }}ruslan_cabinet/js/ruslan_humanize.js"></script>#}
+{#        <script type="text/jsx" src="{{ STATIC_URL }}ruslan_cabinet/js/holdings_info.js"></script>#}
+{#        <script type="text/jsx">#}
+{#            var SEARCH_DETAIL_CONFIG = {#}
+{#                docId: '{{ local_number }}',#}
+{#                urls: {#}
+{#                    holdings: '{% url 'ruslan_cabinet:api:holdings' %}'#}
+{#                }#}
+{#            }#}
+{#            $(function () {#}
+{#                Ruslan.HoldingsInfo({#}
+{#                    element: document.getElementById('holdings_info'),#}
+{#                    recordId: '{{ local_number }}',#}
+{#                    isAuthUser: {% if is_reader %}true{% else %}false{% endif %},#}
+{#                    urls: {#}
+{#                        holdings: '{% url 'ruslan_cabinet:api:holdings' %}',#}
+{#                        makeReservation: '{% url 'ruslan_cabinet:api:make_reservation'%}'#}
+{#                    }#}
+{#                });#}
+{#            });#}
+{#        </script>#}
+{#    {% endif %}#}
+{#    <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>#}
+{##}
+{#{% endblock %}#}

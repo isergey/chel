@@ -8,137 +8,483 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% block index_content %}
-    <style>
-    .right, .center, .left {
-        float: left;
-        margin-top: 10px;
-        /*margin-left: 0px;*/
-    }
-    .right, .left {
-        width: 160px;
-    }
-    .center {
-        width: 620px;
-    }
-    </style>
-    <div class="row">
-    <div class="span12">
-    <div class="right">
-        <div id="catalogs_menu" class="left_block">
+    {% block content %}
+        <main class="main">
+            <div class="banner-wrap">
+                <div class="container">
+                    <div class="banner">
+                        <div class="search-main">
+                            <form id="searchForm" role="search">
+                                <div class="search-main__input-wrap">
+                                    <input class="search-main__input search-main__input_plh-blue"
+                                           placeholder="Поиск по электронному каталогу" name="i1">
+                                    <input type="hidden" name="sa1" value="allIndexes">
+                                    <button class="search-main__btn" type="submit" title="Найти"></button>
+                                </div>
+                                <ul class="search-main__nav">
+                                    <li class="search-main__nav-item">
+                                        <a class="search-main__nav-link" href="{% url 'ssearch:frontend:index' %}">Электронная
+                                            библиотека</a>
+                                    </li>
+                                    <li class="search-main__nav-item">
+                                        <a class="search-main__nav-link"
+                                           href="/ru/pages/readers/visiting/readingrooms/summer/">Электронный каталог
+                                            ЧОУНБ</a>
+                                    </li>
+                                    <li class="search-main__nav-item">
+                                        <a class="search-main__nav-link"
+                                           href="http://opac.chelreglib.ru/cgiopac/opacg/opac.exe?arg0=SCLCR&arg1=reader&TypeAccess=PayAccess"
+                                           target="_blank" rel="noopener">Сводный каталог библиотек Челябинской
+                                            области</a>
+                                    </li>
+                                    <li class="search-main__nav-item">
+                                        <a class="search-main__nav-link"
+                                           href="https://yandex.ru/sitesearch?text=*&searchid=1969368"
+                                           target="_blank" rel="noopener">Поиск по сайту</a>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
+                        <div class="banner__divider"></div>
+                        <div class="banner__row">
+                            <div class="banner__col-slider">
+                                <div class="slider">
+                                    <div class="slider__item">
+                                        <div class="slider__title">Стань читателем онлайн!</div>
+                                        <div class="slider__teaser">
+                                            Зарегистрируйся и получи доступ к Виртуальному абонементу.
+                                        </div>
+                                        <div class="slider__link-wrap">
+                                            <a class="btn btn_outline" href="#">Подробнее</a>
+                                        </div>
+                                    </div>
+                                    <div class="slider__item">
+                                        <div class="slider__title">Бесплатные юридические консультации</div>
+                                        <div class="slider__teaser">
+                                            В Челябинской областной универсальной научной библиотеке работает «Центр
+                                            поддержки
+                                            научных исследований»
+                                        </div>
+                                        <div class="slider__link-wrap">
+                                            <a class="btn btn_outline" href="#">Подробнее</a>
+                                        </div>
+                                    </div>
+                                    <div class="slider__item">
+                                        <div class="slider__title">Русский пейзаж в Публичной библиотеке</div>
+                                        <div class="slider__teaser">
+                                            3 мая в Малом выставочном зале ЧОУНБ состоится открытие выставки мастера
+                                            пейзажной
+                                            живописи Ивана Демьяновского «Музыка природы».
+                                        </div>
+                                        <div class="slider__link-wrap">
+                                            <a class="btn btn_outline" href="#">Подробнее</a>
+                                        </div>
 
-            {#                <div style="font-size: 16px; color: #D11314; padding-top: 5px;">Каталоги</div>#}
-            <h3 style="color: #D11314; font-weight: normal; margin-top: 3px;">Каталоги</h3>
-            <form action="{% url 'ssearch:frontend:index' %}" method="GET" style="margin: 0">
-                <div id="search_panel">
-                    <input placeholder="Поиск в ЭК ЧОУНБ" type="text" name="q"/><button class="search_btn" ><i class="icon-search"></i></button>
-                    <input type="hidden" name="attr" value="all_t"/>
-                </div>
-            </form>
-            <ul>
-                <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a></li>
-{#                <li><a href="{% url 'zgate_slug_index' 'group1' %}">Челябинская ОУНБ</a></li>#}
-{#                <li><a href="{% url 'zgate_slug_index' 'group2' %}">Библиотеки Челябинской области</a></li>#}
-            </ul>
-        </div>
-        <div class="left_block" style="padding-top: 20px ">
-            <form action="http://yandex.ru/sitesearch" id="site_search_form" method="GET">
-                <div id="search_panel">
-                    <input placeholder="Поиск по сайту" type="text" name="text"/><button class="search_btn" ><i class="icon-search"></i></button>
-                    <input type="hidden" name="searchid" value="1969368"/>
-                </div>
-{#                <div>#}
-{#                    <input class="search_type" type="radio"  name="search_type" value="site" checked="checked"> поиск по сайту<br/>#}
-{#                    <input class="search_type" type="radio" name="search_type" value="catalog"> поиск по каталогам#}
-{#                </div>#}
-{#                <script type="text/javascript">#}
-{#                var searchType = 'site';#}
-{#                $('.search_type').change(function(){#}
-{#                    searchType = $(this).val();#}
-{#                });#}
-{#                $('#site_search_form').submit(function(){#}
-{#                    if (searchType == 'site'){#}
-{#                        $(this).attr('action', 'http://yandex.ru/sitesearch')#}
-{#                    }else if (searchType == 'catalog'){#}
-{#                        $(this).attr('action', '{% url 'zgate_simple_search' %}')#}
-{#                    }#}
-{#                    else{#}
-{#                        return false;#}
-{#                    }#}
-{##}
-{#                });#}
-{#                </script>#}
-            </form>
-{#            <div class="ya-site-form ya-site-form_inited_no" onclick="return {'bg': '#ffffff', 'target': '_blank', 'language': 'ru', 'suggest': true, 'tld': 'ru', 'site_suggest': true, 'action': 'http://yandex.ru/sitesearch', 'webopt': false, 'fontsize': 12, 'arrow': true, 'fg': '#000000', 'searchid': '1915725', 'logo': 'rb', 'websearch': false, 'type': 2}"><form action="http://yandex.ru/sitesearch" method="get" target="_blank"><input type="hidden" name="searchid" value="1915725" /><input type="hidden" name="l10n" value="ru" /><input type="hidden" name="reqenc" value="" /><input type="text" name="text" value="" /><input type="submit" value="Найти" /></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;(' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1&&(e.className+=' ya-page_js_yes');s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>#}
-        </div>
-        <div class="left_block" style="padding-top: 20px; overflow-x: hidden ">
-            {% render_page_content 'common/left_side' %}
-        </div>
-
-
-{#        <div class="left_block" style="padding-top: 20px ">#}
-{#            {% include 'tags.html' %}#}
-{#        </div>#}
-    </div>
-    <div class="center">
-        <div style="padding: 0 5px;">
-            {% block content %}
-{#                {% cache 60 'news' LANGUAGE_CODE %}#}
-                <div class="news">
-                        <h3 style="color: #D11314; font-weight: normal;">Новости ЧОУНБ<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
-
-                            {% news_feed 4 0 %}
-
-                    <hr/>
-                        <a href="{% url 'news:frontend:index' %}?type=chel">Остальные новости >></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="banner__col-ask">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">Спроси библиотекаря</h2>
+                                        <p class="card-detail">Ищете информацию? Подбираете литературу? Есть вопросы о
+                                            работе
+                                            библиотеки? Виртуальная справочная служба ЧОУНБ поможет.</p>
+                                        <ul class="card-nav">
+                                            <li class="card-nav__item">
+                                                <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать
+                                                    вопрос</a>
+                                            </li>
+                                            <li class="card-nav__item">
+                                                <a class="btn btn_link" href="{% url 'ask_librarian:frontend:index' %}">Все
+                                                    вопросы</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <hr/>
-                    <div class="news">
-                        <h3 style="color: #D11314; font-weight: normal;">Новости библиотек области<a href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;" src="{{ STATIC_URL }}images/icons/48x48/feed.png" alt="Подписаться"></a></h3>
+                </div>
+            </div>
+            <section class="section container">
+                <div class="section-header">
+                    <h3 class="section__title">Новости ЧОУНБ</h3>
+                    <ul class="section-nav section-nav_left">
+                        <li class="section-nav__item">
+                            <a class="section-nav__link section-nav__link_rss"
+                               href="{% url 'news:frontend:rss' %}">RSS</a>
+                        </li>
+                        <li class="section-nav__item">
+                            <a class="section-nav__link" href="{% url 'news:frontend:index' %}?type=chel">Все
+                                новости</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-list card-list_4">
+                    {% news_feed 4 0 %}
+                </div>
+            </section>
+            <div class="main__row container">
+                <div class="main__col">
+                    <section class="section">
+                        <div class="section__divider"></div>
+                        <div class="section-header">
+                            <h3 class="section__title">Новости библиотек области</h3>
+                            <ul class="section-nav">
+                                <li class="section-nav__item">
+                                    <a class="section-nav__link section-nav__link_rss"
+                                       href="{% url 'news:frontend:rss' %}">RSS</a>
+                                </li>
+                                <li class="section-nav__item">
+                                    <a class="section-nav__link" href="{% url 'news:frontend:index' %}?type=lib">Все
+                                        новости</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-list card-list_2">
                             {% news_feed 4 1 %}
-                    <hr/>
-                        <a href="{% url 'news:frontend:index' %}?type=lib">Остальные новости >></a>
+                        </div>
+                    </section>
+                </div>
+                <aside class="main__col main__col_aside">
+                    <aside class="card">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <h2 class="card-title">Афиша мероприятий</h2>
+                                <ul class="card-header-nav">
+                                    <li class="card-header-nav__item">
+                                        <a class="card-header-nav__link" href="{% url 'events:frontend:index' %}">Все мероприятия</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% events_calendar %}
+                        </div>
+                    </aside>
+                    <aside class="card card_mt-5">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <h3 class="card-title">Голосование</h3>
+                                <ul class="card-header-nav">
+                                    <li class="card-header-nav__item">
+                                        <a class="card-header-nav__link" href="#">Архив опросов</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% poll_form %}
+                            <ul class="card-nav">
+                                <li class="card-nav__item">
+                                    <a class="btn" href="#">Ответить</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </aside>
+                </aside>
+            </div>
+            <aside class="section container">
+                <div class="card-list card-list_link">
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-1" href="/ru/pages/readers/readcenter/book_exhibitions/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Книжные выставки
+                                </h2>
+                            </div>
+                        </a>
                     </div>
-{#                {% endcache %}#}
-            {% endblock %}
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-2" href="/ru/pages/readers/visiting/readingrooms/summer/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Летний читальный зал
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-3"
+                           href="/dl/?code=kp2018066&id=6b06051b5ef3b1fe4797e09320c88e43">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Календарь знаменательных и памятных дат
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-4"
+                           href="/media/files/prof/morgenshternovskie_chteniya/morgenshternovskie_chteniya_2018_banner.jpg">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Моргенштерновские чтения
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-5"
+                           href="/ru/pages/about/120_let_chounb/southural_bookfair-2018/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Южноуральская книжная ярмарка 2018
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-6"
+                           href="/media/files/about/documents/koncepciya_razvitiya_chounb_do_2025.pdf">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Концепция развития ЧОУНБ
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-7"
+                           href="http://litkarta.chelreglib.ru/" target="_blank">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Литературная карта Челябинской области
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-8" href="/ru/pages/resources/elres/internet-projects/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Интернет-проекты ЧОУНБ
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-9" href="/ru/pages/readers/visiting/kibo/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    КИБО - мобильная библиотека
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-10" href="/ru/pages/readers/visiting/dostupnaya-sreda/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Доступная среда в ЧОУНБ
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-11" href="/ru/pages/about/lib/quality/anketa/">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Независимая оценка качества
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-list__item">
+                        <a class="card card_link card_bl-12" href="http://bus.gov.ru/pub/info-card/63934" target="_blank" rel="noopener">
+                            <div class="card-body">
+                                <h2 class="card-title card-title_td-lc">
+                                    Результат независимой оценки качества оказания услуг
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </main>
 
-        </div>
-    </div>
-    <div class="left">
-        <div class="right_block">
-            <h3 style="color: #D11314; font-weight: normal;margin: 5px 0 0 0">Личный кабинет</h3>
-            {% if request.user.is_authenticated %}
-                Вы вошли как: {{ request.user.username }} <a href="{% url 'accounts:frontend:logout' %}">Выйти</a>
-                <ul>
-                    <li><a href="{% url 'orders:frontend:index' %}">Мои заказы</a></li>
-                    <li><a href="{% url 'events:frontend:favorit_events' %}">Мои события</a></li>
-                    <li><a href="{% url 'zgate_saved_document_list' %}">Мои документы</a></li>
-                    <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>
-                </ul>
-            {% else %}
-                <a href="{% url 'accounts:frontend:login' %}">Войти</a> <a href="{% url 'accounts:frontend:registration' %}">Зарегистрироваться</a>
-            {% endif %}
-        </div>
-        <div class="right_block" style="padding: 5px 0 5px 5px; height: 68px;">
-            <a href="{% url 'ask_librarian:frontend:index' %}"> <img src="{{ STATIC_URL }}images/theme/vss.png" alt="Виртуальнаясправочная служба" ></a>
-{#            <div style="position: relative;">Виртуальная <br/> справочная служба</div>#}
-        </div>
-        <div class="right_block">
-            <div class="events">
-                <h3 style="color: #D11314; font-weight: normal;">Афиша мероприятий</h3>
-                {#                    <div style="font-size: 16px; color: #D11314; padding: 20px 0 10px 0;">Афиша мероприятий</div>#}
-{#                {% cache 60 'events' LANGUAGE_CODE %}#}
-                    {% events_calendar %}
-{#                {% endcache %}#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {#    Old html#}
+        <style>
+            .right, .center, .left {
+                float: left;
+                margin-top: 10px;
+                /*margin-left: 0px;*/
+            }
+
+            .right, .left {
+                width: 160px;
+            }
+
+            .center {
+                width: 620px;
+            }
+        </style>
+        <div class="row">
+            <div class="span12">
+                <div class="right">
+                    <div id="catalogs_menu" class="left_block">
+
+                        {#                <div style="font-size: 16px; color: #D11314; padding-top: 5px;">Каталоги</div>#}
+                        <h3 style="color: #D11314; font-weight: normal; margin-top: 3px;">Каталоги</h3>
+                        <form action="{% url 'ssearch:frontend:index' %}" method="GET" style="margin: 0">
+                            <div id="search_panel">
+                                <input placeholder="Поиск в ЭК ЧОУНБ" type="text" name="q"/>
+                                <button class="search_btn"><i class="icon-search"></i></button>
+                                <input type="hidden" name="attr" value="all_t"/>
+                            </div>
+                        </form>
+                        <ul>
+                            <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a></li>
+                            {#                <li><a href="{% url 'zgate_slug_index' 'group1' %}">Челябинская ОУНБ</a></li>#}
+                            {#                <li><a href="{% url 'zgate_slug_index' 'group2' %}">Библиотеки Челябинской области</a></li>#}
+                        </ul>
+                    </div>
+                    <div class="left_block" style="padding-top: 20px ">
+                        <form action="http://yandex.ru/sitesearch" id="site_search_form" method="GET">
+                            <div id="search_panel">
+                                <input placeholder="Поиск по сайту" type="text" name="text"/>
+                                <button class="search_btn"><i class="icon-search"></i></button>
+                                <input type="hidden" name="searchid" value="1969368"/>
+                            </div>
+                            {#                <div>#}
+                            {#                    <input class="search_type" type="radio"  name="search_type" value="site" checked="checked"> поиск по сайту<br/>#}
+                            {#                    <input class="search_type" type="radio" name="search_type" value="catalog"> поиск по каталогам#}
+                            {#                </div>#}
+                            {#                <script type="text/javascript">#}
+                            {#                var searchType = 'site';#}
+                            {#                $('.search_type').change(function(){#}
+                            {#                    searchType = $(this).val();#}
+                            {#                });#}
+                            {#                $('#site_search_form').submit(function(){#}
+                            {#                    if (searchType == 'site'){#}
+                            {#                        $(this).attr('action', 'http://yandex.ru/sitesearch')#}
+                            {#                    }else if (searchType == 'catalog'){#}
+                            {#                        $(this).attr('action', '{% url 'zgate_simple_search' %}')#}
+                            {#                    }#}
+                            {#                    else{#}
+                            {#                        return false;#}
+                            {#                    }#}
+                            {##}
+                            {#                });#}
+                            {#                </script>#}
+                        </form>
+                        {#            <div class="ya-site-form ya-site-form_inited_no" onclick="return {'bg': '#ffffff', 'target': '_blank', 'language': 'ru', 'suggest': true, 'tld': 'ru', 'site_suggest': true, 'action': 'http://yandex.ru/sitesearch', 'webopt': false, 'fontsize': 12, 'arrow': true, 'fg': '#000000', 'searchid': '1915725', 'logo': 'rb', 'websearch': false, 'type': 2}"><form action="http://yandex.ru/sitesearch" method="get" target="_blank"><input type="hidden" name="searchid" value="1915725" /><input type="hidden" name="l10n" value="ru" /><input type="hidden" name="reqenc" value="" /><input type="text" name="text" value="" /><input type="submit" value="Найти" /></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;(' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1&&(e.className+=' ya-page_js_yes');s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>#}
+                    </div>
+                    <div class="left_block" style="padding-top: 20px; overflow-x: hidden ">
+                        {% render_page_content 'common/left_side' %}
+                    </div>
+
+
+                    {#        <div class="left_block" style="padding-top: 20px ">#}
+                    {#            {% include 'tags.html' %}#}
+                    {#        </div>#}
+                </div>
+                <div class="center">
+                    <div style="padding: 0 5px;">
+                        {#                    {% block content %}#}
+                        {#                {% cache 60 'news' LANGUAGE_CODE %}#}
+                        <div class="news">
+                            <h3 style="color: #D11314; font-weight: normal;">Новости ЧОУНБ<a
+                                    href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;"
+                                                                               src="{{ STATIC_URL }}images/icons/48x48/feed.png"
+                                                                               alt="Подписаться"></a></h3>
+
+                            {#                            {% news_feed 4 0 %}#}
+
+                            <hr/>
+                            <a href="{% url 'news:frontend:index' %}?type=chel">Остальные новости >></a>
+                        </div>
+                        <hr/>
+                        <div class="news">
+                            <h3 style="color: #D11314; font-weight: normal;">Новости библиотек области<a
+                                    href="{% url 'news:frontend:rss' %}"> <img style="width: 20px;"
+                                                                               src="{{ STATIC_URL }}images/icons/48x48/feed.png"
+                                                                               alt="Подписаться"></a></h3>
+                            {% news_feed 4 1 %}
+                            <hr/>
+                            <a href="{% url 'news:frontend:index' %}?type=lib">Остальные новости >></a>
+                        </div>
+                        {#                {% endcache %}#}
+                        {#                    {% endblock %}#}
+
+                    </div>
+                </div>
+                <div class="left">
+                    <div class="right_block">
+                        <h3 style="color: #D11314; font-weight: normal;margin: 5px 0 0 0">Личный кабинет</h3>
+                        {% if request.user.is_authenticated %}
+                            Вы вошли как: {{ request.user.username }}
+                            <a href="{% url 'accounts:frontend:logout' %}">Выйти</a>
+                            <ul>
+                                <li><a href="{% url 'orders:frontend:index' %}">Мои заказы</a></li>
+                                <li><a href="{% url 'events:frontend:favorit_events' %}">Мои события</a></li>
+                                <li><a href="{% url 'zgate_saved_document_list' %}">Мои документы</a></li>
+                                <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>
+                            </ul>
+                        {% else %}
+                            <a href="{% url 'accounts:frontend:login' %}">Войти</a>
+                            <a href="{% url 'accounts:frontend:registration' %}">Зарегистрироваться</a>
+                        {% endif %}
+                    </div>
+                    <div class="right_block" style="padding: 5px 0 5px 5px; height: 68px;">
+                        <a href="{% url 'ask_librarian:frontend:index' %}"> <img
+                                src="{{ STATIC_URL }}images/theme/vss.png"
+                                alt="Виртуальнаясправочная служба"></a>
+                        {#            <div style="position: relative;">Виртуальная <br/> справочная служба</div>#}
+                    </div>
+                    <div class="right_block">
+                        <div class="events">
+                            <h3 style="color: #D11314; font-weight: normal;">Афиша мероприятий</h3>
+                            {#                    <div style="font-size: 16px; color: #D11314; padding: 20px 0 10px 0;">Афиша мероприятий</div>#}
+                            {#                {% cache 60 'events' LANGUAGE_CODE %}#}
+                            {% events_calendar %}
+                            {#                {% endcache %}#}
+                        </div>
+                    </div>
+                    <div class="right_block">
+                        <div class="polls">
+                            <h3 style="color: #D11314; font-weight: normal;">Голосование</h3>
+                            {% poll_form %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="right_block">
-            <div class="polls">
-                <h3 style="color: #D11314; font-weight: normal;">Голосование</h3>
-                {% poll_form %}
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
 
+    {% endblock %}
 {% endblock %}

@@ -1,16 +1,41 @@
 {% extends 'index/frontend/index.html' %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <ul class="breadcrumb">
-
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        {% if request.GET.back %}
-            <li><a href="{{ request.GET.back }}">Новости</a> <span class="divider">/</span></li>
-        {% else %}
-            <li><a href="{% url 'news:frontend:index' %}">Новости</a> <span class="divider">/</span></li>
-        {% endif %}
-        <li class="active">{{ content.title }}</li>
-
-    </ul>
-    {{ content.content|safe }}
+    <main class="main main_bg-white">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    {% if request.GET.back %}
+                        <li>
+                            <a href="{{ request.GET.back }}">Новости</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'news:frontend:index' %}">Новости</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <span class="crumb__current">
+                        {{ content.title }}
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">{{ content.title }}</h1>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <time class="content-time" datetime="2018-04-26 16:55:00">{{ news.create_date|date:"j E Y" }}</time>
+                    <p class="content-teaser">
+                        {{ content.teaser }}
+                    </p>
+                    <div class="content">
+                        {{ content.content|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}

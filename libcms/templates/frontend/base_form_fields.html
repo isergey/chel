@@ -10,7 +10,7 @@
     {{ hidden }}
 {% endfor %}
 {% for field in form.visible_fields %}
-    <div class="control-group {% if field.errors %}error{% endif %}">
+    <div class="form-group {% if field.errors %}error{% endif %}">
 
         {% if field.field.required %}<label class="control-label" for="{{ field.auto_id }}"><b>{{ field.label }} *</b></label>
         {% else %}

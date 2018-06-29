@@ -1,0 +1,39 @@
+{% extends 'themed_frontend_base.html' %}
+{% block index_content %}
+    <main class="main main_bg-white">
+    <div class="container">
+        <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Электронная библиотека
+                        </span>
+                    </li>
+                </ol>
+        </div>
+        <h1 class="content-title">Электронная библиотека</h1>
+        {% include 'ssearch/frontend/collections.html' %}
+    </div>
+</main>
+
+{##}
+{#    <div class="row">#}
+{#        <div class="span12">#}
+{#            <ul class="breadcrumb">#}
+{#                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+{#                <li class="active">Электронная библиотека</li>#}
+{#            </ul>#}
+{#        </div>#}
+{#    </div>#}
+    {#    <hr/>#}
+{#    <div class="row">#}
+{##}
+{#        <div class="span12">#}
+{#            {% include 'ssearch/frontend/collections.html' %}#}
+{#        </div>#}
+{##}
+{#    </div>#}
+{% endblock %}

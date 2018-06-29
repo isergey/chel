@@ -1,0 +1,16 @@
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+{% for field in form.visible_fields %}
+
+        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+
+            {{ field }}
+            {% if field.errors %}
+                {{ field.errors }}
+            {% endif %}
+            <p class="help-block">{{ field.help_text }}</p>
+
+
+    </div>
+{% endfor %}

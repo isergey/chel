@@ -1,0 +1,121 @@
+{% load gallery_tags %}
+{#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>#}
+{#        <link rel="stylesheet" href="{{ STATIC_URL }}nivo-slider/nivo-slider.css" type="text/css" media="screen" />#}
+{#    <link rel="stylesheet" href="{{ STATIC_URL }}nivo-slider/themes/default/default.css" type="text/css" media="screen" />#}
+{#    <script type="text/javascript" src="{{ STATIC_URL }}nivo-slider/jquery.nivo.slider.pack.js"></script>#}
+{#    <style type="text/css">#}
+{#        body {#}
+{#            margin: 0;#}
+{#        }#}
+{#    </style>#}
+{#    <div id="slider-wrapper" class="theme-default" >#}
+{#        <div id="slider" style="height: 100%">#}
+{#            {% gallery_slider %}#}
+{#    </div>#}
+{#    </div>#}
+{#    <script type="text/javascript">#}
+{#        $(window).load(function() {#}
+{#            $('#slider').nivoSlider({#}
+{#                directionNavHide:false,#}
+{#                effect: 'fade',#}
+{#                pauseTime: 9000#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+
+
+
+
+<html>
+<head>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+</head>
+<body scroll="no">
+<style>
+    body {
+        margin: 0;
+    }
+    #slider .render{
+        width: 390px;
+        height: 116px;
+        overflow: hidden;
+    }
+    #slider .render img{
+        width: 390px;
+        height: 116px;
+        overflow: hidden;
+    }
+</style>
+<div id="slider">
+    {% gallery_slider %}
+{#    <ul>#}
+{#        #}
+{#        <li>#}
+{#            <img src="http://chel.superzi.ru/media/gallery/kibo/1341424746108558893.jpg" alt="">#}
+{#        </li>#}
+{#        <li>#}
+{#            <img src="http://chel.superzi.ru/media/gallery/kibo/1341419740512480974.jpg" alt="">#}
+{#        </li>#}
+{#        <li>#}
+{#            <img src="http://chel.superzi.ru/media/gallery/seminar2010/1341730511607038021.jpg" alt="">#}
+{#        </li>#}
+{#    </ul>#}
+</div>
+
+
+</body>
+<script type="text/javascript">
+    var containerId = '#slider'; // Контейнер, в котором находится слайдер
+
+    var sliderSate = {
+        slidersLength: 0, // количество элементов в слайдере
+        currentSlide: 0, // текущий элемент для показа
+        mouseIn: false,
+        renderElement: null,
+        sliderElemets: []
+
+    };
+
+    function changeSlide(){
+        if (sliderSate.mouseIn){
+            return;
+        }
+        render(sliderSate.sliderElemets[sliderSate.currentSlide]);
+        if (sliderSate.currentSlide == sliderSate.slidersLength - 1){
+            sliderSate.currentSlide = 0;
+        }else{
+            sliderSate.currentSlide++;
+        }
+    }
+
+    $(function(){
+        $(containerId + '>ul').css('display', 'none');
+        $(containerId).append('<div class="render"></div>');
+{#        $(containerId).append('<div class="controls">туда сюда</div>');#}
+        $(containerId + '>ul>li').each(function(){
+            sliderSate.sliderElemets.push($(this));
+        });
+
+
+        sliderSate.renderElement = $(containerId + '>div.render');
+        if (sliderSate.sliderElemets.length > 0){
+            sliderSate.slidersLength = sliderSate.sliderElemets.length;
+            changeSlide();
+            setInterval(changeSlide,5000);
+        }
+        $(sliderSate.renderElement).mouseenter(function() {
+            sliderSate.mouseIn = true;
+        });
+        $(sliderSate.renderElement).mouseleave(function() {
+            sliderSate.mouseIn = false;
+        });
+    });
+
+    function render(slideElement){
+        $(sliderSate.renderElement).fadeTo(500, 0, function(){
+            $(sliderSate.renderElement).html(slideElement.html());
+            $(sliderSate.renderElement).fadeTo(500, 1);
+        });
+    }
+</script>
+</html>

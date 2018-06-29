@@ -1,0 +1,51 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                           Афиша событий
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">
+                Афиша событий
+            </h1>
+            <div class="card-list card-list_4">
+                {% for event in events_list %}
+                    <div class="card-list__item">
+                        <article class="card">
+                            <div class="card-body card_h">
+                                <h2 class="card-title card-title_td-lc">
+                                    <a class="card-title__link"
+                                       href="{% url 'events:frontend:show' event.id %}?back={{ request.get_full_path }}">
+                                        {{ event.event_content.title }}
+                                    </a>
+                                </h2>
+                                <time class="card-time">Начало: {{ event.start_date }}</time>
+                                <p class="card-detail">{{ event.event_content.teaser }}</p>
+                                <ul class="card-nav">
+                                    <li class="card-nav__item">
+                                        <a class="btn btn_sm"
+                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">Добавить в
+                                            избранное</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+            {% admin_pagination events_page %}
+        </div>
+    </main>
+{% endblock %}

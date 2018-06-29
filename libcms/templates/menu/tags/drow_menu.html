@@ -1,18 +1,46 @@
 {% load mptt_tags %}
 {% if nodes %}
-    <ul id="main_menu">
         {% recursetree nodes %}
             {% if not node.is_leaf_node %}
-                <li><a href="{{ node.item_title.url }}">{{ node.item_title }} </a>
-                    <ul>
-                        {{ children }}
-                    </ul>
+                <li class="{% if node.level == 1 %}menu__item{% elif node.level == 2 %}menu-sub__item{% endif %}">
+                    {% if node.level == 1 %}
+                        <div class="menu-link-btn-container">
+                            <a class="menu__link" href="{{ node.item_title.url }}">{{ node.item_title }}</a>
+                            <button class="menu-btn-arrow" aria-label="Раскрыть подменю"></button>
+                        </div>
+                        <div class="menu-sub-container">
+                            <ul class="menu-sub">
+                                {{ children }}
+                            </ul>
+                        </div>
+                    {% elif node.level == 2 %}
+                        <div class="menu-link-btn-container">
+                            <a class="menu-sub__link" href="{{ node.item_title.url }}">{{ node.item_title }}</a>
+                            <button class="menu-btn-arrow" aria-label="Раскрыть подменю"></button>
+                        </div>
+                        <ul>
+                            {{ children }}
+                        </ul>
+                    {% endif %}
                 </li>
             {% else %}
-                <li {% if path == node.item_title.url %} class="active" {% endif %}><a href="{{ node.item_title.url }}" {% if node.open_in_new %} target="_blank" {% endif %}>{{ node.item_title.title }}</a></li>
+                {% if node.level == 1 %}
+                    <li class="menu__item {% if path == node.item_title.url %}active{% endif %}">
+                        <a class="menu__link" href="{{ node.item_title.url }}"
+                                {% if node.open_in_new %} target="_blank" {% endif %}>
+                            {{ node.item_title.title }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li {% if path == node.item_title.url %} class="active" {% endif %}>
+                        <a href="{{ node.item_title.url }}"
+                                {% if node.open_in_new %} target="_blank" {% endif %}>
+                            {{ node.item_title.title }}
+                        </a>
+                    </li>
+                {% endif %}
             {% endif %}
         {% endrecursetree %}
-    </ul>
 {% endif %}
 
 

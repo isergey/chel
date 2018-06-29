@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="content">
+            <div>
+                {{ pivot_tree|safe }}
+            </div>
+            <div>
+                <h3>Статистика</h3>
+                <ul id="f{{ facet.code }}">
+                    {% for coll in stat.coll_stat %}
+                        <li>
+                            <span href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</span><br/>
+                            <div><span class="backlight">Документов: {{ coll.docs }}</span>
+                                <span style="margin-left: 30px" class="backlight">Просмотров: {{ coll.views }}</span>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li>У найденных записей атрибут отсутвует</li>
+                    {% endfor %}
+                </ul>
+                <p>
+                    <span class="backlight">Всего документов в коллекциях: {{ stat.all_documents_count }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="content">
+
+            <h2>О проекте</h2>
+            <p>
+                Уральская электронная библиотека ведется с 2007 года с целью формирования репертуара электронных
+                документов об
+                Урале, обеспечения полноты коллекций за счет регионального подхода к их формированию,
+                представления в сети
+                Интернет достоверных источников краеведческой информации.
+            </p>
+            <p>
+                Содержит материалы о природе края, по истории, народному образованию, экономической, научной и
+                культурной жизни
+                Урала XIX – XXI вв., коллекции уральской периодической печати.
+            </p>
+            <p>
+                УЭБ состоит из тематических коллекций.
+            </p>
+            <p>
+                Пополнение ресурса осуществляется за счет оцифровки фондов Челябинской областной универсальной
+                научной
+                библиотеки и отдельных изданий, предоставленных библиотеками Уральского региона, поступлений
+                электронных
+                копий документов в дар от авторов/правообладателей.
+            </p>
+            <p>
+                Выражаем благодарность авторам и организациям, предоставившим материалы для Уральской
+                электронной библиотеки.
+            </p>
+            <ul>
+                <li><a href="/ru/pages/kray/resources/urelib/partners">Участники проекта</a></li>
+                <li><a href="/ru/pages/about/lib/div/kraeved/">Контакты</a></li>
+                <li><a href="/ru/pages/kray/resources/urelib/help/">Помощь</a></li>
+                <li><a href="/ru/pages/kray/resources/urelib/neweldoc/">Новые поступления</a></li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
