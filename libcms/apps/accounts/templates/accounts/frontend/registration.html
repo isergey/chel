@@ -1,5 +1,6 @@
 {% extends 'index/frontend/index.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% block title %}
     Регистрация
 {% endblock %}
@@ -11,14 +12,11 @@
 
     </ul>
     <h3 style="margin-left: 160px;">Регистрация</h3>
-    <p></p>
     <form method="POST" class="form-horizontal">{% csrf_token %}
-        <fieldset>
-            {% include 'frontend/base_form_fields.html' %}
-            <div class="form-actions">
-                <input type="submit" value="Регистрация" class="btn"/>
-            </div>
-        </fieldset>
+        {% bootstrap_form form %}
+        {% buttons %}
+            <input type="submit" value="Регистрация" class="btn"/>
+        {% endbuttons %}
     </form>
 
 {% endblock %}
