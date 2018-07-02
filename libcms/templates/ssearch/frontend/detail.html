@@ -1,105 +1,116 @@
 {% extends 'themed_frontend_base.html' %}
 {% block index_content %}
 
-    <style type="text/css">
-        .marc_dump {
-            font-weight: normal;
-            font-size: 12px;
-        }
-
-        .marc_dump span.fieldlabel, span.subfieldlabel {
-            font-family: monospace;
-            color: #5b8ee0;
-        }
-
-        .marc_dump span.data, span.indicator {
-            font-family: monospace;
-        }
-
-        .marc_dump span.label {
-            font-family: monospace;
-        }
-
-        .record {
-            font-weight: normal;
-        }
-    </style>
-    <div class="row">
-        <div class="span12">
-            <ul class="breadcrumb">
-
-                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                <li><a href="{% url 'ssearch:frontend:index' %}">Поиск</a> <span class="divider">/</span></li>
-                {% if request.GET.back %}
-                    <li><a href="{{ request.GET.back }}">Результаты поиска</a> <span class="divider">/</span></li>
-                {% endif %}
-                <li class="active">Детальная информация</li>
-
-            </ul>
-            <div class="row">
-                <div class="span2">
-                    {#                    <p><b>Количество обращений:</b> {{ view_count }}</p>#}
-                    <p>{% if edoc_view_count != 0 %}
-                        <b>Количество просмотров:</b> {{ edoc_view_count }}
-                    {% endif %}</p>
-                </div>
-                <div class="span10">
-                    <ul class="nav nav-tabs">
-                        <li class="dropdown active">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вид записи <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#card" data-toggle="tab">Карточка</a></li>
-                                <li><a href="#marc" data-toggle="tab">Marc</a></li>
-                            </ul>
+    <main class="main">
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'ssearch:frontend:index' %}">Поиск</a>
+                    </li>
+                    {% if request.GET.back %}
+                        <li>
+                            <a href="{{ request.GET.back }}">Результаты поиска</a>
                         </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="card">{{ record.library_cadr|safe }}</div>
-                        <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
-                    </div>
-                    {% if attributes %}
-                        <table class="table" style="margin-top: 10px">
-                            {% for attribute in attributes %}
-                                <tr>
-                                    <td style="width: 150px">{{ attribute.title }}</td>
-                                    <td>{% include 'ssearch/frontend/print_attribute_values.html' with values=attribute.values %}</td>
-                                </tr>
-                            {% endfor %}
-                        </table>
                     {% endif %}
-                    <hr/>
-                    {% with annotations=record.tpl.annotations %}
-                        {% if annotations %}
-                            <h4>Примечания:</h4>
-                            {% for annotation in annotations %}
-                                <p>{{ annotation }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-{##}
-{#                    {% with holders=record.tpl.holders %}#}
-{#                        {% if holders %}#}
-{#                            <h4>Держатели:</h4>#}
-{#                            {% for holder in holders %}#}
-{#                                <p>{{ holder.title }}</p>#}
-{#                            {% endfor %}#}
-{#                        {% endif %}#}
-{#                    {% endwith %}#}
-                    {% if  linked_records %}
-                        <hr/>
-                        <h3>Тома/части входящие в это издание:</h3>
-                        <ul>
-                            {% for linked_record in linked_records %}
-                                <li><a target="_blank"
-                                       href="{% url 'ssearch:frontend:detail' %}?id={{ linked_record.id }}">{{ linked_record.dict.title.0 }}</a>
+                    <li>
+                        <span class="crumb__current">
+                            Детальная информация
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="row row_sm-col-reverce">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div id="taaaShaaa">
+                        <div id="taaaShaaaFacets" class="search-main__side-wrap">
+                            <ul class="search-main__side-detail-nav">
+{#                                <li class="search-main__side-detail-nav-item">#}
+{#                                    <a class="btn" href="#">В избранное</a>#}
+{#                                </li>#}
+{#                                <li class="search-main__side-detail-nav-item">#}
+{#                                    <a class="btn btn_gray" href="#">PDF</a>#}
+{#                                </li>#}
+                                <li class="search-main__side-detail-nav-item">
+                                    <button class="btn btn_gray" data-custom-open="marcModal" role="button">MARC запись
+                                    </button>
                                 </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+                                <li class="search-main__side-detail-nav-item">
+                                    <div class="ya-share2"
+                                         data-services="vkontakte,facebook,viber,whatsapp,skype,telegram"></div>
+                                    <script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+                                    <script src="//yastatic.net/share2/share.js"></script>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="search-detail">
+                        <div class="card">
+                            <div class="card-body">
+                                <a href="{{ request.GET.back }}" class="btn btn_gray"><&nbsp;&nbsp;Обратно к результатам
+                                    поиска</a>
+                                {{ record.library_cadr|safe }}
+                                {% if attributes %}
+                                    <table class="table" style="margin-top: 10px">
+                                        {% for attribute in attributes %}
+                                            <tr>
+                                                <td style="width: 150px">{{ attribute.title }}</td>
+                                                <td>{% include 'ssearch/frontend/print_attribute_values.html' with values=attribute.values %}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                {% endif %}
+                                <hr/>
+                                {% with annotations=record.tpl.annotations %}
+                                    {% if annotations %}
+                                        <h4>Примечания:</h4>
+                                        {% for annotation in annotations %}
+                                            <p>{{ annotation }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endwith %}
+                                {% if  linked_records %}
+                                    <hr/>
+                                    <h3>Тома/части входящие в это издание:</h3>
+                                    <ul>
+                                        {% for linked_record in linked_records %}
+                                            <li><a target="_blank"
+                                                   href="{% url 'ssearch:frontend:detail' %}?id={{ linked_record.id }}">{{ linked_record.dict.title.0 }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </main>
 
+    <div class="modal micromodal-slide" id="marcModal" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="modal-1-title">
+                        MARC запись
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                </header>
+                <div class="modal__content" id="modal-1-content">
+                    <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
+                </div>
+                <footer class="modal__footer">
+                    <button class="btn" data-micromodal-close aria-label="Закрыть модальное окно">Закрыть</button>
+                </footer>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

@@ -1,40 +1,53 @@
 {% extends 'index/frontend/index.html' %}
 {% block title %}{{ poll.question }}{% endblock %}
 {% block content %}
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'polls:frontend:index' %}">Голосования</a> <span class="divider">/</span></li>
-        <li class="active">{{ poll.question }}</li>
-    </ul>
-    <style type="text/css">
-        .polls .content ul {
-            list-style: none;
-            padding:0;
-        }
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'polls:frontend:index' %}">Голосования</a>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">{{ poll.question }}</h1>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="content">
+                        <form action="" method="POST">{% csrf_token %}
+                            {% if poll.poll_type == 'radio' %}
+                                {% for choice in choices %}
+                                    <div class="radio">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="answer" value="{{ choice.id }}"/>
+                                            <span class="label-text">{{ choice.choice }}</span>
+                                        </label>
+                                    </div>
+                                {% empty %}
+                                    Нет вариантов ответа.
+                                {% endfor %}
+                            {% endif %}
+                            {% if poll.poll_type == 'checkboxes' %}
+                                {% for choice in choices %}
+                                    <div class="checkbox">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" name="answer" value="{{ choice.id }}"/>
+                                            <span class="label-text">{{ choice.choice }}</span>
+                                        </label>
+                                    </div>
+                                {% empty %}
+                                    Нет вариантов ответа.
+                                {% endfor %}
+                            {% endif %}
+                            <button name="send" value="send" type="submit" class="btn">Ответить</button>
+                        </form>
 
-    </style>
-    <div class="polls">
-        <div class="content">
-
-            <form action="" method="POST">{% csrf_token %}
-                <ul>
-                    {% if poll.poll_type == 'radio' %}
-                        {% for choice in choices %}
-                            <li><input type="radio" name="answer" value="{{ choice.id }}"/> {{ choice.choice }} </li>
-                        {% empty %}
-                            Нет вариантов ответа.
-                        {% endfor %}
-                    {% else %}
-                        {% for choice in choices %}
-
-                            <li><input type="checkbox" name="answer" value="{{ choice.id }}"/> {{ choice.choice }} </li>
-                        {% empty %}
-                            Нет вариантов ответа.
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-                <button name="send" value="send" type="submit" class="btn">Ответить</button>
-            </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 {% endblock %}

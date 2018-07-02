@@ -1,201 +1,231 @@
-{%  extends 'themed_frontend_base.html' %}
+{% extends 'themed_frontend_base.html' %}
 {% load add_get_tag %}
 {% load pagination_tag %}
 {% block index_content %}
-
-    <style type="text/css">
-    ul.records {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    p.item1{
-        margin: 0;
-    }
-
-    .facet_group ul ul{
-        padding-left: 10px;
-        background: #ebebeb;
-    }
-    .facet_group ul li{
-        padding-bottom: 5px;
-    }
-    .highlighting em{
-        background: #ffe761;
-        font-weight: bolder;
-    }
-    </style>
-    <div class="row">
-        <div class="span12">
-            <ul class="breadcrumb">
-                <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                {% if request.GET.q  %}
-                    <li><a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a> <span class="divider">/</span></li>
-                    <li class="active">Результаты поиска<span class="divider">/</span></li>
-                    <li>{% if  info.num_found > -1%} Найдено записей: {{ info.num_found }}. {% endif %}</li>
-                {% else %}
-                    <li class="active">Электронная библиотека</li>
-                {% endif %}
-
-            </ul>
-        </div>
-    </div>
-{#    <hr/>#}
-
-    <div class="row">
-
-        <form action="{% url 'ssearch:frontend:index' %}" method="GET">
-        <div class="span2">
-            <select name="attr" style="width: 100%">
-                {% for attr in attrs %}
-                    <option value="{{ attr.0 }}" {% if request.GET.attr == attr.0 %}selected="selected"{% endif %}>{{ attr.1 }}</option>
-                {% endfor %}
-            </select>
-         </div>
-        <div class="span7">
-            <div class="input-prepend">
-                    <input class="span6" id="appendedInputButton" type="text" name="q" value="{{ request.GET.q }}">
-                    <input type="submit" value="Поиск" class="btn btn-danger"/>
-            </div>
-             {% if  info.num_found %}
-            <div>
-                <input type="checkbox" name="in" {% if request.GET.in == 'on' %}checked="checked" {% endif %}> искать в найденном
-            </div>
-            {% endif %}
-{#        <div>#}
-{#        <select name="subject_path_dpth"  style="width: 100%">#}
-{#            <option value="">Укажите рубрику</option>#}
-{#            {% for rubric in rubrics %}#}
-{#                <option value="{{ rubric.value }}" {% if request.GET.subject_path_dpth == rubric.value %}selected="selected"{% endif %}>{{ rubric.title|safe }}</option>#}
-{#            {% endfor %}#}
-{#        </select>#}
-{#        </div>#}
-        </div>
-        {% for search_breadcumb in search_breadcumbs %}
-            <input type="hidden" value="{{ search_breadcumb.attr }}" name="pattr"/>
-            <input type="hidden" value="{{ search_breadcumb.value }}" name="pq"/>
-        {% endfor %}
-        </form>
-    </div>
-    <div class="row">
-        <div class="span9">
-            <div class="search-info" style="padding: 10px;">
-                {% for search_breadcumb in search_breadcumbs %}
-                    {% if not forloop.last %}
-                        <a href="{{ search_breadcumb.href }}"><b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}</a> →
-                    {% else %}
-                        <span><b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}</span>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span12">
-            <div class="navbar-inner1" style="padding: 5px; height: auto; margin-bottom: 10px">
-            <form action="{{ request.path }}" method="GET" style="margin: 0">
-                <div class="search-bar1 searchpage">
-                    Сортировка по: <select class="input-medium" name="sort">
-                    {% for sort_attr in sort_attrs %}
-                        <option value="{{ sort_attr.attr }}" {% if request.GET.sort == sort_attr.attr %}selected="selected" {% endif %}>{{ sort_attr.title }}</option>
-                    {% endfor %}
-                </select>
-                 Порядок: <select class="input-medium" name="order">
-
-                    <option value="asc" {% if not request.GET.order or request.GET.order == 'asc' %}selected="selected" {% endif %}>по возрастанию</option>
-                    <option value="desc" {% if request.GET.order == 'desc' %}selected="selected" {% endif %}>по убыванию</option>
-                </select>
-    {#                <button class="btn btn-mini" type="button">Добавить</button>#}
-                    <input  class="btn btn-mini" type="submit" value="Сортировать"/>
-                </div>
-                {% for search_breadcumb in search_breadcumbs %}
-                    <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
-                    <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
-                {% endfor %}
-            </form>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span9 results">
-        <div>
-            <div class="btn-group" style="float: right">
-                <a title="Табличный вывод" class="btn{% if request.GET.view == 'table' or not request.GET.view %} active{% endif %}" href="{% add_get view='table' %}"><i class="icon-align-left"></i></a>
-                <a title="Библиографическая запись" class="btn{% if request.GET.view == 'card' %} active{% endif %}" href="{% add_get view='card' %}"><i class="icon-th-list"></i></a>
-            </div>
-            <hr style="clear: both"/>
-        </div>
-            <ul class="records">
-                {% for record in records %}
+    <main class="main">
+        <div class="container">
+            <nav class="crumb">
+                <ol class="crumb__list">
                     <li>
-                    {% if record.dict %}
-                    <div>
-                        {% include 'ssearch/frontend/tableview.html' %}
-                    </div>
-                        {% if record.highlighting %}
-                            <div style="background: #ebebeb" class="highlighting">
-                            <b>Нашлось в полном тексте</b>: {{ record.highlighting.full_text_tru.0|safe }}
-                            </div>
-                        {% endif %}
-                    {% else %}
-                    <div style="margin-bottom: 5px;">
-                        {{ record.library_cadr|safe }}
-                    </div>
-                    {% endif %}
-                    {% if not forloop.last %}<hr/>{% endif %}
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
                     </li>
-                {% endfor %}
-            </ul>
-            {% admin_pagination result_page %}
-        </div>
-
-
-        <div class="span3">
-            {% for facet in facets %}
-                {% if  facet.values %}
-                <div class="facet_group" >
-                    <h4>{{ facet.title }}</h4>
-                    <ul id="f{{ facet.code }}" class="facet">
-                        {% for value in facet.values %}
-{#                            <li><a class="drilldown" name="{{ facet.code }}"  rel="{{ value.0 }}"  id="df{{ facet.code }}{{ forloop.counter0 }}" href="#1">{% if facet.code == "subject_heading_s"%} + {% endif %}</a> <a href="{% add_get_append q=value.0 attr=facet.code %}"> {{ value.2 }} (<b>{{ value.1 }}</b>)</a>#}
-{#                            {% if facet.code == "subject_heading_s"%}<ul style="display: none" id="dft{{ facet.code }}{{ forloop.counter0 }}"></ul>{% endif %}#}
-{#                            </li>#}
-                            {% if value.2 != '' %}<li><a href="{% add_get_append q=value.0 attr=facet.code %}"> {{ value.2 }} (<b>{{ value.1 }}</b>)</a></li>{% endif %}
-                        {% empty %}
-                            <li>У найденных записей атрибут отсутвует</li>
-                        {% endfor %}
-                    </ul>
-                    {% if facet.values %}
-                        <div align="left">
-                            <a href="#f{{ facet.code }}" class="load_facet_fwd btn btn-mini" style="a: right" id="{{ facet.code }}">показать больше ↴</a> <a class="collaps" rel="{{ facet.code }}" href="#f{{ facet.code }}">свернуть</a>
-                        </div>
-                        {#                     <a href="#1" class="load_facet_rev btn btn-mini" id="{{ facet }}"><<<</a>#}
+                    {% if request.GET.q %}
+                        <li>
+                            <a href="{% url 'ssearch:frontend:index' %}">Электронная библиотека</a>
+                        </li>
+                        <li>
+                        <span class="crumb__current">
+                           Результаты поиска {% if  info.num_found > -1 %}(Найдено записей: {{ info.num_found }}
+                            ){% endif %}
+                        </span>
+                        </li>
+                    {% else %}
+                        <li>
+                        <span class="crumb__current">
+                           Электронная библиотека
+                        </span>
+                        </li>
                     {% endif %}
+                </ol>
+            </nav>
+            <div class="row row_sm-col-reverce">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="search-main__side-wrap">
+                        <ol class="search-main__crumbs">
+                            {% for search_breadcumb in search_breadcumbs %}
+                                {% if not forloop.last %}
+                                    <li class="search-main__crumbs-item">
+                                        <a class="search-main__crumbs-text-link" href="{{ search_breadcumb.href }}">
+                                            <b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="search-main__crumbs-item">
+                                    <span class="search-main__crumbs-text">
+                                        <b>{{ search_breadcumb.title }}</b>: {{ search_breadcumb.value }}
+                                    </span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                        {% for facet in facets %}
+                            {% if  facet.values %}
+                                <div class="facets-item">
+                                    <div class="facets-item__title-wrap">
+                                        <h4 class="facets-item__title">{{ facet.title }}</h4>
+                                    </div>
+                                    <div class="facets-item__panel">
+                                        <ul id="f{{ facet.code }}" class="facets-item__nav">
+                                            {% for value in facet.values %}
+                                                {% if value.2 != '' %}
+                                                    <li class="facets-item__nav-item">
+                                                        <a class="facets-item__nav-link"
+                                                           href="{% add_get_append q=value.0 attr=facet.code %}">
+                                                            <span class="facets-item__nav-item-name">{{ value.2 }}</span>
+                                                            <span class="facets-item__nav-item-count">{{ value.1 }}</span>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            {% empty %}
+                                                <li>У найденных записей атрибут отсутвует</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% if facet.values %}
+                                            <div class="facets-item__nav-btn">
+                                                <a id="{{ facet.code }}" class="btn btn_sm btn_gray"
+                                                   href="#f{{ facet.code }}">Показать больше</a>
+                                                <a class="btn btn_sm btn_gray" rel="{{ facet.code }}"
+                                                   href="#f{{ facet.code }}">Свернуть</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
-                {% if not forloop.last %}<hr/>{% endif %}
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="search-results">
+                        <form action="{% url 'ssearch:frontend:index' %}" method="GET">
+                            <div class="search-main__input-wrap">
+                                <select name="attr" class="search-main__select">
+                                    {% for attr in attrs %}
+                                        <option value="{{ attr.0 }}"
+                                                {% if request.GET.attr == attr.0 %}selected="selected"{% endif %}
+                                        >
+                                            {{ attr.1 }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <input class="search-main__input search-main__input_plh-blue"
+                                       id="appendedInputButton"
+                                       type="text"
+                                       name="q"
+                                       value="{{ request.GET.q }}"
+                                >
 
+                                <button class="search-main__btn" type="submit" title="Найти"></button>
+                            </div>
+                            {% if  info.num_found %}
+                                <ul class="search-main__nav">
+                                    <li class="search-main__nav-item">
+                                        <div class="checkbox checkbox_mb-0">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" name="in"
+                                                       {% if request.GET.in == 'on' %}checked="checked" {% endif %}>
+                                                <span class="label-text">Искать в найденном</span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                            {% for search_breadcumb in search_breadcumbs %}
+                                <input type="hidden" value="{{ search_breadcumb.attr }}" name="pattr"/>
+                                <input type="hidden" value="{{ search_breadcumb.value }}" name="pq"/>
+                            {% endfor %}
+                        </form>
+
+                        <form action="{{ request.path }}" method="GET">
+                            <ul class="search-main__nav">
+                                <li class="search-main__nav-item">
+                                    <div class="search-main__nav-select-wrap">
+                                        <label class="">Сортировка:</label>
+                                        <select class="search-main__nav-select" name="sort" onchange="this.form.submit()">
+                                            {% for sort_attr in sort_attrs %}
+                                                <option value="{{ sort_attr.attr }}"
+                                                        {% if request.GET.sort == sort_attr.attr %}
+                                                        selected="selected"
+                                                        {% endif %}
+                                                >
+                                                    {{ sort_attr.title }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </li>
+                                <li class="search-main__nav-item">
+                                    <div class="search-main__nav-select-wrap">
+                                        <label class="">Порядок:</label>
+                                        <select class="search-main__nav-select" name="order" onchange="this.form.submit()">
+                                            <option value="asc"
+                                                    {% if not request.GET.order or request.GET.order == 'asc' %}
+                                                    selected="selected"
+                                                    {% endif %}
+                                            >
+                                                по возрастанию
+                                            </option>
+                                            <option value="desc"
+                                                    {% if request.GET.order == 'desc' %}
+                                                    selected="selected"
+                                                    {% endif %}
+                                            >
+                                                по убыванию
+                                            </option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li class="search-main__nav-item">
+                                    <a class="search-main__nav-link-sm {% if request.GET.view == 'table' or not request.GET.view %}search-main__nav-link-sm_active{% endif %}"
+                                       href="{% add_get view='table' %}"
+                                    >
+                                        Табличный вывод
+                                    </a>
+                                </li>
+                                <li class="search-main__nav-item">
+                                    <a class="search-main__nav-link-sm {% if request.GET.view == 'card' %}search-main__nav-link-sm_active{% endif %}"
+                                       href="{% add_get view='card' %}"
+                                    >
+                                        Библиографическая запись
+                                    </a>
+                                </li>
+                            </ul>
+
+                            {% for search_breadcumb in search_breadcumbs %}
+                                <input type="hidden" name="attr" value="{{ search_breadcumb.attr }}">
+                                <input type="hidden" name="q" value="{{ search_breadcumb.value }}">
+                            {% endfor %}
+
+                        </form>
+                        {% for record in records %}
+                            <div class="search-results-item">
+                                {% if record.dict %}
+                                    {% include 'ssearch/frontend/tableview.html' %}
+                                    {% if record.highlighting %}
+                                        <div style="background: #ebebeb" class="highlighting">
+                                            <b>Нашлось в полном
+                                                тексте</b>: {{ record.highlighting.full_text_tru.0|safe }}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="record-search">
+                                        {{ record.library_cadr|safe }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        {% admin_pagination result_page %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script type="text/javascript">
-    $('.marc').click(function(){
-        var id = $(this).attr('id');
-        var marc_div = $('#m'+id);
-        if (marc_div.css('display') == 'none'){
-            marc_div.css('display', 'block');
-        }else{
-            marc_div.css('display', 'none');
-        }
-    });
+        $('.marc').click(function () {
+            var id = $(this).attr('id');
+            var marc_div = $('#m' + id);
+            if (marc_div.css('display') == 'none') {
+                marc_div.css('display', 'block');
+            } else {
+                marc_div.css('display', 'none');
+            }
+        });
 
-    $('.collaps').click(function(){
-        var id = $(this).attr('rel');
-        $('#f'+id).css('height', 200);
-        $('#f'+id).css('overflow', "hidden");
-    });
+        $('.collaps').click(function () {
+            var id = $(this).attr('rel');
+            $('#f' + id).css('height', 200);
+            $('#f' + id).css('overflow', "hidden");
+        });
     </script>
     <script type="text/javascript">
         var offset_step = 7;
@@ -205,16 +235,16 @@
         var request_params = {{ request_params|safe }};
 
         facets_params = {};
-        $('.load_facet_fwd').click(function(){
+        $('.load_facet_fwd').click(function () {
             var button = $(this);
             var facet_id = button.attr("id");
 
-            if (!facets_params[facet_id]){
+            if (!facets_params[facet_id]) {
                 facets_params[facet_id] = {
                     offset: offset_step,
                     limit: load_limit
                 }
-            }else{
+            } else {
                 facets_params[facet_id].offset = facets_params[facet_id].offset + offset_step;
             }
 
@@ -222,36 +252,36 @@
             request_params['facet_limit'] = facets_params[facet_id].limit;
             request_params['facet_offset'] = facets_params[facet_id].offset;
             render_facet(facet_id, request_params, button);
-            $('#f'+facet_id).css('height', "auto");
-            $('html, body').animate({ scrollTop: $(this).offset().top-400 }, 500);
+            $('#f' + facet_id).css('height', "auto");
+            $('html, body').animate({scrollTop: $(this).offset().top - 400}, 500);
 
         });
 
-        $('.drilldown').click(function(){
+        $('.drilldown').click(function () {
             var button = $(this);
-            var facet_id = button.attr("id").replace('df','');
+            var facet_id = button.attr("id").replace('df', '');
             var facet_name = button.attr("name");
             var facet_value = button.attr("rel");
 
-            if (!$('#dft'+ facet_id).is(':visible')){
+            if (!$('#dft' + facet_id).is(':visible')) {
                 button.text('-');
-                $('#dft'+ facet_id).show();
-            }else{
+                $('#dft' + facet_id).show();
+            } else {
                 button.text('+');
-                $('#dft'+ facet_id).hide();
+                $('#dft' + facet_id).hide();
             }
 
-            if (!subfacets_params[facet_id]){
+            if (!subfacets_params[facet_id]) {
                 subfacets_params[facet_id] = {
                     offset: 0,
                     limit: 50
                 }
-            }else{
+            } else {
                 subfacets_params[facet_id].offset = subfacets_params[facet_id].offset + offset_step;
             }
 
             request_params['facet'] = facet_name;
-            if (facet_name === 'subject_heading_s'){
+            if (facet_name === 'subject_heading_s') {
                 request_params['sub_facet'] = 'subject_subheading_s';
             }
 
@@ -263,19 +293,19 @@
 
         });
 
-        function render_facet(facet_id, request_params, button){
-              var orig_text = button.html();
+        function render_facet(facet_id, request_params, button) {
+            var orig_text = button.html();
             $.ajax({
                 type: "GET",
                 url: "{% url 'ssearch:frontend:more_facet' %}",
                 data: request_params,
                 dataType: "JSON",
-                beforeSend: function ( xhr ) {
+                beforeSend: function (xhr) {
                     button.html('<img src="{{ STATIC_URL }}theme/loader.gif" alt="">');
                 }
-            }).done(function(content) {
-                 button.html(orig_text);
-                if (content[facet_id]['values'].length == 0){
+            }).done(function (content) {
+                button.html(orig_text);
+                if (content[facet_id]['values'].length == 0) {
                     button.addClass('disabled');
                 }
                 drow_facet(content[facet_id], facet_id);
@@ -284,23 +314,23 @@
                     facet_id: facet_id,
                     prepand_href: window.location.search
                 });
-                var container = $('#f'+facet_id);
+                var container = $('#f' + facet_id);
                 container.html(container.html() + render_results);
-        });
+            });
         }
-        function render_subfacet(facet_id, facet_name, request_params, button){
+        function render_subfacet(facet_id, facet_name, request_params, button) {
             var orig_text = button.html();
             $.ajax({
                 type: "GET",
                 url: "{% url 'ssearch:frontend:more_subfacet' %}",
                 data: request_params,
                 dataType: "JSON",
-                beforeSend: function ( xhr ) {
+                beforeSend: function (xhr) {
                     button.html('<img src="{{ STATIC_URL }}theme/loader.gif" alt="">');
                 }
-            }).done(function(content) {
-                 button.html(orig_text);
-                if (content[facet_name]['values'].length == 0){
+            }).done(function (content) {
+                button.html(orig_text);
+                if (content[facet_name]['values'].length == 0) {
                     button.addClass('disabled');
                 }
                 drow_facet(content[facet_name], facet_id);
@@ -309,57 +339,59 @@
                     facet_id: facet_id,
                     prepand_href: window.location.search
                 });
-                var container = $('#dft'+facet_id);
+                var container = $('#dft' + facet_id);
                 container.html(container.html() + render_results);
             });
         }
 
-    function drow_facet(content, facet_id){
-        var prepand_href = window.location.search;
-        var values = content['values'];
-        var lines = [];
-        for (var i in values){
-            var value = values[i];
-            if (value.length == 3){
-                lines.push('<li><a href="'+prepand_href+'&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%> (<b><%=content.values[value][1]%></b>)</a></li>');
+        function drow_facet(content, facet_id) {
+            var prepand_href = window.location.search;
+            var values = content['values'];
+            var lines = [];
+            for (var i in values) {
+                var value = values[i];
+                if (value.length == 3) {
+                    lines.push('<li><a href="' + prepand_href + '&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%> (<b><%=content.values[value][1]%></b>)</a></li>');
+                }
             }
         }
-    }
     </script>
 
 
 
     <script type="text/html" id="facet_tmpl">
         <% for ( var value in content.values ) { %>
-            <% if ( content.values[value].length == 3 ) { %>
-            <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][2]%> (<b><%=content.values[value][1]%></b>)</a></li>
-            <% }else{ %>
-            <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%> (<b><%=content.values[value][1]%></b>)</a></li>
-            <% } %>
+        <% if ( content.values[value].length == 3 ) { %>
+        <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][2]%>
+            (<b><%=content.values[value][1]%></b>)</a></li>
+        <% }else{ %>
+        <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%>
+            (<b><%=content.values[value][1]%></b>)</a></li>
+        <% } %>
         <% } %>
     </script>
 
     <script type="text/javascript">
-        (function(){
+        (function () {
             var cache = {};
 
-            this.tmpl = function tmpl(str, data){
+            this.tmpl = function tmpl(str, data) {
                 var fn = !/\W/.test(str) ?
                         cache[str] = cache[str] ||
                                 tmpl(document.getElementById(str).innerHTML) :
                         new Function("obj",
-                            "var p=[],print=function(){p.push.apply(p,arguments);};" +
-                                    "with(obj){p.push('" +
-                                    str
-                                            .replace(/[\r\t\n]/g, " ")
-                                            .split("<%").join("\t")
-                                            .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-                                            .replace(/\t=(.*?)%>/g, "',$1,'")
-                                            .split("\t").join("');")
-                                            .split("%>").join("p.push('")
-                                            .split("\r").join("\\'")
-                                    + "');}return p.join('');");
-                return data ? fn( data ) : fn;
+                                "var p=[],print=function(){p.push.apply(p,arguments);};" +
+                                "with(obj){p.push('" +
+                                str
+                                        .replace(/[\r\t\n]/g, " ")
+                                        .split("<%").join("\t")
+                                        .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                                        .replace(/\t=(.*?)%>/g, "',$1,'")
+                                        .split("\t").join("');")
+                                        .split("%>").join("p.push('")
+                                        .split("\r").join("\\'")
+                                + "');}return p.join('');");
+                return data ? fn(data) : fn;
             };
         })();
     </script>

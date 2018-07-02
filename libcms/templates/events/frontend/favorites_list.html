@@ -2,58 +2,51 @@
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
-    <ul class="breadcrumb">
-
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Мои события</li>
-
-    </ul>
-    <style>
-        ul.news {
-            list-style: none;
-            margin: 0;
-        }
-
-        .news .title {
-            font-size: 14px;
-            /*font-weight: bold;*/
-        }
-
-        .news .teaser {
-            padding: 5px 0;
-        }
-
-        .news .create_date {
-            color: #2a2a2a;
-        }
-    </style>
-
-    <ul class="news">
-        {% for event in events_list %}
-            <div class="title">
-                <a href="{% url 'events:frontend:favorite_show' event.id %}?back={{ request.get_full_path }}">
-                    {{ event.event_content.title }}
-                </a>
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                           Мои события
+                        </span>
+                    </li>
+                </ol>
             </div>
-            <div class="teaser">{{ event.event_content.teaser }}</div>
-            <div class="create_date">Начало: <b>{{ event.start_date }}</b></div>
-            <div>
-                <a href="{% url 'events:frontend:delete_from_favorite' event.id %}"
-                   class="btn btn-danger btn-small delete"
-                   title="Удалить событие из избранного"
-                >
-                    Удалить  из избранного
-                </a>
+            <h1 class="content-title">
+                Мои события
+            </h1>
+            <div class="card-list card-list_4">
+                {% for event in events_list %}
+                    <div class="card-list__item">
+                        <article class="card">
+                            <div class="card-body card_h">
+                                <h2 class="card-title card-title_td-lc">
+                                    <a class="card-title__link"
+                                       href="{% url 'events:frontend:show' event.id %}?back={{ request.get_full_path }}">
+                                        {{ event.event_content.title }}
+                                    </a>
+                                </h2>
+                                <time class="card-time">Начало: {{ event.start_date }}</time>
+                                <p class="card-detail">{{ event.event_content.teaser }}</p>
+                                <ul class="card-nav">
+                                    <li class="card-nav__item">
+                                        <a href="{% url 'events:frontend:delete_from_favorite' event.id %}"
+                                           class="btn btn_sm"
+                                        >
+                                            Удалить из избранного
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
             </div>
-            {% if not forloop.last %}
-                <hr/>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    {#    <ul class="news">#}
-    {#    {% for event in events_list %}#}
-    {#        <li><a href="{% url events:frontend:show event.id %}?back={{ request.get_full_path }}">{{ event.event_content.title }}</a></li>#}
-    {#    {% endfor %}#}
-    {#    </ul>#}
-    {% admin_pagination events_page %}
+            {% admin_pagination events_page %}
+        </div>
+    </main>
 {% endblock %}

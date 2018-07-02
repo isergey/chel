@@ -1,8 +1,12 @@
 {% if values %}
-        <p class="item4">
-            {% if attr %}{{ attr }}:{% endif %}
+    <div class="search-results-item__tb-rw">
+        <div class="search-results-item__tb-cl">
+            {% if attr %}{{ attr }}: {% endif %}
+        </div>
+        <div class="search-results-item__tb-cl">
             {% for value in values %}
                 {{ value }} {% if not forloop.last %}, {% endif %}
             {% endfor %}
-        </p>
+        </div>
+    </div>
 {% endif %}

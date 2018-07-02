@@ -1,13 +1,17 @@
 {% if links %}
-        <p class="item4">
-            {% if attr %}{{ attr }}:{% endif %}
+    <div class="search-results-item__tb-rw">
+        <div class="search-results-item__tb-cl">
+            {% if attr %}{{ attr }}: {% endif %}
+        </div>
+        <div class="search-results-item__tb-cl">
             {% for link in links %}
                 {% if link.link_id %}
                     <a href="{% url 'ssearch:frontend:detail' %}?ln={{ link.link_id|urlencode }}">{{ link.title }}</a>
-                    {% else %}
+                {% else %}
                     <b>{{ link.title }}</b>
                 {% endif %}
                 {% if not forloop.last %} — {% endif %}
             {% endfor %}
-        </p>
+        </div>
+    </div>
 {% endif %}

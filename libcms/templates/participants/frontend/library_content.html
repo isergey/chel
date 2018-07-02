@@ -2,23 +2,31 @@
 {% load participants_pages_tags %}
 {% block title %}Библиотеки{% endblock %}
 {% block index_content %}
-
-
-    <div class="row">
-        <div class="span12">
-        {% block breadcrumb %}
-
-        {% endblock %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                {% block breadcrumb %}
+                {% endblock %}
+            </div>
+            <div class="content">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="card card_mb">
+                            <div class="card-body">
+                                {% drow_page_tree library.code %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-pl">
+                        <div class="card">
+                            <div class="card-body">
+                                {% block content %}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="span3">
-            {% drow_page_tree library.code %}
-        </div>
-        <div class="span9">
-            {% block content %}
-                edwedwed
-            {% endblock %}
-        </div>
-    </div>
+    </main>
 {% endblock %}

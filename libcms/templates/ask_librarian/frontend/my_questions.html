@@ -3,41 +3,56 @@
 {% load cache %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
-    <ul class="breadcrumb">
-
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a> <span class="divider">/</span></li>
-        <li>Мои вопросы</li>
-    </ul>
+    <ol class="crumb__list">
+        <li>
+            <a href="{% url 'index:frontend:index' %}">Главная</a>
+        </li>
+        <li>
+            <a href="{% url 'ask_librarian:frontend:index' %}">Спроси библиотекаря</a>
+        </li>
+        <li>
+            <span class="crumb__current">
+                Мои вопросы
+            </span>
+        </li>
+    </ol>
 
 {% endblock %}
 {% block content %}
-    <ul style="list-style: none; padding: 0; margin: 0;">
-    {% for question in questions_page.object_list %}
-        <li>
-            {% if question.is_ready %}
-                {{ question.question|safe }}
-            {% else %}
-                {{ question.question }}
-            {% endif %}<br/>
-            {% if question.category_id %}
-                <b>
-                {% cache 30 questions_category question.category_id %}
-                    {% for ancestor in  question.category.get_t_ancestors %}
-                        {{ ancestor }}  →
-                    {% endfor %}
-                        {{ question.category }}
-                {% endcache %}
-                </b>
-                <br/>
-                <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>
-            {% endif %}
-        <hr/>
-        </li>
-    {% empty %}
-        <li>Вопросов нет</li>
-    {% endfor %}
-    </ul>
+    <div class="card-list">
+        {% for question in questions_page.object_list %}
+            <div class="card-list__item">
+                <article class="card">
+                    <div class="card-body">
+                        <h2 class="card-detail">
+                            <a class="card-title__link"
+                               href="{% url 'ask_librarian:frontend:detail' question.id %}">
+                                {% if question.is_ready %}
+                                    {{ question.question|safe }}
+                                {% else %}
+                                    {{ question.question }}
+                                {% endif %}
+                            </a>
+                        </h2>
+                        <p class="card-detail">
+                        {% cache 30 questions_category question.category_id %}
+                            {% for ancestor in  question.category.get_t_ancestors %}
+                                {{ ancestor }}  →
+                            {% endfor %}
+                            {{ question.category }}
+                        {% endcache %}
+                        </p>
+                        <ul class="card-nav">
+                            <li class="card-nav__item">
+                                <a class="btn btn_sm btn_gray"
+                                   href="{% url 'ask_librarian:frontend:detail' question.id %}">Подробнее</a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
     {% if questions_page.object_list %}
         {% admin_pagination questions_page %}
     {% endif %}

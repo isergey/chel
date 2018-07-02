@@ -2,40 +2,70 @@
 {% load pagination_tag %}
 {% block title %}Голосования{% endblock %}
 {% block content %}
-
-    <ul class="breadcrumb">
-
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li class="active">Голосования</li>
-
-    </ul>
-    {% for poll in polls_page.object_list %}
-        <div class="item">
-            {% if poll.is_active %}
-                {% url 'polls:frontend:vote' poll.id as detail_url %}
-            {% else %}
-                {% url 'polls:frontend:results'  poll.id as detail_url %}
-            {% endif %}
-            <div class="title">
-                <h4><span class="date">{{ poll.start_poll_date|date:"d M Y"}}.</span><a href="{{ detail_url }}">{{ poll.question }}</a>
-                    {% if poll.is_active %}<sup><span style="color:green;">Активен</span></sup>{% else %}<sup><span style="color:#026DA5;">Завершен</span></sup>{% endif %}</h4>
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                           Голосования
+                        </span>
+                    </li>
+                </ol>
             </div>
-            <div class="detail">
-                {% if poll.is_active %}
-                    <span class="show"><a href="{{ detail_url }}">Подробнее</a></span>
-                {% else %}
-                    {% if poll.show_results_after_end_poll %}
-                        <span class="show"><a href="{{ detail_url }}">Результаты</a></span>
+            <h1 class="content-title">
+                Голосования
+            </h1>
+            <div class="card-list card-list_4">
+                {% for poll in polls_page.object_list %}
+                    {% if poll.is_active %}
+                        {% url 'polls:frontend:vote' poll.id as detail_url %}
                     {% else %}
-                        <span class="show">Результаты не доступны</span>
+                        {% url 'polls:frontend:results'  poll.id as detail_url %}
                     {% endif %}
-                {% endif %}
-
+                    <div class="card-list__item">
+                        <article class="card">
+                            <div class="card-body card_h">
+                                <h2 class="card-title card-title_td-lc">
+                                    <a class="card-title__link"
+                                       href="{{ detail_url }}">
+                                        {{ poll.question }}
+                                    </a>
+                                </h2>
+                                <time class="card-time">{{ poll.start_poll_date|date:"d M Y" }}</time>
+                                {% if poll.is_active %}
+                                    <p class="card-detail">Активен</p>
+                                {% else %}
+                                    <p class="card-detail">Завершен</p>
+                                {% endif %}
+                                <ul class="card-nav">
+                                    {% if poll.is_active %}
+                                        <li class="card-nav__item">
+                                            <a class="btn btn_sm btn_gray" href="{{ detail_url }}">Подробнее</a>
+                                        </li>
+                                    {% else %}
+                                        {% if poll.show_results_after_end_poll %}
+                                            <li class="card-nav__item">
+                                                <a class="btn btn_sm btn_gray" href="{{ detail_url }}">Результаты</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="card-nav__item">
+                                                <p class="card-detail">Результаты не доступны</p>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                {% empty %}
+                    Нет опросов.
+                {% endfor %}
             </div>
-            {% if not forloop.last %}<hr/>{% endif %}
+            {% admin_pagination polls_page %}
         </div>
-    {% empty %}
-        Нет опросов.
-    {% endfor %}
-    {% admin_pagination polls_page %}
+    </main>
 {% endblock %}

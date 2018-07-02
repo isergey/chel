@@ -2,28 +2,38 @@
 {% load participants_pages_tags %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block  breadcrumb %}
-    <ul class="breadcrumb">
-        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>
-        <li><a href="{% url 'participants:frontend:branches' library.code %}">{{ library.name }}</a> <span class="divider">/</span></li>
+    <ol class="crumb__list">
+        <li>
+            <a href="{% url 'index:frontend:index' %}">Главная</a>
+        </li>
+        <li>
+            <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
+        </li>
+        <li>
+            <a href="{% url 'participants:frontend:branches' library.code %}">{{ library.name }}</a>
+        </li>
         {% for ancestor in content.page.get_ancestors_titles %}
-            <li><a href="{% url 'participants_pages:frontend:show' library.code ancestor.url_path %}">
-                {% if not ancestor.title %}
-                    {{ ancestor }}
-                {% else %}
-                    {{ ancestor.title }}
-                {% endif %}
-            </a> <span class="divider">/</span></li>
+            <li>
+                <a href="{% url 'participants_pages:frontend:show' library.code ancestor.url_path %}">
+                    {% if not ancestor.title %}
+                        {{ ancestor }}
+                    {% else %}
+                        {{ ancestor.title }}
+                    {% endif %}
+                </a>
+            </li>
         {% endfor %}
         <li>
-            {% if not content.title %}
-                заглавие страницы для этого языка не указано.
-            {% else %}
-                {{ content.title }}
-            {% endif %}
+            <span class="crumb__current">
+                {% if not content.title %}
+                    заглавие страницы для этого языка не указано.
+                {% else %}
+                    {{ content.title }}
+                {% endif %}
+            </span>
         </li>
-    </ul>
+    </ol>
 {% endblock %}
 {% block content %}
-        {{ content.content|safe }}
+    {{ content.content|safe }}
 {% endblock %}

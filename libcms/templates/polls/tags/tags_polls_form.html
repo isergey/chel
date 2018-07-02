@@ -1,41 +1,43 @@
-<div id="form_results" class="content">
+<div id="form_results">
     {% if poll %}
-        <div style="padding:5px 0 5px 0;"><b>{{ poll.question }}</b></div>
+        <h2 class="card-title card-title_td-lc card-title_question">
+            {{ poll.question }}
+        </h2>
         <form id='vote_form' action="{% url 'polls:frontend:vote' poll.id %}" method="POST">
             {% csrf_token %}
-            {#                    <ul style="list-style:none; padding:0;">#}
-            <table>
-                {% if poll.poll_type == 'radio' %}
-                    {% for choice in choices %}
-                        <tr>
-                            <td><input type="radio" name="answer" value="{{ choice.id }}"/> </td>
-                            <td>{{ choice.choice }}</td>
-                        </tr>
-                    {% empty %}
-                        Нет вариантов ответа.
-                    {% endfor %}
-                {% endif %}
-                {% if poll.poll_type == 'checkboxes' %}
-                    {% for choice in choices %}
-                        <tr>
-                            <td><input type="checkbox" name="answer" value="{{ choice.id }}"/></td>
-                            <td>{{ choice.choice }}</td>
-                        </tr>
-                    {% empty %}
-                        Нет вариантов ответа.
-                    {% endfor %}
-                {% endif %}
-            </table>
-            {#                    </ul>#}
-            <div align="center">
-                <input type="submit" value="Ответить"  class="btn"/>
-            </div>
+            {% if poll.poll_type == 'radio' %}
+                {% for choice in choices %}
+                    <div class="radio">
+                        <label class="radio-inline">
+                            <input type="radio" name="answer" value="{{ choice.id }}"/>
+                            <span class="label-text">{{ choice.choice }}</span>
+                        </label>
+                    </div>
+                {% empty %}
+                    Нет вариантов ответа.
+                {% endfor %}
+            {% endif %}
+            {% if poll.poll_type == 'checkboxes' %}
+                {% for choice in choices %}
+                    <div class="checkbox">
+                        <label class="form-check-label">
+                            <input type="checkbox" name="answer" value="{{ choice.id }}"/>
+                            <span class="label-text">{{ choice.choice }}</span>
+                        </label>
+                    </div>
+                {% empty %}
+                    Нет вариантов ответа.
+                {% endfor %}
+            {% endif %}
+            <ul class="card-nav">
+                <li class="card-nav__item">
+                    <button type="submit" class="btn">Ответить</button>
+                </li>
+            </ul>
         </form>
-
     {% else %}
         Нет активных опросов.
     {% endif %}
-    <div style="text-align:center;padding:5px 0 5px 0;"><a href="{% url 'polls:frontend:index' %}">Архив опросов</a></div>
 </div>
 <script type="text/javascript" src="http://yandex.st/jquery/form/3.14/jquery.form.min.js"></script>
 <script type="text/javascript">
@@ -43,7 +45,7 @@
         $('#vote_form').bind('submit', function (e) {
             e.preventDefault(); // <-- important
             $(this).ajaxSubmit({
-                target:'#form_results'
+                target: '#form_results'
             });
         });
     });

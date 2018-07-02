@@ -2,30 +2,69 @@
 {% load ask_librarian_tags %}
 {% load cache %}
 {% block title %}Спроси библиотекаря{% endblock %}
-
 {% block index_content %}
-    <div class="row">
-        <div class="span12">
-            {% block breadcrumb %}
-                <ul class="breadcrumb">
-                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-                    <li>Спроси библиотекаря</li>
-                </ul>
-            {% endblock %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="span3">
-        <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                {% block breadcrumb %}
+                    <ol class="crumb__list">
+                        <li>
+                            <a href="{% url 'index:frontend:index' %}">Главная</a>
+                        </li>
+                        <li>
+                            <span class="crumb__current">
+                                Спроси библиотекаря
+                            </span>
+                        </li>
+                    </ol>
+                {% endblock %}
+            </div>
+            <div class="row row_sm-col-reverce">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="search-main__side-wrap">
+                        <ul class="search-main__side-detail-nav">
+                            <li class="search-main__side-detail-nav-item">
+                                <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+                            </li>
+                        </ul>
+                        {% cache 30 questions_category_menu %}
+                            {% drow_categories_tree %}
+                        {% endcache %}
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-pl">
+                    {% block content %}
 
-            {% cache 30 questions_category_menu %}
-                {% drow_categories_tree %}
-            {% endcache %}
+                    {% endblock %}
+                </div>
+            </div>
         </div>
-        <div class="span9">
-            {% block content %}
+    </main>
 
-            {% endblock %}
-        </div>
-    </div>
+
+    {#    <div class="row">#}
+    {#        <div class="span12">#}
+    {#            {% block breadcrumb %}#}
+    {#                <ul class="breadcrumb">#}
+    {#                    <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#                    <li>Спроси библиотекаря</li>#}
+    {#                </ul>#}
+    {#            {% endblock %}#}
+    {#        </div>#}
+    {#    </div>#}
+{#    <div class="row">#}
+{#        <div class="span3">#}
+{#            <a style="display: block; padding: 15px 0 15px 0" class="btn btn-success"#}
+{#               href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>#}
+{##}
+{#            {% cache 30 questions_category_menu %}#}
+{#                {% drow_categories_tree %}#}
+{#            {% endcache %}#}
+{#        </div>#}
+{#        <div class="span9">#}
+{#            {% block content %}#}
+{##}
+{#            {% endblock %}#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}

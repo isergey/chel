@@ -3,8 +3,10 @@
     <ul style="margin:0;padding: 0;list-style:none;">
         {% for choices_dict in choices_dicts %}
             <li><b>{{ choices_dict.choice.choice }}</b> (голосов: {{ choice.votes }} - {{ choices_dict.percent_from_sum_votes }} % )
-                <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
-                    <div class="bar" style="width: {{ choices_dict.percent_from_sum_votes }}%"></div>
+                <div class="progress">
+                    <div class="progress__bar" style="width:{{ choices_dict.percent_from_sum_votes }}%">
+                        <span class="progress__sr-only"></span>
+                    </div>
                 </div>
             </li>
         {% empty %}

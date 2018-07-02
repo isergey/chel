@@ -2,74 +2,143 @@
 {% load participants_pages_tags %}
 {% block title %}Библиотеки{% endblock %}
 {% block index_content %}
-
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
-            <li><a href="{%  url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>
-            <li class="active">{{ library.name }}</li>
-        </ul>
-        <div class="row">
-            <div class="span2">
-                <style>
-                    .cbs_menu ul.items, ul.participants{
-                        margin: 0;
-                        list-style: none;
-                    }
-                    .cbs_menu ul{
-                        list-style: none;
-                    }
-                </style>
-                <div class="cbs_menu" style="border-right: #d6d6d6 solid 1px;">
-                {% drow_page_tree library.code %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'participants:frontend:index' %}">Библиотеки</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            {{ library.name }}
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="card card_mb">
+                        <div class="card-body">
+                            <div class="content">
+                                {% drow_page_tree library.code %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-pl">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="map_canvas" style="height: 400px; width: 100%"></div>
+                            {% include 'participants/frontend/map_js.html' %}
+                            <ul class="participants">
+                                {% for library in  libraries %}
+                                    <li>
+                                        <h3 class="participants__title">
+                                            <a href="{% url 'participants:frontend:detail' library.code %}"
+                                               onclick="modalWin('{% url 'participants:frontend:detail' library.code %}'); return false;">{{ library.name }}</a>
+                                        </h3>
+                                        <p class="participants__detail">
+                                            Сайт: {% if library.http_service %}
+                                            <a href="{{ library.http_service }}"
+                                               target="_blank">открыть</a>
+                                        {% else %} не указан {% endif %}
+                                        </p>
+                                    </li>
+                                {% empty %}
+                                    Список еще не сформирован
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="span5" >
-                <ul class="participants">
-                    {% for library in  libraries %}
-                        <li><a href="{% url 'participants:frontend:detail' library.code %}" onclick="modalWin('{% url 'participants:frontend:detail' library.code %}'); return false;">{{ library.name }}<br/></a>
-                            Сайт: {% if library.http_service  %}<a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>
-                            {% else %} не указан {% endif %}
-                        </li>
-                    {% empty %}
-                        Список еще не сформирован
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="span5" id='map_container'>
-                <style>
-                    #map_canvas{
-                        background: white;
-
-                        box-shadow: 0 0 10px #999;
-                        border-radius: 2px;
-                        border: #ffffff solid 5px;
-                        padding: 5px;
-                    }
-                </style>
-                <div id="map_canvas" style="height: 400px"></div>
-                {% include 'participants/frontend/map_js.html' %}
-            </div>
         </div>
-        <div class="row">
-            <div class="span12">
+    </main>
 
-            </div>
-        </div>
-    </div>
+
+    {##}
+    {##}
+    {#    <div class="span12">#}
+    {#        <ul class="breadcrumb">#}
+    {#            <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#            <li><a href="{% url 'participants:frontend:index' %}">Библиотеки</a> <span class="divider">/</span></li>#}
+    {#            <li class="active">{{ library.name }}</li>#}
+    {#        </ul>#}
+    {#        <div class="row">#}
+    {#            <div class="span2">#}
+    {#                <style>#}
+    {#                    .cbs_menu ul.items, ul.participants {#}
+    {#                        margin: 0;#}
+    {#                        list-style: none;#}
+    {#                    }#}
+    {##}
+    {#                    .cbs_menu ul {#}
+    {#                        list-style: none;#}
+    {#                    }#}
+    {#                </style>#}
+    {#                <div class="cbs_menu" style="border-right: #d6d6d6 solid 1px;">#}
+    {#                    {% drow_page_tree library.code %}#}
+    {#                </div>#}
+    {#            </div>#}
+    {#            <div class="span5">#}
+    {#                <ul class="participants">#}
+    {#                    {% for library in  libraries %}#}
+    {#                        <li>#}
+    {#                            <a href="{% url 'participants:frontend:detail' library.code %}"#}
+    {#                               onclick="modalWin('{% url 'participants:frontend:detail' library.code %}'); return false;">#}
+    {#                                {{ library.name }}#}
+    {#                                <br/>#}
+    {#                            </a>#}
+    {#                            Сайт:#}
+    {#                            {% if library.http_service %}#}
+    {#                                <a href="{{ library.http_service }}" target="_blank"> {{ library.http_service }}</a>#}
+    {#                            {% else %}#}
+    {#                                не указан#}
+    {#                            {% endif %}#}
+    {#                        </li>#}
+    {#                    {% empty %}#}
+    {#                        Список еще не сформирован#}
+    {#                    {% endfor %}#}
+    {#                </ul>#}
+    {#            </div>#}
+    {#            <div class="span5" id='map_container'>#}
+    {#                <style>#}
+    {#                    #map_canvas {#}
+    {#                        background: white;#}
+    {##}
+    {#                        box-shadow: 0 0 10px #999;#}
+    {#                        border-radius: 2px;#}
+    {#                        border: #ffffff solid 5px;#}
+    {#                        padding: 5px;#}
+    {#                    }#}
+    {#                </style>#}
+    {#                <div id="map_canvas" style="height: 400px; width: 500px"></div>#}
+    {#                {% include 'participants/frontend/map_js.html' %}#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="row">#}
+    {#            <div class="span12">#}
+    {##}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
     <script type="text/javascript">
         function modalWin(url) {
             if (window.showModalDialog) {
-                window.showModalDialog(url,"name",
+                window.showModalDialog(url, "name",
                         "dialogWidth:550px;dialogHeight:520px");
             } else {
-                window.open(url,'name',
+                window.open(url, 'name',
                         'height=550px,width=520px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
             }
         }
     </script>
     <script type="text/javascript">
-        if (!$('.cbs_menu').children().length){
+        if (!$('.cbs_menu').children().length) {
             $('#map_container').removeClass('span5');
             $('#map_container').addClass('span7');
         }

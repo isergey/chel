@@ -1,4 +1,5 @@
 {% extends 'index/frontend/index.html' %}
+{% load news_tags %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
     <main class="main main_bg-white">
@@ -17,11 +18,11 @@
                             <a href="{% url 'news:frontend:index' %}">Новости</a>
                         </li>
                     {% endif %}
-                    <li>
-                        <span class="crumb__current">
-                        {{ content.title }}
-                        </span>
-                    </li>
+{#                    <li>#}
+{#                        <span class="crumb__current">#}
+{#                        {{ content.title }}#}
+{#                        </span>#}
+{#                    </li>#}
                 </ol>
             </div>
             <h1 class="content-title">{{ content.title }}</h1>
@@ -36,6 +37,46 @@
                     </div>
                 </div>
             </div>
+            <section class="section">
+                <div class="section__divider"></div>
+                <div class="section-header">
+                    <h3 class="section__title">Новости ЧОУНБ</h3>
+                    <ul class="section-nav section-nav_left">
+                        <li class="section-nav__item">
+                            <a class="section-nav__link section-nav__link_rss"
+                               href="{% url 'news:frontend:rss' %}">RSS</a>
+                        </li>
+                        <li class="section-nav__item">
+                            <a class="section-nav__link" href="{% url 'news:frontend:index' %}?type=chel">Все
+                                новости</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-list card-list_4">
+                    {% news_feed 4 0 %}
+                </div>
+            </section>
+            <section class="section">
+                <div class="section__divider"></div>
+                <div class="section-header">
+                    <h3 class="section__title">Новости библиотек области</h3>
+                    <ul class="section-nav section-nav_left">
+                        <li class="section-nav__item">
+                            <a class="section-nav__link section-nav__link_rss"
+                               href="{% url 'news:frontend:rss' %}">RSS</a>
+                        </li>
+                        <li class="section-nav__item">
+                            <a class="section-nav__link" href="{% url 'news:frontend:index' %}?type=lib">Все
+                                новости</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-list card-list_4">
+                    {% news_feed 4 1 %}
+                </div>
+            </section>
+
+
         </div>
     </main>
 {% endblock %}

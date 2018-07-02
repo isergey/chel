@@ -1,25 +1,54 @@
 {% load mptt_tags %}
 {% load ask_librarian_tags %}
 
-<div class="menu">
-    <span class="title">Категории вопросов</span>
-    {% url 'ask_librarian:frontend:index' as ask_librarian_index %}
-    <ul class="items" style="list-style: none; margin: 0">
-        {% if nodes %}
-            {% recursetree nodes %}
-                <li {% if path == node.item_title.url  %}class="active"{% endif %}>
-                    <a href="{{ ask_librarian_index }}?category={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>
-                </li>
-                {% if not node.is_leaf_node %}
+<div class="facets-item">
+    <div class="facets-item__title-wrap">
+        <h4 class="facets-item__title">Категории вопросов</h4>
+    </div>
+    <div class="facets-item__panel">
+        <ul class="facets-item__nav">
 
-                    <li><ul class="children" style="list-style: none;">
-                        {{ children }}
-                    </ul>
+            {% if nodes %}
+                {% recursetree nodes %}
+                    <li class="facets-item__nav-item {% if path == node.item_title.url %}active{% endif %}">
+                        <a class="facets-item__nav-link"
+                           href="{% url 'ask_librarian:frontend:index' %}?category={{ node.id }}">
+                            <span class="facets-item__nav-item-name">{{ node.node_title.title }}</span>
+                            <span class="facets-item__nav-item-count">{% get_question_category_count node %}</span>
+                        </a>
                     </li>
-                {% endif %}
-            {% endrecursetree %}
-        {% endif %}
-    </ul>
+                    {% if not node.is_leaf_node %}
+                        <li>
+                            <ul class="children" style="list-style: none;">
+                                {{ children }}
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endrecursetree %}
+            {% endif %}
+        </ul>
+    </div>
 </div>
+
+{#<div class="menu">#}
+{#    <span class="title">Категории вопросов</span>#}
+{#    {% url 'ask_librarian:frontend:index' as ask_librarian_index %}#}
+{#    <ul class="items" style="list-style: none; margin: 0">#}
+{#        {% if nodes %}#}
+{#            {% recursetree nodes %}#}
+{#                <li {% if path == node.item_title.url  %}class="active"{% endif %}>#}
+{#                    <a href="{{ ask_librarian_index }}?category={{ node.id }}">{{ node.node_title.title }} (<b>{%  get_question_category_count node %}</b>)</a>#}
+{#                </li>#}
+{#                {% if not node.is_leaf_node %}#}
+{##}
+{#                    <li><ul class="children" style="list-style: none;">#}
+{#                        {{ children }}#}
+{#                    </ul>#}
+{#                    </li>#}
+{#                {% endif %}#}
+{#            {% endrecursetree %}#}
+{#        {% endif %}#}
+{#    </ul>#}
+{#</div>#}
 
 

@@ -22,13 +22,16 @@
           content="{% block meta_description %}ЧОУНБ – знаковое место культурной жизни Челябинска. Информация о книгах, электронных ресурсах, услугах и событиях. Регистрация читателей, Виртуальный абонемент, Виртуальная справка. Новости и адреса библиотек Челябинской области.{% endblock %}"/>
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/theme/logo.png">
     <link rel="stylesheet" href="{{ STATIC_URL }}front/styles/index.css">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800&amp;subset=cyrillic"
-    rel="stylesheet">
+    <link rel="stylesheet" href="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/css/bvi.min.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800&amp;subset=cyrillic"
+          rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800&amp;subset=cyrillic" rel="stylesheet">
 
     <meta name="yandex-verification" content="9c44f9ae56a80399"/>
 </head>
 <body>
+
+
 <header class="header">
     <div class="header-top-wrap">
         <div class="header-top container">
@@ -41,7 +44,7 @@
                     <a href="/ru/pages/about/lib/contacts/" class="header-top-menu__link">Контакты</a>
                 </li>
                 <li class="header-top-menu__item hide-sm">
-                    <a href="#" class="header-top-menu__link">Версия для слабовидящих</a>
+                    <a href="#" class="header-top-menu__link bvi-panel-open">Версия для слабовидящих</a>
                 </li>
             </ul>
             <ul class="social-list">
@@ -131,14 +134,26 @@
         <button class="header-btn-menu" aria-label="Открыть меню"></button>
         <ul class="header-md-menu hide-sm">
             {% if request.user.is_authenticated %}
-                Вы вошли как: {{ request.user.username }}
-                <a href="{% url 'accounts:frontend:logout' %}">Выйти</a>
-                <ul>
-                    <li><a href="{% url 'orders:frontend:index' %}">Мои заказы</a></li>
-                    <li><a href="{% url 'events:frontend:favorit_events' %}">Мои события</a></li>
-                    <li><a href="{% url 'zgate_saved_document_list' %}">Мои документы</a></li>
-                    <li><a href="{% url 'ask_librarian:frontend:my_questions' %}">Мои вопросы</a></li>
-                </ul>
+                <li class="header-md-menu__item">
+                    <button class="btn" href="/ru/accounts/logout/">Вы вошли как: {{ request.user.username }}</button>
+                    <ul class="header-dropdown">
+                        <li class="header-dropdown__item">
+                            <a class="header-dropdown__link" href="{% url 'orders:frontend:index' %}">Заказы</a>
+                        </li>
+                        <li class="header-dropdown__item">
+                            <a class="header-dropdown__link" href="{% url 'events:frontend:favorit_events' %}">События</a>
+                        </li>
+                        <li class="header-dropdown__item">
+                            <a class="header-dropdown__link" href="{% url 'zgate_saved_document_list' %}">Документы</a>
+                        </li>
+                        <li class="header-dropdown__item">
+                            <a class="header-dropdown__link" href="{% url 'ask_librarian:frontend:my_questions' %}">Вопросы</a>
+                        </li>
+                        <li class="header-dropdown__item">
+                            <a class="header-dropdown__link" href="{% url 'accounts:frontend:logout' %}">Выйти</a>
+                        </li>
+                    </ul>
+                </li>
             {% else %}
                 <li class="header-md-menu__item">
                     <a class="header-md-menu__link"
@@ -402,10 +417,19 @@
 <script src="{{ STATIC_URL }}front/vendors/jquery-2.2.4.min.js"></script>
 <script src="{{ STATIC_URL }}front/vendors/slick/slick.min.js"></script>
 <script src="{{ STATIC_URL }}front/vendors/selectric/jquery.selectric.min.js"></script>
+<script src="{{ STATIC_URL }}front/vendors/micromodal.min.js"></script>
+<script src="{{ STATIC_URL }}front/vendors/fancybox/jquery.fancybox.min.js"></script>
+
+{# Скрипты для версии слабовидящих#}
+<script src="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/js/responsivevoice.min.js?ver=1.5.0"></script>
+<script src="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/js/bvi-init-panel.js"></script>
+<script src="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/js/bvi.js"></script>
+<script src="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/js/js.cookie.js"></script>
+
 <script>
     $(document).ready(function () {
 
-        $('select').selectric();
+{#        $('select').selectric();#}
 
         $('.slider').slick({
             dots: true,
@@ -485,6 +509,46 @@
             lastScrollTop = st;
         }
 
+        // Раскрывающийся список
+        function listUl() {
+            let sitemap = document.getElementById("list");
+            if (sitemap) {
+                this.listItem = function (li) {
+                    if (li.getElementsByTagName("ul").length > 0) {
+                        let ul = li.getElementsByTagName("ul")[0];
+                        let span = document.createElement("span");
+                        if (ul.style.display !== "block") {
+                            ul.style.display = "none";
+                        } else {
+                            span.className = "expanded";
+                        }
+                        span.onclick = function () {
+                            ul.style.display = (ul.style.display === "none") ? "block" : "none";
+                            this.className = (ul.style.display === "none") ? "collapsed" : "expanded";
+                        };
+                        li.appendChild(span);
+                    }
+                    ;
+                };
+
+                let items = sitemap.getElementsByTagName("li");
+                for (let i = 0; i < items.length; i++) {
+                    listItem(items[i]);
+                }
+
+            }
+            ;
+        };
+
+        listUl();
+
+        // Модалка
+        MicroModal.init({
+            openTrigger: 'data-custom-open',
+            disableScroll: false,
+            awaitCloseAnimation: true
+        });
+
     });
 </script>
 
@@ -505,12 +569,6 @@
 {#        s.parentNode.insertBefore(wf, s);#}
 {#    })(document);#}
 {#</script>#}
-
-
-
-
-
-
 
 
 {# Old html #}
@@ -679,80 +737,80 @@
         return confirm("Уверены что хотите удалить?");
     })
 </script>
-<script type="application/javascript">
-    var mainMenu = {
-        prevLi: false
-    };
-    $('#main_menu').on('mouseleave', function () {
-        mainMenu.prevLi = false;
-    });
-
-    var $menu = $('#main_menu>li');
-
-    $menu.on('click', function (event) {
-
-        var $target = $(event.currentTarget);
-        var isHovered = true;
-        mainMenu.prevLi = true;
-        $target.addClass('opened');
-        $menu.one('mouseleave', function () {
-            isHovered = false;
-            $target.removeClass('opened');
-        });
-    });
-
-    $menu.on('mouseenter', function (event) {
-
-        var $target = $(event.currentTarget);
-        var isHovered = true;
-        var openTimeout = 0;
-
-        if (!mainMenu.prevLi) {
-            openTimeout = 500;
-        }
-        mainMenu.prevLi = true;
-        setTimeout(function () {
-            if (isHovered == true) {
-                $target.addClass('opened');
-            }
-        }, openTimeout);
-        $menu.one('mouseleave', function () {
-            isHovered = false;
-            $target.removeClass('opened');
-        });
-    });
-</script>
-<script type="text/javascript">
-
-    //    jQuery(document).ready(function() {
-    //        jQuery('#mycarousel').jcarousel();
-    //    });
-    function mycarousel_initCallback(carousel) {
-        carousel.buttonNext.bind('click', function () {
-            carousel.startAuto(0);
-        });
-
-        carousel.buttonPrev.bind('click', function () {
-            carousel.startAuto(0);
-        });
-
-        carousel.clip.hover(function () {
-            carousel.stopAuto();
-        }, function () {
-            carousel.startAuto();
-        });
-    }
-    ;
-
-    jQuery(document).ready(function () {
-        jQuery('#carousel').jcarousel({
-            auto: 2,
-            wrap: 'last',
-//            visible: 5
-            initCallback: mycarousel_initCallback
-        });
-    });
-</script>
+{#<script type="application/javascript">#}
+{#    var mainMenu = {#}
+{#        prevLi: false#}
+{#    };#}
+{#    $('#main_menu').on('mouseleave', function () {#}
+{#        mainMenu.prevLi = false;#}
+{#    });#}
+{##}
+{#    var $menu = $('#main_menu>li');#}
+{##}
+{#    $menu.on('click', function (event) {#}
+{##}
+{#        var $target = $(event.currentTarget);#}
+{#        var isHovered = true;#}
+{#        mainMenu.prevLi = true;#}
+{#        $target.addClass('opened');#}
+{#        $menu.one('mouseleave', function () {#}
+{#            isHovered = false;#}
+{#            $target.removeClass('opened');#}
+{#        });#}
+{#    });#}
+{##}
+{#    $menu.on('mouseenter', function (event) {#}
+{##}
+{#        var $target = $(event.currentTarget);#}
+{#        var isHovered = true;#}
+{#        var openTimeout = 0;#}
+{##}
+{#        if (!mainMenu.prevLi) {#}
+{#            openTimeout = 500;#}
+{#        }#}
+{#        mainMenu.prevLi = true;#}
+{#        setTimeout(function () {#}
+{#            if (isHovered == true) {#}
+{#                $target.addClass('opened');#}
+{#            }#}
+{#        }, openTimeout);#}
+{#        $menu.one('mouseleave', function () {#}
+{#            isHovered = false;#}
+{#            $target.removeClass('opened');#}
+{#        });#}
+{#    });#}
+{#</script>#}
+{#<script type="text/javascript">#}
+{##}
+{#    //    jQuery(document).ready(function() {#}
+{#    //        jQuery('#mycarousel').jcarousel();#}
+{#    //    });#}
+{#    function mycarousel_initCallback(carousel) {#}
+{#        carousel.buttonNext.bind('click', function () {#}
+{#            carousel.startAuto(0);#}
+{#        });#}
+{##}
+{#        carousel.buttonPrev.bind('click', function () {#}
+{#            carousel.startAuto(0);#}
+{#        });#}
+{##}
+{#        carousel.clip.hover(function () {#}
+{#            carousel.stopAuto();#}
+{#        }, function () {#}
+{#            carousel.startAuto();#}
+{#        });#}
+{#    }#}
+{#    ;#}
+{##}
+{#    jQuery(document).ready(function () {#}
+{#        jQuery('#carousel').jcarousel({#}
+{#            auto: 2,#}
+{#            wrap: 'last',#}
+{#//            visible: 5#}
+{#            initCallback: mycarousel_initCallback#}
+{#        });#}
+{#    });#}
+{#</script>#}
 
 <script type="text/javascript">
     jQuery(document).ajaxSend(function (event, xhr, settings) {

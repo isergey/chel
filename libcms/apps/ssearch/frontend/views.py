@@ -213,7 +213,7 @@ class PivotNode(object):
         item_li.append(
             u'<a href="%s" class="pivot__title" id="pt_%s">%s</a>' % (href, self.field, self.value)
         )
-        item_li.append(u'<span class="pivot__count">%s</span>' % (self.count,))
+        item_li.append(u'<sup class="pivot__count">%s</sup>' % (self.count,))
 
         if self.pivot:
             item_li.append(self.children_to_html())
@@ -225,7 +225,7 @@ class PivotNode(object):
         className = u"pivot"
         if is_root:
             className += u" pivot_root"
-        ul = [u'<ul class="', className, u'">']
+        ul = [u'<ul id="list" class="', className, u'">']
 
         for child in sorted(self.pivot, key=PivotNode.cmp):
             ul.append(child.to_li())
