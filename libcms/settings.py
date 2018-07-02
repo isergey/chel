@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'guardian',
     'debug_toolbar',
     'django_sorting',
+    'bootstrap3',
     'captcha',
     'explorer',
     # cms apps
@@ -178,5 +179,8 @@ LOCALE_INDEPENDENT_PATHS = (
     r'^/robots\.txt$',
 )
 
+BOOTSTRAP3 = {
+    'set_placeholder': False,
+}
 
 from local_settings import *

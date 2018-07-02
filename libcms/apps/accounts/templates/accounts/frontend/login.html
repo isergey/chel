@@ -1,16 +1,21 @@
 {% extends 'index/frontend/index.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% block title %}
     Вход на портал
 {% endblock %}
 {% block content %}
     <h3 style="margin: 0 0 10px 160px;">Вход на портал</h3>
-    <form method="POST" class="form-horizontal">{% csrf_token %}
-        <fieldset>
-            {% include 'frontend/base_form_fields.html' %}
-            <div class="form-actions">
-                <input type="submit" value="Войти" class="btn"/>
-            </div>
-        </fieldset>
+    <form method="POST" class="form">{% csrf_token %}
+        {% bootstrap_form form %}
+{#        <fieldset>#}
+{#            {% include 'frontend/base_form_fields.html' %}#}
+{#            <div class="form-actions">#}
+{#                <input type="submit" value="Войти" class="btn"/>#}
+{#            </div>#}
+{#        </fieldset>#}
+    {% buttons %}
+        <input type="submit" value="Войти" class="btn"/>
+    {% endbuttons %}
     </form>
 {% endblock %}
