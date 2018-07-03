@@ -1,0 +1,47 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}Галерея{% endblock %}
+{% block content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                           Галерея
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">
+                Галерея
+            </h1>
+            <div class="card-list card-list_4">
+                {% for album in albums %}
+                    <div class="card-list__item">
+                        <article class="card">
+                            <div class="card-body card_h">
+                                <h2 class="card-title card-title_td-lc">
+                                    <a class="card-title__link"
+                                       href="{% url  'gallery:frontend:album_view' album.id %}">
+                                        {{ album }}
+                                    </a>
+                                </h2>
+                                <time class="card-time">{{ album.create_date }}</time>
+                                <br>
+                                <ul class="card-nav">
+                                    <li class="card-nav__item">
+                                        <a class="btn btn_sm"
+                                           href="{% url  'gallery:frontend:album_view' album.id %}">Подробнее</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %}
