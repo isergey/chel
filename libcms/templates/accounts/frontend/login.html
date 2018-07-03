@@ -1,5 +1,6 @@
 {% extends 'index/frontend/index.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 {% block title %}
     Вход на портал
 {% endblock %}
@@ -18,17 +19,12 @@
             </div>
             <h1 class="content-title">Вход на портал</h1>
             <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <div class="content">
-                        <form method="POST" class="form-horizontal">{% csrf_token %}
-                            <fieldset>
-                                {% include 'frontend/base_form_fields.html' %}
-                                <div class="form-actions">
-                                    <input type="submit" value="Войти" class="btn"/>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <input type="submit" value="Войти" class="btn"/>
+                    </form>
                 </div>
             </div>
         </div>

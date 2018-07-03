@@ -1,4 +1,5 @@
 {% extends 'ask_librarian/frontend/index.html' %}
+{% load bootstrap3 %}
 {% block title %}Спроси библиотекаря{% endblock %}
 {% block breadcrumb %}
     <ol class="crumb__list">
@@ -20,14 +21,9 @@
         <div class="card-body">
             <div class="content">
                 <form id="ask_form" class="" method="POST">{% csrf_token %}
-                    <legend>Задать вопрос</legend>
-                    <fieldset>
-                        {% include 'frontend/base_form_fields.html' with form=form %}
-                        {#            {% include 'administration/base_form_fields.html' with form=translate_form %}#}
-                        <div class="form-actions">
-                            <button type="submit" class="btn">Спросить</button>
-                        </div>
-                    </fieldset>
+                    <h1>Задать вопрос</h1>
+                    {% bootstrap_form form %}
+                    <button type="submit" class="btn">Спросить</button>
                 </form>
             </div>
         </div>

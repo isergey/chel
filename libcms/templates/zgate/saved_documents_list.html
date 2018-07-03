@@ -1,0 +1,76 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}
+    Мои документы
+{% endblock %}
+{% block content %}
+
+
+
+
+
+
+    <style type="text/css">
+    .documnet .content {
+        border: #f5f4f4 solid 1px;
+        background: #fff;
+        box-shadow: 1px 1px 5px #ccc;
+    }
+    .documnet .info {
+
+        background: #fff;
+
+    }
+    </style>
+    <ul class="breadcrumb">
+
+        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>
+        <li class="active">Мои документы</li>
+
+    </ul>
+    <div class="text">
+        {% if saved_documents %}
+            {% if format == 'full' %}
+                <a href="?format=short" class="blue awesome">Показать краткие записи</a>
+            {% else %}
+                <a href="?format=full" class="blue awesome">Показать полные записи</a>
+            {% endif %}
+            <hr/>
+            <form  method="POST" action="{% url 'zgate_load_saved_documents' %}"> {% csrf_token %}
+                <div class="news">
+                    {% for saved_document in saved_documents %}
+                        <div class="documnet">
+                            <div class="content">
+                                <input type="checkbox" name="download" value="{{ saved_document.id }}">
+                                {% if format == 'full' %}
+                                    {{ saved_document.full_document|safe }}
+                                {% else %}
+                                    {{ saved_document.short_document|safe }}
+                                {% endif %}
+                            </div>
+                            <div class="alert alert-info">
+                                {{ saved_document.comments}}
+                            </div>
+                            <div class="title">
+                                Найден в каталоге: {{ saved_document.zcatalog.title }}
+                            </div>
+
+                            <div class="detail">
+                                <a class="btn btn-danger" href="{% url 'zgate_delete_saved_document' saved_document.id %}"><i class="icon-trash icon-white"></i> Удалить документ</a>
+                            </div>
+
+                            {% if not forloop.last %}
+                                <hr/>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        Сохраненных документов нет.
+                    {% endfor %}
+                </div>
+            <hr/>
+            <INPUT TYPE=SUBMIT VALUE="Выгрузить в текстовой файл " class="btn"/>
+            </form>
+        {% else %}
+            Сохраненных документов нет.
+        {% endif %}
+    </div>
+{% endblock %}

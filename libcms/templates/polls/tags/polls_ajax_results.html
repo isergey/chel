@@ -1,11 +1,22 @@
-<div style="padding:5px 0 5px 0;"><b>{{ poll.question }}</b></div>
+<h2 class="card-title card-title_td-lc card-title_question">
+    {{ poll.question }}
+</h2>
 {% if show_results %}
-    <ul style="margin:0;padding: 0;list-style:none;">
+    <ul class="poll">
         {% for choices_dict in choices_dicts %}
-            <li><b>{{ choices_dict.choice.choice }}</b> (голосов: {{ choice.votes }} - {{ choices_dict.percent_from_sum_votes }} % )
+            <li>
+                <p>
+                    {{ choices_dict.choice.choice }}
+                    (голосов: {{ choice.votes }}
+                    - {{ choices_dict.percent_from_sum_votes }} % )
+                </p>
                 <div class="progress">
-                    <div class="progress__bar" style="width:{{ choices_dict.percent_from_sum_votes }}%">
-                        <span class="progress__sr-only"></span>
+                    <div class="progress__bar" role="progressbar" aria-valuenow="70"
+                         aria-valuemin="0" aria-valuemax="100"
+                         style="width: {{ choices_dict.percent_from_max }}%">
+                                                <span class="progress__sr-only">
+                                                    (голосов: {{ choice.votes }} - {{ choices_dict.percent_from_sum_votes }} % )
+                                                </span>
                     </div>
                 </div>
             </li>
@@ -16,4 +27,3 @@
 {% else %}
     {{ message }}
 {% endif %}
-<div style="text-align:center;padding:5px 0 5px 0;"><a href="{% url 'polls:frontend:index' %}">Архив опросов</a></div>

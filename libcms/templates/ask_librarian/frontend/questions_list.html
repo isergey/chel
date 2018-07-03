@@ -42,34 +42,40 @@
 {% endblock %}
 {% block content %}
 
-    <div class="row">
-        <div class="col-lg-4">
+    <div class="form-grid">
+        <div class="form-grid__col">
             <form action="" method="GET">
-                Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/><br/>
-                <input type="submit" value="Перейти" class="btn"/>
+                <div class="form-group">
+                    <label class="control-label">Перейти к вопросу №:</label>
+                    <input class="form-control" name="id" type="text">
+                    <div class="help-block">Разрешены буквы латинского алфавита и цифры</div>
+                </div>
+{#                <button type="submit" class="btn btn_sm">Перейти</button>#}
             </form>
         </div>
-        <div class="col-lg-4">
-            <form action="" method="POST">{% csrf_token %}
-                Найти вопросы по дате:
+        <div class="form-grid__col">
+            <form action="" method="POST">
+                {% csrf_token %}
                 {% for field in date_filter_form.visible_fields %}
-                    <div class="control-group {% if field.errors %}error{% endif %}">
-                        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                    <div class="form-group {% if field.errors %}error{% endif %}">
+                    <label class="control-label">Найти вопросы по дате:</label>
+{#                        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>#}
                         <div class="controls">
-                            {{ field }}
+{#                            {{ field }}#}
+                            <input id="id_date" class="form-control" name="date" type="text">
                             {% if field.errors %}
                                 {{ field.errors }}
                             {% endif %}
                             {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}
                         </div>
-
                     </div>
                 {% endfor %}
-                <input type="submit" value="Найти" class="btn"/>
+{#                <input type="submit" value="Найти" class="btn btn_sm"/>#}
             </form>
         </div>
     </div>
 
+    <br>
 
     <div class="card-list">
         {% for question in questions_page.object_list %}
@@ -87,12 +93,12 @@
                             </a>
                         </h2>
                         <p class="card-detail">
-                        {% cache 30 questions_category question.category_id %}
-                            {% for ancestor in  question.category.get_t_ancestors %}
-                                {{ ancestor }}  →
-                            {% endfor %}
-                            {{ question.category }}
-                        {% endcache %}
+                            {% cache 30 questions_category question.category_id %}
+                                {% for ancestor in  question.category.get_t_ancestors %}
+                                    {{ ancestor }}  →
+                                {% endfor %}
+                                {{ question.category }}
+                            {% endcache %}
                         </p>
                         <ul class="card-nav">
                             <li class="card-nav__item">
@@ -108,58 +114,58 @@
     {% admin_pagination questions_page %}
 
 
-{#    <div class="row">#}
-{#        <div class="span4">#}
-{#            <form action="" method="GET">#}
-{#                Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/><br/>#}
-{#                <input type="submit" value="Перейти" class="btn"/>#}
-{#            </form>#}
-{#        </div>#}
-{#        <div class="span4">#}
-{#            <form action="" method="POST">{% csrf_token %}#}
-{#                Найти вопросы по дате:#}
-{#                {% for field in date_filter_form.visible_fields %}#}
-{#                    <div class="control-group {% if field.errors %}error{% endif %}">#}
-{#                        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>#}
-{#                        <div class="controls">#}
-{#                            {{ field }}#}
-{#                            {% if field.errors %}#}
-{#                                {{ field.errors }}#}
-{#                            {% endif %}#}
-{#                            {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}#}
-{#                        </div>#}
-{##}
-{#                    </div>#}
-{#                {% endfor %}#}
-{#                <input type="submit" value="Найти" class="btn"/>#}
-{#            </form>#}
-{#        </div>#}
-{#    </div>#}
-{#    <hr/>#}
-{#    <ul style="list-style: none; padding: 0; margin: 0;">#}
-{#        {% for question in questions_page.object_list %}#}
-{#            <li>#}
-{#                {% if question.is_ready %}#}
-{#                    {{ question.question|safe }}#}
-{#                {% else %}#}
-{#                    {{ question.question }}#}
-{#                {% endif %}<br/>#}
-{#                {% if question.category_id %}#}
-{#                    <b>#}
-{#                        {% cache 30 questions_category question.category_id %}#}
-{#                            {% for ancestor in  question.category.get_t_ancestors %}#}
-{#                                {{ ancestor }}  →#}
-{#                            {% endfor %}#}
-{#                            {{ question.category }}#}
-{#                        {% endcache %}#}
-{#                    </b>#}
-{#                    <br/>#}
-{#                    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>#}
-{#                {% endif %}#}
-{#                <hr/>#}
-{#            </li>#}
-{#        {% empty %}#}
-{#            <li>Вопросов нет</li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
+    {#    <div class="row">#}
+    {#        <div class="span4">#}
+    {#            <form action="" method="GET">#}
+    {#                Перейти к вопросу №: <input type="text" style=" width: 50px;" name="id"/><br/>#}
+    {#                <input type="submit" value="Перейти" class="btn"/>#}
+    {#            </form>#}
+    {#        </div>#}
+    {#        <div class="span4">#}
+    {#            <form action="" method="POST">{% csrf_token %}#}
+    {#                Найти вопросы по дате:#}
+    {#                {% for field in date_filter_form.visible_fields %}#}
+    {#                    <div class="control-group {% if field.errors %}error{% endif %}">#}
+    {#                        <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>#}
+    {#                        <div class="controls">#}
+    {#                            {{ field }}#}
+    {#                            {% if field.errors %}#}
+    {#                                {{ field.errors }}#}
+    {#                            {% endif %}#}
+    {#                            {% if  field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}#}
+    {#                        </div>#}
+    {##}
+    {#                    </div>#}
+    {#                {% endfor %}#}
+    {#                <input type="submit" value="Найти" class="btn"/>#}
+    {#            </form>#}
+    {#        </div>#}
+    {#    </div>#}
+    {#    <hr/>#}
+    {#    <ul style="list-style: none; padding: 0; margin: 0;">#}
+    {#        {% for question in questions_page.object_list %}#}
+    {#            <li>#}
+    {#                {% if question.is_ready %}#}
+    {#                    {{ question.question|safe }}#}
+    {#                {% else %}#}
+    {#                    {{ question.question }}#}
+    {#                {% endif %}<br/>#}
+    {#                {% if question.category_id %}#}
+    {#                    <b>#}
+    {#                        {% cache 30 questions_category question.category_id %}#}
+    {#                            {% for ancestor in  question.category.get_t_ancestors %}#}
+    {#                                {{ ancestor }}  →#}
+    {#                            {% endfor %}#}
+    {#                            {{ question.category }}#}
+    {#                        {% endcache %}#}
+    {#                    </b>#}
+    {#                    <br/>#}
+    {#                    <a href="{% url 'ask_librarian:frontend:detail' question.id %}">подробнее</a>#}
+    {#                {% endif %}#}
+    {#                <hr/>#}
+    {#            </li>#}
+    {#        {% empty %}#}
+    {#            <li>Вопросов нет</li>#}
+    {#        {% endfor %}#}
+    {#    </ul>#}
 {% endblock %}
