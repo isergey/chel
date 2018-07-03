@@ -271,7 +271,7 @@ def handle_uploaded_file(f, old_name=None):
 
     im = im.crop(tuple(box))
 
-    final_hight = 330
+    final_hight = 660
     image_ratio = float(im.size[0]) / im.size[1]
     final_width = int((image_ratio * final_hight))
     im = im.resize((final_width, final_hight), Image.ANTIALIAS)

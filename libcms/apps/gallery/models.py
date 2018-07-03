@@ -160,7 +160,7 @@ def handle_uploaded_file(instance):
 
     im = im.crop(tuple(box))
 
-    final_hight = 120
+    final_hight = 240
     try:
         image_ratio = float(im.size[0]) / im.size[1]
         final_width = int((image_ratio * final_hight))
