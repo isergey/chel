@@ -1,0 +1,38 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <main class="main main_bg-white">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Гостевая книга
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">Гостевая книга</h1>
+            <div class="ya-share2"
+                 data-services="vkontakte,facebook,gplus,twitter,viber,whatsapp,telegram"></div>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <br>
+                    <a href="{% url 'guestbook:frontend:send_feedback' %}" class="btn">Написать отзыв</a>
+                    <div class="content">
+                        {% for feedback in feedbacks_page.object_list %}
+                            {{ feedback.content|safe }}
+                            {% if not forloop.last %}
+                                <hr/>{% endif %}
+                        {% endfor %}
+                        {% admin_pagination feedbacks_page %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

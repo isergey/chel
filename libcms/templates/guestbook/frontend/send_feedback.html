@@ -1,0 +1,40 @@
+{% extends 'index/frontend/index.html' %}
+{% load bootstrap3 %}
+{% block title %}Оставить запись{% endblock %}
+{% block content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Оставить запись
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">Оставить запись</h1>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form class="feedback_from" method="POST">
+                                {% csrf_token %}
+                                <fieldset>
+                                    {% bootstrap_form form %}
+                                    <button type="submit" class="btn">Написать</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

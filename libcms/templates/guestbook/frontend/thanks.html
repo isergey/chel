@@ -1,0 +1,35 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'guestbook:frontend:index' %}">Гостевая книга</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Оставить запись
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">Оставить запись</h1>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><b>Спасибо, что остались неравнодушными к порталу!</b></p>
+                            <p>Мы учтем Ваши пожелания и замечания. Ваш отзыв будет опубликован после проверки
+                                модератором на предмет спама</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

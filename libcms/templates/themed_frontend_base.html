@@ -2,6 +2,7 @@
 {% load localeurl_tags %}
 {% load menu_tags %}
 {% load gallery_tags %}
+{% load libcms_pages_tags %}
 {% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 
@@ -38,11 +39,18 @@
 <header class="header">
     <div class="header-top-wrap">
         <div class="header-top container">
-            <div class="header-top__time">
-                <span class="hide-sm">Расписание:</span> вт-сб – 9.00-19.00; вс-пн – выходные
-                дни;
-            </div>
             <ul class="header-top-menu">
+                <li class="header-top-menu__item">
+                    <a href="/ru/pages/about/hoursopen/" class="header-top-menu__link header-top__time">
+                        <span class="hide-sm">Расписание:</span> вт-сб – 9.00-19.00; вс-пн – выходные
+                        дни
+                    </a>
+                </li>
+            </ul>
+            <ul class="header-top-menu header-top-menu_right">
+                <li class="header-top-menu__item">
+                    <a href="/ru/pages/about/lib/contacts/" class="header-top-menu__link">Контакты</a>
+                </li>
                 <li class="header-top-menu__item">
                     <a href="/ru/gallery/" class="header-top-menu__link">Галерея</a>
                 </li>
@@ -53,10 +61,12 @@
                     <a href="/ru/cid/" class="header-top-menu__link">Календарь знаменательных дат</a>
                 </li>
                 <li class="header-top-menu__item">
-                    <a href="/ru/pages/about/lib/contacts/" class="header-top-menu__link">Контакты</a>
+                    <a href="/ru/guestbook/" class="header-top-menu__link">Гостевая книга</a>
                 </li>
                 <li class="header-top-menu__item hide-sm">
-                    <a href="#" class="header-top-menu__link bvi-panel-open">Версия для слабовидящих</a>
+                    <a href="#" class="header-top-menu__link bvi-panel-open" title="Версия для слабовидящих">
+                        <img class="header-top-menu__img" src="{{ STATIC_URL }}front/images/eye.svg" alt="Версия для слабовидящих">
+                    </a>
                 </li>
             </ul>
             <ul class="social-list">
@@ -213,249 +223,7 @@
 
 <footer class="footer">
     <div class="container">
-        <div class="footer__row">
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">О библиотеке</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/about/hoursopen/">Расписание</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/about/lib/contacts/">Контакты</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/regcenters/">Региональные центры</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/about/projects/">Проекты</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/about/lib/vacancy/">Вакансии</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/about/lib/quality/anketa/">Независимая оценка качества</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/prof/">Профессионалам</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/participants/">Библиотеки области</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Читателям</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/resources/">Ресурсы</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/readers/services/">Услуги</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/readers/readcenter/literaturnyi_kalendar_2018/">Литературный календарь</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="#">Литературная карта</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/kray/">Краеведение</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/readers/clubs/">Клубы</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/readers/readcenter/">Книги и чтение</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/readers/visiting/dostupnaya-sreda/">Доступная среда</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="#">Расписание</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Сервисы</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/news/?type=chel">Новости</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="#">Поиск информации</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/ask_librarian/">Спроси библиотекаря</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/events/">Афиша мероприятий</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/gallery/">Галерея</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/polls/">Голосование</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/guestbook/">Гостевая книга</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/cid/">Календарь знаменательных дат</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/accounts/login/?next=/ru/forum/">Форум</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/map/">Карта сайта</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Партнеры</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="http://www.mkrf.ru/" target="_blank" rel="noopener">Министерство культуры
-                            РФ</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="http://www.culture-chel.ru/" target="_blank" rel="noopener">Министерство культуры
-                            ЧО</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="#" target="_blank" rel="noopener">Культура и искусство Южного
-                            Урала</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="http://www.nilc.ru/" target="_blank" rel="noopener">Центр ЛИБНЕТ</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="http://mars.arbicon.ru/" target="_blank" rel="noopener">МАРС АРБИКОН</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="http://www.rba.ru/" target="_blank" rel="noopener">РБА</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="http://korunb.nlr.ru/query_form.php" target="_blank" rel="noopener">Виртуальная справочная
-                            служба КОРУНБ</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer__row">
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Приложение</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/kray/projects/neskuchnye_puteshestvija_po_juzhnomu_uralu/">Нескучные путешествия по Южному Уралу</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Реклама</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link" href="/ru/pages/about/lib/div/om/">Отдел маркетинга и проектных технологий</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Контакты</h4>
-                <ul class="footer-menu">
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link footer-menu__link_map" href="/ru/pages/about/location/">Челябинск, 454091, пр. Ленина,
-                            60,</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link footer-menu__link_phone" href="tel:+73512660533">+7 (351)
-                            266-05-33</a>
-                    </li>
-                    <li class="footer-menu__item">
-                        <a class="footer-menu__link footer-menu__link_envelope" href="mailto:lib@chelreglib.ru">lib@chelreglib.ru</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="footer__col-1-4">
-                <h4 class="footer-menu-title">Мы в социальных сетях</h4>
-                <ul class="social-list social-list_footer">
-                    <li class="social-list__item">
-                        <a class="social-list__link" href="https://vk.com/club39715562" target="_blank" rel="noopener"
-                           title="ЧОУНБ ВКонтакте">
-                            <svg class="social-list__img social-list__img_footer" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 548.358 548.358">
-                                <path d="M545.451 400.298c-.664-1.431-1.283-2.618-1.858-3.569-9.514-17.135-27.695-38.167-54.532-63.102l-.567-.571-.284-.28-.287-.287h-.288c-12.18-11.611-19.893-19.418-23.123-23.415-5.91-7.614-7.234-15.321-4.004-23.13 2.282-5.9 10.854-18.36 25.696-37.397 7.807-10.089 13.99-18.175 18.556-24.267 32.931-43.78 47.208-71.756 42.828-83.939l-1.701-2.847c-1.143-1.714-4.093-3.282-8.846-4.712-4.764-1.427-10.853-1.663-18.278-.712l-82.224.568c-1.332-.472-3.234-.428-5.712.144l-3.713.859-1.431.715-1.136.859c-.952.568-1.999 1.567-3.142 2.995-1.137 1.423-2.088 3.093-2.848 4.996-8.952 23.031-19.13 44.444-30.553 64.238-7.043 11.803-13.511 22.032-19.418 30.693-5.899 8.658-10.848 15.037-14.842 19.126-4 4.093-7.61 7.372-10.852 9.849-3.237 2.478-5.708 3.525-7.419 3.142-1.715-.383-3.33-.763-4.859-1.143-2.663-1.714-4.805-4.045-6.42-6.995-1.622-2.95-2.714-6.663-3.285-11.136-.568-4.476-.904-8.326-1-11.563-.089-3.233-.048-7.806.145-13.706.198-5.903.287-9.897.287-11.991 0-7.234.141-15.085.424-23.555.288-8.47.521-15.181.716-20.125.194-4.949.284-10.185.284-15.705s-.336-9.849-1-12.991a44.442 44.442 0 0 0-2.99-9.137c-1.335-2.95-3.289-5.232-5.853-6.852-2.569-1.618-5.763-2.902-9.564-3.856-10.089-2.283-22.936-3.518-38.547-3.71-35.401-.38-58.148 1.906-68.236 6.855-3.997 2.091-7.614 4.948-10.848 8.562-3.427 4.189-3.905 6.475-1.431 6.851 11.422 1.711 19.508 5.804 24.267 12.275l1.715 3.429c1.334 2.474 2.666 6.854 3.999 13.134 1.331 6.28 2.19 13.227 2.568 20.837.95 13.897.95 25.793 0 35.689-.953 9.9-1.853 17.607-2.712 23.127-.859 5.52-2.143 9.993-3.855 13.418-1.715 3.426-2.856 5.52-3.428 6.28-.571.76-1.047 1.239-1.425 1.427a21.387 21.387 0 0 1-7.71 1.431c-2.667 0-5.901-1.334-9.707-4-3.805-2.666-7.754-6.328-11.847-10.992-4.093-4.665-8.709-11.184-13.85-19.558-5.137-8.374-10.467-18.271-15.987-29.691l-4.567-8.282c-2.855-5.328-6.755-13.086-11.704-23.267-4.952-10.185-9.329-20.037-13.134-29.554-1.521-3.997-3.806-7.04-6.851-9.134l-1.429-.859c-.95-.76-2.475-1.567-4.567-2.427a30.301 30.301 0 0 0-6.567-1.854l-78.229.568c-7.994 0-13.418 1.811-16.274 5.428l-1.143 1.711c-.571.953-.859 2.475-.859 4.57 0 2.094.571 4.664 1.714 7.707 11.42 26.84 23.839 52.725 37.257 77.659 13.418 24.934 25.078 45.019 34.973 60.237 9.897 15.229 19.985 29.602 30.264 43.112 10.279 13.515 17.083 22.176 20.412 25.981 3.333 3.812 5.951 6.662 7.854 8.565l7.139 6.851c4.568 4.569 11.276 10.041 20.127 16.416 8.853 6.379 18.654 12.659 29.408 18.85 10.756 6.181 23.269 11.225 37.546 15.126 14.275 3.905 28.169 5.472 41.684 4.716h32.834c6.659-.575 11.704-2.669 15.133-6.283l1.136-1.431c.764-1.136 1.479-2.901 2.139-5.276.668-2.379 1-5 1-7.851-.195-8.183.428-15.558 1.852-22.124 1.423-6.564 3.045-11.513 4.859-14.846 1.813-3.33 3.859-6.14 6.136-8.418 2.282-2.283 3.908-3.666 4.862-4.142.948-.479 1.705-.804 2.276-.999 4.568-1.522 9.944-.048 16.136 4.429 6.187 4.473 11.99 9.996 17.418 16.56 5.425 6.57 11.943 13.941 19.555 22.124 7.617 8.186 14.277 14.271 19.985 18.274l5.708 3.426c3.812 2.286 8.761 4.38 14.853 6.283 6.081 1.902 11.409 2.378 15.984 1.427l73.087-1.14c7.229 0 12.854-1.197 16.844-3.572 3.998-2.379 6.373-5 7.139-7.851.764-2.854.805-6.092.145-9.712-.677-3.611-1.344-6.136-2.008-7.563z"
-                                      fill="#FFF"/>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="social-list__item">
-                        <a class="social-list__link" href="https://www.facebook.com/chelreglib/" target="_blank"
-                           rel="noopener" title="ЧОУНБ Facebook">
-                            <svg class="social-list__img social-list__img_footer" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 90 90">
-                                <path d="M90 15.001C90 7.119 82.884 0 75 0H15C7.116 0 0 7.119 0 15.001v59.998C0 82.881 7.116 90 15.001 90H45V56H34V41h11v-5.844C45 25.077 52.568 16 61.875 16H74v15H61.875C60.548 31 59 32.611 59 35.024V41h15v15H59v34h16c7.884 0 15-7.119 15-15.001V15.001z"
-                                      fill="#FFF"/>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="social-list__item">
-                        <a class="social-list__link" href="https://www.instagram.com/chel_lib/" target="_blank"
-                           rel="noopener" title="ЧОУНБ Instagram">
-                            <svg class="social-list__img social-list__img_footer" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 512 512">
-                                <path d="M352 0H160C71.648 0 0 71.648 0 160v192c0 88.352 71.648 160 160 160h192c88.352 0 160-71.648 160-160V160C512 71.648 440.352 0 352 0zm112 352c0 61.76-50.24 112-112 112H160c-61.76 0-112-50.24-112-112V160C48 98.24 98.24 48 160 48h192c61.76 0 112 50.24 112 112v192z"
-                                      fill="#FFF"/>
-                                <path d="M256 128c-70.688 0-128 57.312-128 128s57.312 128 128 128 128-57.312 128-128-57.312-128-128-128zm0 208c-44.096 0-80-35.904-80-80 0-44.128 35.904-80 80-80s80 35.872 80 80c0 44.096-35.904 80-80 80z"
-                                      fill="#FFF"/>
-                                <circle cx="393.6" cy="118.4" r="17.056" fill="#FFF"/>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="social-list__item">
-                        <a class="social-list__link" href="https://www.youtube.com/user/Publichka74" target="_blank"
-                           rel="noopener" title="ЧОУНБ YouTube">
-                            <svg class="social-list__img social-list__img_footer" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 310 310">
-                                <path d="M297.917 64.645c-11.19-13.302-31.85-18.728-71.306-18.728H83.386c-40.359 0-61.369 5.776-72.517 19.938C0 79.663 0 100.008 0 128.166v53.669c0 54.551 12.896 82.248 83.386 82.248h143.226c34.216 0 53.176-4.788 65.442-16.527C304.633 235.518 310 215.863 310 181.835v-53.669c0-29.695-.841-50.16-12.083-63.521zm-98.896 97.765l-65.038 33.991a9.997 9.997 0 0 1-14.632-8.863v-67.764a10 10 0 0 1 14.609-8.874l65.038 33.772a10 10 0 0 1 .023 17.738z"
-                                      fill="#FFF"/>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="social-list__item">
-                        <a class="social-list__link" href="https://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_.html" target="_blank" rel="noopener"
-                           title="ЧОУНБ Tripadvisor">
-                            <svg class="social-list__img social-list__img_footer" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 512 512">
-                                <path d="M512 159.2h-90.24C326.08 76 185.92 76 90.24 159.2H0s20.48 24.96 28.8 48.32C10.88 229.28 0 256.8 0 287.2c0 70.72 57.28 128 128 128 41.92 0 79.04-20.48 102.4-51.84l26.88 51.84 24.64-51.52c23.36 31.04 60.16 51.52 102.08 51.52 70.72 0 128-57.28 128-128 0-30.4-10.88-57.92-28.8-79.68 8.32-23.36 28.8-48.32 28.8-48.32zm-384 224c-52.8 0-96-43.2-96-96s43.2-96 96-96 96 43.2 96 96-43.2 96-96 96zm256 0c-52.8 0-96-43.2-96-96s43.2-96 96-96 96 43.2 96 96-43.2 96-96 96z"
-                                      fill="#FFF"/>
-                                <path d="M128 223.2c-35.296 0-64 28.704-64 64s28.704 64 64 64 64-28.704 64-64-28.704-64-64-64zm0 96c-17.632 0-32-14.368-32-32 0-17.632 14.368-32 32-32s32 14.368 32 32c0 17.632-14.368 32-32 32zm256-96c-35.296 0-64 28.704-64 64s28.704 64 64 64 64-28.704 64-64-28.704-64-64-64zm0 96c-17.664 0-32-14.368-32-32 0-17.632 14.336-32 32-32s32 14.368 32 32c0 17.632-14.336 32-32 32z"
-                                      fill="#FFF"/>
-                                <circle cx="128" cy="287.2" r="16" fill="#FFF"/>
-                                <circle cx="384" cy="287.2" r="16" fill="#FFF"/>
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
-
-            </div>
-
-        </div>
-        <div class="footer__row">
-            <div class="footer__col-1-2">
-                <p class="footer-text">
-                    ЧОУНБ – это главная библиотека и крупнейшее книгохранилище Челябинской области,
-                    информационно-культурный и просветительский центр. С 1898 г. библиотека формирует информационную
-                    среду региона, предоставляет людям нужную информацию и литературу, организует интеллектуальное
-                    общение и культурный досуг. Здесь проходят знаковые культурные события и формируются новые ценности.
-                    <a href="/ru/pages/about/lib/strateg/">Подробнее</a>
-                </p>
-            </div>
-            <div class="footer__col-1-2">
-                <p class="footer-text">
-                    © Государственное казенное учреждение культуры «Челябинская областная универсальная научная
-                    библиотека» (ЧОУНБ), 2018
-                </p>
-            </div>
-        </div>
+        {% render_page_content "common/footer" %}
     </div>
 </footer>
 {#<script src="{{ STATIC_URL }}front/vendors/jquery-2.2.4.min.js"></script>#}
