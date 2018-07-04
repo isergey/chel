@@ -14,11 +14,19 @@
                 <div class="container">
                     <div class="banner">
                         <div class="search-main">
-                            <form role="search" action="{% url 'ssearch:frontend:index' %}" method="GET">
+                            <script>
+                                function initSearch(f) {
+                                    var searchInput = document.getElementsByClassName('search-main__input')[0];
+                                    if (searchInput && !searchInput.value.trim().startsWith('(FT')) {
+                                        searchInput.value = '(FT ' + searchInput.value + ')';
+                                    }
+                                }
+                            </script>
+                            <form role="search" action="http://opac.chelreglib.ru/opacg/query/index.php" method="GET" onsubmit="initSearch(this);">
                                 <div class="search-main__input-wrap">
                                     <input class="search-main__input search-main__input_plh-blue"
-                                           placeholder="Поиск по электронному каталогу" type="text" name="q">
-                                    <input type="hidden" name="attr" value="all_t"/>
+                                           placeholder="Поиск по электронному каталогу" type="text" name="query">
+{#                                    <input type="hidden" name="attr" value="all_t"/>#}
                                     <button class="search-main__btn" type="submit" title="Найти"></button>
                                 </div>
                                 <ul class="search-main__nav">
@@ -44,6 +52,7 @@
                                     </li>
                                 </ul>
                             </form>
+
                         </div>
                         <div class="banner__divider"></div>
                         <div class="banner__row">
