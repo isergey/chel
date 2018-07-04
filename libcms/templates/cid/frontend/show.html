@@ -1,0 +1,48 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}{{ idate }}{% endblock %}
+{% block content %}
+    <main class="main main_bg-white">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    {% if request.GET.back %}
+                        <li>
+                            <a href="{{ request.GET.back }}">Календарь знаменательных дат</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'cid:frontend:index' %}">Календарь знаменательных дат</a>
+                        </li>
+                    {% endif %}
+                    {#                    <li>#}
+                    {#                        <span class="crumb__current">#}
+                    {#                            {{ idate }}#}
+                    {#                        </span>#}
+                    {#                    </li>#}
+                </ol>
+            </div>
+            <h1 class="content-title">{{ idate }}</h1>
+            <div class="ya-share2"
+                 data-services="vkontakte,facebook,gplus,twitter,viber,whatsapp,telegram"></div>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    {% if can_edit %}
+                        <a class="btn" href="{% url 'cid:administration:edit_id' idate.id %}">Редактировать</a>
+                    {% endif %}
+                    <div class="content">
+                        <p><b>Дата события:</b> {{ idate.date }}</p>
+                        <p><b>Тип:</b> {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %},
+                        {% endif %}{% endfor %}</p>
+                        <h2>Описание</h2>
+                        {{ idate.description|safe }}
+                        <h2>Литература</h2>
+                        {{ idate.literature|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

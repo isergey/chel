@@ -18,14 +18,17 @@
                             <a href="{% url 'news:frontend:index' %}">Новости</a>
                         </li>
                     {% endif %}
-{#                    <li>#}
-{#                        <span class="crumb__current">#}
-{#                        {{ content.title }}#}
-{#                        </span>#}
-{#                    </li>#}
+                    {#                    <li>#}
+                    {#                        <span class="crumb__current">#}
+                    {#                        {{ content.title }}#}
+                    {#                        </span>#}
+                    {#                    </li>#}
                 </ol>
             </div>
             <h1 class="content-title">{{ content.title }}</h1>
+            <div class="ya-share2"
+                 data-services="vkontakte,facebook,gplus,twitter,viber,whatsapp,telegram"></div>
+            <br>
             <div class="row">
                 <div class="col-lg-8 col-md-8 col-sm-12">
                     <time class="content-time" datetime="2018-04-26 16:55:00">{{ news.create_date|date:"j E Y" }}</time>

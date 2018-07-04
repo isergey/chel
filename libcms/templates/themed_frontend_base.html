@@ -23,7 +23,7 @@
     <meta name="Description"
           content="{% block meta_description %}ЧОУНБ – знаковое место культурной жизни Челябинска. Информация о книгах, электронных ресурсах, услугах и событиях. Регистрация читателей, Виртуальный абонемент, Виртуальная справка. Новости и адреса библиотек Челябинской области.{% endblock %}"/>
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/theme/logo.png">
-    <link rel="stylesheet" href="{{ STATIC_URL }}front/styles/index.css?846228">
+    <link rel="stylesheet" href="{{ STATIC_URL }}front/styles/index.css?84618">
     <link rel="stylesheet" href="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/css/bvi.min.css?8468"
           type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800&amp;subset=cyrillic"
@@ -38,11 +38,20 @@
 <header class="header">
     <div class="header-top-wrap">
         <div class="header-top container">
-            <div class="header-top__time"><span class="hide-sm">Расписание:</span> вт-сб – 9.00-19.00; вс-пн – выходные
-                дни; последняя пятница месяца
-                – санитарный день
+            <div class="header-top__time">
+                <span class="hide-sm">Расписание:</span> вт-сб – 9.00-19.00; вс-пн – выходные
+                дни;
             </div>
             <ul class="header-top-menu">
+                <li class="header-top-menu__item">
+                    <a href="/ru/gallery/" class="header-top-menu__link">Галерея</a>
+                </li>
+                <li class="header-top-menu__item">
+                    <a href="/ru/forum/" class="header-top-menu__link">Форум</a>
+                </li>
+                <li class="header-top-menu__item">
+                    <a href="/ru/cid/" class="header-top-menu__link">Календарь знаменательных дат</a>
+                </li>
                 <li class="header-top-menu__item">
                     <a href="/ru/pages/about/lib/contacts/" class="header-top-menu__link">Контакты</a>
                 </li>
@@ -91,7 +100,7 @@
                     </a>
                 </li>
                 <li class="social-list__item">
-                    <a class="social-list__link" href="https://www.tripadvisor.ru/" target="_blank" rel="noopener"
+                    <a class="social-list__link" href="https://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_.html" target="_blank" rel="noopener"
                        title="ЧОУНБ Tripadvisor">
                         <svg class="social-list__img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path d="M512 159.2h-90.24C326.08 76 185.92 76 90.24 159.2H0s20.48 24.96 28.8 48.32C10.88 229.28 0 256.8 0 287.2c0 70.72 57.28 128 128 128 41.92 0 79.04-20.48 102.4-51.84l26.88 51.84 24.64-51.52c23.36 31.04 60.16 51.52 102.08 51.52 70.72 0 128-57.28 128-128 0-30.4-10.88-57.92-28.8-79.68 8.32-23.36 28.8-48.32 28.8-48.32zm-384 224c-52.8 0-96-43.2-96-96s43.2-96 96-96 96 43.2 96 96-43.2 96-96 96zm256 0c-52.8 0-96-43.2-96-96s43.2-96 96-96 96 43.2 96 96-43.2 96-96 96z"
@@ -412,7 +421,7 @@
                         </a>
                     </li>
                     <li class="social-list__item">
-                        <a class="social-list__link" href="https://www.tripadvisor.ru/" target="_blank" rel="noopener"
+                        <a class="social-list__link" href="https://www.tripadvisor.ru/Attraction_Review-g298539-d2337509-Reviews-Chelyabinsk_Regional_Scientific_Universal_Library-Chelyabinsk_Chelyabinsk_Oblast_.html" target="_blank" rel="noopener"
                            title="ЧОУНБ Tripadvisor">
                             <svg class="social-list__img social-list__img_footer" xmlns="http://www.w3.org/2000/svg"
                                  viewBox="0 0 512 512">
@@ -461,10 +470,14 @@
 <script src="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/js/bvi.js"></script>
 <script src="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/js/js.cookie.js"></script>
 
+{# Поделиться Яндекс #}
+<script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+<script src="//yastatic.net/share2/share.js"></script>
+
 <script>
     $(document).ready(function () {
 
-        $('#id_month, #id_year, #id_type, #id_district').selectric();
+        $('#id_month, #id_year, #id_type, #id_district, #selectEvents').selectric();
 
         $('.slider').slick({
             dots: true,

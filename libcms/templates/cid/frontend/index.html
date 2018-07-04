@@ -1,0 +1,262 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% load add_get_tag %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                            Календарь знаменательных дат
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">Календарь знаменательных дат</h1>
+
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="card card_mb">
+                        <div class="card-body">
+                            {% if events %}
+                                <a href="{% add_get print=1 %}" target="_blank"
+                                   class="btn btn_sm btn_gray">Распечатать результаты</a><br><br>
+                                <a href="{% add_get print='docx' %}"
+                                   class="btn btn_sm btn_gray">Сохранить результаты в Docx файл</a><br><br>
+                                <a href="{% add_get print='docx' %}"
+                                   class="btn btn_sm btn_gray">Сохранить результаты в Docx файл</a><br><br>
+                            {% endif %}
+                            <a class="btn btn_sm btn_gray" href="{% url 'pages:frontend:show' 'help/kzd' %}">Помощь</a>
+                            <br/>
+                            <div class="content">
+                                {% if errors %}
+                                    <ul>
+                                        {% for error in errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                <p>Подбор текущих событий</p>
+                                <ul>
+                                    <li>
+                                        <a href="?day={{ now|date:"d" }}&month={{ now|date:"m" }}&year={{ now|date:"Y" }}">Сегодня</a>
+                                    </li>
+                                    <li><a href="?month={{ now|date:"m" }}&year={{ now|date:"Y" }}">Текущий месяц</a>
+                                    </li>
+                                    <li><a href="?year={{ now|date:"Y" }}">Текущий год</a></li>
+                                </ul>
+
+                                <p>Подбор событий по типу</p>
+                                <ul>
+                                    {% for type in types %}
+                                        <li><a href="?type={{ type.id }}">{{ type }}</a></li>
+                                    {% endfor %}
+                                </ul>
+
+                                <p>Укажите интересующую дату (можно по отдельности):</p>
+                                <form action="" method="GET">
+                                    <div class="form-group ">
+                                        <label class="control-label">
+                                            Дата(дд.мм.гггг):</label>
+                                        <input class="form-control" type="text" name="day" placeholder="дд"
+                                               value="{{ request.GET.day|default_if_none:"" }}"
+                                        /><br>
+                                        <input class="form-control" type="text" name="month" placeholder="мм"
+                                               value="{{ request.GET.month|default_if_none:"" }}"
+                                        /><br>
+                                        <input class="form-control" type="text" name="year" placeholder="гггг"
+                                               value="{{ request.GET.year|default_if_none:"" }}"
+                                        />
+                                    </div>
+                                    <button class="btn btn_sm" type="submit">Показать</button>
+                                </form>
+                                <p>Поиск по событиям:</p>
+                                <form method="GET">
+                                    <div class="form-group">
+                                        <select id="selectEvents" name="attr" style="width: 120px">
+                                            <option value="all_t">Везде</option>
+                                            <option value="fio_t">Персоналия</option>
+                                            <option value="org_title_t">Организация</option>
+                                            <option value="event_title_t">Мероприятие</option>
+                                            <option value="geo_title_t">Географический объект</option>
+                                            <option value="theme_t">Тема</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input class="form-control" id="appendedInputButton" type="text"
+                                               value="{{ request.GET.q }}"
+                                               name="q">
+                                    </div>
+                                    <button class="btn btn_sm" type="submit">Поиск</button>
+                                </form>
+                                <p>Юбилейные даты года:</p>
+                                <form method="GET">
+                                    <div class="form-group">
+                                        <input class="form-control" id="appendedInputButton" type="text"
+                                               value="{{ request.GET.y }}"
+                                               name="y">
+                                    </div>
+                                    <button class="btn" type="submit">Поиск</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-pl">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="content">
+                                {% if events %}
+                                    <ul class="participants">
+                                        {% for event in events %}
+                                            <li>
+                                                <h3 class="participants__title">
+                                                    <a href="{% url 'cid:frontend:detail' event.id %}?back={{ request.get_full_path }}">
+                                                        {% if event.count_day %}{{ event.date|date:"d" }}{% endif %}
+                                                        {% if event.count_month %}{{ event.date|date:"E" }} {% endif %}
+                                                        {% if event.count_year %}{{ event.date|date:"Y" }} г.{% endif %}
+                                                        {{ event }}
+                                                    </a>
+                                                </h3>
+                                                <p class="participants__detail">Тип: {% for type in  event.type.all %}
+                                                    {{ type }}
+                                                    {% if not forloop.last %}
+                                                        ,
+                                                    {% endif %}{% endfor %}.
+                                                </p>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% if events_page %}
+                                        {% admin_pagination events_page %}
+                                    {% endif %}
+                                {% else %}
+                                    <p>Ничего не найдено</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+
+
+    {##}
+    {#    <ul class="breadcrumb">#}
+    {##}
+    {#        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
+    {#        <li class="active">Календарь знаменательных дат</li>#}
+    {##}
+    {#    </ul>#}
+
+    <div>
+        {#        <p style="text-align: right"><a href="{% url 'pages:frontend:show' 'help/kzd' %}">Помощь</a></p>#}
+        <div>
+
+            {#            {% if errors %}#}
+            {#                <ul>#}
+            {#                    {% for error in errors %}#}
+            {#                        <li>{{ error }}</li>#}
+            {#                    {% endfor %}#}
+            {#                </ul>#}
+            {#            {% endif %}#}
+            <div>
+                <div style="float: left; width: 170px">
+
+                    {#                    <ul>#}
+                    {#                        <b>Подбор текущих событий</b>#}
+                    {#                        <li>#}
+                    {#                            <a href="?day={{ now|date:"d" }}&month={{ now|date:"m" }}&year={{ now|date:"Y" }}">Сегодня</a>#}
+                    {#                        </li>#}
+                    {#                        <li><a href="?month={{ now|date:"m" }}&year={{ now|date:"Y" }}">Текущий месяц</a></li>#}
+                    {#                        <li><a href="?year={{ now|date:"Y" }}">Текущий год</a></li>#}
+                    {#                    </ul>#}
+                    {#                    <ul>#}
+                    {#                        <b>Подбор событий по типу</b>#}
+                    {#                        {% for type in types %}#}
+                    {#                            <li><a href="?type={{ type.id }}">{{ type }}</a></li>#}
+                    {#                        {% endfor %}#}
+                    {#                    </ul>#}
+                </div>
+
+                {#                <div style="float: left; width: 420px;">#}
+                {#                    <b>Укажите интересующую дату (можно по отдельности)</b>:#}
+                {#                    <form action="" method="GET">#}
+                {#                        Дата(дд.мм.гггг):#}
+                {#                        <input type="text" name="day" value="{{ request.GET.day|default_if_none:"" }}"#}
+                {#                               style="width: 50px"/>.#}
+                {#                        <input type="text" name="month" value="{{ request.GET.month|default_if_none:"" }}"#}
+                {#                               style="width: 50px"/>.#}
+                {#                        <input type="text" name="year" value="{{ request.GET.year|default_if_none:"" }}"#}
+                {#                               style="width: 50px"/>#}
+                {##}
+                {#                        <div><input type="submit" value="Показать" class="btn"/></div>#}
+                {#                    </form>#}
+                {#                    <b>Поиск по событиям</b>:#}
+                {#                    <form method="GET">#}
+                {#                        <select name="attr" style="width: 120px">#}
+                {#                            <option value="all_t">Везде</option>#}
+                {#                            <option value="fio_t">Персоналия</option>#}
+                {#                            <option value="org_title_t">Организация</option>#}
+                {#                            <option value="event_title_t">Мероприятие</option>#}
+                {#                            <option value="geo_title_t">Географический объект</option>#}
+                {#                            <option value="theme_t">Тема</option>#}
+                {#                        </select>#}
+                {#                        <input class="span5" id="appendedInputButton" type="text" value="{{ request.GET.q }}" name="q">#}
+                {#                        <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i>#}
+                {#                        </button>#}
+                {#                    </form>#}
+                {#                    <b>Юбилейные даты года</b>:#}
+                {#                    <form method="GET">#}
+                {#                        <input class="span1" id="appendedInputButton" type="text" value="{{ request.GET.y }}" name="y">#}
+                {#                        <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i>#}
+                {#                        </button>#}
+                {#                    </form>#}
+                {#                </div>#}
+                <div style="clear: both"></div>
+            </div>
+        </div>
+
+        <div>
+            {#            {% if events %}#}
+            {#                <a href="{% add_get print=1 %}" target="_blank" title="Распечатать результаты"#}
+            {#                   class="btn btn-small"><span class="icon-print"></span></a>#}
+            {#                <a href="{% add_get print='docx' %}" title="Сохранить результаты в Docx файл"#}
+            {#                   class="btn btn-small">Word</a>#}
+            {#            {% endif %}#}
+            {#            <hr/>#}
+            {#            <ul style="list-style: none; margin: 0">#}
+            {#                {% for event in events %}#}
+            {#                    <li>#}
+            {#                        <a href="{% url 'cid:frontend:detail' event.id %}?back={{ request.get_full_path }}">#}
+            {#                            {% if event.count_day %}{{ event.date|date:"d" }}{% endif %}#}
+            {#                            {% if event.count_month %}{{ event.date|date:"E" }} {% endif %}#}
+            {#                            {% if event.count_year %}{{ event.date|date:"Y" }} г.{% endif %}#}
+            {#                            {{ event }}#}
+            {#                        </a>#}
+            {##}
+            {#                        <div>Тип: {% for type in  event.type.all %} {{ type }} {% if not forloop.last %},#}
+            {#                        {% endif %}{% endfor %}.#}
+            {#                        </div>#}
+            {#                        {% if not forloop.last %}#}
+            {#                            <hr/>{% endif %}#}
+            {#                    </li>#}
+            {#                {% endfor %}#}
+            {#            </ul>#}
+        </div>
+        {#        {% if events_page %}#}
+        {#            {% admin_pagination events_page %}#}
+        {#        {% endif %}#}
+    </div>
+{% endblock %}
