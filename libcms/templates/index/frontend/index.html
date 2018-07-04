@@ -17,12 +17,12 @@
                             <script>
                                 function initSearch(f) {
                                     var searchInput = document.getElementsByClassName('search-main__input')[0];
-                                    if (searchInput && !searchInput.value.trim().startsWith('(FT')) {
-                                        searchInput.value = '(FT ' + searchInput.value + ')';
+                                    if (searchInput) {
+                                        window.open('http://opac.chelreglib.ru/opacg/query/index.php?query=' + '(FT ' + searchInput.value + ')', '_blank');
                                     }
                                 }
                             </script>
-                            <form role="search" action="http://opac.chelreglib.ru/opacg/query/index.php" method="GET" onsubmit="initSearch(this);">
+                            <form role="search" method="GET" onsubmit="initSearch(this); return false;">
                                 <div class="search-main__input-wrap">
                                     <input class="search-main__input search-main__input_plh-blue"
                                            placeholder="Поиск по электронному каталогу" type="text" name="query">
