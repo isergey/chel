@@ -226,9 +226,14 @@ class PivotNode(object):
 
     def children_to_html(self, is_root=False):
         className = u"pivot"
+        idName = u''
+        styleList = u''
         if is_root:
             className += u" pivot_root"
-        ul = [u'<ul id="list" class="', className, u'">']
+            idName = u'id="list"'
+            styleList = u'style="display: block"'
+
+        ul = [u'<ul ',idName, u' class="', className, u'" ', styleList, u'>']
 
         for child in sorted(self.pivot, key=PivotNode.cmp):
             ul.append(child.to_li())
