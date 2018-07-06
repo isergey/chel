@@ -214,9 +214,9 @@ class PivotNode(object):
         item_li.append(
             u'<a href="%s" class="pivot__title" id="pt_%s">%s</a>' % (href, self.field, self.value)
         )
-        item_li.append(u'<sup class="pivot__count">%s</sup>' % (self.count,))
+        item_li.append(u'<div class="pivot__count">Документы: %s</div>' % (self.count,))
         if self.views is not None:
-            item_li.append(u'<sup class="pivot__views">%s</sup>' % (self.views,))
+            item_li.append(u'<div class="pivot__views">Просмотры: %s</div>' % (self.views,))
 
         if self.pivot:
             item_li.append(self.children_to_html())
