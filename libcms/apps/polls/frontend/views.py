@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 import hashlib
 import uuid
-from  django.shortcuts import  redirect, render, HttpResponse, get_object_or_404
+from django.shortcuts import redirect, render, HttpResponse, get_object_or_404
 from django.core.urlresolvers import reverse
-
 
 from common.pagination import get_page
 from ..models import Poll, Choice, PolledUser
 
 
-
 def index(request):
     polls_page = get_page(request, Poll.objects.filter(published=True).order_by('-id')[:100])
-    return render(request, 'polls/frontend/index.html',{
+    return render(request, 'polls/frontend/index.html', {
         'polls_page': polls_page
     })
 
 
 def vote(request, poll_id):
-
     poll = get_object_or_404(Poll, id=poll_id, published=True)
 
     if not poll.is_active():
@@ -27,14 +24,14 @@ def vote(request, poll_id):
     poller_id = get_poller_id(request)
 
     if not poll.multi_vote:
-        votes_in_poll = PolledUser.objects.filter(poller_id=poller_id,poll=poll).count()
+        votes_in_poll = PolledUser.objects.filter(poller_id=poller_id, poll=poll).count()
 
         if votes_in_poll:
             return results(request, poll_id, poll)
 
     if request.method == 'POST' and 'answer' in request.POST:
         if poll.poll_type == 'radio':
-            #Голосуем за первый попавшийся id
+            # Голосуем за первый попавшийся id
             choices = Choice.objects.filter(poll=poll, pk__in=request.POST.getlist('answer'))[:1]
         elif poll.poll_type == 'checkboxes':
             choices = Choice.objects.filter(poll=poll, pk__in=request.POST.getlist('answer'))
@@ -54,18 +51,17 @@ def vote(request, poll_id):
 
     choices = Choice.objects.filter(poll=poll).order_by('-sort')
 
-    response =  render(request, 'polls/frontend/vote.html',{
+    response = render(request, 'polls/frontend/vote.html', {
         'poll': poll,
         'choices': choices,
     })
     set_cookies(response, poller_id)
     return response
 
-def results(request, poll_id, poll=None):
 
+def results(request, poll_id, poll=None):
     if not poll:
         poll = get_object_or_404(Poll, id=poll_id, published=True)
-
 
     choices = Choice.objects.filter(poll=poll).order_by('-sort')[:100]
 
@@ -89,13 +85,13 @@ def results(request, poll_id, poll=None):
         choices_dicts.append({
             'choice': choice,
             # Процент от макимального значения
-            'percent_from_max': int(choice.votes * 100 / summ_number_of_answers ),
-            })
+            'percent_from_max': int(choice.votes * 100 / summ_number_of_answers),
+        })
     if summ_number_of_answers == 0:
-        summ_number_of_answers = 1;
+        summ_number_of_answers = 1
     for choices_dict in choices_dicts:
         # Процент от суммарного значения голосов
-        choices_dict['percent_from_sum_votes'] = '%0.2f' %\
+        choices_dict['percent_from_sum_votes'] = '%0.2f' % \
                                                  (choices_dict['choice'].votes * 100.0 / summ_number_of_answers)
 
     show_results = False
@@ -104,7 +100,7 @@ def results(request, poll_id, poll=None):
         if poll.show_results_after_end_poll:
             message = u"Результаты будут доступны после завершения опроса."
         else:
-            message = u"Результаты опроса не доступны."
+            message = u"Результаты опроса недоступны."
     elif request.method == 'POST':
         if poll.show_results_after_end_poll:
             message = u"Спасибо за ответ! Результаты будут доступны после завершения опроса!"
@@ -119,16 +115,14 @@ def results(request, poll_id, poll=None):
         show_results = True
 
     if request.is_ajax():
-        return  render(request, 'polls/tags/polls_ajax_results.html', {
+        return render(request, 'polls/tags/polls_ajax_results.html', {
             'poll': poll,
             'choices_dicts': choices_dicts,
             'show_results': show_results,
             'message': message
         })
 
-
-
-    return  render(request, 'polls/frontend/polls_results.html', {
+    return render(request, 'polls/frontend/polls_results.html', {
         'poll': poll,
         'choices_dicts': choices_dicts,
         'show_results': show_results,
@@ -136,14 +130,13 @@ def results(request, poll_id, poll=None):
     })
 
 
-
 def set_cookies(response, poller_id):
-    response.set_cookie('polls.id', poller_id, expires=(365*24*3600))
+    response.set_cookie('polls.id', poller_id, expires=(365 * 24 * 3600))
 
 
 def get_poller_id(request):
     if request.user.is_authenticated():
         poller_id = hashlib.md5(request.user.username).hexdigest()
     else:
-        poller_id =request.COOKIES.get('polls.id',  uuid.uuid4().hex)
-    return  poller_id
+        poller_id = request.COOKIES.get('polls.id', uuid.uuid4().hex)
+    return poller_id
