@@ -179,6 +179,7 @@ class PivotNode(object):
         self.field = field or ''
         self.value = value or ''
         self.count = count
+        self.views = None
         self.pivot = pivot or []
         if not PivotNode.base_url:
             PivotNode.base_url = reverse('ssearch:frontend:index')
@@ -214,6 +215,8 @@ class PivotNode(object):
             u'<a href="%s" class="pivot__title" id="pt_%s">%s</a>' % (href, self.field, self.value)
         )
         item_li.append(u'<sup class="pivot__count">%s</sup>' % (self.count,))
+        if self.views is not None:
+            item_li.append(u'<sup class="pivot__views">%s</sup>' % (self.views,))
 
         if self.pivot:
             item_li.append(self.children_to_html())
@@ -244,6 +247,9 @@ class PivotNode(object):
             value=item.get('value', ''),
             count=item.get('count', 0)
         )
+
+        if node.field == 'collection_s':
+            node.views = ViewLog.objects.filter(collection=node.value).count()
 
         for child in item.get('pivot', []):
             node.add_pivot(PivotNode.from_dict(child, parent=node))
@@ -322,8 +328,9 @@ def collections():
     facets = result.get_facets()
     pivot = result.get_pivot().get(pivot_collections)
     pivote_root = build_pivot_tree(pivot)
+
     facets = replace_facet_values(facets)
-    collection_values = facets['collection_s']['values']
+    collection_values = [] # sorted(facets['collection_s']['values'], key=lambda x: x[0].lower().strip())
     # return render(request, 'ssearch/frontend/collections.html', {
     #     'collection_values': collection_values
     # })
@@ -504,7 +511,7 @@ def detail(request):
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
     record['marc_dump'] = get_marc_dump(content_tree)
-    user = None
+    user = 0
     if request.user.is_authenticated():
         user = request.user
 
@@ -513,8 +520,8 @@ def detail(request):
     catalogs = record['dict'].get('catalog', [])
     if catalogs:
         collection_id = catalogs[0].lower().strip()
-    # log = ViewDocLog(record_id=record_id,user=user, collection_id=collection_id)
-    # log.save()
+        log = ViewLog(doc_id=record_id, user_id=user, collection=collection_id)
+        log.save()
 
     edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
 

@@ -4,23 +4,23 @@
             <div>
                 {{ pivot_tree|safe }}
             </div>
-            <div>
-                <h3>Статистика</h3>
-                <ul id="f{{ facet.code }}">
-                    {% for coll in stat.coll_stat %}
-                        <li>
-                            <span href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</span><br/>
-                            <span>Документов: {{ coll.docs }}</span>
-                            <span >Просмотров: {{ coll.views }}</span>
-                        </li>
-                    {% empty %}
-                        <li>У найденных записей атрибут отсутвует</li>
-                    {% endfor %}
-                </ul>
-                <p>
-                    <span class="backlight">Всего документов в коллекциях: {{ stat.all_documents_count }}</span>
-                </p>
-            </div>
+{#            <div>#}
+{#                <h3>Статистика</h3>#}
+{#                <ul id="f{{ facet.code }}">#}
+{#                    {% for coll in stat.coll_stat %}#}
+{#                        <li>#}
+{#                            <span href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</span><br/>#}
+{#                            <span>Документов: {{ coll.docs }}</span>#}
+{#                            <span >Просмотров: {{ coll.views }}</span>#}
+{#                        </li>#}
+{#                    {% empty %}#}
+{#                        <li>У найденных записей атрибут отсутвует</li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#                <p>#}
+{#                    <span class="backlight">Всего документов в коллекциях: {{ stat.all_documents_count }}</span>#}
+{#                </p>#}
+{#            </div>#}
         </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
