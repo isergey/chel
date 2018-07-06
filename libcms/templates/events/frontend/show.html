@@ -10,18 +10,18 @@
                     </li>
                     {% if request.GEckT.ba %}
                         <li>
-                            <a href="{{ request.GET.back }}">Афиша событий</a>
+                            <a href="{{ request.GET.back }}">Афиша мероприятий</a>
                         </li>
                     {% else %}
                         <li>
-                            <a href="{% url 'events:frontend:index' %}">Афиша событий</a>
+                            <a href="{% url 'events:frontend:index' %}">Афиша мероприятий</a>
                         </li>
                     {% endif %}
-                    <li>
-                        <span class="crumb__current">
-                        {{ content.title }}
-                        </span>
-                    </li>
+{#                    <li>#}
+{#                        <span class="crumb__current">#}
+{#                        {{ content.title }}#}
+{#                        </span>#}
+{#                    </li>#}
                 </ol>
             </div>
             <h1 class="content-title">{{ content.title }}</h1>
