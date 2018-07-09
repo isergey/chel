@@ -763,15 +763,15 @@ def get_records(record_ids):
             'tree': record_to_ruslan_xml(rdict)
         })
         # record.tree = record_to_ruslan_xml(json.loads(record.content))
-    # records_dict = {}
-    # for record in records:
-    #     records_dict[record.record_id] = record
-    # nrecords = []
-    # for record_id in record_ids:
-    #     record = records_dict.get(record_id, None)
-    #     if record:
-    #         nrecords.append(record)
-    return records
+    records_dict = {}
+    for record in records:
+        records_dict[record['id']] = record
+    nrecords = []
+    for record_id in record_ids:
+        record = records_dict.get(record_id, None)
+        if record:
+            nrecords.append(record)
+    return nrecords
 
 
 def get_library_card(content_tree):
