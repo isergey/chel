@@ -391,7 +391,23 @@ attr_value_title = {
         'title': {
             u'ru': u'Коллекция'
         },
+    },
+    u'collection5': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
+    },
+    u'collection6': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
+    },
+    u'collection7': {
+        'title': {
+            u'ru': u'Коллекция'
+        },
     }
+
 }
 
 def get_attr_title(attr, lang=u'ru'):
