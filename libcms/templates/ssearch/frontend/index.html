@@ -72,7 +72,7 @@
                                         </ul>
                                         {% if facet.values %}
                                             <div class="facets-item__nav-btn">
-                                                <a id="{{ facet.code }}" class="btn btn_sm btn_gray"
+                                                <a id="{{ facet.code }}" class="btn btn_sm btn_gray load_facet_fwd"
                                                    href="#f{{ facet.code }}">Показать больше</a>
                                                 <a class="btn btn_sm btn_gray" rel="{{ facet.code }}"
                                                    href="#f{{ facet.code }}">Свернуть</a>
@@ -228,133 +228,135 @@
         });
     </script>
     <script type="text/javascript">
-        var offset_step = 7;
-        var load_limit = 7;
-        var facets_params = {};
-        var subfacets_params = {};
-        var request_params = {{ request_params|safe }};
+        (function () {
+            var offset_step = 7;
+            var load_limit = 7;
+            var facets_params = {};
+            var subfacets_params = {};
+            var request_params = {{ request_params|safe }};
 
-        facets_params = {};
-        $('.load_facet_fwd').click(function () {
-            var button = $(this);
-            var facet_id = button.attr("id");
+            facets_params = {};
+            $('.load_facet_fwd').click(function () {
+                var button = $(this);
+                var facet_id = button.attr("id");
 
-            if (!facets_params[facet_id]) {
-                facets_params[facet_id] = {
-                    offset: offset_step,
-                    limit: load_limit
+                if (!facets_params[facet_id]) {
+                    facets_params[facet_id] = {
+                        offset: offset_step,
+                        limit: load_limit
+                    }
+                } else {
+                    facets_params[facet_id].offset = facets_params[facet_id].offset + offset_step;
                 }
-            } else {
-                facets_params[facet_id].offset = facets_params[facet_id].offset + offset_step;
-            }
 
-            request_params['facet'] = facet_id;
-            request_params['facet_limit'] = facets_params[facet_id].limit;
-            request_params['facet_offset'] = facets_params[facet_id].offset;
-            render_facet(facet_id, request_params, button);
-            $('#f' + facet_id).css('height', "auto");
-            $('html, body').animate({scrollTop: $(this).offset().top - 400}, 500);
+                request_params['facet'] = facet_id;
+                request_params['facet_limit'] = facets_params[facet_id].limit;
+                request_params['facet_offset'] = facets_params[facet_id].offset;
+                render_facet(facet_id, request_params, button);
+                $('#f' + facet_id).css('height', "auto");
+                $('html, body').animate({scrollTop: $(this).offset().top - 400}, 500);
 
-        });
-
-        $('.drilldown').click(function () {
-            var button = $(this);
-            var facet_id = button.attr("id").replace('df', '');
-            var facet_name = button.attr("name");
-            var facet_value = button.attr("rel");
-
-            if (!$('#dft' + facet_id).is(':visible')) {
-                button.text('-');
-                $('#dft' + facet_id).show();
-            } else {
-                button.text('+');
-                $('#dft' + facet_id).hide();
-            }
-
-            if (!subfacets_params[facet_id]) {
-                subfacets_params[facet_id] = {
-                    offset: 0,
-                    limit: 50
-                }
-            } else {
-                subfacets_params[facet_id].offset = subfacets_params[facet_id].offset + offset_step;
-            }
-
-            request_params['facet'] = facet_name;
-            if (facet_name === 'subject_heading_s') {
-                request_params['sub_facet'] = 'subject_subheading_s';
-            }
-
-            request_params['facet_value'] = facet_value;
-            request_params['facet_limit'] = subfacets_params[facet_id].limit;
-            request_params['facet_offset'] = subfacets_params[facet_id].offset;
-
-            render_subfacet(facet_id, request_params['sub_facet'], request_params, button);
-
-        });
-
-        function render_facet(facet_id, request_params, button) {
-            var orig_text = button.html();
-            $.ajax({
-                type: "GET",
-                url: "{% url 'ssearch:frontend:more_facet' %}",
-                data: request_params,
-                dataType: "JSON",
-                beforeSend: function (xhr) {
-                    button.html('<img src="{{ STATIC_URL }}theme/loader.gif" alt="">');
-                }
-            }).done(function (content) {
-                button.html(orig_text);
-                if (content[facet_id]['values'].length == 0) {
-                    button.addClass('disabled');
-                }
-                drow_facet(content[facet_id], facet_id);
-                var render_results = tmpl("facet_tmpl", {
-                    content: content[facet_id],
-                    facet_id: facet_id,
-                    prepand_href: window.location.search
-                });
-                var container = $('#f' + facet_id);
-                container.html(container.html() + render_results);
             });
-        }
-        function render_subfacet(facet_id, facet_name, request_params, button) {
-            var orig_text = button.html();
-            $.ajax({
-                type: "GET",
-                url: "{% url 'ssearch:frontend:more_subfacet' %}",
-                data: request_params,
-                dataType: "JSON",
-                beforeSend: function (xhr) {
-                    button.html('<img src="{{ STATIC_URL }}theme/loader.gif" alt="">');
-                }
-            }).done(function (content) {
-                button.html(orig_text);
-                if (content[facet_name]['values'].length == 0) {
-                    button.addClass('disabled');
-                }
-                drow_facet(content[facet_name], facet_id);
-                var render_results = tmpl("facet_tmpl", {
-                    content: content[facet_name],
-                    facet_id: facet_id,
-                    prepand_href: window.location.search
-                });
-                var container = $('#dft' + facet_id);
-                container.html(container.html() + render_results);
-            });
-        }
 
-        function drow_facet(content, facet_id) {
-            var prepand_href = window.location.search;
-            var values = content['values'];
-            var lines = [];
-            for (var i in values) {
-                var value = values[i];
-                if (value.length == 3) {
-                    lines.push('<li><a href="' + prepand_href + '&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%> (<b><%=content.values[value][1]%></b>)</a></li>');
+            $('.drilldown').click(function () {
+                var button = $(this);
+                var facet_id = button.attr("id").replace('df', '');
+                var facet_name = button.attr("name");
+                var facet_value = button.attr("rel");
+
+                if (!$('#dft' + facet_id).is(':visible')) {
+                    button.text('-');
+                    $('#dft' + facet_id).show();
+                } else {
+                    button.text('+');
+                    $('#dft' + facet_id).hide();
+                }
+
+                if (!subfacets_params[facet_id]) {
+                    subfacets_params[facet_id] = {
+                        offset: 0,
+                        limit: 50
+                    }
+                } else {
+                    subfacets_params[facet_id].offset = subfacets_params[facet_id].offset + offset_step;
+                }
+
+                request_params['facet'] = facet_name;
+                if (facet_name === 'subject_heading_s') {
+                    request_params['sub_facet'] = 'subject_subheading_s';
+                }
+
+                request_params['facet_value'] = facet_value;
+                request_params['facet_limit'] = subfacets_params[facet_id].limit;
+                request_params['facet_offset'] = subfacets_params[facet_id].offset;
+
+                render_subfacet(facet_id, request_params['sub_facet'], request_params, button);
+
+            });
+
+            function render_facet(facet_id, request_params, button) {
+                var orig_text = button.html();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'ssearch:frontend:more_facet' %}",
+                    data: request_params,
+                    dataType: "JSON",
+                    beforeSend: function (xhr) {
+                        button.html('<span>Загрузка...</span>');
+                    }
+                }).done(function (content) {
+                    button.html(orig_text);
+                    if (content[facet_id]['values'].length == 0) {
+                        button.addClass('disabled');
+                    }
+                    drow_facet(content[facet_id], facet_id);
+                    var render_results = tmpl("facet_tmpl", {
+                        content: content[facet_id],
+                        facet_id: facet_id,
+                        prepand_href: window.location.search
+                    });
+                    var container = $('#f' + facet_id);
+                    container.html(container.html() + render_results);
+                });
+            }
+            function render_subfacet(facet_id, facet_name, request_params, button) {
+                var orig_text = button.html();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'ssearch:frontend:more_subfacet' %}",
+                    data: request_params,
+                    dataType: "JSON",
+                    beforeSend: function (xhr) {
+                        button.html('<img src="{{ STATIC_URL }}theme/loader.gif" alt="">');
+                    }
+                }).done(function (content) {
+                    button.html(orig_text);
+                    if (content[facet_name]['values'].length == 0) {
+                        button.addClass('disabled');
+                    }
+                    drow_facet(content[facet_name], facet_id);
+                    var render_results = tmpl("facet_tmpl", {
+                        content: content[facet_name],
+                        facet_id: facet_id,
+                        prepand_href: window.location.search
+                    });
+                    var container = $('#dft' + facet_id);
+                    container.html(container.html() + render_results);
+                });
+            }
+
+            function drow_facet(content, facet_id) {
+                var prepand_href = window.location.search;
+                var values = content['values'];
+                var lines = [];
+                for (var i in values) {
+                    var value = values[i];
+                    if (value.length == 3) {
+                        lines.push('<li class="facets-item__nav-item"><a class="facets-item__nav-link" href="' + prepand_href + '&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><span class="facets-item__nav-item-name"><%=content.values[value][0]%></span> <span class="facets-item__nav-item-count"><%=content.values[value][1]%></span></a></li>');
+                    }
                 }
             }
-        }
+        })();
     </script>
 
 
@@ -362,11 +364,19 @@
     <script type="text/html" id="facet_tmpl">
         <% for ( var value in content.values ) { %>
         <% if ( content.values[value].length == 3 ) { %>
-        <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][2]%>
-            (<b><%=content.values[value][1]%></b>)</a></li>
+        <li class="facets-item__nav-item">
+            <a class="facets-item__nav-link" href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>">
+                <span class="facets-item__nav-item-name"><%=content.values[value][2]%></span>
+                <span class="ffacets-item__nav-item-count"><%=content.values[value][1]%></span>
+            </a>
+        </li>
         <% }else{ %>
-        <li><a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><%=content.values[value][0]%>
-            (<b><%=content.values[value][1]%></b>)</a></li>
+        <li class="facets-item__nav-item">
+            <a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>">
+                <span class="facets-item__nav-item-name"><%=content.values[value][0]%></span>
+                <span class="ffacets-item__nav-item-count"><%=content.values[value][1]%></span>
+            </a>
+        </li>
         <% } %>
         <% } %>
     </script>
