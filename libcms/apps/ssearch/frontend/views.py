@@ -6,7 +6,7 @@ import requests
 import json
 import datetime
 from django.core.urlresolvers import reverse
-from django.utils.http import urlquote
+from django.utils.http import urlquote_plus
 from django.conf import settings
 from django.shortcuts import render, HttpResponse, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -204,10 +204,10 @@ class PivotNode(object):
             url_parts.append(u'&in=on')
 
         for parent in parents:
-            url_parts += u''.join([u'&pattr=', urlquote(parent.field), u'&pq=', urlquote(parent.value)])
+            url_parts += u''.join([u'&pattr=', urlquote_plus(parent.field), u'&pq=', urlquote_plus(parent.value)])
 
         item_li = [u'<li class="pivot__element">']
-        href += u''.join([u'?attr=', urlquote(self.field), u'&q=', urlquote(self.value)])
+        href += u''.join([u'?attr=', urlquote_plus(self.field), u'&q=', urlquote_plus(self.value)])
 
         if url_parts:
             href += u''.join(url_parts)
@@ -516,17 +516,17 @@ def detail(request):
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
     record['marc_dump'] = get_marc_dump(content_tree)
+
     user = 0
     if request.user.is_authenticated():
-        user = request.user
+        user = request.user.id
 
     # view_count = ViewDocLog.objects.filter(record_id=record_id).count()
     collection_id = None
     catalogs = record['dict'].get('catalog', [])
     if catalogs:
         collection_id = catalogs[0].lower().strip()
-        log = ViewLog(doc_id=record_id, user_id=user, collection=collection_id)
-        log.save()
+        ViewLog.objects.bulk_create([ViewLog(doc_id=record_id, user_id=user, collection=collection_id)])
 
     edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
 
@@ -687,7 +687,7 @@ def make_search_breadcumbs(attrs, values):
 
     for attr, value in attrs_values:
         attr_url_part = u'attr=' + attr
-        value_url_part = u'q=' + urlquote(value)
+        value_url_part = u'q=' + urlquote_plus(value)
 
         search_breadcumbs.append({
             'attr': attr,
