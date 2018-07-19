@@ -6,7 +6,7 @@ import requests
 import json
 import datetime
 from django.core.urlresolvers import reverse
-from django.utils.http import urlquote_plus
+from django.utils.http import urlquote
 from django.conf import settings
 from django.shortcuts import render, HttpResponse, Http404, urlresolvers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -204,10 +204,10 @@ class PivotNode(object):
             url_parts.append(u'&in=on')
 
         for parent in parents:
-            url_parts += u''.join([u'&pattr=', urlquote_plus(parent.field), u'&pq=', urlquote_plus(parent.value)])
+            url_parts += u''.join([u'&pattr=', urlquote(parent.field), u'&pq=', urlquote(parent.value)])
 
         item_li = [u'<li class="pivot__element">']
-        href += u''.join([u'?attr=', urlquote_plus(self.field), u'&q=', urlquote_plus(self.value)])
+        href += u''.join([u'?attr=', urlquote(self.field), u'&q=', urlquote(self.value)])
 
         if url_parts:
             href += u''.join(url_parts)
@@ -687,7 +687,7 @@ def make_search_breadcumbs(attrs, values):
 
     for attr, value in attrs_values:
         attr_url_part = u'attr=' + attr
-        value_url_part = u'q=' + urlquote_plus(value)
+        value_url_part = u'q=' + urlquote(value)
 
         search_breadcumbs.append({
             'attr': attr,
