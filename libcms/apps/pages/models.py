@@ -26,8 +26,23 @@ class Page(MPTTModel):
         db_index=True,
     )
 
-    public = models.BooleanField(verbose_name=u'Опубликована?', default=False, db_index=True,
-                                 help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц')
+    public = models.BooleanField(
+        verbose_name=u'Опубликована?',
+        default=False, db_index=True,
+        help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц'
+    )
+
+    show_children = models.BooleanField(
+        verbose_name=u'Показывать меню подстраниц',
+        default=False,
+    )
+
+    show_neighbors = models.BooleanField(
+        verbose_name=u'Показывать меню соедних страниц',
+        default=False,
+    )
+
+
     create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
 
     class Meta:

@@ -377,11 +377,6 @@ attr_value_title = {
             u'ru': u'Коллекция'
         },
     },
-    u'collection2': {
-        'title': {
-            u'ru': u'Коллекция'
-        },
-    },
     u'collection3': {
         'title': {
             u'ru': u'Коллекция'

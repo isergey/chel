@@ -43,16 +43,31 @@ def show(request, slug):
         content = None
     children = None
 
-    if not page.is_leaf_node():
-        children = list(Page.objects.filter(parent=page, public=True))
-        contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
-        cd = {}
-        for child in children:
-           cd[child.id] = child
+    if page.show_children:
+        if not page.is_leaf_node():
+            children = list(Page.objects.filter(parent=page, public=True))
+            contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
+            cd = {}
+            for child in children:
+               cd[child.id] = child
 
-        for contend_page in contents:
-           if contend_page.page_id in cd:
-               cd[contend_page.page_id].content = contend_page
+            for contend_page in contents:
+               if contend_page.page_id in cd:
+                   cd[contend_page.page_id].content = contend_page
+
+    neighbors = None
+
+    if page.show_neighbors:
+        if page.parent_id:
+            neighbors = list(Page.objects.filter(parent=page.parent_id, public=True))
+            contents = Content.objects.filter(page__in=neighbors, lang=cur_language[:2])
+            nd = {}
+            for neighbor in neighbors:
+               nd[neighbor.id] = neighbor
+
+            for contend_page in contents:
+               if contend_page.page_id in nd:
+                   nd[contend_page.page_id].content = contend_page
 
     user = request.user
     log = ViewLog(page=page)
@@ -65,6 +80,7 @@ def show(request, slug):
         'page': page,
         'content': content,
         'children': children,
+        'neighbors': neighbors,
     })
 
 
