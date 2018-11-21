@@ -1,5 +1,5 @@
 {% extends 'themed_frontend_base.html' %}
-
+{% load libcms_pages_tags %}
 {% load news_tags %}
 {% load events_tags %}
 {% load polls_tags %}
@@ -153,6 +153,8 @@
                     </aside>
                 </aside>
             </div>
+            {% render_page_content 'common/footer_cards'  %}
+            {% comment %}
             <div class="section container">
                 <div class="card-list card-list_link">
                     <div class="card-list__item">
@@ -270,6 +272,7 @@
                     </div>
                 </div>
             </div>
+            {% endcomment %}
         </main>
     {% endblock %}
 {% endblock %}
