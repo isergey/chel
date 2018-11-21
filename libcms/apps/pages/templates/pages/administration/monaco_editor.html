@@ -1,0 +1,23 @@
+<script type="text/javascript" src="{{ STATIC_URL }}monaco/loader.js"></script>
+<script>
+    require.config({paths: {'vs': '{{ STATIC_URL }}monaco'}});
+    require(['vs/editor/editor.main'], function () {
+
+        var textArea = document.getElementById('id_content_form-content');
+
+        var editorContainer = document.createElement('div');
+        editorContainer.style.height = '700px';
+        editorContainer.style.border = '1px solid #d1d1d3';
+
+        textArea.parentNode.insertBefore(editorContainer, textArea.nextSibling);
+        var editor = monaco.editor.create(editorContainer, {
+            value: textArea.value,
+            language: 'html'
+        });
+        textArea.style.display = 'none';
+        document.getElementById('page_form').addEventListener('submit', function () {
+            textArea.value = editor.getValue();
+            return false;
+        });
+    });
+</script>

@@ -38,8 +38,9 @@
     </h3>
 {#    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>#}
 
-    <div class="well">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <div class="well well-sma">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>
+    <div class="alert alert-info">Для редактирования HTML кода страницы используйте <a href="?editor=monaco">Редактор HTML</a></div>
+    <form id="page_form" class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование контента для языка: <b>{{ content.lang }}</b></legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=content_form %}
@@ -50,5 +51,9 @@
             </div>
         </fieldset>
     </form>
-    {% include 'pages/administration/editor.html' %}
+    {% if request.GET.editor == 'monaco' %}
+        {% include 'pages/administration/monaco_editor.html' %}
+        {% else %}
+        {% include 'pages/administration/editor.html' %}
+    {% endif %}
 {% endblock %}

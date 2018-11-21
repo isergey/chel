@@ -34,7 +34,7 @@
         {% endif %}
     </h3>
     <hr/>
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form id="page_form" class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование страницы</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=page_form %}
