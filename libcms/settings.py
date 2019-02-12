@@ -84,6 +84,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 MIDDLEWARE_CLASSES = (
 #    'johnny.middleware.LocalStoreClearMiddleware',
 #    'johnny.middleware.QueryCacheMiddleware',
+    'access.middleware.AccessMiddleware',
     'localeurl.middleware.LocaleURLMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
