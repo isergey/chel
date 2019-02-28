@@ -249,3 +249,13 @@ class RusmarcTemplate(object):
             link['title'] = self.get_title(fields_index)
             link['id'] = fields_index.get('001', [''])[0]
         return link
+
+
+def get_full_text_links(marq_query):
+    ft_links = []
+    for fq in marq_query.get_field('856').list():
+        ft_links.append({
+            'url': fq.get_subfield('u').get_data(),
+            'title': fq.get_subfield('2').get_data() or u'полный текст',
+        })
+    return ft_links

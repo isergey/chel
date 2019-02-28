@@ -137,6 +137,9 @@ class Record(object):
             lines.append(unicode(field))
         return u"\n".join(lines)
 
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
     def to_html(self):
         lines = [u'<div class="leader">%s</div>' % self.__leader.replace(u' ', u'&nbsp;')]
         for field in self.__fields:

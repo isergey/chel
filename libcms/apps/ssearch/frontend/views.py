@@ -5,6 +5,7 @@ from lxml import etree
 import requests
 import json
 import datetime
+import junimarc
 from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.conf import settings
@@ -17,7 +18,6 @@ from . import record_templates
 from ..models import RecordContent
 from rbooks.models import ViewLog
 from .extended import subject_render
-
 transformers = dict()
 
 search_attrs = [
@@ -426,6 +426,10 @@ def index(request, catalog='uc'):
 
     records = get_records(record_ids)
     for record in records:
+        record_obj = junimarc.chel_json_schema.record_from_json(record['dict'])
+        marc_query = junimarc.marc_query.MarcQuery(record_obj)
+        ft_links = record_templates.get_full_text_links(marc_query)
+
         record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
         record['tpl'] = record_template
         record['extended'] = {
@@ -447,6 +451,9 @@ def index(request, catalog='uc'):
                 for value in values:
                     titled_values.append(get_attr_value_title(attribute, value))
                 record['dict'][attribute] = titled_values
+
+
+        record['ft_links'] = ft_links
 
     facets = result.get_facets()
 
@@ -505,6 +512,11 @@ def detail(request):
         raise Http404(u'Запись не найдена')
 
     record = records[0]
+    record_obj = junimarc.chel_json_schema.record_from_json(record['dict'])
+    marc_query = junimarc.marc_query.MarcQuery(record_obj)
+    ft_links = record_templates.get_full_text_links(marc_query)
+
+
     record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
     record['tpl'] = record_template
     record['extended'] = {
@@ -544,6 +556,8 @@ def detail(request):
                 lrecord['dict'] = get_content_dict(content_tree)
                 linked_records.append(lrecord)
 
+
+
     attributes = []
     _add_to_attributes(attributes, u'Источник', record_template.get_source())
     _add_to_attributes(attributes, u'См. так же', record_template.at_same_storage())
@@ -566,6 +580,7 @@ def detail(request):
         'linked_records': linked_records,
         'linked_records_ids': linked_records_ids,
         'attributes': attributes,
+        'ft_links': ft_links,
     })
 
 

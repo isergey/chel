@@ -52,12 +52,13 @@
         {% include 'ssearch/frontend/search_item_attr.html' with attr='Коллекция' values=record.dict.catalog %}
         {% include 'ssearch/frontend/search_item_attr.html' with attr='Держатели' values=record.dict.holders %}
     </div>
-
-    {% if record.dict.url %}
+    {% if record.ft_links %}
         <div class="search-results-item__tb">
-            <a href="{{ record.dict.url.0 }}&id={{ record.id }}" target="_blank">
-                Полный текст
-            </a>
+            {% for ft_link in record.ft_links  %}
+                <a href="{{ ft_link.url }}&id={{ record.id }}" target="_blank">
+                    {{ ft_link.title }}
+                </a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
         </div>
     {% endif %}
 

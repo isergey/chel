@@ -453,12 +453,16 @@
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <xsl:template name="URL">
-    <xsl:for-each select="field[@id='856']/subfield[@id='u']">
-        <field name="url">
-            <xsl:value-of select="."/>
-        </field>
+    <xsl:for-each select="field[@id='856']">
+        <xsl:if test="subfield[@id='u']">
+            <field name="url"><xsl:value-of select="subfield[@id='u']"/></field>
+        </xsl:if>
+        <xsl:if test="subfield[@id='2']">
+            <field name="url_title"><xsl:value-of select="subfield[@id='2']"/></field>
+        </xsl:if>
     </xsl:for-each>
 </xsl:template>
+
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <xsl:template name="date_of_publication_of_original">
