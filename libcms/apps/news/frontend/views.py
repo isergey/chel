@@ -44,7 +44,7 @@ def show(request, id):
 
     try:
         content = NewsContent.objects.get(news=news, lang=cur_language[:2])
-    except Content.DoesNotExist:
+    except NewsContent.DoesNotExist:
         content = None
 
     return render(request, 'news/frontend/show.html', {
