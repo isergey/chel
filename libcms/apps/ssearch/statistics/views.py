@@ -9,11 +9,35 @@ from django.shortcuts import HttpResponse
 from junimarc.marc_query import MarcQuery
 from junimarc.old_json_schema import record_from_json
 from . import olap
-from .settings import get_income_report_file_path
+from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path
 from .. import models
 
 
-def generate_incomes_stat_report():
+def incomes_stat(request):
+    report_file_path = get_income_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
+
+
+def actions_stat(request):
+    report_file_path = get_actions_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
+
+
+def users_stat(request):
+    report_file_path = get_users_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
+
+
+def generate_incomes_report():
     collections = {}
     for i, record_content in enumerate(
             models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).all().iterator()):
@@ -38,18 +62,13 @@ def generate_incomes_stat_report():
         report_file.write(data)
 
 
-def incomes_stat(request):
-    report_file_path = get_income_report_file_path()
-    if os.path.exists(report_file_path):
-        with open(report_file_path, 'rb') as report_file:
-            return HttpResponse(report_file.read(), content_type='application/json')
-    return HttpResponse('Отчет ещё не подготовлен')
-
-
-def actions_stat(request):
+def generate_actions_report():
     collections = {}
 
     for i, (detail_log, record_content) in enumerate(_get_detail_log()):
+        if i % 10000 == 0:
+            print i
+
         if not record_content:
             continue
         record = record_from_json(record_content.unpack_content())
@@ -60,15 +79,18 @@ def actions_stat(request):
             create_date=detail_log.date_time.strftime('%Y%m%d'),
             action=detail_log.action
         )
-        # print i, detail_log, record_content
-    data = json.dumps(olap._collections_to_actions_olap(collections), ensure_ascii=False)
-    return HttpResponse(data, content_type='application/json')
+        data = json.dumps(olap._collections_to_actions_olap(collections))
+        with open(get_actions_report_file_path(), 'wb') as report_file:
+            report_file.write(data)
 
 
-def users_stat(request):
+def generate_users_report():
     collections = {}
 
     for i, (detail_log, record_content) in enumerate(_get_detail_log()):
+        if i % 10000 == 0:
+            print i
+
         if not record_content:
             continue
         record = record_from_json(record_content.unpack_content())
@@ -80,9 +102,9 @@ def users_stat(request):
             action=detail_log.action,
             session_id=detail_log.session_id,
         )
-        # print i, detail_log, record_content
-    data = json.dumps(olap._collections_to_users_olap(collections), ensure_ascii=False)
-    return HttpResponse(data, content_type='application/json')
+        data = json.dumps(olap._collections_to_users_olap(collections))
+        with open(get_users_report_file_path(), 'wb') as report_file:
+            report_file.write(data)
 
 
 def _get_or_create_data(dict, key, default=None):
