@@ -5,5 +5,5 @@ urlpatterns = patterns(
     '',
     # (r'^indexer/', include('ssearch.indexer.urls', namespace='indexer')),
     (r'^', include('ssearch.frontend.urls', namespace='frontend')),
-    (r'^admin/', include('ssearch.statistics.urls', namespace='statistics')),
+    (r'^statistics/', include('ssearch.statistics.urls', namespace='statistics')),
 )
