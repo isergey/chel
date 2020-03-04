@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 logs = []
             logs.append(DetailLog(
                 record_id=view_log.doc_id,
-                user_id=view_log.user_id,
+                user_id=None if view_log.user_id < 1 else int(view_log.user_id),
                 session_id='user_' + str(view_log.user_id),
                 date_time=view_log.view_dt
             ))
