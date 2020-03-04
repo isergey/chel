@@ -1,4 +1,4 @@
-{% extends 'ssearch/administration/base.html' %}
+{% extends 'ssearch/statistics/base.html' %}
 {% block content %}
     <h3>Действия над коллекциями</h3>
     <div id="pivotgrid-chart"></div>
@@ -8,7 +8,7 @@
             var store = new DevExpress.data.CustomStore({
                 loadMode: "raw",
                 load: function () {
-                    return $.getJSON('{% url 'ssearch:administration:incomes_stat' %}');
+                    return $.getJSON('{% url 'ssearch:statistics:incomes_stat' %}');
                 }
             });
 

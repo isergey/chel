@@ -1,14 +1,14 @@
-{% extends 'ssearch/administration/base.html' %}
+{% extends 'ssearch/statistics/base.html' %}
 {% block content %}
-    <h3>Действия над коллекциями</h3>
-    <div id="pivotgrid-chart"></div>
-    <div id="pivotgrid"></div>
+        <h3>Действия над коллекциями</h3>
+        <div id="pivotgrid-chart"></div>
+        <div id="pivotgrid"></div>
     <script>
         $(function () {
             var store = new DevExpress.data.CustomStore({
                 loadMode: "raw",
                 load: function () {
-                    return $.getJSON('{% url 'ssearch:administration:users_stat' %}');
+                    return $.getJSON('{% url 'ssearch:statistics:actions_stat' %}');
                 }
             });
 
@@ -50,10 +50,11 @@
                 },
                 export: {
                     enabled: true,
-                    fileName: "elib_users"
+                    fileName: "elib_actions"
                 },
                 dataSource: {
                     fields: [
+
                         {
                             caption: "level_1",
                             width: 300,
@@ -81,27 +82,36 @@
                             width: 300,
                             area: "row",
                         },
-
                         {
                             dataField: "date",
                             dataType: "date",
                             area: "column"
-                        }, {
-                            caption: "Пользователи",
-                            dataField: "users",
+                        },
+                        {
+                            caption: "Просм. дет. инф.",
+                            dataField: "action_0",
                             dataType: "number",
                             summaryType: "sum",
                             {#format: "currency",#}
                             area: "data"
                         },
                         {
-                            caption: "Визиты",
-                            dataField: "visits",
+                            caption: "Просм. полн. текста",
+                            dataField: "action_2",
                             dataType: "number",
                             summaryType: "sum",
                             {#format: "currency",#}
                             area: "data"
-                        }],
+                        },
+                        {
+                            caption: "Соц сети",
+                            dataField: "action_9",
+                            dataType: "number",
+                            summaryType: "sum",
+                            {#format: "currency",#}
+                            area: "data"
+                        },
+                    ],
                     store: store
                 }
             }).dxPivotGrid("instance");

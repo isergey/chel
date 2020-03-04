@@ -18,7 +18,7 @@ def incomes(request):
 
         print _generate_date_range(form.cleaned_data['start_date'], form.cleaned_data['end_date'])
 
-    return render(request, 'ssearch/administration/base.html')
+    return render(request, 'ssearch/statistics/base.html')
 
 
 def incomes_stat(request):
