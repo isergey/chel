@@ -10,25 +10,14 @@ from junimarc.marc_query import MarcQuery
 from . import olap
 
 
-def incomes(request):
-    form = DateRangeForm(request.GET)
-
-    if form.is_valid():
-        print form.cleaned_data['start_date'], form.cleaned_data['end_date']
-
-        print _generate_date_range(form.cleaned_data['start_date'], form.cleaned_data['end_date'])
-
-    return render(request, 'ssearch/statistics/base.html')
-
-
 def incomes_stat(request):
     collections = {}
 
     for i, record_content in enumerate(
             models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).all()[600000:].iterator()):
         record_content.unpack_content()
-        if i % 10000 == 0:
-            print i
+        # if i % 10000 == 0:
+        #     print i
         # print record_content.unpack_content()
         record = record_from_json(record_content.unpack_content())
         rq = MarcQuery(record)
@@ -38,7 +27,6 @@ def incomes_stat(request):
         try:
             create_date = datetime.strptime(create_date.decode('utf-8'), '%Y%m%d').date()
         except Exception as e:
-            print create_date
             continue
         # print create_date
         _fill_collection(collections, rq, create_date.strftime('%Y%m%d'))
