@@ -1,25 +1,25 @@
 # coding=utf-8
 import json
-from django.views.decorators.cache import cache_page
-from datetime import datetime, timedelta, date
+import os
 from collections import Counter, OrderedDict, defaultdict
-from django.shortcuts import HttpResponse, render
-from .. import models
-from .forms import DateRangeForm
-from junimarc.old_json_schema import record_from_json
+from datetime import datetime, timedelta
+
+from django.shortcuts import HttpResponse
+
 from junimarc.marc_query import MarcQuery
+from junimarc.old_json_schema import record_from_json
 from . import olap
+from .settings import get_income_report_file_path
+from .. import models
 
 
-@cache_page(60 * 60 * 12)
-def incomes_stat(request):
+def generate_incomes_stat_report():
     collections = {}
-
     for i, record_content in enumerate(
             models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).all().iterator()):
         record_content.unpack_content()
-        # if i % 10000 == 0:
-        #     print i
+        if i % 10000 == 0:
+            print i
         # print record_content.unpack_content()
         record = record_from_json(record_content.unpack_content())
         rq = MarcQuery(record)
@@ -33,8 +33,17 @@ def incomes_stat(request):
         # print create_date
         _fill_collection(collections, rq, create_date.strftime('%Y%m%d'))
 
-    data = json.dumps(olap._collections_to_olap(collections), ensure_ascii=False)
-    return HttpResponse(data, content_type='application/json')
+    data = json.dumps(olap._collections_to_olap(collections))
+    with open(get_income_report_file_path(), 'wb') as report_file:
+        report_file.write(data)
+
+
+def incomes_stat(request):
+    report_file_path = get_income_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
 
 
 def actions_stat(request):
