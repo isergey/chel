@@ -77,34 +77,39 @@ def generate_actions_report():
             collections,
             rq,
             create_date=detail_log.date_time.strftime('%Y%m%d'),
-            action=detail_log.action
+            action=detail_log.action,
+            session_id=detail_log.session_id,
         )
         data = json.dumps(olap._collections_to_actions_olap(collections))
         with open(get_actions_report_file_path(), 'wb') as report_file:
             report_file.write(data)
 
-
-def generate_users_report():
-    collections = {}
-
-    for i, (detail_log, record_content) in enumerate(_get_detail_log()):
-        if i % 10000 == 0:
-            print i
-
-        if not record_content:
-            continue
-        record = record_from_json(record_content.unpack_content())
-        rq = MarcQuery(record)
-        _fill_collection(
-            collections,
-            rq,
-            create_date=detail_log.date_time.strftime('%Y%m%d'),
-            action=detail_log.action,
-            session_id=detail_log.session_id,
-        )
         data = json.dumps(olap._collections_to_users_olap(collections))
         with open(get_users_report_file_path(), 'wb') as report_file:
             report_file.write(data)
+
+
+# def generate_users_report():
+#     collections = {}
+#
+#     for i, (detail_log, record_content) in enumerate(_get_detail_log()):
+#         if i % 10000 == 0:
+#             print i
+#
+#         if not record_content:
+#             continue
+#         record = record_from_json(record_content.unpack_content())
+#         rq = MarcQuery(record)
+#         _fill_collection(
+#             collections,
+#             rq,
+#             create_date=detail_log.date_time.strftime('%Y%m%d'),
+#             action=detail_log.action,
+#             session_id=detail_log.session_id,
+#         )
+#         data = json.dumps(olap._collections_to_users_olap(collections))
+#         with open(get_users_report_file_path(), 'wb') as report_file:
+#             report_file.write(data)
 
 
 def _get_or_create_data(dict, key, default=None):
