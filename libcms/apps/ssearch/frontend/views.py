@@ -433,7 +433,7 @@ def index(request, catalog='uc'):
     view = request.GET.get('view', u'table')
     highlighting = result.get_highlighting()
 
-    records = get_records(record_ids)
+    records = models.get_records(record_ids)
     for record in records:
         record_obj = junimarc.chel_json_schema.record_from_json(record['dict'])
         marc_query = junimarc.marc_query.MarcQuery(record_obj)
@@ -515,7 +515,7 @@ def detail(request):
     if not record_id:
         raise Http404(u'Запись не найдена')
 
-    records = get_records([record_id])
+    records = models.get_records([record_id])
     if not records:
         raise Http404(u'Запись не найдена')
 
@@ -558,7 +558,7 @@ def detail(request):
         for doc in result.get_docs():
             linked_records_ids.append(doc['id'])
         if linked_records_ids:
-            lrecords = get_records(linked_records_ids)
+            lrecords = models.get_records(linked_records_ids)
             for lrecord in lrecords:
                 content_tree = record['tree']
                 lrecord['dict'] = get_content_dict(content_tree)
@@ -827,30 +827,30 @@ def terms_as_group(text_value, operator=u'OR'):
     return u'(%s)' % ((u' ' + operator + u' ').join(terms))
 
 
-def get_records(record_ids):
-    """
-    :param record_ids: record_id идентификаторы записей
-    :return: списко записей
-    """
-    records_objects = list(models.RecordContent.objects.using('harvester').filter(record_id__in=record_ids))
-    records = []
-    for record in records_objects:
-        rdict = json.loads(record.unpack_content())
-        records.append({
-            'id': record.record_id,
-            'dict': rdict,
-            'tree': record_to_ruslan_xml(rdict)
-        })
-        # record.tree = record_to_ruslan_xml(json.loads(record.content))
-    records_dict = {}
-    for record in records:
-        records_dict[record['id']] = record
-    nrecords = []
-    for record_id in record_ids:
-        record = records_dict.get(record_id, None)
-        if record:
-            nrecords.append(record)
-    return nrecords
+# def get_records(record_ids):
+#     """
+#     :param record_ids: record_id идентификаторы записей
+#     :return: списко записей
+#     """
+#     records_objects = list(models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).filter(record_id__in=record_ids))
+#     records = []
+#     for record in records_objects:
+#         rdict = json.loads(record.unpack_content())
+#         records.append({
+#             'id': record.record_id,
+#             'dict': rdict,
+#             'tree': record_to_ruslan_xml(rdict)
+#         })
+#         # record.tree = record_to_ruslan_xml(json.loads(record.content))
+#     records_dict = {}
+#     for record in records:
+#         records_dict[record['id']] = record
+#     nrecords = []
+#     for record_id in record_ids:
+#         record = records_dict.get(record_id, None)
+#         if record:
+#             nrecords.append(record)
+#     return nrecords
 
 
 def get_library_card(content_tree):

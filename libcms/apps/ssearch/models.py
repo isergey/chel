@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 
 # from common.pagination import get_page2
 
-RECORDS_DB_CONNECTION = 'records'
+RECORDS_DB_CONNECTION = 'harvester'
 
 
 class ViewDocLog(models.Model):
