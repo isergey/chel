@@ -8,7 +8,8 @@ from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
 from ..models import ViewLog
-from  ssearch.frontend.views import get_records, get_content_dict
+from  ssearch.frontend.views import get_content_dict
+from ssearch.models import get_records
 
 class AccessDenied(Exception): pass
 
