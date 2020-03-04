@@ -580,18 +580,18 @@ def detail(request):
     _add_to_attributes(attributes, u'Коллекция', record['dict'].get('catalog', []))
     _add_to_attributes(attributes, u'Держатели', record['dict'].get('holders', []))
 
-    session_id = _get_session_id(request)
+    # session_id = _get_session_id(request)
 
     user = None
     if request.user.is_authenticated():
         user = request.user
 
-    models.log_detail(
-        record_id=record_id,
-        user=user,
-        action=models.DETAIL_ACTIONS['VIEW_DETAIL'],
-        session_id=session_id,
-    )
+    # models.log_detail(
+    #     record_id=record_id,
+    #     user=user,
+    #     action=models.DETAIL_ACTIONS['VIEW_DETAIL'],
+    #     session_id=session_id,
+    # )
 
     statistics = models.get_statistics_for_detail(record_id=record_id)
 
@@ -606,7 +606,7 @@ def detail(request):
         'statistics': statistics,
     })
 
-    _set_session_id(session_id, request, response)
+    # _set_session_id(session_id, request, response)
 
     return response
 
