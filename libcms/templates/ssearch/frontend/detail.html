@@ -39,9 +39,12 @@
                                     <button class="btn btn_gray" data-custom-open="marcModal" role="button">MARC запись
                                     </button>
                                 </li>
-                                <li class="search-main__side-detail-nav-item">
-                                    Просмотров записи: {{ edoc_view_count }}
-                                </li>
+                                {#                                <li class="search-main__side-detail-nav-item">#}
+                                {#                                    Просмотров записи: {{ edoc_view_count }}#}
+                                {#                                </li>#}
+                                {% for stat in statistics %}
+                                    <li>{{ stat.title|capfirst }}: {{ stat.value }}</li>
+                                {% endfor %}
                                 <li class="search-main__side-detail-nav-item">
                                     <div class="ya-share2"
                                          data-services="vkontakte,facebook,gplus,twitter,viber,whatsapp,telegram"></div>
@@ -113,5 +116,18 @@
             </div>
         </div>
     </div>
-
+    <script>
+        $(function () {
+            setTimeout(function () {
+                $('.ya-share2__link').on('click', function (event) {
+                    $.post('{% url 'ssearch:frontend:log' %}', {
+                        id: '{{ request.GET.id }}',
+                        action: 'SOCIAL_SHARE'
+                    }).done(function () {
+                    }).fail(function () {
+                    });
+                })
+            }, 1000);
+        });
+    </script>
 {% endblock %}

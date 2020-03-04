@@ -1,7 +1,17 @@
+# coding=utf-8
 import zipfile
+import json
+import binascii
+from collections import Counter
+from datetime import datetime, timedelta
+import hashlib
 from cStringIO import StringIO
 from django.db import models
 from django.contrib.auth.models import User
+
+# from common.pagination import get_page2
+
+RECORDS_DB_CONNECTION = 'records'
 
 
 class ViewDocLog(models.Model):
@@ -142,3 +152,329 @@ class RecordContent(models.Model):
         zfp = zipfile.ZipFile(fp, "r")
         value = zfp.open("record.json").read()
         return value.decode('utf-8')
+
+
+def get_records(ids, db_config='records'):
+    cleaned_ids = []
+    for id in ids:
+        cleaned_ids.append(id.strip())
+    records = list(RecordContent.objects.using(RECORDS_DB_CONNECTION).filter(record_id__in=cleaned_ids))
+    records_dict = {}
+    for record in records:
+        records_dict[record.record_id] = record
+    result_records = []
+    for id in cleaned_ids:
+        record = records_dict.get(id, None)
+        if not record: continue
+        result_records.append(record)
+    return result_records
+
+
+from collections import defaultdict
+
+
+def fill_records(detail_log_dict_list):
+    record_ids_index = defaultdict(list)
+    for detail_log_dict in detail_log_dict_list:
+        record_ids_index[detail_log_dict['detail_log'].record_id].append(detail_log_dict)
+
+    for record_content in get_records(record_ids_index.keys()):
+        for detail_log_dict in record_ids_index.get(record_content.record_id, []):
+            detail_log_dict['record_content'] = record_content
+
+
+REPEAT_LOG_TIMEOUT_MINUTES = 10
+LOG_TIMEOUT_MINUTES = 60
+LOG_TIMEOUT_LIMIT_RECORDS = 1400
+
+
+class SearchLog(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    params = models.TextField(verbose_name='Параметры поиска', max_length=2048, blank=True)
+    total = models.BigIntegerField(verbose_name='Найдено записей', default=0)
+    in_results = models.BooleanField(verbose_name='Уточнение результатов', default=False)
+    session_id = models.CharField(verbose_name='Идентификатор сесии', max_length=64, db_index=True)
+    date_time = models.DateTimeField(auto_now_add=True, db_index=True)
+    params_crc32 = models.IntegerField(db_index=True, verbose_name='CRC32 json-строки параметров запроса', default=0)
+
+
+DETAIL_ACTIONS_REFERENCE = {
+    'VIEW_DETAIL': {
+        'code': 0,
+        'title': u'просмотр записи',
+    },
+    'LOAD_FULL_TEXT': {
+        'code': 1,
+        'title': u'загрузка полного текста',
+    },
+    'VIEW_FULL_TEXT': {
+        'code': 2,
+        'title': u'просмотр полного текста',
+    },
+    'LOAD_VIDEO': {
+        'code': 3,
+        'title': u'загрузка видео',
+    },
+    'VIEW_VIDEO': {
+        'code': 4,
+        'title': u'просмотр видео',
+    },
+    'LOAD_AUDIO': {
+        'code': 5,
+        'title': u'загрузка аудио',
+    },
+    'VIEW_AUDIO': {
+        'code': 6,
+        'title': u'прослушивание аудио',
+    },
+    'LOAD_CONTENT_LIST': {
+        'code': 7,
+        'title': u'загрузка содержания',
+    },
+    'LOAD_DOCUMENT': {
+        'code': 8,
+        'title': u'загрузка электронного документа',
+    },
+    'SOCIAL_SHARE': {
+        'code': 9,
+        'title': u'отправка в соц. сети',
+    },
+}
+
+DETAIL_ACTIONS = {}
+
+DETAIL_ACTIONS_CHOICES = []
+DETAIL_ACTIONS_TITLES = {}
+
+
+def init_detail_actions():
+    for action_key, value in list(DETAIL_ACTIONS_REFERENCE.items()):
+        DETAIL_ACTIONS[action_key] = value.get('code', 0)
+
+    for action_key, value in list(DETAIL_ACTIONS_REFERENCE.items()):
+        code = value.get('code', None)
+        if code is None:
+            continue
+        title = value.get('title', code)
+        DETAIL_ACTIONS_TITLES[code] = value.get('title', code)
+        DETAIL_ACTIONS_CHOICES.append([code, title])
+
+
+init_detail_actions()
+
+
+class DetailLog(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, blank=True)
+    record_id = models.CharField(max_length=64, db_index=True)
+    action = models.IntegerField(verbose_name='Действие', default=DETAIL_ACTIONS['VIEW_DETAIL'], db_index=True)
+    session_id = models.CharField(verbose_name='Идентификатор сесии', max_length=64, db_index=True)
+    attrs = models.TextField(
+        verbose_name='JSON трибуты',
+        blank=True,
+        max_length=10 * 1024
+    )
+    date_time = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    def set_attrs(self, attrs):
+        self.attrs = json.dumps(attrs, ensure_ascii=False)
+
+    def get_attrs(self):
+        if not self.attrs:
+            return {}
+        return json.loads(self.attrs)
+
+    def __unicode__(self):
+        return u'{record_id} {action}'.format(record_id=self.record_id, action=self.action)
+
+
+def log_search_request(params, user=None, total=0, in_results=False, session_id=''):
+    if not params:
+        return
+    is_empty = True
+
+    for param in params:
+        value = param.get('value', '').strip()
+        if value and value != '*':
+            is_empty = False
+
+    if is_empty:
+        return
+
+    json_params = json.dumps(params, ensure_ascii=False).lower()
+    params_crc32 = binascii.crc32(json_params.encode('utf-8'))
+    now = datetime.now()
+
+    if SearchLog.objects.filter(
+            params_crc32=params_crc32,
+            date_time__gte=now - timedelta(minutes=REPEAT_LOG_TIMEOUT_MINUTES),
+            session_id=session_id
+    ).exists():
+        return
+
+    if SearchLog.objects.filter(
+            date_time__gte=now - timedelta(minutes=LOG_TIMEOUT_MINUTES),
+    ).count() > LOG_TIMEOUT_LIMIT_RECORDS:
+        return
+
+    search_log = SearchLog(
+        user=user,
+        params=json_params,
+        total=int(total),
+        in_results=in_results,
+        session_id=session_id,
+        params_crc32=params_crc32
+    )
+
+    SearchLog.objects.bulk_create([search_log])
+
+
+def log_detail(record_id, user=None, action=0, session_id=''):
+    if not record_id:
+        return
+
+    now = datetime.now()
+
+    q = models.Q(
+        record_id=record_id,
+        action=action
+    )
+
+    id_q = models.Q()
+
+    if session_id:
+        id_q |= models.Q(session_id=session_id)
+
+    if user is not None:
+        id_q |= models.Q(user=user)
+
+    if id_q:
+        q &= models.Q(date_time__gte=now - timedelta(minutes=REPEAT_LOG_TIMEOUT_MINUTES))
+        q &= id_q
+
+    if user or session_id:
+        if DetailLog.objects.filter(q).exists():
+            return
+
+    # if DetailLog.objects.filter(
+    #         date_time__gte=now - timedelta(minutes=LOG_TIMEOUT_MINUTES),
+    # ).count() > LOG_TIMEOUT_LIMIT_RECORDS:
+    #     return
+
+    detail_log = DetailLog(
+        record_id=record_id,
+        user=user,
+        action=action,
+        session_id=session_id
+    )
+
+    DetailLog.objects.bulk_create([detail_log])
+
+
+def get_statistics_for_detail(record_id):
+    detail_log_records = DetailLog.objects.filter(record_id=record_id)
+    report = {}
+
+    for detail_log_record in detail_log_records.iterator():
+        action_count = report.get(detail_log_record.action, 0)
+        report[detail_log_record.action] = action_count + 1
+
+    report_lines = []
+    for action, count in list(report.items()):
+        report_lines.append({
+            'id': action,
+            'value': count,
+            'title': DETAIL_ACTIONS_TITLES.get(action, action)
+        })
+    report_lines.sort(key=lambda x: x['value'])
+    return report_lines
+
+
+def _get_begin_day_datetime(date):
+    return datetime(
+        year=date.year,
+        month=date.month,
+        day=date.day,
+        hour=0,
+        minute=0,
+        second=0
+    )
+
+
+def _get_end_day_datetime(date):
+    return datetime(
+        year=date.year,
+        month=date.month,
+        day=date.day,
+        hour=23,
+        minute=59,
+        second=59
+    )
+
+
+def _filter_record_ids(record_ids):
+    # source = None
+    # try:
+    #     source = Source.objects.get(code='sic')
+    # except Source.DoesNotExist:
+    #     pass
+    qs = RecordContent.objects.filter(id__in=record_ids).values('id')
+    # if source is not None:
+    #     qs = qs.exclude(source=source)
+    records = qs
+    return [record['id'] for record in records]
+
+
+def get_rating_records(start_date, end_date):
+    q = models.Q()
+    now = datetime.now()
+
+    if not start_date:
+        start_date = now.date()
+    q &= models.Q(date_time__gte=_get_begin_day_datetime(start_date))
+
+    if not end_date:
+        end_date = now.date()
+    q &= models.Q(date_time__lte=_get_end_day_datetime(end_date))
+
+    counter = Counter()
+    per_page = 1000
+    page_number = 1
+    qs = DetailLog.objects.filter(q)
+    page = get_page2(page_number, qs, per_page)
+
+    while True:
+        records_ids = []
+        for item in page.object_list:
+            records_ids.append(item.record_id)
+        filtered_ids = _filter_record_ids(set(records_ids))
+        for record_id in records_ids:
+            if record_id in filtered_ids:
+                counter[record_id] += 1
+
+        if not page.has_next():
+            break
+        page_number += 1
+        page = get_page2(page_number, qs, per_page)
+
+    most_commons = counter.most_common()[:20]
+    record_ids = [x[0] for x in most_commons]
+    records = get_records(record_ids, RECORDS_DB_CONNECTION)
+    records_index = {}
+
+    for record in records:
+        records_index[record.record_id] = record
+
+    records_list = []
+    for most_common in most_commons:
+        records_list.append({
+            'record': records_index[most_common[0]],
+            'rating': most_common[1]
+        })
+    # for record in records:
+    #     mq = marc_query.MarcQuery(json_schema.record_from_json(record.content))
+    #     print mq.get_field('200').get_subfield('a').get_data()
+    return {
+        'start_date': start_date,
+        'end_date': end_date,
+        'records_list': records_list
+    }

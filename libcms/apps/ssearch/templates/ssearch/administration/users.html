@@ -1,0 +1,114 @@
+{% extends 'ssearch/administration/base.html' %}
+{% block content %}
+    <h3>Действия над коллекциями</h3>
+    <div id="pivotgrid-chart"></div>
+    <div id="pivotgrid"></div>
+    <script>
+        $(function () {
+            var store = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON('{% url 'ssearch:administration:users_stat' %}');
+                }
+            });
+
+            var pivotGridChart = $("#pivotgrid-chart").dxChart({
+                commonSeriesSettings: {
+                    type: "bar"
+                },
+                tooltip: {
+                    enabled: true,
+                    customizeTooltip: function (args) {
+                        var valueText = (args.seriesName.indexOf("Total") != -1) ?
+                            Globalize.formatCurrency(args.originalValue,
+                                "USD", {maximumFractionDigits: 0}) :
+                            args.originalValue;
+
+                        return {
+                            html: args.seriesName + "<div class='currency'>"
+                                + valueText + "</div>"
+                        };
+                    }
+                },
+                size: {
+                    height: 320
+                },
+                adaptiveLayout: {
+                    width: 450
+                }
+            }).dxChart("instance");
+
+            var pivotGrid = $("#pivotgrid").dxPivotGrid({
+                allowSortingBySummary: true,
+                allowSorting: true,
+                allowFiltering: true,
+                allowExpandAll: true,
+                height: 800,
+                showBorders: true,
+                fieldChooser: {
+                    enabled: false
+                },
+                export: {
+                    enabled: true,
+                    fileName: "elib_users"
+                },
+                dataSource: {
+                    fields: [
+                        {
+                            caption: "level_1",
+                            width: 300,
+                            dataField: "level_1",
+                            area: "row"
+                        },
+                        {
+                            caption: "level_2",
+                            dataField: "level_2",
+                            width: 300,
+                            area: "row",
+                            /*selector: function (data) {
+                                return data.city + " (" + data.country + ")";
+                            }*/
+                        },
+                        {
+                            caption: "level_3",
+                            dataField: "level_3",
+                            width: 300,
+                            area: "row",
+                        },
+                        {
+                            caption: "level_4",
+                            dataField: "level_4",
+                            width: 300,
+                            area: "row",
+                        },
+
+                        {
+                            dataField: "date",
+                            dataType: "date",
+                            area: "column"
+                        }, {
+                            caption: "Пользователи",
+                            dataField: "users",
+                            dataType: "number",
+                            summaryType: "sum",
+                            {#format: "currency",#}
+                            area: "data"
+                        },
+                        {
+                            caption: "Визиты",
+                            dataField: "visits",
+                            dataType: "number",
+                            summaryType: "sum",
+                            {#format: "currency",#}
+                            area: "data"
+                        }],
+                    store: store
+                }
+            }).dxPivotGrid("instance");
+            pivotGrid.bindChart(pivotGridChart, {
+                dataFieldsDisplayMode: "splitPanes",
+                alternateDataFields: false
+            });
+        });
+    </script>
+{% endblock %}

@@ -121,6 +121,7 @@ class FieldQuery(object):
                 return field.get_data()
         return default_value
 
+
 class MarcQuery(object):
     def __init__(self, record):
         if not isinstance(record, Record):
@@ -135,6 +136,9 @@ class MarcQuery(object):
 
         fields = self.fields_index.get(tag, [])
         return FieldQuery(fields)
+
+    def leader_data(self):
+        return self.record.get_leader()
 
     def get_element(self):
         return self.record

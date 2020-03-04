@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     # (r'^indexer/', include('ssearch.indexer.urls', namespace='indexer')),
     (r'^', include('ssearch.frontend.urls', namespace='frontend')),
-
+    (r'^admin/', include('ssearch.administration.urls', namespace='administration')),
 )
-

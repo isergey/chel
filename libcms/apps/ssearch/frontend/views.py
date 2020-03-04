@@ -1,11 +1,14 @@
 # coding: utf-8
 import re
+import uuid
 import json as simplejson
 from lxml import etree
 import requests
 import json
 import datetime
 import junimarc
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.conf import settings
@@ -15,10 +18,15 @@ from ..ppin_client.solr import SearchCriteria
 from ..solr.solr import Solr, FacetParams, escape
 from titles import get_attr_value_title, get_attr_title
 from . import record_templates
-from ..models import RecordContent
+from .. import models
 from rbooks.models import ViewLog
 from .extended import subject_render
+
 transformers = dict()
+
+SEARCH_SESSION_AGE = 3600 * 24 * 365
+
+SEARCH_SESSION_KEY = '_sc'
 
 search_attrs = [
     (u'all_t', u'all_t'),
@@ -233,7 +241,7 @@ class PivotNode(object):
             idName = u'id="list"'
             styleList = u'style="display: block"'
 
-        ul = [u'<ul ',idName, u' class="', className, u'" ', styleList, u'>']
+        ul = [u'<ul ', idName, u' class="', className, u'" ', styleList, u'>']
 
         for child in sorted(self.pivot, key=PivotNode.cmp):
             ul.append(child.to_li())
@@ -292,6 +300,7 @@ class PivotNode(object):
             pass
         return res
 
+
 # def draw_pivot_tree(pivot):
 #     SEARCH_PATH = reverse('ssearch:frontend:index')
 #
@@ -335,7 +344,7 @@ def collections():
     pivote_root = build_pivot_tree(pivot)
 
     facets = replace_facet_values(facets)
-    collection_values = [] # sorted(facets['collection_s']['values'], key=lambda x: x[0].lower().strip())
+    collection_values = []  # sorted(facets['collection_s']['values'], key=lambda x: x[0].lower().strip())
     # return render(request, 'ssearch/frontend/collections.html', {
     #     'collection_values': collection_values
     # })
@@ -387,7 +396,7 @@ def index(request, catalog='uc'):
 
         now = datetime.date.today()
         past = now - datetime.timedelta(30)
-        RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
+        models.RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
         stat = {
             'all_documents_count': all_documents_count,
             'coll_stat': coll_stat
@@ -452,7 +461,6 @@ def index(request, catalog='uc'):
                     titled_values.append(get_attr_value_title(attribute, value))
                 record['dict'][attribute] = titled_values
 
-
         record['ft_links'] = ft_links
 
     facets = result.get_facets()
@@ -516,7 +524,6 @@ def detail(request):
     marc_query = junimarc.marc_query.MarcQuery(record_obj)
     ft_links = record_templates.get_full_text_links(marc_query)
 
-
     record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
     record['tpl'] = record_template
     record['extended'] = {
@@ -535,14 +542,15 @@ def detail(request):
 
     # view_count = ViewDocLog.objects.filter(record_id=record_id).count()
     collection_id = None
-    catalogs = record['dict'].get('catalog', [])
-    if catalogs:
-        collection_id = catalogs[0].lower().strip()
-        ViewLog.objects.bulk_create([ViewLog(doc_id=record_id, user_id=user, collection=collection_id)])
-
-    edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
+    # catalogs = record['dict'].get('catalog', [])
+    # if catalogs:
+    #     collection_id = catalogs[0].lower().strip()
+    #     ViewLog.objects.bulk_create([ViewLog(doc_id=record_id, user_id=user, collection=collection_id)])
+    #
+    # edoc_view_count = ViewLog.objects.filter(doc_id=record_id).count()
 
     linked_records = []
+    linked_records_ids = []
     local_numbers = record['dict'].get('local_number', [])
     if local_numbers:
         result = uc.search('linked_record_number_s:"%s"' % local_numbers[0].replace(u'\\', u'\\\\'), fields=['id'])
@@ -555,8 +563,6 @@ def detail(request):
                 content_tree = record['tree']
                 lrecord['dict'] = get_content_dict(content_tree)
                 linked_records.append(lrecord)
-
-
 
     attributes = []
     _add_to_attributes(attributes, u'Источник', record_template.get_source())
@@ -573,15 +579,73 @@ def detail(request):
     _add_to_attributes(attributes, u'Издатель', record['dict'].get('publisher', []))
     _add_to_attributes(attributes, u'Коллекция', record['dict'].get('catalog', []))
     _add_to_attributes(attributes, u'Держатели', record['dict'].get('holders', []))
-    return render(request, 'ssearch/frontend/detail.html', {
+
+    session_id = _get_session_id(request)
+
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+
+    models.log_detail(
+        record_id=record_id,
+        user=user,
+        action=models.DETAIL_ACTIONS['VIEW_DETAIL'],
+        session_id=session_id,
+    )
+
+    statistics = models.get_statistics_for_detail(record_id=record_id)
+
+    response = render(request, 'ssearch/frontend/detail.html', {
         'record': record,
         # 'view_count': view_count,
-        'edoc_view_count': edoc_view_count,
+        # 'edoc_view_count': edoc_view_count,
         'linked_records': linked_records,
         'linked_records_ids': linked_records_ids,
         'attributes': attributes,
         'ft_links': ft_links,
+        'statistics': statistics,
     })
+
+    _set_session_id(session_id, request, response)
+
+    return response
+
+
+@never_cache
+@csrf_exempt
+def log(request):
+    session_id = _get_session_id(request)
+    record_id = request.POST.get('id', None)
+    action = request.POST.get('action', None)
+
+    user = None
+    if request.user.is_authenticated():
+        user = request.user
+
+    models.log_detail(
+        record_id=record_id,
+        user=user,
+        action=models.DETAIL_ACTIONS[action],
+        session_id=session_id,
+    )
+
+    response = HttpResponse('')
+
+    _set_session_id(session_id, request, response)
+
+    return response
+
+
+def _get_session_id(request):
+    session_id = request.COOKIES.get(SEARCH_SESSION_KEY, '')
+    if not session_id:
+        session_id = uuid.uuid4().hex
+    return session_id
+
+
+def _set_session_id(session_id, request, response):
+    if not request.COOKIES.get(SEARCH_SESSION_KEY, ''):
+        response.set_cookie(SEARCH_SESSION_KEY, session_id, max_age=SEARCH_SESSION_AGE)
 
 
 def extract_request_query_attrs(request):
@@ -768,7 +832,7 @@ def get_records(record_ids):
     :param record_ids: record_id идентификаторы записей
     :return: списко записей
     """
-    records_objects = list(RecordContent.objects.using('harvester').filter(record_id__in=record_ids))
+    records_objects = list(models.RecordContent.objects.using('harvester').filter(record_id__in=record_ids))
     records = []
     for record in records_objects:
         rdict = json.loads(record.unpack_content())
@@ -929,7 +993,7 @@ def author_key_replace(facet):
     for value in facet['values']:
         values[value[0]] = value[0]
 
-    records = AuthRecord.objects.filter(record_id__in=values.keys())
+    records = models.AuthRecord.objects.filter(record_id__in=values.keys())
     for record in records:
         content_tree = etree.XML(record.content)
         dict = get_authority_dict(content_tree)

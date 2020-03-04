@@ -54,3 +54,4 @@ class SavedRequest(models.Model):
     user = models.ForeignKey(User, related_name='saved_request_user')
     search_request = models.CharField(max_length=1024)
     add_time = models.DateTimeField(auto_now_add=True)
+
