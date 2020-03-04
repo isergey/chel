@@ -14,7 +14,7 @@ def incomes_stat(request):
     collections = {}
 
     for i, record_content in enumerate(
-            models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).all()[600000:].iterator()):
+            models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).all().iterator()):
         record_content.unpack_content()
         # if i % 10000 == 0:
         #     print i
