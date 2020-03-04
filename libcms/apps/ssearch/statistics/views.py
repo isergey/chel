@@ -1,5 +1,6 @@
 # coding=utf-8
 import json
+from django.views.decorators.cache import cache_page
 from datetime import datetime, timedelta, date
 from collections import Counter, OrderedDict, defaultdict
 from django.shortcuts import HttpResponse, render
@@ -10,6 +11,7 @@ from junimarc.marc_query import MarcQuery
 from . import olap
 
 
+@cache_page(60 * 60 * 12)
 def incomes_stat(request):
     collections = {}
 
