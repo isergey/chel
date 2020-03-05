@@ -70,6 +70,9 @@ def generate_incomes_report():
     with open(get_income_report_file_path(), 'wb') as report_file:
         report_file.write(data)
 
+    data = json.dumps(olap._collections_to_material_types_olap(collections))
+    with open(get_material_types_report_file_path(), 'wb') as report_file:
+        report_file.write(data)
 
 def generate_actions_report():
     collections = {}
@@ -97,9 +100,7 @@ def generate_actions_report():
         with open(get_users_report_file_path(), 'wb') as report_file:
             report_file.write(data)
 
-        data = json.dumps(olap._collections_to_material_types_olap(collections))
-        with open(get_material_types_report_file_path(), 'wb') as report_file:
-            report_file.write(data)
+
 
 
 # def generate_users_report():
