@@ -65,7 +65,7 @@ def generate_incomes_report():
             continue
         # print create_date
         if create_date.year < 2012:
-            create_date.replace(year=2012)
+            create_date = create_date.replace(year=2012)
         _fill_collection(collections, rq, create_date.strftime('%Y%m%d'))
 
     data = json.dumps(olap._collections_to_olap(collections))
