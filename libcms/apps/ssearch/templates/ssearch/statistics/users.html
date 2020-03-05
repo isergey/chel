@@ -45,8 +45,8 @@
                 allowExpandAll: true,
                 height: 800,
                 showBorders: true,
-                fieldChooser: {
-                    enabled: false
+                fieldPanel: {
+                    visible: true
                 },
                 export: {
                     enabled: true,
@@ -55,38 +55,33 @@
                 dataSource: {
                     fields: [
                         {
-                            caption: "level_1",
+                            caption: "Коллекция 1 ур.",
                             width: 300,
                             dataField: "level_1",
                             area: "row"
                         },
                         {
-                            caption: "level_2",
+                            caption: "Коллекция 2 ур.",
                             dataField: "level_2",
                             width: 300,
                             area: "row",
-                            /*selector: function (data) {
-                                return data.city + " (" + data.country + ")";
-                            }*/
                         },
                         {
-                            caption: "level_3",
+                            caption: "Коллекция 3 ур.",
                             dataField: "level_3",
                             width: 300,
                             area: "row",
                         },
                         {
-                            caption: "level_4",
+                            caption: "Коллекция 4 ур.",
                             dataField: "level_4",
                             width: 300,
                             area: "row",
                         },
-
+                        {area: "column", dataField: "date", dataType: "date", groupInterval: "year", caption: "Год"},
+                        {area: "column", dataField: "date", dataType: "date", groupInterval: "month", caption: "Месяц"},
+                        {area: "column", dataField: "date", dataType: "date", groupInterval: "day", caption: "День"},
                         {
-                            dataField: "date",
-                            dataType: "date",
-                            area: "column"
-                        }, {
                             caption: "Пользователи",
                             dataField: "users",
                             dataType: "number",
