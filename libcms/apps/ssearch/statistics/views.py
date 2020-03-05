@@ -157,8 +157,9 @@ def _calculate_collection(collections, collection_name, create_date, material_ty
     collection_data['count'] += 1
     collection_data['create_dates'][create_date] += 1
     if material_type:
-        collection_data['material_types'][material_type] += 1
-        collection_data['material_types_by_date'][create_date][material_type] += 1
+        material_type_title = MATERIAL_TITLES.get(material_type) or material_type
+        collection_data['material_types'][material_type_title] += 1
+        collection_data['material_types_by_date'][create_date][material_type_title] += 1
 
     if action is not None:
         collection_data['actions'][action] += 1
@@ -241,6 +242,31 @@ def _get_end_day_datetime(date):
         minute=59,
         second=59
     )
+
+
+MATERIAL_TITLES = {
+    'monography': u'монографии',
+    'journal_paper': u'статья',
+    'issues': u'выпуск',
+    'articles_reports': u'статьи отчеты',
+    'collections': u'коллекции',
+    'integrity': u'интегрируемый ресурс',
+    'musical_scores': u'музыкальные партитуры',
+    'maps': u'карты',
+    'video': u'видео',
+    'sound_records': u'звукозапись',
+    'graphics': u'графика',
+    'e_resources': u'электронный ресурс',
+    'dissertation_abstracts': u'диссертация',
+    'referats': u'реферат',
+    'textbook': u'учебное издание',
+    'patents': u'патент',
+    'standarts': u'стандарт',
+    'legislative_acts': u'законодательные акты',
+    'references': u'справочник',
+    'dictionaries': u'словарь',
+    'encyclopedias': u'энциклопедиа',
+}
 
 
 def _get_material_type(rq):
