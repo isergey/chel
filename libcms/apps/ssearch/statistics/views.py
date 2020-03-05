@@ -9,7 +9,8 @@ from django.shortcuts import HttpResponse
 from junimarc.marc_query import MarcQuery
 from junimarc.old_json_schema import record_from_json
 from . import olap
-from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path
+from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
+    get_material_types_report_file_path
 from .. import models
 
 
@@ -31,6 +32,14 @@ def actions_stat(request):
 
 def users_stat(request):
     report_file_path = get_users_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
+
+
+def material_types_stat(request):
+    report_file_path = get_material_types_report_file_path()
     if os.path.exists(report_file_path):
         with open(report_file_path, 'rb') as report_file:
             return HttpResponse(report_file.read(), content_type='application/json')
@@ -88,6 +97,10 @@ def generate_actions_report():
         with open(get_users_report_file_path(), 'wb') as report_file:
             report_file.write(data)
 
+        data = json.dumps(olap._collections_to_material_types_olap(collections))
+        with open(get_material_types_report_file_path(), 'wb') as report_file:
+            report_file.write(data)
+
 
 # def generate_users_report():
 #     collections = {}
@@ -134,6 +147,7 @@ def _calculate_collection(collections, collection_name, create_date, material_ty
         'count': 0,
         'create_dates': Counter(),
         'material_types': Counter(),
+        'material_types_by_date': defaultdict(Counter),
         'actions': Counter(),
         'actions_by_date': defaultdict(Counter),
         'sessions_by_date': defaultdict(Counter),
@@ -142,7 +156,10 @@ def _calculate_collection(collections, collection_name, create_date, material_ty
 
     collection_data['count'] += 1
     collection_data['create_dates'][create_date] += 1
-    collection_data['material_types'][material_type] += 1
+    if material_type:
+        collection_data['material_types'][material_type] += 1
+        collection_data['material_types_by_date'][create_date][material_type] += 1
+
     if action is not None:
         collection_data['actions'][action] += 1
         collection_data['actions_by_date'][create_date][action] += 1
