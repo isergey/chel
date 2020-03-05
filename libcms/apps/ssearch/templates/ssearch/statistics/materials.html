@@ -8,7 +8,7 @@
             var store = new DevExpress.data.CustomStore({
                 loadMode: "raw",
                 load: function () {
-                    return $.getJSON('{% url 'ssearch:statistics:material_types' %}');
+                    return $.getJSON('{% url 'ssearch:statistics:material_types_stat' %}');
                 }
             });
 
@@ -56,7 +56,7 @@
                     fields: [
                         {
                             caption: "Тип материала",
-                            width: 300,
+                            width: 150,
                             dataField: "material_type",
                             area: "row"
                         },
@@ -87,6 +87,14 @@
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "year", caption: "Год"},
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "month", caption: "Месяц"},
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "day", caption: "День"},
+                                                {
+                            caption: "Количество",
+                            dataField: "amount",
+                            dataType: "number",
+                            summaryType: "sum",
+                            {#format: "currency",#}
+                            area: "data"
+                        }
                     ],
                     store: store
                 }
