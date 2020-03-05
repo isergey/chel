@@ -64,6 +64,8 @@ def generate_incomes_report():
         except Exception as e:
             continue
         # print create_date
+        if create_date.year < 2012:
+            create_date.replace(year=2012)
         _fill_collection(collections, rq, create_date.strftime('%Y%m%d'))
 
     data = json.dumps(olap._collections_to_olap(collections))
@@ -73,6 +75,7 @@ def generate_incomes_report():
     data = json.dumps(olap._collections_to_material_types_olap(collections))
     with open(get_material_types_report_file_path(), 'wb') as report_file:
         report_file.write(data)
+
 
 def generate_actions_report():
     collections = {}
@@ -99,8 +102,6 @@ def generate_actions_report():
         data = json.dumps(olap._collections_to_users_olap(collections))
         with open(get_users_report_file_path(), 'wb') as report_file:
             report_file.write(data)
-
-
 
 
 # def generate_users_report():
