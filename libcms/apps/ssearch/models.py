@@ -273,7 +273,9 @@ class DetailLog(models.Model):
         blank=True,
         max_length=10 * 1024
     )
+    # date_time = models.DateTimeField(auto_now_add=True, db_index=True)
     date_time = models.DateTimeField(auto_now_add=True, db_index=True)
+
 
     def set_attrs(self, attrs):
         self.attrs = json.dumps(attrs, ensure_ascii=False)
