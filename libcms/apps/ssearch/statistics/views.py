@@ -86,7 +86,7 @@ def generate_actions_report():
 
         if not record_content:
             continue
-        record = record_from_json(record_content.unpack_content())
+        record = record_from_json(record_content)
         rq = MarcQuery(record)
         _fill_collection(
             collections,
@@ -211,11 +211,11 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
 def _get_detail_log():
     record_ids = []
     cache = {}
-
+    print 'start _get_detail_log'
     for i, detail_log in enumerate(models.DetailLog.objects.all().iterator()):
         if i % 1000 == 0:
             print i, len(cache.keys())
-        continue
+        # continue
         if detail_log.record_id in cache:
             record_content = cache.get(detail_log.record_id)
             if record_content is None:
@@ -225,7 +225,7 @@ def _get_detail_log():
 
         try:
             record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
-            cache[detail_log.record_id] = record_content
+            cache[detail_log.record_id] = record_content.unpack_content()
             yield detail_log, record_content
         except models.RecordContent.DoesNotExist:
             cache[detail_log.record_id] = None
