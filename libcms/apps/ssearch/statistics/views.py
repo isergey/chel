@@ -220,7 +220,7 @@ def _get_detail_log():
             content = cache.get(detail_log.record_id)
             if content is None:
                 continue
-            print 'from cache'
+            print 'from cache', detail_log.record_id
             yield detail_log, content
             continue
 
