@@ -217,16 +217,17 @@ def _get_detail_log():
             print i, len(cache.keys())
         # continue
         if detail_log.record_id in cache:
-            record_content = cache.get(detail_log.record_id)
-            if record_content is None:
+            content = cache.get(detail_log.record_id)
+            if content is None:
                 continue
-            yield detail_log, record_content
+            yield detail_log, content
             continue
 
         try:
             record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
-            cache[detail_log.record_id] = record_content.unpack_content()
-            yield detail_log, record_content
+            content = record_content.unpack_content()
+            cache[detail_log.record_id] = content
+            yield detail_log, content
         except models.RecordContent.DoesNotExist:
             cache[detail_log.record_id] = None
     #     record_ids.append(dict(detail_log=detail_log, record_content=None))
