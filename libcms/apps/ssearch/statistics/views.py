@@ -214,6 +214,8 @@ def _get_detail_log():
 
     for i, detail_log in enumerate(models.DetailLog.objects.all().iterator()):
         print i
+        if i % 1000 == 0:
+            print i, len(cache.keys())
         if detail_log.record_id in cache:
             record_content = cache.get(detail_log.record_id)
             if record_content is None:
