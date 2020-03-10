@@ -228,6 +228,7 @@ def _get_detail_log():
             record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
             content = record_content.unpack_content()
             cache[detail_log.record_id] = content
+            print 'set cache'
             yield detail_log, content
         except models.RecordContent.DoesNotExist:
             print 'not found'
