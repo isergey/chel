@@ -211,7 +211,7 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
 def _get_detail_log():
     record_ids = []
     for detail_log in models.DetailLog.objects.all().iterator():
-        yield detail_log, models.RecordContent.objects.filter(record_id=detail_log.record_id).first()
+        yield detail_log, models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).filter(record_id=detail_log.record_id).first()
     #     record_ids.append(dict(detail_log=detail_log, record_content=None))
     #     if len(record_ids) > 10:
     #         models.fill_records(record_ids)
