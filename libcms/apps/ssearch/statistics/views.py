@@ -210,12 +210,23 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
 
 def _get_detail_log():
     record_ids = []
+    cache = {}
+
     for i, detail_log in enumerate(models.DetailLog.objects.all().iterator()):
         print i
+        if detail_log.record_id in cache:
+            record_content = cache.get(detail_log.record_id)
+            if record_content is None:
+                continue
+            yield detail_log, record_content
+            continue
+
         try:
-            yield detail_log, models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
+            record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
+            cache[detail_log.record_id] = record_content
+            yield detail_log, record_content
         except models.RecordContent.DoesNotExist:
-            pass
+            cache[detail_log.record_id] = None
     #     record_ids.append(dict(detail_log=detail_log, record_content=None))
     #     if len(record_ids) > 20:
     #         models.fill_records(record_ids)
