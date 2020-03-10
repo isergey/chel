@@ -214,7 +214,7 @@ def _get_detail_log():
         print i
         # yield detail_log, models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).filter(record_id=detail_log.record_id).first()
         record_ids.append(dict(detail_log=detail_log, record_content=None))
-        if len(record_ids) > 10:
+        if len(record_ids) > 20:
             models.fill_records(record_ids)
             for record_id in record_ids:
                 yield record_id['detail_log'], record_id['record_content']
