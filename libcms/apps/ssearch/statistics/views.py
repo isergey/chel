@@ -211,17 +211,18 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
 def _get_detail_log():
     record_ids = []
     for detail_log in models.DetailLog.objects.all().iterator():
-        record_ids.append(dict(detail_log=detail_log, record_content=None))
-        if len(record_ids) > 10:
-            models.fill_records(record_ids)
-            for record_id in record_ids:
-                yield record_id['detail_log'], record_id['record_content']
-            record_ids = []
-
-    if record_ids:
-        models.fill_records(record_ids)
-        for record_id in record_ids:
-            yield record_id['detail_log'], record_id['record_content']
+        yield detail_log, models.RecordContent.objects.filter(record_id=detail_log.record_id).first()
+    #     record_ids.append(dict(detail_log=detail_log, record_content=None))
+    #     if len(record_ids) > 10:
+    #         models.fill_records(record_ids)
+    #         for record_id in record_ids:
+    #             yield record_id['detail_log'], record_id['record_content']
+    #         record_ids = []
+    #
+    # if record_ids:
+    #     models.fill_records(record_ids)
+    #     for record_id in record_ids:
+    #         yield record_id['detail_log'], record_id['record_content']
 
 
 def _get_begin_day_datetime(date):
