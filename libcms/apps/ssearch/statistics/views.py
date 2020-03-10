@@ -220,6 +220,7 @@ def _get_detail_log():
             content = cache.get(detail_log.record_id)
             if content is None:
                 continue
+            print 'from cache'
             yield detail_log, content
             continue
 
@@ -229,6 +230,7 @@ def _get_detail_log():
             cache[detail_log.record_id] = content
             yield detail_log, content
         except models.RecordContent.DoesNotExist:
+            print 'not found'
             cache[detail_log.record_id] = None
     #     record_ids.append(dict(detail_log=detail_log, record_content=None))
     #     if len(record_ids) > 20:
