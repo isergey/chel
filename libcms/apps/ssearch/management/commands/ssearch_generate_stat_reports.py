@@ -10,8 +10,8 @@ class Command(BaseCommand):
         gotten = a_lock.acquire(blocking=False)
         try:
             if gotten:
-                # print 'generate_incomes_report'
-                # generate_incomes_report()
+                print 'generate_incomes_report'
+                generate_incomes_report()
                 print 'generate_actions_report'
                 generate_actions_report()
                 # print 'generate_users_report'
