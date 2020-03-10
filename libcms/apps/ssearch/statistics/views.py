@@ -80,13 +80,13 @@ def generate_incomes_report():
 def generate_actions_report():
     collections = {}
 
-    for i, (detail_log, record_content) in enumerate(_get_detail_log()):
+    for i, (detail_log, record) in enumerate(_get_detail_log()):
         if i % 10000 == 0:
             print i
 
-        if not record_content:
+        if not record:
             continue
-        record = record_from_json(record_content)
+
         rq = MarcQuery(record)
         _fill_collection(
             collections,
@@ -217,19 +217,20 @@ def _get_detail_log():
             print i, len(cache.keys())
         # continue
         if detail_log.record_id in cache:
-            content = cache.get(detail_log.record_id)
-            if content is None:
+            record = cache.get(detail_log.record_id)
+            if record is None:
                 continue
             # print 'from cache', detail_log.record_id
-            yield detail_log, content
+            yield detail_log, record
             continue
 
         try:
             record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
             content = record_content.unpack_content()
-            cache[detail_log.record_id] = content
+            record = record_from_json(content)
+            cache[detail_log.record_id] = record
             # print 'set cache'
-            yield detail_log, content
+            yield detail_log, record
         except models.RecordContent.DoesNotExist:
             # print 'not found'
             cache[detail_log.record_id] = None
