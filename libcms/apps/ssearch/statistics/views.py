@@ -95,13 +95,13 @@ def generate_actions_report():
             action=detail_log.action,
             session_id=detail_log.session_id,
         )
-        data = json.dumps(olap._collections_to_actions_olap(collections))
-        with open(get_actions_report_file_path(), 'wb') as report_file:
-            report_file.write(data)
+    data = json.dumps(olap._collections_to_actions_olap(collections))
+    with open(get_actions_report_file_path(), 'wb') as report_file:
+        report_file.write(data)
 
-        data = json.dumps(olap._collections_to_users_olap(collections))
-        with open(get_users_report_file_path(), 'wb') as report_file:
-            report_file.write(data)
+    data = json.dumps(olap._collections_to_users_olap(collections))
+    with open(get_users_report_file_path(), 'wb') as report_file:
+        report_file.write(data)
 
 
 # def generate_users_report():
