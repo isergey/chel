@@ -14,8 +14,8 @@ class Command(BaseCommand):
                 print i
 
             if len(logs) > 100:
-                # DetailLog.objects.bulk_create(logs)
-                print logs[0].date_time
+                DetailLog.objects.bulk_create(logs)
+                # print logs[0].date_time
                 logs = []
             logs.append(DetailLog(
                 record_id=view_log.doc_id,
@@ -23,5 +23,5 @@ class Command(BaseCommand):
                 session_id='user_' + str(view_log.user_id),
                 date_time=view_log.view_dt
             ))
-        # if logs:
-        #     DetailLog.objects.bulk_create(logs)
+        if logs:
+            DetailLog.objects.bulk_create(logs)

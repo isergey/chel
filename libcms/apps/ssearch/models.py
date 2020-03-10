@@ -274,7 +274,7 @@ class DetailLog(models.Model):
         max_length=10 * 1024
     )
     # date_time = models.DateTimeField(auto_now_add=True, db_index=True)
-    date_time = models.DateTimeField(auto_now_add=True, db_index=True)
+    date_time = models.DateTimeField(db_index=True)
 
 
     def set_attrs(self, attrs):
