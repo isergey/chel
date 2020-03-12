@@ -302,6 +302,7 @@ def log_search_request(params, user=None, total=0, in_results=False, session_id=
     #     return
 
     json_params = json.dumps(params, ensure_ascii=False).lower()
+    print json_params
     params_crc32 = binascii.crc32(json_params.encode('utf-8'))
     now = datetime.now()
 
