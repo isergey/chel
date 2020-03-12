@@ -305,17 +305,25 @@ def log_search_request(params, user=None, total=0, in_results=False, session_id=
     params_crc32 = binascii.crc32(json_params.encode('utf-8'))
     now = datetime.now()
 
-    if SearchLog.objects.filter(
-            params_crc32=params_crc32,
-            date_time__gte=now - timedelta(minutes=REPEAT_LOG_TIMEOUT_MINUTES),
-            session_id=session_id
-    ).exists():
-        return
+    q = models.Q(
+        params_crc32=params_crc32,
+    )
 
-    if SearchLog.objects.filter(
-            date_time__gte=now - timedelta(minutes=LOG_TIMEOUT_MINUTES),
-    ).count() > LOG_TIMEOUT_LIMIT_RECORDS:
-        return
+    id_q = models.Q()
+
+    if session_id:
+        id_q |= models.Q(session_id=session_id)
+
+    if user is not None:
+        id_q |= models.Q(user=user)
+
+    if id_q:
+        q &= models.Q(date_time__gte=now - timedelta(minutes=REPEAT_LOG_TIMEOUT_MINUTES))
+        q &= id_q
+
+    if user or session_id:
+        if SearchLog.objects.filter(q).exists():
+            return
 
     search_log = SearchLog(
         user=user,
