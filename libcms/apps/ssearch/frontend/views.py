@@ -488,16 +488,16 @@ def index(request, catalog='uc'):
     #         make_logging = False
 
     session_id = _get_session_id(request)
-    make_logging = not _is_request_from_detail(request)
+    # make_logging = not _is_request_from_detail(request)
     user = request.user if request.user.is_authenticated else None
-    if make_logging:
-        models.log_search_request(
-            kv_dicts,
-            user=user,
-            total=result.count(),
-            in_results=len(kv_dicts) > 1,
-            session_id=session_id
-        )
+    # if make_logging:
+    models.log_search_request(
+        kv_dicts,
+        user=user,
+        total=result.count(),
+        in_results=len(kv_dicts) > 1,
+        session_id=session_id
+    )
 
     response = render(request, 'ssearch/frontend/index.html', {
         'records': records,
