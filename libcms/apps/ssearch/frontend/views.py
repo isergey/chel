@@ -483,6 +483,7 @@ def index(request, catalog='uc'):
 
     attrs, values = extract_request_query_attrs(request)
     kv_dicts = get_pairs(attrs, values)
+    print 'kv_dicts', kv_dicts
     # for kv_dict in kv_dicts:
     #     if kv_dict.get('attr', '') not in available_attrs:
     #         make_logging = False
@@ -511,6 +512,24 @@ def index(request, catalog='uc'):
     })
     _set_session_id(session_id, request, response)
     return response
+
+
+def _flat_kv_args(kv_dicts):
+    flat = {}
+    for kv_dict in kv_dicts:
+        attr = kv_dict.get('attr', '')
+        if not attr:
+            continue
+        value = kv_dict.get('value', '')
+        if not value:
+            continue
+
+        exist_value = flat.get(attr, [])
+        if not exist_value:
+            flat[attr] = exist_value
+
+        exist_value.append(value)
+    return flat
 
 
 def _is_request_from_detail(request):
