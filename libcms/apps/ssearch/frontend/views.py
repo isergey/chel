@@ -483,7 +483,7 @@ def index(request, catalog='uc'):
 
     attrs, values = extract_request_query_attrs(request)
     kv_dicts = get_pairs(attrs, values)
-
+    kv_dicts = []
     # for kv_dict in kv_dicts:
     #     if kv_dict.get('attr', '') not in available_attrs:
     #         make_logging = False
