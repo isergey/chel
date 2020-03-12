@@ -157,7 +157,7 @@ def generate_popular_records_report():
             record = record_from_json(record_content.unpack_content())
             rq = MarcQuery(record)
             record_data['title'] = rq.get_field('200').get_subfield('a').get_data(record_id)
-
+        records.append(record_data)
     return records
 
 # def generate_users_report():
