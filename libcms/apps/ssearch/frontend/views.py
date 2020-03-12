@@ -481,6 +481,7 @@ def index(request, catalog='uc'):
 
     facets = get_orderd_facets(facets)
 
+    attrs, values = extract_request_query_attrs(request)
     kv_dicts = get_pairs(attrs, values)
 
     # for kv_dict in kv_dicts:
