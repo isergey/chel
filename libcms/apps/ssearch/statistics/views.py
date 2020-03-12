@@ -57,7 +57,6 @@ def search_requests_stat(request):
 
 
 def popular_records_stat(request):
-
     form = forms.DateRangeForm(request.GET)
     start_date = None
     end_date = None
@@ -69,6 +68,7 @@ def popular_records_stat(request):
         'report': report,
         'form': form,
     })
+
 
 def generate_incomes_report():
     collections = {}
@@ -165,6 +165,14 @@ def generate_popular_records_report(start_date, end_date):
         report[detail_log.record_id] += 1
 
     records = []
+
+    def get_title(rq):
+        f200 = rq.get_field('200').get_subfield('a').get_data()
+        f461 = rq.get_field('461').get_field('200').get_subfield('a').get_data()
+        f463 = rq.get_field('463').get_field('200').get_subfield('a').get_data()
+
+        return u' '.join([f461, '//', f463, '-', f200]).strip().strip('//').strip()
+
     for record_id, amount in report.most_common(50):
         record_content = (models.get_records([record_id]) or [None])[0]
         record_data = {
@@ -175,9 +183,10 @@ def generate_popular_records_report(start_date, end_date):
         if record_content is not None:
             record = record_from_json(record_content.unpack_content())
             rq = MarcQuery(record)
-            record_data['title'] = rq.get_field('200').get_subfield('a').get_data(record_id)
+            record_data['title'] = get_title(rq) or record_id
         records.append(record_data)
     return records
+
 
 # def generate_users_report():
 #     collections = {}
@@ -297,7 +306,8 @@ def _get_detail_log():
             continue
 
         try:
-            record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(record_id=detail_log.record_id)
+            record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(
+                record_id=detail_log.record_id)
             content = record_content.unpack_content()
             record = record_from_json(content)
             cache[detail_log.record_id] = record

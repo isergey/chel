@@ -63,6 +63,9 @@ class FieldQuery(object):
                 break
         return SubfieldQuery(subfields)
 
+    def get_field(self, tag):
+        return self.get_inner_field(tag)
+
     def get_inner_field(self, tag):
         fields = []
         for extended_subfield in self.extended_subfields:
