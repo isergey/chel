@@ -12,7 +12,7 @@ from . import olap
 from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
     get_material_types_report_file_path, get_search_requests_report_file_path
 from .. import models
-
+from ..frontend.titles import get_attr_title
 
 def incomes_stat(request):
     report_file_path = get_income_report_file_path()
@@ -124,7 +124,7 @@ def generate_search_requests_report():
         for attr, amount in date_data.items():
             olap.append({
                 'date': str_date_time,
-                'attr': attr,
+                'attr': get_attr_title(attr),
                 'amount': amount,
             })
 
