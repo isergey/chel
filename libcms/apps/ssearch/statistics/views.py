@@ -165,7 +165,7 @@ def generate_popular_records_report(start_date, end_date):
         report[detail_log.record_id] += 1
 
     records = []
-    for record_id, amount in report.most_common(10):
+    for record_id, amount in report.most_common(50):
         record_content = (models.get_records([record_id]) or [None])[0]
         record_data = {
             'id': record_id,

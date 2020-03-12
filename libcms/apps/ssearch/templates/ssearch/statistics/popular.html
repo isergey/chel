@@ -8,11 +8,13 @@
     </form>
     <table border="1">
         <tr>
+            <th>Место</th>
             <th>Название</th>
             <th>Просмотры</th>
         </tr>
         {% for row in report %}
             <tr>
+                <td>{{ forloop.counter }}</td>
                 <td>
                     <a href="{{ DETAIL_URL }}?id={{ row.id|urlencode }}" target="_blank">{{ row.title }}</a>
                 </td>
