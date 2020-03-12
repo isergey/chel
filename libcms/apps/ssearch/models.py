@@ -289,8 +289,8 @@ class DetailLog(models.Model):
 
 
 def log_search_request(params, user=None, total=0, in_results=False, session_id=''):
-    if not params:
-        return
+    # if not params:
+    #     return
     is_empty = True
 
     for param in params:
