@@ -113,7 +113,7 @@ def generate_actions_report():
 
 
 def generate_search_requests_report():
-    report = defaultdict(Counter)
+    report = Counter()
     for search_log in models.SearchLog.objects.all().iterator():
         str_date_time = search_log.date_time.strftime('%Y%m%d')
         report[str_date_time] += 1
