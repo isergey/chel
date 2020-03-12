@@ -11,6 +11,7 @@ urlpatterns = patterns(
     url(r'^users/$', TemplateView.as_view(template_name='ssearch/statistics/users.html'), name='users'),
     url(r'^materials/$', TemplateView.as_view(template_name='ssearch/statistics/materials.html'), name='materials'),
     url(r'^search/$', TemplateView.as_view(template_name='ssearch/statistics/search.html'), name='search'),
+    url(r'^popular/$', views.popular_records_stat, name='popular'),
     url(r'^incomes_stat/$', views.incomes_stat, name='incomes_stat'),
     url(r'^actions_stat/$', views.actions_stat, name='actions_stat'),
     url(r'^users_stat/$', views.users_stat, name='users_stat'),

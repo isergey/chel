@@ -1,0 +1,16 @@
+{% extends 'ssearch/statistics/base.html' %}
+{% block content %}
+    <h3>Популрные записи</h3>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Просмотры</th>
+        </tr>
+        {% for row in report %}
+            <tr>
+                <td>{{ row.title }}</td>
+                <td>{{ row.amount }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

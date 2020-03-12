@@ -4,7 +4,7 @@ import os
 from collections import Counter, OrderedDict, defaultdict
 from datetime import datetime, timedelta
 
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 
 from junimarc.marc_query import MarcQuery
 from junimarc.old_json_schema import record_from_json
@@ -53,6 +53,12 @@ def search_requests_stat(request):
             return HttpResponse(report_file.read(), content_type='application/json')
     return HttpResponse('Отчет ещё не подготовлен')
 
+
+def popular_records_stat(request):
+    report = generate_popular_records_report()
+    return render(request, 'ssearch/statistics/popular.html', {
+        'report': report,
+    })
 
 def generate_incomes_report():
     collections = {}
@@ -132,6 +138,27 @@ def generate_search_requests_report():
     with open(get_search_requests_report_file_path(), 'wb') as report_file:
         report_file.write(data)
 
+
+def generate_popular_records_report():
+    report = Counter()
+
+    for detail_log in models.DetailLog.objects.all().iterator():
+        report[detail_log.record_id] += 1
+
+    records = []
+    for record_id, amount in report.most_common(10):
+        record_content = (models.get_records([record_id]) or [None])[0]
+        record_data = {
+            'id': record_id,
+            'title': record_id,
+            'amount': amount
+        }
+        if record_content is not None:
+            record = record_from_json(record_content.unpack_content())
+            rq = MarcQuery(record)
+            record_data['title'] = rq.get_field('200').get_subfield('a').get_data(record_id)
+
+    return records
 
 # def generate_users_report():
 #     collections = {}
