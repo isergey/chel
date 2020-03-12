@@ -826,7 +826,6 @@ def make_search_breadcumbs(attrs, values):
 
 
 def get_pairs(attrs, values):
-    print attrs, values
     pairs = []
     if len(attrs) != len(values):
         raise ValueError(u'Параметры не соответвуют значениям')
