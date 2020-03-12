@@ -3,7 +3,7 @@ import json
 import os
 from collections import Counter, OrderedDict, defaultdict
 from datetime import datetime, timedelta
-
+from django.db.models import Q
 from django.shortcuts import HttpResponse, render
 
 from junimarc.marc_query import MarcQuery
@@ -13,6 +13,8 @@ from .settings import get_income_report_file_path, get_actions_report_file_path,
     get_material_types_report_file_path, get_search_requests_report_file_path
 from .. import models
 from ..frontend.titles import get_attr_title
+from . import forms
+
 
 def incomes_stat(request):
     report_file_path = get_income_report_file_path()
@@ -55,9 +57,17 @@ def search_requests_stat(request):
 
 
 def popular_records_stat(request):
-    report = generate_popular_records_report()
+
+    form = forms.DateRangeForm(request.GET)
+    start_date = None
+    end_date = None
+    if form.is_valid():
+        start_date = form.cleaned_data.get('start_date')
+        end_date = form.cleaned_data.get('end_date')
+    report = generate_popular_records_report(start_date, end_date)
     return render(request, 'ssearch/statistics/popular.html', {
         'report': report,
+        'form': form,
     })
 
 def generate_incomes_report():
@@ -139,10 +149,19 @@ def generate_search_requests_report():
         report_file.write(data)
 
 
-def generate_popular_records_report():
+def generate_popular_records_report(start_date, end_date):
     report = Counter()
+    q = Q()
+    # now = datetime.now()
 
-    for detail_log in models.DetailLog.objects.all().iterator():
+    if start_date:
+        # start_date = now.date()
+        q &= Q(date_time__gte=_get_begin_day_datetime(start_date))
+
+    if end_date:
+        # end_date = now.date()
+        q &= Q(date_time__lte=_get_end_day_datetime(end_date))
+    for detail_log in models.DetailLog.objects.filter(q).iterator():
         report[detail_log.record_id] += 1
 
     records = []

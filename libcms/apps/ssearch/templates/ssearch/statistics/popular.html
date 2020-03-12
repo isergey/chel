@@ -1,15 +1,21 @@
 {% extends 'ssearch/statistics/base.html' %}
 {% block content %}
+    {% url 'ssearch:frontend:detail' as DETAIL_URL %}
     <h3>Популрные записи</h3>
-    {{ report }}
-    <table>
+    <form method="get">
+        {{ form.as_p }}
+        <button>Сформировать</button>
+    </form>
+    <table border="1">
         <tr>
             <th>Название</th>
             <th>Просмотры</th>
         </tr>
         {% for row in report %}
             <tr>
-                <td>{{ row.title }}</td>
+                <td>
+                    <a href="{{ DETAIL_URL }}?id={{ row.id|urlencode }}" target="_blank">{{ row.title }}</a>
+                </td>
                 <td>{{ row.amount }}</td>
             </tr>
         {% endfor %}
