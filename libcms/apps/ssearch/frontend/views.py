@@ -7,6 +7,7 @@ import requests
 import json
 import datetime
 import junimarc
+from urlparse import urlparse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
@@ -479,7 +480,26 @@ def index(request, catalog='uc'):
     }
 
     facets = get_orderd_facets(facets)
-    return render(request, 'ssearch/frontend/index.html', {
+
+    kv_dicts = get_pairs(attrs, values)
+
+    # for kv_dict in kv_dicts:
+    #     if kv_dict.get('attr', '') not in available_attrs:
+    #         make_logging = False
+
+    session_id = _get_session_id(request)
+    make_logging = not _is_request_from_detail(request)
+    user = request.user if request.user.is_authenticated else None
+    if make_logging:
+        models.log_search_request(
+            kv_dicts,
+            user=user,
+            total=result.count(),
+            in_results=len(kv_dicts) > 1,
+            session_id=session_id
+        )
+
+    response = render(request, 'ssearch/frontend/index.html', {
         'records': records,
         'facets': facets,
         'info': info,
@@ -489,6 +509,17 @@ def index(request, catalog='uc'):
         'result_page': result_page,
         'sort_attrs': sort_attrs
     })
+    _set_session_id(session_id, request, response)
+    return response
+
+
+def _is_request_from_detail(request):
+    referer = request.META.get('HTTP_REFERER', '')
+    is_from_detail = False
+    if referer:
+        parse_result = urlparse(referer)
+        if urlresolvers.resolve('search:frontend:detail').strip('/') == parse_result.path.strip('/'):
+            is_from_detail = True
 
 
 def _add_to_attributes(attributes, title, values):
