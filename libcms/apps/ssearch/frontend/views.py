@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.conf import settings
-from django.shortcuts import render, HttpResponse, Http404, urlresolvers
+from django.shortcuts import render, HttpResponse, Http404, urlresolvers, resolve_url
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..ppin_client.solr import SearchCriteria
 from ..solr.solr import Solr, FacetParams, escape
@@ -538,9 +538,9 @@ def _is_request_from_detail(request):
     is_from_detail = False
     if referer:
         parse_result = urlparse(referer)
-        if urlresolvers.resolve('search:frontend:detail').strip('/') == parse_result.path.strip('/'):
+        if resolve_url('search:frontend:detail').strip('/') == parse_result.path.strip('/'):
             is_from_detail = True
-
+    return is_from_detail
 
 def _add_to_attributes(attributes, title, values):
     if not values:
