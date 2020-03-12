@@ -172,16 +172,9 @@ def generate_popular_records_report(start_date, end_date):
         f463 = rq.get_field('463').get_field('200').get_subfield('a').get_data()
         title = []
         if f461 and f463:
-            title.append(f200)
-            title.append(' // ')
-            title.append(f461)
-            if f463:
-                title.append(' . - ')
-                title.append(f463)
+            title += [f200, ' // ', f461, ' . - ', f463]
         elif f461:
-            title.append(f461)
-            title.append(' . - ')
-            title.append(f200)
+            title += [f461, ' . - ', f200]
         else:
             title.append(f200)
 
