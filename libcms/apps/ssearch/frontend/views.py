@@ -519,6 +519,8 @@ def index(request, catalog='uc'):
 def _flat_kv_args(kv_dicts):
     flat = defaultdict([])
     for kv_dict in kv_dicts:
+        print kv_dict
+        print flat[kv_dict[0]]
         flat[kv_dict[0]].append(kv_dict[1])
     return flat
 
