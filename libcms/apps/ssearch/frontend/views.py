@@ -7,6 +7,7 @@ import requests
 import json
 import datetime
 import junimarc
+import collections
 from urlparse import urlparse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
@@ -514,20 +515,9 @@ def index(request, catalog='uc'):
 
 
 def _flat_kv_args(kv_dicts):
-    flat = {}
+    flat = collections.defaultdict([])
     for kv_dict in kv_dicts:
-        attr = kv_dict.get('attr', '')
-        if not attr:
-            continue
-        value = kv_dict.get('value', '')
-        if not value:
-            continue
-
-        exist_value = flat.get(attr, [])
-        if not exist_value:
-            flat[attr] = exist_value
-
-        exist_value.append(value)
+        flat[kv_dict[0]].append(kv_dict[1])
     return flat
 
 
