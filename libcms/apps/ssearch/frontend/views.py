@@ -815,11 +815,11 @@ def make_search_breadcumbs(attrs, values):
 
 def get_pairs(attrs, values):
     pairs = []
-    # if len(attrs) != len(values):
-    #     raise ValueError(u'Параметры не соответвуют значениям')
-    #
-    # for i, attr in enumerate(attrs):
-    #     pairs.append((attr, values[i]))
+    if len(attrs) != len(values):
+        raise ValueError(u'Параметры не соответвуют значениям')
+
+    for i, attr in enumerate(attrs):
+        pairs.append((attr, values[i]))
     return pairs
 
 
