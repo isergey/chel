@@ -291,15 +291,15 @@ class DetailLog(models.Model):
 def log_search_request(params, user=None, total=0, in_results=False, session_id=''):
     # if not params:
     #     return
-    is_empty = True
-
-    for param in params:
-        value = param.get('value', '').strip()
-        if value and value != '*':
-            is_empty = False
-
-    if is_empty:
-        return
+    # is_empty = True
+    #
+    # for param in params:
+    #     value = param.get('value', '').strip()
+    #     if value and value != '*':
+    #         is_empty = False
+    #
+    # if is_empty:
+    #     return
 
     json_params = json.dumps(params, ensure_ascii=False).lower()
     params_crc32 = binascii.crc32(json_params.encode('utf-8'))
