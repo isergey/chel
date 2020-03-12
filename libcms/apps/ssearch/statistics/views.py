@@ -113,17 +113,20 @@ def generate_actions_report():
 
 
 def generate_search_requests_report():
-    report = Counter()
+    report = defaultdict(Counter)
     for search_log in models.SearchLog.objects.all().iterator():
         str_date_time = search_log.date_time.strftime('%Y%m%d')
-        report[str_date_time] += 1
+        for param in search_log.get_params().keys():
+            report[str_date_time][param] += 1
 
     olap = []
-    for str_date_time, amount in report.items():
-        olap.append({
-            'date': str_date_time,
-            'amount': amount,
-        })
+    for str_date_time, date_data in report.items():
+        for attr, amount in date_data.items():
+            olap.append({
+                'date': str_date_time,
+                'attr': attr,
+                'amount': amount,
+            })
 
     data = json.dumps(olap)
     with open(get_search_requests_report_file_path(), 'wb') as report_file:

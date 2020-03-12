@@ -53,7 +53,14 @@
                     fileName: "elib_users"
                 },
                 dataSource: {
+
                     fields: [
+                        {
+                            caption: "Атрибут",
+                            width: 300,
+                            dataField: "attr",
+                            area: "row"
+                        },
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "year", caption: "Год"},
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "month", caption: "Месяц"},
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "day", caption: "День"},

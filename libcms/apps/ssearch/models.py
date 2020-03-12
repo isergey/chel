@@ -197,6 +197,8 @@ class SearchLog(models.Model):
     date_time = models.DateTimeField(auto_now_add=True, db_index=True)
     params_crc32 = models.IntegerField(db_index=True, verbose_name='CRC32 json-строки параметров запроса', default=0)
 
+    def get_params(self):
+        return json.loads(self.params)
 
 DETAIL_ACTIONS_REFERENCE = {
     'VIEW_DETAIL': {
