@@ -483,7 +483,6 @@ def index(request, catalog='uc'):
 
     attrs, values = extract_request_query_attrs(request)
     kv_dicts = get_pairs(attrs, values)
-    kv_dicts = []
     # for kv_dict in kv_dicts:
     #     if kv_dict.get('attr', '') not in available_attrs:
     #         make_logging = False
@@ -816,8 +815,8 @@ def make_search_breadcumbs(attrs, values):
 
 def get_pairs(attrs, values):
     pairs = []
-    if len(attrs) != len(values):
-        raise ValueError(u'Параметры не соответвуют значениям')
+    # if len(attrs) != len(values):
+    #     raise ValueError(u'Параметры не соответвуют значениям')
 
     for i, attr in enumerate(attrs):
         pairs.append((attr, values[i]))
