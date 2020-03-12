@@ -171,19 +171,21 @@ def generate_popular_records_report(start_date, end_date):
         f461 = rq.get_field('461').get_field('200').get_subfield('a').get_data()
         f463 = rq.get_field('463').get_field('200').get_subfield('a').get_data()
         title = []
-        if f461:
+        if f461 and f463:
+            title.append(f200)
+            title.append(' // ')
             title.append(f461)
             if f463:
-                title.append('//')
+                title.append(' . - ')
                 title.append(f463)
-        elif f463:
-            title.append(f463)
+        elif f461:
+            title.append(f461)
+            title.append(' . - ')
+            title.append(f200)
+        else:
+            title.append(f200)
 
-        if title:
-            title.append('-')
-        title.append(f200)
-
-        return u' '.join(title).strip()
+        return u''.join(title).strip()
 
     for record_id, amount in report.most_common(50):
         record_content = (models.get_records([record_id]) or [None])[0]
