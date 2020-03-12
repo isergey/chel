@@ -25,3 +25,7 @@ def get_users_report_file_path():
 
 def get_material_types_report_file_path():
     return _create_report_file('material_types_report.json')
+
+
+def get_search_requests_report_file_path():
+    return _create_report_file('search_requests_report.json')

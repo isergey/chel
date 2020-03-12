@@ -10,7 +10,7 @@ from junimarc.marc_query import MarcQuery
 from junimarc.old_json_schema import record_from_json
 from . import olap
 from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
-    get_material_types_report_file_path
+    get_material_types_report_file_path, get_search_requests_report_file_path
 from .. import models
 
 
@@ -40,6 +40,14 @@ def users_stat(request):
 
 def material_types_stat(request):
     report_file_path = get_material_types_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
+
+
+def search_requests_stat(request):
+    report_file_path = get_search_requests_report_file_path()
     if os.path.exists(report_file_path):
         with open(report_file_path, 'rb') as report_file:
             return HttpResponse(report_file.read(), content_type='application/json')
@@ -101,6 +109,24 @@ def generate_actions_report():
 
     data = json.dumps(olap._collections_to_users_olap(collections))
     with open(get_users_report_file_path(), 'wb') as report_file:
+        report_file.write(data)
+
+
+def generate_search_requests_report():
+    report = defaultdict(Counter)
+    for search_log in models.SearchLog.objects.all().iterator():
+        str_date_time = search_log.date_time.strftime('%Y%m%d')
+        report[str_date_time] += 1
+
+    olap = []
+    for str_date_time, amount in report.items():
+        olap.append({
+            'date': str_date_time,
+            'amount': amount,
+        })
+
+    data = json.dumps(olap)
+    with open(get_search_requests_report_file_path(), 'wb') as report_file:
         report_file.write(data)
 
 
