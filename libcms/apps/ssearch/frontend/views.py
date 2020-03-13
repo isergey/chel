@@ -490,7 +490,7 @@ def index(request, catalog='uc'):
 
     session_id = _get_session_id(request)
     make_logging = not _is_request_from_detail(request)
-    user = request.user if request.user.is_authenticated else None
+    user = request.user if request.user.is_authenticated() else None
     # make_logging = False
     if make_logging:
         models.log_search_request(
