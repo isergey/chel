@@ -496,7 +496,7 @@ def index(request, catalog='uc'):
         models.log_search_request(
             params=_flat_kv_args(kv_dicts),
             user=user,
-            total=0,
+            total=result.count(),
             in_results=len(kv_dicts) > 1,
             session_id=session_id
         )
