@@ -3,14 +3,15 @@
     {% url 'ssearch:frontend:detail' as DETAIL_URL %}
     <h3>Популрные записи</h3>
     <form method="get">
-        {{ form.as_p }}
+        {{ range_form.as_p }}
+        {{ action_form.as_p }}
         <button>Сформировать</button>
     </form>
     <table border="1">
         <tr>
             <th>Место</th>
             <th>Название</th>
-            <th>Просмотры</th>
+            <th>Количество</th>
         </tr>
         {% for row in report %}
             <tr>

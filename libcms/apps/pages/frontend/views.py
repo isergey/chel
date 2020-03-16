@@ -10,6 +10,7 @@ from ..models import Page, Content, ViewLog
 PAGES = getattr(settings, 'PAGES', {})
 CHECK_SHOW_PERMISSION = PAGES.get('check_show_permission', False)
 
+
 def index(request):
     cur_language = translation.get_language()
     page = get_object_or_404(Page, slug='index', public=True)
@@ -25,7 +26,6 @@ def index(request):
 
 
 def show(request, slug):
-
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug, public=True)
     if CHECK_SHOW_PERMISSION:
@@ -49,11 +49,11 @@ def show(request, slug):
             contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
             cd = {}
             for child in children:
-               cd[child.id] = child
+                cd[child.id] = child
 
             for contend_page in contents:
-               if contend_page.page_id in cd:
-                   cd[contend_page.page_id].content = contend_page
+                if contend_page.page_id in cd:
+                    cd[contend_page.page_id].content = contend_page
 
     neighbors = None
 
@@ -63,11 +63,11 @@ def show(request, slug):
             contents = Content.objects.filter(page__in=neighbors, lang=cur_language[:2])
             nd = {}
             for neighbor in neighbors:
-               nd[neighbor.id] = neighbor
+                nd[neighbor.id] = neighbor
 
             for contend_page in contents:
-               if contend_page.page_id in nd:
-                   nd[contend_page.page_id].content = contend_page
+                if contend_page.page_id in nd:
+                    nd[contend_page.page_id].content = contend_page
 
     user = request.user
     log = ViewLog(page=page)
@@ -76,6 +76,15 @@ def show(request, slug):
     else:
         log.user = user
     log.save()
+
+    if request.is_ajax():
+        return render(request, 'pages/frontend/show_ajax.html', {
+            'page': page,
+            'content': content,
+            'children': children,
+            'neighbors': neighbors,
+        })
+
     return render(request, 'pages/frontend/show.html', {
         'page': page,
         'content': content,

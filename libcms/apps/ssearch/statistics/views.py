@@ -57,16 +57,21 @@ def search_requests_stat(request):
 
 
 def popular_records_stat(request):
-    form = forms.DateRangeForm(request.GET)
+    range_form = forms.DateRangeForm(request.GET)
+    action_form = forms.ActionFrom(request.GET)
     start_date = None
     end_date = None
-    if form.is_valid():
-        start_date = form.cleaned_data.get('start_date')
-        end_date = form.cleaned_data.get('end_date')
-    report = generate_popular_records_report(start_date, end_date)
+    action = None
+    if range_form.is_valid() and action_form.is_valid():
+        start_date = range_form.cleaned_data.get('start_date')
+        end_date = range_form.cleaned_data.get('end_date')
+        action = action_form.cleaned_data['action']
+
+    report = generate_popular_records_report(start_date, end_date, action)
     return render(request, 'ssearch/statistics/popular.html', {
         'report': report,
-        'form': form,
+        'range_form': range_form,
+        'action_form': action_form,
     })
 
 
@@ -149,7 +154,7 @@ def generate_search_requests_report():
         report_file.write(data)
 
 
-def generate_popular_records_report(start_date, end_date):
+def generate_popular_records_report(start_date, end_date, action=models.DETAIL_ACTIONS_REFERENCE['VIEW_DETAIL']['code']):
     report = Counter()
     q = Q()
     # now = datetime.now()
@@ -161,6 +166,9 @@ def generate_popular_records_report(start_date, end_date):
     if end_date:
         # end_date = now.date()
         q &= Q(date_time__lte=_get_end_day_datetime(end_date))
+
+    if action:
+        q &= Q(action=action)
     for detail_log in models.DetailLog.objects.filter(q).iterator():
         report[detail_log.record_id] += 1
 

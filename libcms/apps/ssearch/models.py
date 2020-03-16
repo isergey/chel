@@ -268,10 +268,10 @@ init_detail_actions()
 class DetailLog(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, blank=True)
     record_id = models.CharField(max_length=64, db_index=True)
-    action = models.IntegerField(verbose_name='Действие', default=DETAIL_ACTIONS['VIEW_DETAIL'], db_index=True)
-    session_id = models.CharField(verbose_name='Идентификатор сесии', max_length=64, db_index=True)
+    action = models.IntegerField(verbose_name=u'Действие', default=DETAIL_ACTIONS['VIEW_DETAIL'], db_index=True)
+    session_id = models.CharField(verbose_name=u'Идентификатор сесии', max_length=64, db_index=True)
     attrs = models.TextField(
-        verbose_name='JSON трибуты',
+        verbose_name=u'JSON атрибуты',
         blank=True,
         max_length=10 * 1024
     )

@@ -530,6 +530,7 @@ def _is_request_from_detail(request):
             is_from_detail = True
     return is_from_detail
 
+
 def _add_to_attributes(attributes, title, values):
     if not values:
         return
