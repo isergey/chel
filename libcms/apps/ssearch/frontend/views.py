@@ -222,8 +222,10 @@ class PivotNode(object):
         if url_parts:
             href += u''.join(url_parts)
         item_li.append(
-            u'<a href="%s" class="pivot__title" id="pt_%s">%s</a>' % (href, self.field, self.value)
+            u'<a href="%s" class="pivot__title" data-field="pt_%s">%s</a>' % (href, self.field, self.value)
         )
+        item_li.append(u'<div class="pivot__count pivot__description">Описание</div>')
+        item_li.append(u'<div class="pivot__count"><a href="%s">Поиск по коллекции</a></div>' % (href, ))
         item_li.append(u'<div class="pivot__count">Документы: %s</div>' % (self.count,))
         if self.views is not None:
             item_li.append(u'<div class="pivot__views">Просмотры: %s</div>' % (self.views,))

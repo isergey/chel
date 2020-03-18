@@ -63,3 +63,74 @@
         </div>
     </div>
 </div>
+    <div class="modal micromodal-slide" id="marcModal" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="modal-1-title">
+                        Описание коллекции
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                </header>
+                <div class="modal__content" id="modal-1-content">
+                    <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
+                </div>
+                <footer class="modal__footer">
+                    <button class="btn" data-micromodal-close aria-label="Закрыть модальное окно">Закрыть</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+<script>
+    $(function () {
+        $('.pivot__description').on('click', function () {
+            /*try {
+                MicroModal.show('marcModal');
+            } catch (e) {
+                console.error(e)
+            }*/
+            var parts = [];
+            $(this).parents('.pivot__element').each(function (index, el) {
+                parts.push($(el).children('.pivot__title:first-child').text());
+            });
+            var collectionPages = {
+                'Уральская электронная библиотека': '/ru/pages/ecollection/urelib/',
+                'Уральская электронная библиотека/Периодические издания': '/ru/pages/ecollection/urelib/periodicals/',
+                'Книжные памятники Челябинской области': '/ru/pages/ecollection/kp/',
+                'Книжные памятники Челябинской области/Книжные памятники регионального значения (собрания местной печати)': '/ru/pages/ecollection/kp/knizhnye_pamyatniki_regionalnogo_znacheniya/',
+                'Книжные памятники Челябинской области/Рукописные книги кириллической традиции': '/ru/pages/ecollection/kp/rukopisnye_knigi_kirillicheskoy_tradicii/',
+            };
+
+            var collectionPage = collectionPages[parts.reverse().join('/')];
+            var $modalContent = $('.modal__content');
+            if (collectionPage !== undefined) {
+                $modalContent.html('Загрузка описания...');
+                $.get(collectionPage).done(function (data) {
+                    $modalContent.html(data);
+                    MicroModal.show('marcModal');
+                }).error(function (error) {
+                    if (error.status === 404) {
+                        $modalContent.html('Страница с описанием коллекции не существует');
+                    } else {
+                        $modalContent.html('Ошибка при загрузке описания');
+                    }
+
+                    MicroModal.show('marcModal');
+                    console.error(error, error.stack)
+                });
+            } else {
+                $modalContent.html('Ссылка на описание не найдена');
+                MicroModal.show('marcModal');
+            }
+            return false;
+        });
+
+        $('.pivot__title').on('click', function () {
+            $(this).siblings('ul').toggle();
+            $(this).siblings('span').toggleClass('expanded');
+            return false
+        })
+    });
+
+</script>
+
