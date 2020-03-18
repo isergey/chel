@@ -88,6 +88,11 @@ def generate_incomes_report():
         create_date = rq.get_field('100').get_subfield('a').get_data()[0:8]
         if not create_date:
             continue
+
+        edoc = rq.get_field('856').get_subfield('u').get_data()
+        if not edoc:
+            continue
+
         try:
             create_date = datetime.strptime(create_date.decode('utf-8'), '%Y%m%d').date()
         except Exception as e:
