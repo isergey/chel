@@ -81,11 +81,10 @@ def generate_incomes_report():
     collections = {}
     for i, record_content in enumerate(
             RecordContent.objects.all().iterator()):
-        record_content.unpack_content()
         if i % 10000 == 0:
             print(i)
         # print record_content.unpack_content()
-        record = record_from_json(record_content.unpack_content())
+        record = record_from_json(record_content.content)
         rq = MarcQuery(record)
         create_date = rq.get_field('100').get_subfield('a').get_data()[0:8]
         if not create_date:
@@ -203,7 +202,7 @@ def generate_popular_records_report(start_date, end_date, action=DETAIL_ACTIONS_
             'amount': amount
         }
         if record_content is not None:
-            record = record_from_json(record_content.unpack_content())
+            record = record_from_json(record_content.content)
             rq = MarcQuery(record)
             record_data['title'] = get_title(rq) or record_id
         records.append(record_data)
@@ -330,7 +329,7 @@ def _get_detail_log():
         try:
             record_content = RecordContent.objects.get(
                 record_id=detail_log.record_id)
-            content = record_content.unpack_content()
+            content = record_content.content
             record = record_from_json(content)
             cache[detail_log.record_id] = record
             # print 'set cache'
