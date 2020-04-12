@@ -36,7 +36,6 @@ urlpatterns += i18n_patterns(
     re_path(r'^guestbook/', include(('guestbook.urls', 'guestbook'))),
     re_path(r'^polls/', include(('polls.urls', 'polls'))),
     re_path(r'^cid/', include(('cid.urls', 'cid'))),
-    re_path(r'^dl/', include(('rbooks.urls', 'rbooks'))),
     re_path(r'^ssearch/', include(('ssearch.urls', 'ssearch'))),
     #re_path(r'^search/', include(('search.urls', 'search'))),
     re_path(r'^harvester/', include(('harvester.urls', 'harvester'))),
@@ -46,6 +45,10 @@ urlpatterns += i18n_patterns(
     # url(r'^sauth/', include('social_auth.urls')),
     re_path(r'^captcha/', include('captcha.urls')),
     # url(r'^sql/', include('explorer.urls')),
+)
+
+urlpatterns += (
+    re_path(r'^dl/', include(('rbooks.urls', 'rbooks'))),
 )
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
