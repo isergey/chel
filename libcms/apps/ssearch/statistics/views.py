@@ -87,6 +87,7 @@ def generate_incomes_report():
         record = record_from_json(record_content.content)
         rq = MarcQuery(record)
         create_date = rq.get_field('100').get_subfield('a').get_data()[0:8]
+
         if not create_date:
             continue
 
@@ -95,7 +96,7 @@ def generate_incomes_report():
             continue
 
         try:
-            create_date = datetime.strptime(create_date.decode('utf-8'), '%Y%m%d').date()
+            create_date = datetime.strptime(create_date, '%Y%m%d').date()
         except Exception as e:
             continue
         # print create_date
