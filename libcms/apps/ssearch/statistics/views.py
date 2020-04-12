@@ -203,8 +203,7 @@ def generate_popular_records_report(start_date, end_date, action=DETAIL_ACTIONS_
             'amount': amount
         }
         if record_content is not None:
-            record = record_from_json(record_content.content)
-            rq = MarcQuery(record)
+            rq = MarcQuery(record_content['jrecord'])
             record_data['title'] = get_title(rq) or record_id
         records.append(record_data)
     return records
