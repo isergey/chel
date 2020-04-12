@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-import urllib, urllib2
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
 from lxml import etree
 import lxml.html
 from django.utils.http import urlquote
-import Cookie
+import http.cookies
 
 entry_point = ''
 
 def request(url, data={}, cookies={}):
-    opener = urllib2.build_opener()
+    opener = urllib.request.build_opener()
     cc = []
     for key in  cookies:
         cc.append( '%s=%s' % (key, cookies[key]))
@@ -39,7 +39,7 @@ def request(url, data={}, cookies={}):
         result = opener.open(url)
     cookies1 = []
     if 'Set-Cookie' in result.headers:
-        cookies1 = Cookie.SimpleCookie(result.headers['Set-Cookie'])
+        cookies1 = http.cookies.SimpleCookie(result.headers['Set-Cookie'])
 
     for key in cookies1:
         cookies[key]=cookies1.get(key).value

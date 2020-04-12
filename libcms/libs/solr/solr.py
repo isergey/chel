@@ -180,7 +180,7 @@ class SearchResults(object):
 
         response_dict = simplejson.loads(r.text, encoding='utf-8')
         if 'responseHeader' not in response_dict:
-            raise SolrError(u'Solr request is wrong')
+            raise SolrError('Solr request is wrong')
 
         if 'error' in response_dict:
             raise SolrError(response_dict['error']['msg'])
@@ -210,10 +210,10 @@ class SearchResults(object):
     def get_facets(self):
         facets = {}
         facet_fields = self.response_dict['facet_counts']['facet_fields']
-        for facet_title in facet_fields.keys():
+        for facet_title in list(facet_fields.keys()):
             facet = facet_fields[facet_title]
             facets[facet_title] = []
-            for i in xrange(1,len(facet), 2):
+            for i in range(1,len(facet), 2):
                 facets[facet_title].append((facet[i-1], facet[i]))
         return facets
 
@@ -238,7 +238,7 @@ class Collection(object):
     def delete(self, ids=list()):
         address = self.__solr.get_base_url() + self.__name + '/update/json'
         for id in ids:
-            data = simplejson.dumps({'delete':{'id': unicode(id)}})
+            data = simplejson.dumps({'delete':{'id': str(id)}})
             headers = {'content-type': 'application/json'}
             r = requests.post(address, data=data, headers=headers)
             r.raise_for_status()
@@ -257,13 +257,13 @@ class Collection(object):
         address = self.__solr. get_base_url() + self.__name + '/select/'
         params = {}
         params['q'] = query
-        params['fl'] = u','.join(fields)
+        params['fl'] = ','.join(fields)
         params['wt'] = 'json'
         params['start'] = start
         params['rows'] = rows
 
         if sort:
-            params['sort'] = u','.join(sort)
+            params['sort'] = ','.join(sort)
 
         if faset_params:
             params.update(faset_params.get_dicted_params())
@@ -294,23 +294,23 @@ class Solr(object):
 
 def escape(string):
     special = [
-        u'\\',
-        u'+',
-        u'-',
-        u'&&',
-        u'||',
-        u'!',
-        u'(',
-        u')',
-        u'{',
-        u'}',
-        u'[',
-        u']',
-        u'^',
+        '\\',
+        '+',
+        '-',
+        '&&',
+        '||',
+        '!',
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '^',
         #u'"',
-        u'~',
-        u'?',
-        u':'
+        '~',
+        '?',
+        ':'
     ]
     for s in special:
         string = string.replace(s,'\\'+s)

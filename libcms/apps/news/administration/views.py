@@ -14,7 +14,7 @@ from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.utils.translation import get_language
 from guardian.decorators import permission_required_or_403
 
-from forms import NewsForm, NewsContentForm
+from .forms import NewsForm, NewsContentForm
 from ..models import News, NewsContent
 
 
@@ -27,10 +27,10 @@ def index(request):
 @login_required
 @permission_required_or_403('news.add_news')
 def news_list(request):
-    type = request.GET.get('type', u'public')
-    if type ==  u'prof':
+    type = request.GET.get('type', 'public')
+    if type ==  'prof':
         news_page = get_page(request, News.objects.filter(type=1).order_by('-create_date'))
-    elif type == u'public':
+    elif type == 'public':
         news_page = get_page(request, News.objects.filter(type=0).order_by('-create_date'))
     else:
         news_page = get_page(request, News.objects.filter(type=2).order_by('-create_date'))
@@ -82,7 +82,7 @@ def create_news(request):
                     try:
                         avatar_img_name = handle_uploaded_file(request.FILES['news_form_avatar'])
                     except IOError as e:
-                        return HttpResponse(u'Возникла ошибка при загрузке аватарки:' + e.message)
+                        return HttpResponse('Возникла ошибка при загрузке аватарки:' + e.message)
                     news.avatar_img_name = avatar_img_name
                 news.save()
                 for news_content_form in news_content_forms:
@@ -229,7 +229,7 @@ def handle_uploaded_file(f, old_name=None):
         ]
     for dir in dirs:
         if not os.path.isdir(dir):
-            os.makedirs(dir, 0744)
+            os.makedirs(dir, 0o744)
     size = 147, 110
     if old_name:
         name = old_name

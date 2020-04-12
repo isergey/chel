@@ -52,7 +52,7 @@ def get_source_number(record):
                         if f001:
                             f461_001 = f001[0].get_data()
     except Exception as e:
-        print 'error of extraction 461/1/001'
+        print('error of extraction 461/1/001')
 
     try:
         f463 = record['463']
@@ -65,7 +65,7 @@ def get_source_number(record):
                         if f001:
                             f463_001 = f001[0].get_data()
     except Exception as e:
-        print 'error of extraction 463/1/001'
+        print('error of extraction 463/1/001')
 
     parent = ''
     main = ''
@@ -121,7 +121,7 @@ def get_title(record):
                         middle_title = sf200_a[0].get_data()
         return middle_title
 
-    def select_parent_title(title=u''):
+    def select_parent_title(title=''):
         parent_title = ''
         f461 = record['461']
         if f461:
@@ -137,10 +137,10 @@ def get_title(record):
                         parent_title = sf200_a[0].get_data()
                     sf200_e = f200[0]['e']
                     if sf200_e:
-                        parent_title += u": " + sf200_e[0].get_data()
+                        parent_title += ": " + sf200_e[0].get_data()
                     sf200_v = f200[0]['v']
                     if sf200_v and sf200_v[0].get_data().replace(' ', '') != title.replace(' ', ''):
-                        parent_title += u" — " + sf200_v[0].get_data()
+                        parent_title += " — " + sf200_v[0].get_data()
         return parent_title
 
     title = select_title()
@@ -207,8 +207,8 @@ def beautify(libcard):
 
 def __as_is(title_parts):
     out = {
-        'title': u' // '.join(title_parts),
-        'parts_of': u''
+        'title': ' // '.join(title_parts),
+        'parts_of': ''
     }
     return out
 
@@ -220,7 +220,7 @@ def __title_and_parts(title_parts):
     }
 
     if len(title_parts) > 1:
-        out['parts_of'] = u' — '.join(title_parts[:-1])
+        out['parts_of'] = ' — '.join(title_parts[:-1])
     return out
 
 
@@ -228,8 +228,8 @@ def __fuzzy_title(title_parts):
     min_main_title_length = 10
     max_title_length = 1000
     out = {
-        'title': u'',
-        'parts_of': u''
+        'title': '',
+        'parts_of': ''
     }
 
     if len(title_parts) == 1:
@@ -242,7 +242,7 @@ def __fuzzy_title(title_parts):
         return __title_and_parts(title_parts)
 
     if title_length <= min_main_title_length:
-        out['title'] = u' // '.join(title_parts[:-1]) + u' — ' + title_parts[-1]
+        out['title'] = ' // '.join(title_parts[:-1]) + ' — ' + title_parts[-1]
         out['parts_of'] = title_parts[0]
         return out
 

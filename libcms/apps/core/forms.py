@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.models import Group
 
 class LanguageForm(forms.Form):
-    lang = forms.ChoiceField(choices=settings.LANGUAGES, label=u"language")
+    lang = forms.ChoiceField(choices=settings.LANGUAGES, label="language")
 
 def get_permissions_form(queryset, initial=list()):
     class PermissionsForm(forms.Form):
@@ -21,7 +21,7 @@ def get_permissions_form(queryset, initial=list()):
 def get_groups_form(queryset, initial=list()):
     class GroupsForm(forms.Form):
         groups = forms.ModelMultipleChoiceField(queryset=queryset,
-            label=u'Группы',
+            label='Группы',
             widget=forms.CheckboxSelectMultiple(),
             required=False,
             initial=initial

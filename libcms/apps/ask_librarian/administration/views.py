@@ -11,7 +11,7 @@ from django.utils.translation import get_language
 from common.pagination import get_page
 from django.db.models import Q
 from ..models import Category, CategoryTitle,  Question, QuestionManager, Recomendation
-from forms import CategoryForm, CategoryTitleForm,  AnswerQuestionForm
+from .forms import CategoryForm, CategoryTitleForm,  AnswerQuestionForm
 
 
 
@@ -30,7 +30,7 @@ def index(request):
 def questions_list(request, my=None):
     manager = QuestionManager.get_manager(request.user)
     if not manager and not request.user.is_superuser and not request.user.has_module_perms('ask_librarian'):
-        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+        return HttpResponse('Вы не можете обрабатывать вопросы')
 
     if manager:
         manager.user = request.user
@@ -50,7 +50,7 @@ def questions_list(request, my=None):
             if question.manager_id:
                 md[question.manager_id] = None
 
-        managers = QuestionManager.objects.select_related('user').filter(id__in=md.keys())
+        managers = QuestionManager.objects.select_related('user').filter(id__in=list(md.keys()))
         for manager_item in managers:
             if manager_item.id in md:
                 md[manager_item.id] = manager_item
@@ -70,7 +70,7 @@ def questions_list(request, my=None):
 def questions_to_process(request, id):
     manager = QuestionManager.get_manager(request.user)
     if not manager:
-        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+        return HttpResponse('Вы не можете обрабатывать вопросы')
     try:
         question = Question.objects.select_for_update().get(Q(id=id), ~Q(status=2))
     except Question.DoesNotExist:
@@ -82,7 +82,7 @@ def questions_to_process(request, id):
 def question_detail(request, id):
     manager = QuestionManager.get_manager(request.user)
     if not manager and not request.user.is_superuser:
-        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+        return HttpResponse('Вы не можете обрабатывать вопросы')
 
     question = get_object_or_404(Question, id=id)
     recomendations = Recomendation.objects.filter(id=id)
@@ -95,11 +95,11 @@ def question_detail(request, id):
 def question_answer(request, id):
     manager = QuestionManager.get_manager(request.user)
     if not manager:
-        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+        return HttpResponse('Вы не можете обрабатывать вопросы')
 
     question = get_object_or_404(Question, id=id)
     if question.is_ready():
-        return HttpResponse(u'Ответ на вопрос уже дан.')
+        return HttpResponse('Ответ на вопрос уже дан.')
     if request.method == 'POST':
         form = AnswerQuestionForm(request.POST, instance=question)
         if form.is_valid():
@@ -120,7 +120,7 @@ def question_answer(request, id):
 def question_edit(request, id):
     question = get_object_or_404(Question, id=id)
     if (question.manager and not question.manager.user_id == request.user.id) and not request.user.is_superuser:
-        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+        return HttpResponse('Вы не можете обрабатывать вопросы')
 
 
     if request.method == 'POST':
@@ -143,7 +143,7 @@ def question_edit(request, id):
 def question_delete(request, id):
     manager = QuestionManager.get_manager(request.user)
     if not manager:
-        return HttpResponse(u'Вы не можете обрабатывать вопросы')
+        return HttpResponse('Вы не можете обрабатывать вопросы')
 
     question = get_object_or_404(Question, id=id)
     question.delete()

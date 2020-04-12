@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls import re_path, include
 
-urlpatterns = patterns(
-    '',
+urlpatterns = (
     # (r'^indexer/', include('ssearch.indexer.urls', namespace='indexer')),
-    (r'^', include('ssearch.frontend.urls', namespace='frontend')),
-    (r'^statistics/', include('ssearch.statistics.urls', namespace='statistics')),
+    re_path(r'^', include(('ssearch.frontend.urls', 'frontend'))),
+    re_path(r'^statistics/', include(('ssearch.statistics.urls', 'statistics'))),
 )

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(
-        label=_(u'Password'),
+        label=_('Password'),
         required=False,
         widget=forms.PasswordInput
     )
@@ -32,6 +32,6 @@ class GroupForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GroupForm, self).__init__(*args, **kwargs)
-        self.fields['name'].help_text = u"Может содержать только латинские буквы, цифры и знак подчеркивания"
+        self.fields['name'].help_text = "Может содержать только латинские буквы, цифры и знак подчеркивания"
         self.fields['name'].validators = [validators.validate_slug]
         self.fields.keyOrder = ['name', 'permissions']

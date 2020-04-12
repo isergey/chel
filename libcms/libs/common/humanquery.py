@@ -2,71 +2,71 @@
 import re
 
 operator_title = {
-    'AND': u'И',
-    'NOT': u'И НЕ',
-    'ANDNOT': u'ИЛИ',
+    'AND': 'И',
+    'NOT': 'И НЕ',
+    'ANDNOT': 'ИЛИ',
 }
 
 attr_title = {
     '1':{
-        'name': u'Точка доступа',
-        '4': u'Заглавие',
-        '1003': u'Автор',
-        '21': u'Тематика'
+        'name': 'Точка доступа',
+        '4': 'Заглавие',
+        '1003': 'Автор',
+        '21': 'Тематика'
     },
     '2':{
-        'name': u'Отношение',
-        '1': u'мньше',
-        '2': u'меньше или равно',
-        '3': u'равно',
-        '4': u'больше или равно',
-        '5': u'больше',
-        '6': u'не равно',
-        '100': u'фонетическое совпадение',
-        '101': u'Stem',
-        '102': u'релевантно',
-        '103': u'AlwaysMatches',
+        'name': 'Отношение',
+        '1': 'мньше',
+        '2': 'меньше или равно',
+        '3': 'равно',
+        '4': 'больше или равно',
+        '5': 'больше',
+        '6': 'не равно',
+        '100': 'фонетическое совпадение',
+        '101': 'Stem',
+        '102': 'релевантно',
+        '103': 'AlwaysMatches',
     },
     '3':{
-        'name': u'Позиция',
-        '1': u'првое в поле',
-        '2': u'первое в подполе',
-        '3': u'любая',
+        'name': 'Позиция',
+        '1': 'првое в поле',
+        '2': 'первое в подполе',
+        '3': 'любая',
     },
     '4':{
-        'name': u'Структура',
-        '1': u'фраза',
-        '2': u'слово',
-        '3': u'ключ',
-        '4': u'год',
-        '5': u'дата (нормализованная)',
-        '6': u'список слов',
-        '100': u'Date (un-normalized)',
-        '101': u'Name (normalized)',
-        '102': u'Name (un-normalized)',
-        '103': u'структура',
-        '104': u'Urx',
-        '105': u'текст в свободной форме',
-        '106': u'Document-text',
-        '107': u'Local-number',
-        '108': u'String',
-        '109': u'Numeric string',
+        'name': 'Структура',
+        '1': 'фраза',
+        '2': 'слово',
+        '3': 'ключ',
+        '4': 'год',
+        '5': 'дата (нормализованная)',
+        '6': 'список слов',
+        '100': 'Date (un-normalized)',
+        '101': 'Name (normalized)',
+        '102': 'Name (un-normalized)',
+        '103': 'структура',
+        '104': 'Urx',
+        '105': 'текст в свободной форме',
+        '106': 'Document-text',
+        '107': 'Local-number',
+        '108': 'String',
+        '109': 'Numeric string',
     },
     '5':{
-        'name': u'Усечение',
-        '1': u'справа',
-        '2': u'слева',
-        '3': u'справа и слева',
-        '100': u'не обрезать',
-        '101': u'Process # in search term',
-        '102': u'RegExpr-1',
-        '103': u'RegExpr-2',
+        'name': 'Усечение',
+        '1': 'справа',
+        '2': 'слева',
+        '3': 'справа и слева',
+        '100': 'не обрезать',
+        '101': 'Process # in search term',
+        '102': 'RegExpr-1',
+        '103': 'RegExpr-2',
     },
     '6':{
-        'name': u'Completeness',
-        '1': u'Incomplete subfield',
-        '2': u'Complete subfield',
-        '3': u'Complete field',
+        'name': 'Completeness',
+        '1': 'Incomplete subfield',
+        '2': 'Complete subfield',
+        '3': 'Complete field',
     }
 }
 attr_systems = {
@@ -75,15 +75,15 @@ attr_systems = {
 
 class HumanQuery(object):
     def __init__(self, arm_query):
-        if isinstance(arm_query, unicode) == False:
+        if isinstance(arm_query, str) == False:
             raise TypeError('arm_query must be unicode')
         self.arm_query = arm_query
 
     def convert(self):
-        opps_regx = re.compile(ur"(\w+)\(", re.UNICODE)
+        opps_regx = re.compile(r"(\w+)\(", re.UNICODE)
         aributes_regx = re.compile(r"(\d+),(\d+):([\d.]+)", re.UNICODE)
         #terms_regx = re.compile(ur"[\(,]?([\w\s\[\]s,~!@#$%\^&\*=-_/\\{}`\?]+)(\[[\d,:.]+\])", re.UNICODE)
-        terms_regx = re.compile(ur"[\(,]?([^\[()]+)(\[[\d,:.]+\])", re.UNICODE)
+        terms_regx = re.compile(r"[\(,]?([^\[()]+)(\[[\d,:.]+\])", re.UNICODE)
         operators = re.findall(opps_regx, self.arm_query)
         terms = re.findall(terms_regx, self.arm_query)
         terms_list = [] # список поисковых термов
@@ -114,15 +114,15 @@ class HumanQuery(object):
                 continue
             params = {'main':'', 'additional':''}
             if attribute in attr_title and point in attr_title[attribute]:
-                params['main'] = u"%s: %s " % (attr_title[attribute][point], term)
+                params['main'] = "%s: %s " % (attr_title[attribute][point], term)
             else:
-                params['main'] = u"%s: %s " % (attribute+'='+point, term)
+                params['main'] = "%s: %s " % (attribute+'='+point, term)
             additional = []
             for (attribute, point, system) in terms_aributes[index][1:]:
                 if attribute in attr_title and point in attr_title[attribute]:
-                    additional.append(u"%s — %s" % (attr_title[attribute]['name'], attr_title[attribute][point]))
+                    additional.append("%s — %s" % (attr_title[attribute]['name'], attr_title[attribute][point]))
                 else:
-                    additional.append(u"%s=%s" % ('Unknown atribute '+attribute, point))
+                    additional.append("%s=%s" % ('Unknown atribute '+attribute, point))
             params['additional'] = '; '.join(additional)
             request_map.append(params)
             if op_index > -1:

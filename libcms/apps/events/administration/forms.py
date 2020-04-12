@@ -26,18 +26,18 @@ class EventContentForm(forms.ModelForm):
 
 class EventFilterForm(forms.Form):
     SORT_CHOICES = (
-        (u'start_date', u'дате начала'),
-        (u'end_date', u'дате окончания'),
+        ('start_date', 'дате начала'),
+        ('end_date', 'дате окончания'),
     )
 
     ORDER_CHOICES = (
-        (u'desc', u'обратный'),
-        (u'asc', u'прямой'),
+        ('desc', 'обратный'),
+        ('asc', 'прямой'),
     )
 
-    sort = forms.ChoiceField(label=u'Сортировать по', choices=SORT_CHOICES, required=False)
-    order = forms.ChoiceField(label=u'Порядок', choices=ORDER_CHOICES, required=False)
-    active = forms.BooleanField(label=u'Активные', required=False, initial=True)
-    ended = forms.BooleanField(label=u'Звершенные',  required=False, initial=False)
-    start_date = forms.DateField(label=u'C даты начала (дд.мм.гггг)', required=False)
-    end_date = forms.DateField(label=u'По дате окончания (дд.мм.гггг)', required=False)
+    sort = forms.ChoiceField(label='Сортировать по', choices=SORT_CHOICES, required=False)
+    order = forms.ChoiceField(label='Порядок', choices=ORDER_CHOICES, required=False)
+    active = forms.BooleanField(label='Активные', required=False, initial=True)
+    ended = forms.BooleanField(label='Звершенные',  required=False, initial=False)
+    start_date = forms.DateField(label='C даты начала (дд.мм.гггг)', required=False)
+    end_date = forms.DateField(label='По дате окончания (дд.мм.гггг)', required=False)

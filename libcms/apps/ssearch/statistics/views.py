@@ -7,11 +7,13 @@ from django.db.models import Q
 from django.shortcuts import HttpResponse, render
 
 from junimarc.marc_query import MarcQuery
-from junimarc.old_json_schema import record_from_json
+# from junimarc.old_json_schema import record_from_json
+from junimarc.json.junimarc import record_from_json
 from . import olap
 from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
     get_material_types_report_file_path, get_search_requests_report_file_path
-from .. import models
+from harvester.models import RecordContent
+from ..models import SearchLog, DetailLog, DETAIL_ACTIONS_REFERENCE, get_records
 from ..frontend.titles import get_attr_title
 from . import forms
 
@@ -78,10 +80,10 @@ def popular_records_stat(request):
 def generate_incomes_report():
     collections = {}
     for i, record_content in enumerate(
-            models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).all().iterator()):
+            RecordContent.objects.all().iterator()):
         record_content.unpack_content()
         if i % 10000 == 0:
-            print i
+            print(i)
         # print record_content.unpack_content()
         record = record_from_json(record_content.unpack_content())
         rq = MarcQuery(record)
@@ -104,11 +106,11 @@ def generate_incomes_report():
 
     data = json.dumps(olap._collections_to_olap(collections))
     with open(get_income_report_file_path(), 'wb') as report_file:
-        report_file.write(data)
+        report_file.write(data.encode('utf-8'))
 
     data = json.dumps(olap._collections_to_material_types_olap(collections))
     with open(get_material_types_report_file_path(), 'wb') as report_file:
-        report_file.write(data)
+        report_file.write(data.encode('utf-8'))
 
 
 def generate_actions_report():
@@ -116,7 +118,7 @@ def generate_actions_report():
 
     for i, (detail_log, record) in enumerate(_get_detail_log()):
         if i % 10000 == 0:
-            print i
+            print(i)
 
         if not record:
             continue
@@ -131,23 +133,23 @@ def generate_actions_report():
         )
     data = json.dumps(olap._collections_to_actions_olap(collections))
     with open(get_actions_report_file_path(), 'wb') as report_file:
-        report_file.write(data)
+        report_file.write(data.encode('utf-8'))
 
     data = json.dumps(olap._collections_to_users_olap(collections))
     with open(get_users_report_file_path(), 'wb') as report_file:
-        report_file.write(data)
+        report_file.write(data.encode('utf-8'))
 
 
 def generate_search_requests_report():
     report = defaultdict(Counter)
-    for search_log in models.SearchLog.objects.all().iterator():
+    for search_log in SearchLog.objects.all().iterator():
         str_date_time = search_log.date_time.strftime('%Y%m%d')
-        for param in search_log.get_params().keys():
+        for param in list(search_log.get_params().keys()):
             report[str_date_time][param] += 1
 
     olap = []
-    for str_date_time, date_data in report.items():
-        for attr, amount in date_data.items():
+    for str_date_time, date_data in list(report.items()):
+        for attr, amount in list(date_data.items()):
             olap.append({
                 'date': str_date_time,
                 'attr': get_attr_title(attr),
@@ -156,10 +158,10 @@ def generate_search_requests_report():
 
     data = json.dumps(olap)
     with open(get_search_requests_report_file_path(), 'wb') as report_file:
-        report_file.write(data)
+        report_file.write(data.encode('utf-8'))
 
 
-def generate_popular_records_report(start_date, end_date, action=models.DETAIL_ACTIONS_REFERENCE['VIEW_DETAIL']['code']):
+def generate_popular_records_report(start_date, end_date, action=DETAIL_ACTIONS_REFERENCE['VIEW_DETAIL']['code']):
     report = Counter()
     q = Q()
     # now = datetime.now()
@@ -174,7 +176,7 @@ def generate_popular_records_report(start_date, end_date, action=models.DETAIL_A
 
     if action:
         q &= Q(action=action)
-    for detail_log in models.DetailLog.objects.filter(q).iterator():
+    for detail_log in DetailLog.objects.filter(q).iterator():
         report[detail_log.record_id] += 1
 
     records = []
@@ -191,10 +193,10 @@ def generate_popular_records_report(start_date, end_date, action=models.DETAIL_A
         else:
             title.append(f200)
 
-        return u''.join(title).strip()
+        return ''.join(title).strip()
 
     for record_id, amount in report.most_common(50):
-        record_content = (models.get_records([record_id]) or [None])[0]
+        record_content = (get_records([record_id]) or [None])[0]
         record_data = {
             'id': record_id,
             'title': record_id,
@@ -242,10 +244,10 @@ def _get_or_create_data(dict, key, default=None):
 def _generate_date_range(start_date, end_date):
     date_format = '%Y%m'
     dates = OrderedDict()
-    date_list = [end_date - timedelta(days=x) for x in xrange((end_date - start_date).days)]
+    date_list = [end_date - timedelta(days=x) for x in range((end_date - start_date).days)]
     for date in date_list:
         dates[date.strftime(date_format)] = None
-    return dates.keys()
+    return list(dates.keys())
 
 
 def _calculate_collection(collections, collection_name, create_date, material_type='', action=None, session_id=''):
@@ -315,8 +317,8 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
 def _get_detail_log():
     record_ids = []
     cache = {}
-    print 'start _get_detail_log'
-    for i, detail_log in enumerate(models.DetailLog.objects.all().iterator()):
+    print('start _get_detail_log')
+    for i, detail_log in enumerate(DetailLog.objects.all().iterator()):
         if detail_log.record_id in cache:
             record = cache.get(detail_log.record_id)
             if record is None:
@@ -326,14 +328,14 @@ def _get_detail_log():
             continue
 
         try:
-            record_content = models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).get(
+            record_content = RecordContent.objects.get(
                 record_id=detail_log.record_id)
             content = record_content.unpack_content()
             record = record_from_json(content)
             cache[detail_log.record_id] = record
             # print 'set cache'
             yield detail_log, record
-        except models.RecordContent.DoesNotExist:
+        except RecordContent.DoesNotExist:
             # print 'not found'
             cache[detail_log.record_id] = None
     #     record_ids.append(dict(detail_log=detail_log, record_content=None))
@@ -372,27 +374,27 @@ def _get_end_day_datetime(date):
 
 
 MATERIAL_TITLES = {
-    'monography': u'монографии',
-    'journal_paper': u'статья',
-    'issues': u'выпуск',
-    'articles_reports': u'статьи отчеты',
-    'collections': u'коллекции',
-    'integrity': u'интегрируемый ресурс',
-    'musical_scores': u'музыкальные партитуры',
-    'maps': u'карты',
-    'video': u'видео',
-    'sound_records': u'звукозапись',
-    'graphics': u'графика',
-    'e_resources': u'электронный ресурс',
-    'dissertation_abstracts': u'диссертация',
-    'referats': u'реферат',
-    'textbook': u'учебное издание',
-    'patents': u'патент',
-    'standarts': u'стандарт',
-    'legislative_acts': u'законодательные акты',
-    'references': u'справочник',
-    'dictionaries': u'словарь',
-    'encyclopedias': u'энциклопедиа',
+    'monography': 'монографии',
+    'journal_paper': 'статья',
+    'issues': 'выпуск',
+    'articles_reports': 'статьи отчеты',
+    'collections': 'коллекции',
+    'integrity': 'интегрируемый ресурс',
+    'musical_scores': 'музыкальные партитуры',
+    'maps': 'карты',
+    'video': 'видео',
+    'sound_records': 'звукозапись',
+    'graphics': 'графика',
+    'e_resources': 'электронный ресурс',
+    'dissertation_abstracts': 'диссертация',
+    'referats': 'реферат',
+    'textbook': 'учебное издание',
+    'patents': 'патент',
+    'standarts': 'стандарт',
+    'legislative_acts': 'законодательные акты',
+    'references': 'справочник',
+    'dictionaries': 'словарь',
+    'encyclopedias': 'энциклопедиа',
 }
 
 

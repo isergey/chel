@@ -6,19 +6,19 @@ from lxml import etree
 import requests
 import json
 import datetime
-import junimarc
+from junimarc.marc_query import MarcQuery
+
 from collections import defaultdict
-from urlparse import urlparse
+from urllib.parse import urlparse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 from django.conf import settings
-from django.shortcuts import render, HttpResponse, Http404, urlresolvers, resolve_url
+from django.shortcuts import render, HttpResponse, Http404, resolve_url, reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..ppin_client.solr import SearchCriteria
 from ..solr.solr import Solr, FacetParams, escape
-from titles import get_attr_value_title, get_attr_title
+from .titles import get_attr_value_title, get_attr_title
 from . import record_templates
 from .. import models
 from rbooks.models import ViewLog
@@ -31,43 +31,43 @@ SEARCH_SESSION_AGE = 3600 * 24 * 365
 SEARCH_SESSION_KEY = '_sc'
 
 search_attrs = [
-    (u'all_t', u'all_t'),
-    (u'author_t', u'author_t'),
-    (u'author_name_corporate_t', u'author_name_corporate_t'),
-    (u'title_tru', u'title_tru'),
-    (u'title_series_tru', u'title_series_tru'),
-    (u'literary_incipit_t', u'literary_incipit_t'),
-    (u'host_item_t', u'host_item_t'),
-    (u'subject_name_personal_t', u'subject_name_personal_t'),
-    (u'subject_heading_t', u'subject_heading_tru'),
-    (u'subject_name_geographical_t', u'subject_name_geographical_t'),
+    ('all_t', 'all_t'),
+    ('author_t', 'author_t'),
+    ('author_name_corporate_t', 'author_name_corporate_t'),
+    ('title_tru', 'title_tru'),
+    ('title_series_tru', 'title_series_tru'),
+    ('literary_incipit_t', 'literary_incipit_t'),
+    ('host_item_t', 'host_item_t'),
+    ('subject_name_personal_t', 'subject_name_personal_t'),
+    ('subject_heading_t', 'subject_heading_tru'),
+    ('subject_name_geographical_t', 'subject_name_geographical_t'),
     # (u'subject_subheading_t', u'subject_subheading_tru'),
-    (u'subject_keywords_t', u'subject_keywords_tru'),
-    (u'place_publication_t', u'place_publication_t'),
-    (u'publisher_t', u'publisher_t'),
-    (u'date_of_publication_s', u'date_of_publication_s'),
-    (u'autograph_t', u'autograph_t'),
-    (u'issn_s', u'issn_s'),
-    (u'isbn_s', u'isbn_s'),
-    (u'date_time_added_to_db_s', u'date_time_added_to_db_s'),
-    (u'full_text_tru', u'full_text_tru'),
+    ('subject_keywords_t', 'subject_keywords_tru'),
+    ('place_publication_t', 'place_publication_t'),
+    ('publisher_t', 'publisher_t'),
+    ('date_of_publication_s', 'date_of_publication_s'),
+    ('autograph_t', 'autograph_t'),
+    ('issn_s', 'issn_s'),
+    ('isbn_s', 'isbn_s'),
+    ('date_time_added_to_db_s', 'date_time_added_to_db_s'),
+    ('full_text_tru', 'full_text_tru'),
     # (u'catalog_s', u'catalog_s'),
     #    (u'authority_number', u'linked_authority_number_s'),
     #    (u'$3', u'linked_record-number_s'),
 ]
 
 facet_attrs = [
-    (u'collection_s', u'collection_s'),
-    (u'has_e_version_b', u'has_e_version_b'),
-    (u'subject_heading_s', u'subject_heading_s'),
-    (u'subject_keywords_s', u'subject_keywords_s'),
-    (u'subject_name_personal_s', u'subject_name_personal_s'),
-    (u'subject_name_geographical_s', u'subject_name_geographical_s'),
-    (u'author_s', u'author_s'),
-    (u'date_of_publication_s', u'date_of_publication_s'),
-    (u'date_of_publication_of_original_s', u'date_of_publication_of_original_s'),
-    (u'code_language_s', u'code_language_s'),
-    (u'content_type_s', u'content_type_s'),
+    ('collection_s', 'collection_s'),
+    ('has_e_version_b', 'has_e_version_b'),
+    ('subject_heading_s', 'subject_heading_s'),
+    ('subject_keywords_s', 'subject_keywords_s'),
+    ('subject_name_personal_s', 'subject_name_personal_s'),
+    ('subject_name_geographical_s', 'subject_name_geographical_s'),
+    ('author_s', 'author_s'),
+    ('date_of_publication_s', 'date_of_publication_s'),
+    ('date_of_publication_of_original_s', 'date_of_publication_of_original_s'),
+    ('code_language_s', 'code_language_s'),
+    ('content_type_s', 'content_type_s'),
     # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 
@@ -92,15 +92,15 @@ FACET_SORT = [
 sort_attrs = [
     {
         'attr': 'author_ss',
-        'title': u'по автору'
+        'title': 'по автору'
     },
     {
         'attr': 'title_ss',
-        'title': u'По заглавию'
+        'title': 'По заглавию'
     },
     {
         'attr': 'score',
-        'title': u'по релевантности'
+        'title': 'по релевантности'
     },
 ]
 
@@ -163,7 +163,7 @@ sort_attrs = [
 
 def transformers_init():
     xsl_transformers = settings.SSEARCH['transformers']
-    for key in xsl_transformers.keys():
+    for key in list(xsl_transformers.keys()):
         xsl_transformer = xsl_transformers[key]
         transformers[key] = etree.XSLT(etree.parse(xsl_transformer))
 
@@ -174,7 +174,7 @@ transformers_init()
 def init_solr_collection(catalog):
     catalog_settings = settings.SSEARCH['catalogs'].get(catalog, None)
     if not catalog_settings:
-        raise Http404(u'Каталог не существует')
+        raise Http404('Каталог не существует')
 
     collection_name = catalog_settings['solr_server']['collection']
     solr = Solr(catalog_settings['solr_server']['url'])
@@ -211,47 +211,47 @@ class PivotNode(object):
         url_parts = []
 
         if parents:
-            url_parts.append(u'&in=on')
+            url_parts.append('&in=on')
 
         for parent in parents:
-            url_parts += u''.join([u'&pattr=', urlquote(parent.field), u'&pq=', urlquote(parent.value)])
+            url_parts += ''.join(['&pattr=', urlquote(parent.field), '&pq=', urlquote(parent.value)])
 
-        item_li = [u'<li class="pivot__element">']
-        href += u''.join([u'?attr=', urlquote(self.field), u'&q=', urlquote(self.value)])
+        item_li = ['<li class="pivot__element">']
+        href += ''.join(['?attr=', urlquote(self.field), '&q=', urlquote(self.value)])
 
         if url_parts:
-            href += u''.join(url_parts)
+            href += ''.join(url_parts)
         item_li.append(
-            u'<a href="%s" class="pivot__title" data-field="pt_%s">%s</a>' % (href, self.field, self.value)
+            '<a href="%s" class="pivot__title" data-field="pt_%s">%s</a>' % (href, self.field, self.value)
         )
-        item_li.append(u'<div class="pivot__count pivot__description">Описание</div>')
-        item_li.append(u'<div class="pivot__count"><a href="%s">Поиск по коллекции</a></div>' % (href, ))
-        item_li.append(u'<div class="pivot__count">Документы: %s</div>' % (self.count,))
+        item_li.append('<div class="pivot__count pivot__description">Описание</div>')
+        item_li.append('<div class="pivot__count"><a href="%s">Поиск по коллекции</a></div>' % (href, ))
+        item_li.append('<div class="pivot__count">Документы: %s</div>' % (self.count,))
         if self.views is not None:
-            item_li.append(u'<div class="pivot__views">Просмотры: %s</div>' % (self.views,))
+            item_li.append('<div class="pivot__views">Просмотры: %s</div>' % (self.views,))
 
         if self.pivot:
             item_li.append(self.children_to_html())
-        item_li.append(u'</li>')
+        item_li.append('</li>')
 
-        return u''.join(item_li)
+        return ''.join(item_li)
 
     def children_to_html(self, is_root=False):
-        className = u"pivot"
-        idName = u''
-        styleList = u''
+        className = "pivot"
+        idName = ''
+        styleList = ''
         if is_root:
-            className += u" pivot_root"
-            idName = u'id="list"'
-            styleList = u'style="display: block"'
+            className += " pivot_root"
+            idName = 'id="list"'
+            styleList = 'style="display: block"'
 
-        ul = [u'<ul ', idName, u' class="', className, u'" ', styleList, u'>']
+        ul = ['<ul ', idName, ' class="', className, '" ', styleList, '>']
 
-        for child in sorted(self.pivot, key=PivotNode.cmp):
+        for child in self.pivot: #sorted(self.pivot, key=PivotNode.cmp):
             ul.append(child.to_li())
 
-        ul.append(u'</ul>')
-        return u''.join(ul)
+        ul.append('</ul>')
+        return ''.join(ul)
 
     def to_html(self):
         return self.children_to_html(True)
@@ -274,7 +274,7 @@ class PivotNode(object):
 
     @staticmethod
     def clean_value(value):
-        return value.lower().strip().replace(u'"', u'').replace(u'.', u'').replace(u'«', u'').replace(u'»', u'')
+        return value.lower().strip().replace('"', '').replace('.', '').replace('«', '').replace('»', '')
 
     @staticmethod
     def cmp(x):
@@ -283,18 +283,18 @@ class PivotNode(object):
         """
         value = PivotNode.clean_value(x.value)
         t = {
-            u'январь': 'a',
-            u'февраль': 'b',
-            u'март': 'c',
-            u'апрель': 'd',
-            u'май': 'e',
-            u'июнь': 'f',
-            u'июль': 'g',
-            u'август': 'h',
-            u'сентябрь': 'i',
-            u'октябрь': 'j',
-            u'ноябрь': 'k',
-            u'декабрь': 'l',
+            'январь': 'a',
+            'февраль': 'b',
+            'март': 'c',
+            'апрель': 'd',
+            'май': 'e',
+            'июнь': 'f',
+            'июль': 'g',
+            'август': 'h',
+            'сентябрь': 'i',
+            'октябрь': 'j',
+            'ноябрь': 'k',
+            'декабрь': 'l',
 
         }
         res = t.get(value, value)
@@ -377,11 +377,11 @@ def index(request, catalog='uc'):
     attrs, values = extract_request_query_attrs(request)
     search_breadcumbs = make_search_breadcumbs(attrs, values)
     attrs = reverse_search_attrs(attrs)
-    sort = request.GET.get('sort', u'relevance')
-    order = request.GET.get('order', u'asc')
+    sort = request.GET.get('sort', 'relevance')
+    order = request.GET.get('order', 'asc')
     solr_sort = []
 
-    if sort != u'relevance':
+    if sort != 'relevance':
         solr_sort.append("%s %s" % (sort, order))
 
     if not values or not attrs:
@@ -414,7 +414,7 @@ def index(request, catalog='uc'):
 
     query = construct_query(attrs=attrs, values=values)
     hl = []
-    if request.GET.get('attr', u'') == 'full_text_tru':
+    if request.GET.get('attr', '') == 'full_text_tru':
         hl.append('full_text_tru')
     result = uc.search(query=query, fields=['id'], faset_params=faset_params, hl=hl, sort=solr_sort)
 
@@ -434,16 +434,16 @@ def index(request, catalog='uc'):
     for doc in docs:
         record_ids.append(doc['id'])
 
-    view = request.GET.get('view', u'table')
+    view = request.GET.get('view', 'table')
     highlighting = result.get_highlighting()
 
-    records = get_records(record_ids)
+    records = models.get_records(record_ids)
     for record in records:
-        record_obj = junimarc.chel_json_schema.record_from_json(record['dict'])
-        marc_query = junimarc.marc_query.MarcQuery(record_obj)
+        record_obj = record['jrecord']
+        marc_query = MarcQuery(record_obj)
         ft_links = record_templates.get_full_text_links(marc_query)
 
-        record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
+        record_template = record_templates.RusmarcTemplate(marc_query)
         record['tpl'] = record_template
         record['extended'] = {
             'subject_heading': subject_render(record['dict'])
@@ -492,7 +492,7 @@ def index(request, catalog='uc'):
 
     session_id = _get_session_id(request)
     make_logging = not _is_request_from_detail(request)
-    user = request.user if request.user.is_authenticated() else None
+    user = request.user if request.user.is_authenticated else None
     # make_logging = False
     if make_logging:
         models.log_search_request(
@@ -548,25 +548,25 @@ def detail(request):
     local_number = request.GET.get('ln', None)
 
     if local_number:
-        result = uc.search('local_number_s:"%s"' % local_number.replace(u'\\', u'\\\\'), fields=['id'])
+        result = uc.search('local_number_s:"%s"' % local_number.replace('\\', '\\\\'), fields=['id'])
         for doc in result.get_docs():
             if doc.get('id'):
                 record_id = doc.get('id')
 
     view = request.GET.get('view', '')
     if not record_id:
-        raise Http404(u'Запись не найдена')
+        raise Http404('Запись не найдена')
 
-    records = get_records([record_id])
+    records = models.get_records([record_id])
     if not records:
-        raise Http404(u'Запись не найдена')
+        raise Http404('Запись не найдена')
 
     record = records[0]
-    record_obj = junimarc.chel_json_schema.record_from_json(record['dict'])
-    marc_query = junimarc.marc_query.MarcQuery(record_obj)
+    record_obj = record['jrecord']
+    marc_query = MarcQuery(record_obj)
     ft_links = record_templates.get_full_text_links(marc_query)
 
-    record_template = record_templates.RusmarcTemplate(record.get('dict', {}))
+    record_template = record_templates.RusmarcTemplate(marc_query)
     record['tpl'] = record_template
     record['extended'] = {
         'subject_heading': subject_render(record['dict'])
@@ -579,7 +579,7 @@ def detail(request):
     record['marc_dump'] = get_marc_dump(content_tree)
 
     user = 0
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         user = request.user.id
 
     # view_count = ViewDocLog.objects.filter(record_id=record_id).count()
@@ -595,37 +595,37 @@ def detail(request):
     linked_records_ids = []
     local_numbers = record['dict'].get('local_number', [])
     if local_numbers:
-        result = uc.search('linked_record_number_s:"%s"' % local_numbers[0].replace(u'\\', u'\\\\'), fields=['id'])
+        result = uc.search('linked_record_number_s:"%s"' % local_numbers[0].replace('\\', '\\\\'), fields=['id'])
         linked_records_ids = []
         for doc in result.get_docs():
             linked_records_ids.append(doc['id'])
         if linked_records_ids:
-            lrecords = get_records(linked_records_ids)
+            lrecords = models.get_records(linked_records_ids)
             for lrecord in lrecords:
                 content_tree = record['tree']
                 lrecord['dict'] = get_content_dict(content_tree)
                 linked_records.append(lrecord)
 
     attributes = []
-    _add_to_attributes(attributes, u'Источник', record_template.get_source())
-    _add_to_attributes(attributes, u'См. так же', record_template.at_same_storage())
-    _add_to_attributes(attributes, u'См. так же', record_template.at_another_storage())
-    _add_to_attributes(attributes, u'Перевод', record_template.translate_link())
-    _add_to_attributes(attributes, u'Оригинал перевода', record_template.translate_original_link())
-    _add_to_attributes(attributes, u'Копия оригинала', record_template.copy_original())
-    _add_to_attributes(attributes, u'Репродуцировано в', record_template.reproduction())
-    _add_to_attributes(attributes, u'Предмет', record_template.subject_heading())
-    _add_to_attributes(attributes, u'Ключевые слова', record_template.subject_keywords())
-    _add_to_attributes(attributes, u'Год публикации', record['dict'].get('date_of_publication_of_original', []))
-    _add_to_attributes(attributes, u'Год издания оригинала', record['dict'].get('date_of_publication_of_original', []))
-    _add_to_attributes(attributes, u'Издатель', record['dict'].get('publisher', []))
-    _add_to_attributes(attributes, u'Коллекция', record['dict'].get('catalog', []))
-    _add_to_attributes(attributes, u'Держатели', record['dict'].get('holders', []))
+    _add_to_attributes(attributes, 'Источник', record_template.get_source())
+    _add_to_attributes(attributes, 'См. так же', record_template.at_same_storage())
+    _add_to_attributes(attributes, 'См. так же', record_template.at_another_storage())
+    _add_to_attributes(attributes, 'Перевод', record_template.translate_link())
+    _add_to_attributes(attributes, 'Оригинал перевода', record_template.translate_original_link())
+    _add_to_attributes(attributes, 'Копия оригинала', record_template.copy_original())
+    _add_to_attributes(attributes, 'Репродуцировано в', record_template.reproduction())
+    _add_to_attributes(attributes, 'Предмет', record_template.subject_heading())
+    _add_to_attributes(attributes, 'Ключевые слова', record_template.subject_keywords())
+    _add_to_attributes(attributes, 'Год публикации', record['dict'].get('date_of_publication_of_original', []))
+    _add_to_attributes(attributes, 'Год издания оригинала', record['dict'].get('date_of_publication_of_original', []))
+    _add_to_attributes(attributes, 'Издатель', record['dict'].get('publisher', []))
+    _add_to_attributes(attributes, 'Коллекция', record['dict'].get('catalog', []))
+    _add_to_attributes(attributes, 'Держатели', record['dict'].get('holders', []))
 
     # session_id = _get_session_id(request)
 
     user = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         user = request.user
 
     # models.log_detail(
@@ -661,7 +661,7 @@ def log(request):
     action = request.POST.get('action', None)
 
     user = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         user = request.user
 
     models.log_detail(
@@ -752,14 +752,14 @@ def get_orderd_facets(facets):
 
 
 def construct_query(attrs, values, optimize=True):
-    sc = SearchCriteria(u"AND")
+    sc = SearchCriteria("AND")
 
     for i, attr in enumerate(attrs):
         value = values[i].strip()
         if not value:
             continue
 
-        if value != u'*':
+        if value != '*':
             value = escape(value)
         if attr == 'full_text_tru' and value == '*':
             sc.add_attr(attr, '\*')
@@ -769,27 +769,27 @@ def construct_query(attrs, values, optimize=True):
                     value = '"%s"' % value
                 sc.add_attr(attr, value)
             else:
-                term_relation_attr = u' AND '
+                term_relation_attr = ' AND '
                 terms = value.split()
                 filetered_terms = []
                 for term in terms:
                     if term not in (
-                            [u'бы', u'ли', u'что' u'за', u'a', u'на', u'в', u'до', u'из' u'к' u'о' u'об' u'от', u'по',
-                             u'при', u'про', u'с', u'у']):
+                            ['бы', 'ли', 'что' 'за', 'a', 'на', 'в', 'до', 'из' 'к' 'о' 'об' 'от', 'по',
+                             'при', 'про', 'с', 'у']):
                         filetered_terms.append(term)
 
                 relation_value = term_relation_attr.join(terms)
-                relation_value = u'(%s)' % term_relation_attr.join(terms)
-                all_sc = SearchCriteria(u"OR")
-                all_sc.add_attr(u'author_t', '%s^96' % relation_value)
-                all_sc.add_attr(u'title_t', '%s^64' % relation_value)
-                all_sc.add_attr(u'title_tru', '%s^30' % relation_value)
-                all_sc.add_attr(u'subject_heading_tru', '%s^8' % relation_value)
-                all_sc.add_attr(u'subject_subheading_tru', '%s^5' % relation_value)
-                all_sc.add_attr(u'date_of_publication_s', '%s^5' % relation_value)
-                all_sc.add_attr(u'subject_name_geographical_t', '%s^5' % relation_value)
-                all_sc.add_attr(u'subject_name_personal_t', '%s^5' % relation_value)
-                all_sc.add_attr(u'all_tru', '%s^2' % relation_value)
+                relation_value = '(%s)' % term_relation_attr.join(terms)
+                all_sc = SearchCriteria("OR")
+                all_sc.add_attr('author_t', '%s^96' % relation_value)
+                all_sc.add_attr('title_t', '%s^64' % relation_value)
+                all_sc.add_attr('title_tru', '%s^30' % relation_value)
+                all_sc.add_attr('subject_heading_tru', '%s^8' % relation_value)
+                all_sc.add_attr('subject_subheading_tru', '%s^5' % relation_value)
+                all_sc.add_attr('date_of_publication_s', '%s^5' % relation_value)
+                all_sc.add_attr('subject_name_geographical_t', '%s^5' % relation_value)
+                all_sc.add_attr('subject_name_personal_t', '%s^5' % relation_value)
+                all_sc.add_attr('all_tru', '%s^2' % relation_value)
                 sc.add_search_criteria(all_sc)
 
     if not sc.query:
@@ -801,20 +801,20 @@ def make_search_breadcumbs(attrs, values):
     attrs_values = get_pairs(attrs, values)
 
     search_breadcumbs = []
-    search_url = urlresolvers.reverse('ssearch:frontend:index')
+    search_url = reverse('ssearch:frontend:index')
 
     attrs_prepare = []
     values_prepare = []
 
     for attr, value in attrs_values:
-        attr_url_part = u'attr=' + attr
-        value_url_part = u'q=' + urlquote(value)
+        attr_url_part = 'attr=' + attr
+        value_url_part = 'q=' + urlquote(value)
 
         search_breadcumbs.append({
             'attr': attr,
             'title': get_attr_title(attr),
-            'href': search_url + u'?' + u'&'.join(attrs_prepare) + u'&' + attr_url_part + u'&' + u'&'.join(
-                values_prepare) + u'&' + value_url_part,
+            'href': search_url + '?' + '&'.join(attrs_prepare) + '&' + attr_url_part + '&' + '&'.join(
+                values_prepare) + '&' + value_url_part,
             'value': get_attr_value_title(attr, value)
         })
 
@@ -827,7 +827,7 @@ def make_search_breadcumbs(attrs, values):
 def get_pairs(attrs, values):
     pairs = []
     if len(attrs) != len(values):
-        raise ValueError(u'Параметры не соответвуют значениям')
+        raise ValueError('Параметры не соответвуют значениям')
 
     for i, attr in enumerate(attrs):
         pairs.append((attr, values[i]))
@@ -835,9 +835,9 @@ def get_pairs(attrs, values):
 
 
 def get_attr_type(attr):
-    parts = attr.split(u'_')
+    parts = attr.split('_')
     if len(parts) < 2:
-        raise ValueError(u'Неправильный атрибут: ' + attr)
+        raise ValueError('Неправильный атрибут: ' + attr)
     return parts[-1]
 
 
@@ -847,13 +847,13 @@ def terms_as_phrase(text_value):
     :param text_value: строка содержащая поисковые термы
     :return:
     """
-    return u'"%s"' % escape(text_value).strip()
+    return '"%s"' % escape(text_value).strip()
 
 
-group_spaces = re.compile(ur'\s+')
+group_spaces = re.compile(r'\s+')
 
 
-def terms_as_group(text_value, operator=u'OR'):
+def terms_as_group(text_value, operator='OR'):
     """
     Возвращает поисковое выражение в виде строки, где термы объеденены логическим операторм
     :param text_value: строка поисковых термов
@@ -862,37 +862,13 @@ def terms_as_group(text_value, operator=u'OR'):
     """
     gs = group_spaces
     # группировка пробельных символов в 1 пробел и резка по проблеам
-    terms = re.sub(gs, ur' ', text_value.strip()).split(u" ")
+    terms = re.sub(gs, r' ', text_value.strip()).split(" ")
 
-    for i in xrange(len(terms)):
+    for i in range(len(terms)):
         terms[i] = escape(terms[i]).strip()
-    return u'(%s)' % ((u' ' + operator + u' ').join(terms))
+    return '(%s)' % ((' ' + operator + ' ').join(terms))
 
 
-def get_records(record_ids):
-    """
-    :param record_ids: record_id идентификаторы записей
-    :return: списко записей
-    """
-    records_objects = list(models.RecordContent.objects.using(models.RECORDS_DB_CONNECTION).filter(record_id__in=record_ids))
-    records = []
-    for record in records_objects:
-        rdict = json.loads(record.unpack_content())
-        records.append({
-            'id': record.record_id,
-            'dict': rdict,
-            'tree': record_to_ruslan_xml(rdict)
-        })
-        # record.tree = record_to_ruslan_xml(json.loads(record.content))
-    records_dict = {}
-    for record in records:
-        records_dict[record['id']] = record
-    nrecords = []
-    for record_id in record_ids:
-        record = records_dict.get(record_id, None)
-        if record:
-            nrecords.append(record)
-    return nrecords
 
 
 def get_library_card(content_tree):
@@ -953,7 +929,7 @@ def more_facet(request, catalog='uc'):
     facet = request.GET.get('facet', None)
 
     if not facet:
-        return HttpResponse(u'Facet field not exist', status='400')
+        return HttpResponse('Facet field not exist', status='400')
 
     uc = init_solr_collection(catalog)
     faset_params = FacetParams()
@@ -970,7 +946,7 @@ def more_facet(request, catalog='uc'):
     attrs = reverse_search_attrs(attrs)
 
     if not values or not attrs:
-        return HttpResponse(u'Wrong query params', status='400')
+        return HttpResponse('Wrong query params', status='400')
 
     query = construct_query(attrs=attrs, values=values)
     result = uc.search(query, faset_params=faset_params)
@@ -986,7 +962,7 @@ def more_subfacet(request, catalog='uc'):
     facet_value = request.GET.get('facet_value', None)
     subfacet = request.GET.get('sub_facet', None)
     if not facet and not subfacet:
-        return HttpResponse(u'Facet field not exist', status='400')
+        return HttpResponse('Facet field not exist', status='400')
 
     uc = init_solr_collection(catalog)
     faset_params = FacetParams()
@@ -1003,7 +979,7 @@ def more_subfacet(request, catalog='uc'):
     values.append(facet_value)
     attrs = reverse_search_attrs(attrs)
     if not values or not attrs:
-        return HttpResponse(u'Wrong query params', status='400')
+        return HttpResponse('Wrong query params', status='400')
 
     query = construct_query(attrs=attrs, values=values)
     result = uc.search(query, fields=['id'], faset_params=faset_params, rows=0)
@@ -1016,7 +992,7 @@ def more_subfacet(request, catalog='uc'):
 
 def replace_facet_values(facets, key=None, replacer=None):
     titled_facets = {}
-    for facet in facets.keys():
+    for facet in list(facets.keys()):
         titled_facets[facet] = {
             'title': get_attr_title(facet)
         }
@@ -1035,7 +1011,7 @@ def author_key_replace(facet):
     for value in facet['values']:
         values[value[0]] = value[0]
 
-    records = models.AuthRecord.objects.filter(record_id__in=values.keys())
+    records = models.AuthRecord.objects.filter(record_id__in=list(values.keys()))
     for record in records:
         content_tree = etree.XML(record.content)
         dict = get_authority_dict(content_tree)
@@ -1061,104 +1037,3 @@ def test_solr_luke_request(request):
     return HttpResponse('ok')
 
 
-def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=False):
-    """
-    default syntax rusmarc
-    """
-    string_leader = map_record['l']
-
-    root = etree.Element('record')
-    root.set('syntax', syntax)
-    leader = etree.SubElement(root, 'leader')
-
-    length = etree.SubElement(leader, 'length')
-    length.text = string_leader[0:5]
-
-    status = etree.SubElement(leader, 'status')
-    status.text = string_leader[5]
-
-    type = etree.SubElement(leader, 'status')
-    type.text = string_leader[6]
-
-    leader07 = etree.SubElement(leader, 'leader07')
-    leader07.text = string_leader[7]
-
-    leader08 = etree.SubElement(leader, 'leader08')
-    leader08.text = string_leader[8]
-
-    leader09 = etree.SubElement(leader, 'leader09')
-    leader09.text = string_leader[9]
-
-    indicator_count = etree.SubElement(leader, 'indicatorCount')
-    indicator_count.text = string_leader[10]
-
-    indicator_length = etree.SubElement(leader, 'identifierLength')
-    indicator_length.text = string_leader[11]
-
-    data_base_address = etree.SubElement(leader, 'dataBaseAddress')
-    data_base_address.text = string_leader[12:17]
-
-    leader17 = etree.SubElement(leader, 'leader17')
-    leader17.text = string_leader[17]
-
-    leader18 = etree.SubElement(leader, 'leader18')
-    leader18.text = string_leader[18]
-
-    leader19 = etree.SubElement(leader, 'leader19')
-    leader19.text = string_leader[19]
-
-    entry_map = etree.SubElement(leader, 'entryMap')
-    entry_map.text = string_leader[20:23]
-
-    if 'cf' in map_record:
-        for cfield in map_record['cf']:
-            control_field = etree.SubElement(root, 'field')
-            control_field.set('id', cfield['id'])
-            control_field.text = cfield['d']
-
-    if 'df' in map_record:
-        for field in map_record['df']:
-            data_field = etree.SubElement(root, 'field')
-            data_field.set('id', field['id'])
-
-            ind1 = etree.SubElement(data_field, 'indicator')
-            ind1.set('id', '1')
-            ind1.text = field['i1']
-
-            ind2 = etree.SubElement(data_field, 'indicator')
-            ind2.set('id', '2')
-            ind2.text = field['i2']
-
-            for subfield in field['sf']:
-                if 'inner' in subfield:
-                    linked_subfield = etree.SubElement(data_field, 'subfield')
-                    linked_subfield.set('id', subfield['id'])
-
-                    if 'cf' in subfield['inner']:
-                        for cfield in subfield['inner']['cf']:
-                            linked_control_field = etree.SubElement(linked_subfield, 'field')
-                            linked_control_field.set('id', cfield['id'])
-                            linked_control_field.text = cfield['d']
-                    else:
-                        for lfield in subfield['inner']['df']:
-                            linked_data_field = etree.SubElement(linked_subfield, 'field')
-                            linked_data_field.set('id', lfield['id'])
-
-                            linked_ind1 = etree.SubElement(linked_data_field, 'indicator')
-                            linked_ind1.set('id', '1')
-                            linked_ind1.text = lfield['i1']
-
-                            linked_ind2 = etree.SubElement(linked_data_field, 'indicator')
-                            linked_ind2.set('id', '2')
-                            linked_ind2.text = lfield['i2']
-
-                            for lsubfield in lfield['sf']:
-                                linkeddata_subfield = etree.SubElement(linked_data_field, 'subfield')
-                                linkeddata_subfield.set('id', lsubfield['id'])
-                                linkeddata_subfield.text = lsubfield['d']
-
-                else:
-                    data_subfield = etree.SubElement(data_field, 'subfield')
-                    data_subfield.set('id', subfield['id'])
-                    data_subfield.text = subfield['d']
-    return root

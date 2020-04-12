@@ -1,0 +1,31 @@
+{% extends 'harvester/index.html' %}
+{% block breadcrumbs %}
+    {{ block.super }}
+{#    <li class="active"><a href="{% url 'harvester:indexing' %}">Индексирование</a></li>#}
+    <li class="active">Правила индексирования</li>
+{% endblock %}
+{% block content %}
+    <div class="well well-sm">
+        <a class="btn btn-success btn-sm" href="{% url 'harvester:add_index_transformation_rule' %}">+ Добавить правило</a>
+    </div>
+    <table class="table">
+        <tr>
+            <th>Название</th>
+            <th style="width: 200px">Действия</th>
+        </tr>
+        {% for index_transformation_rule in index_transformation_rules %}
+            <tr>
+                <td>
+                    <a href="{% url 'harvester:change_index_transformation_rule' index_transformation_rule.id %}">
+                        {{ index_transformation_rule.name }}
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-danger delete" href="{% url 'harvester:delete_index_transformation_rule' index_transformation_rule.id %}">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

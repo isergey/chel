@@ -24,7 +24,7 @@ class Records(models.Model):
 
 
 class RecordsContent(models.Model):
-    record = models.OneToOneField(Records, primary_key=True)
+    record = models.OneToOneField(Records, primary_key=True, on_delete=models.CASCADE)
     content = models.TextField()
 
     class Meta:
@@ -32,7 +32,9 @@ class RecordsContent(models.Model):
         db_table = 'records_content'
 
 
-def get_records(ids=list()):
+def get_records(ids=None):
+    if ids is None:
+        ids = list()
     records = list(RecordsContent.objects.using(DB_CONNECTION).select_related('record').filter(record_id__in=ids))
     records_dict = {}
 
@@ -51,7 +53,7 @@ def get_records(ids=list()):
 
 
 class SavedRequest(models.Model):
-    user = models.ForeignKey(User, related_name='saved_request_user')
+    user = models.ForeignKey(User, related_name='saved_request_user', on_delete=models.CASCADE)
     search_request = models.CharField(max_length=1024)
     add_time = models.DateTimeField(auto_now_add=True)
 

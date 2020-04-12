@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls import re_path
+from . import views
 
-
-urlpatterns = patterns('core.views',
+urlpatterns = (
     # Индексная страница
-    url(r'^$', 'index', name="index"),
-    url(r'^select_language/$', 'select_language', name="select_language"),
-    url(r'^set_language/', 'set_language', name='set_language'),
+    re_path(r'^$', views.index, name="index"),
+    re_path(r'^select_language/$', views.select_language, name="select_language"),
+    re_path(r'^set_language/', views.set_language, name='set_language'),
 
 
 )

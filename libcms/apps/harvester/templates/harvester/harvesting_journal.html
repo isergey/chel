@@ -1,0 +1,47 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }} ({{ source.code }})</a></li>
+    <li class="active">Журнла сбора</li>
+{% endblock %}
+{% block content %}
+    <div class="well well-sm">
+        <a class="btn btn-sm btn-danger delete" href="{% url 'harvester:clean_harvesting_journal' source.id %}">
+            Очистить журнал
+        </a>
+    </div>
+    <table class="table">
+        <tr>
+            <th>Дата сбора</th>
+            <th>Создано</th>
+            <th>Обновлено</th>
+            <th>Удалено</th>
+            <th>Всего обработано</th>
+            <th>Кол-во записей</th>
+            <th>Сессия</th>
+            <th>Ошибка</th>
+            <th>Сообщение</th>
+        </tr>
+        {% for harvesting_status in harvesting_statuses.object_list %}
+            <tr>
+                <td>{{ harvesting_status.create_date }}</td>
+                <td>{{ harvesting_status.created }}</td>
+                <td>{{ harvesting_status.updated }}</td>
+                <td>{{ harvesting_status.deleted }}</td>
+                <td>{{ harvesting_status.processed }}</td>
+                <td>{{ harvesting_status.total_records }}</td>
+                <td>{{ harvesting_status.session_id }}</td>
+                <td>
+                    {% if harvesting_rule.harvesting_status.error %}
+                            <span class="label label-danger">да</span>
+                        {% else %}
+                            <span class="label label-success">нет</span>
+                        {% endif %}
+                </td>
+                <td>{{ harvesting_status.message }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% bootstrap_pagination harvesting_statuses %}
+{% endblock %}

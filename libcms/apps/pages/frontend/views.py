@@ -5,7 +5,10 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import translation
 from django.contrib.auth.models import Group
 from guardian.shortcuts import get_perms
+from guardian.utils import get_anonymous_user
 from ..models import Page, Content, ViewLog
+
+ANON_USER = get_anonymous_user()
 
 PAGES = getattr(settings, 'PAGES', {})
 CHECK_SHOW_PERMISSION = PAGES.get('check_show_permission', False)
@@ -29,7 +32,7 @@ def show(request, slug):
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug, public=True)
     if CHECK_SHOW_PERMISSION:
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             anaons = Group.objects.get(name='anonymouses')
             if 'view_page' not in get_perms(anaons, page):
                 raise PermissionDenied()
@@ -72,7 +75,7 @@ def show(request, slug):
     user = request.user
     log = ViewLog(page=page)
     if not user.id:
-        log.user_id = -1
+        log.user_id = ANON_USER
     else:
         log.user = user
     log.save()

@@ -5,14 +5,14 @@ from django.db.models import Q
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
 from django.contrib.auth.models import User, Group
-from forms import UserForm, GroupForm
+from .forms import UserForm, GroupForm
 
 
 from django.contrib.auth import login, REDIRECT_FIELD_NAME
 
 #@permission_required_or_403('accounts.view_users')
 def index(request):
-    print REDIRECT_FIELD_NAME
+    print(REDIRECT_FIELD_NAME)
     return render(request, 'accounts/administration/index.html')
 
 
@@ -22,7 +22,7 @@ def index(request):
 
 @permission_required_or_403('accounts.view_users')
 def users_list(request):
-    filter_q = request.GET.get('q', u'')
+    filter_q = request.GET.get('q', '')
     q = Q()
     if filter_q:
         fio_q = Q()

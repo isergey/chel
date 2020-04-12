@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 import requests
 import json
-import titles
+from . import titles
 
 SOLR_SERVER = getattr(settings, 'SEARCH', {}).get('solr', {}).get('host', 'http://localhost:8983/solr/')
 COLLECTION = getattr(settings, 'SEARCH', {}).get('solr', {}).get('collection')
@@ -41,7 +41,7 @@ def luke(collection=COLLECTION):
 
     fields = []
     response_fields = response_dict.get('fields', {})
-    for field in response_fields.keys():
+    for field in list(response_fields.keys()):
         if field in ['_version_', 'id']:
             continue
         fields.append({
@@ -92,29 +92,29 @@ def search(
 
     if pivot_facets:
         params['facet'] = 'true'
-        params['facet.pivot'] = u','.join(pivot_facets)
+        params['facet.pivot'] = ','.join(pivot_facets)
         params['facet.pivot.mincount'] = 1
 
     if sort:
-        params['sort'] = u','.join(sort)
+        params['sort'] = ','.join(sort)
 
     if highlighting:
         params['hl'] = 'true'
-        params['hl.fl'] = u','.join(highlighting)
+        params['hl.fl'] = ','.join(highlighting)
     response = requests.get(SOLR_SERVER + collection + '/select', params=params)
 
     error = {}
     try:
         response_dict = json.loads(response.text)
         if 'error' in response_dict:
-            error['code'] = response_dict.get('error', {}).get('code', u'')
-            error['message'] = response_dict.get('error', {}).get('msg', u'')
+            error['code'] = response_dict.get('error', {}).get('code', '')
+            error['message'] = response_dict.get('error', {}).get('msg', '')
         else:
             response.raise_for_status()
     except Exception as e:
         error['code'] = response.status_code
-        error['message'] = u'Error of search request'
-        logger.error(u'Error while search in solr: %s' % e.message)
+        error['message'] = 'Error of search request'
+        logger.error('Error while search in solr: %s' % e.message)
         response_dict = {}
 
     result = {}
@@ -130,7 +130,7 @@ def search(
 
     response_facets = response_dict.get('facet_counts', {}).get('facet_fields', {})
 
-    for facet_key in response_facets.keys():
+    for facet_key in list(response_facets.keys()):
         result['facets'][facet_key] = []
         facet = result['facets'][facet_key]
         facet_values = response_facets[facet_key]
@@ -149,7 +149,7 @@ def search(
     result['facet_ranges'] = {}
     response_facets = response_dict.get('facet_counts', {}).get('facet_ranges', {})
 
-    for facet_key in response_facets.keys():
+    for facet_key in list(response_facets.keys()):
         result['facet_ranges'][facet_key] = []
         facet = result['facet_ranges'][facet_key]
         facet_values = response_facets[facet_key]['counts']
@@ -172,7 +172,7 @@ def search(
                     pivot_facet['title'] = titles.get_attr_value_title(pivot_field, pivot_facet.get('value', ''))
                     get_pivot_titles(pivot_facet.get('pivot', []))
 
-        pivot_facets = response_dict.get('facet_counts', {}).get('facet_pivot', {}).get(u','.join(pivot_facets), [])
+        pivot_facets = response_dict.get('facet_counts', {}).get('facet_pivot', {}).get(','.join(pivot_facets), [])
         get_pivot_titles(pivot_facets)
         result['pivot_facets'] = pivot_facets
 
@@ -193,7 +193,7 @@ class Results(object):
         return self.__solr_dict.get(*args)
 
     def __getitem__(self, item):
-        s_item = unicode(item)
+        s_item = str(item)
         attr = getattr(self, s_item, None)
         if attr != None:
             return attr
@@ -220,7 +220,7 @@ class SearchCriteria:
             k = key + '^' + str(priority)
         self.query.append({
             'k': key,
-            'v': u'%s' % value
+            'v': '%s' % value
         })
 
     def add_search_criteria(self, search_criteria):
@@ -231,17 +231,17 @@ class SearchCriteria:
         self.query.append(search_criteria)
 
     def to_lucene_query(self):
-        query_string_parts = [u"("]
+        query_string_parts = ["("]
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:%s' % (query_part['k'], query_part['v']))
+                query_string_parts.append('%s:%s' % (query_part['k'], query_part['v']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_lucene_query())
             if i < len(self.query) - 1:
-                query_string_parts.append(u' ' + self.operator + u' ')
-        query_string_parts.append(u')')
-        return u''.join(query_string_parts)
+                query_string_parts.append(' ' + self.operator + ' ')
+        query_string_parts.append(')')
+        return ''.join(query_string_parts)
 
     def to_dict(self):
         dict_criteria = {
@@ -276,27 +276,27 @@ class SearchCriteria:
                     sc.add_search_criteria(SearchCriteria.from_dict(query_part))
             return sc
         except KeyError as e:
-            raise ValueError(u'Wrong dict_criteria %s. Error:' % (unicode(dict_criteria), unicode(e)))
+            raise ValueError('Wrong dict_criteria %s. Error:' % (str(dict_criteria), str(e)))
 
-    def to_human_read(self, parent=None, lang=u'ru'):
+    def to_human_read(self, parent=None, lang='ru'):
         operators_title = {
-            u'AND': {
-                u'ru': u'И'
+            'AND': {
+                'ru': 'И'
             },
-            u'OR': {
-                u'ru': u'ИЛИ'
+            'OR': {
+                'ru': 'ИЛИ'
             },
-            u'NOT': {
-                u'ru': u'НЕ'
+            'NOT': {
+                'ru': 'НЕ'
             },
         }
         query_string_parts = []
         if parent:
-            query_string_parts.append(u'(')
+            query_string_parts.append('(')
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:"%s"' % (titles.get_attr_title(query_part['k']), query_part['v']))
+                query_string_parts.append('%s:"%s"' % (titles.get_attr_title(query_part['k']), query_part['v']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_human_read(parent=True, lang=lang))
             if i < len(self.query) - 1:
@@ -306,31 +306,31 @@ class SearchCriteria:
                 except KeyError:
                     operator_title = self.operator
 
-                query_string_parts.append(u' ' + operator_title + u' ')
+                query_string_parts.append(' ' + operator_title + ' ')
         if parent:
-            query_string_parts.append(u')')
-        return u''.join(query_string_parts)
+            query_string_parts.append(')')
+        return ''.join(query_string_parts)
 
 
 def escape(string):
     special = [
-        u'\\',
-        u'+',
-        u'-',
-        u'&&',
-        u'||',
-        u'!',
-        u'(',
-        u')',
-        u'{',
-        u'}',
-        u'[',
-        u']',
-        u'^',
-        u'"',
-        u'~',
-        u'?',
-        u':'
+        '\\',
+        '+',
+        '-',
+        '&&',
+        '||',
+        '!',
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '^',
+        '"',
+        '~',
+        '?',
+        ':'
     ]
     for s in special:
         string = string.replace(s, '\\' + s)

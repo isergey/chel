@@ -1,6 +1,4 @@
 # -*- encoding: utf-8 -*-
-from django.shortcuts import urlresolvers
-from django.conf import settings
 from django.db import models
 
 

@@ -2,10 +2,10 @@
 import subprocess
 
 
-from ill import ILLRequest, ILLAPDU, ILLTransaction, ILLTransactions
+from .ill import ILLRequest, ILLAPDU, ILLTransaction, ILLTransactions
 from lxml import etree as ET
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 class OrderManagerException(Exception): pass
 
 class OrderManager(object):
@@ -119,7 +119,7 @@ class OrderManager(object):
         query_string = "/*"
         query_params = {}
 
-        container_name = '%s.orders' % unicode(user_id).encode('utf-8')
+        container_name = '%s.orders' % str(user_id).encode('utf-8')
         results = self.get_results(container_name, query_string)
 
         transactions = [ ILLTransaction().from_xml(result) for result in results ]

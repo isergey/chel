@@ -5,4 +5,4 @@ class WrongArguments(ApiException):
         if message:
             self.message = message
         else:
-            self.message = u'Wrong arguments'
+            self.message = 'Wrong arguments'

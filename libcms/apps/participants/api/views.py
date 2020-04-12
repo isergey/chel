@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
-from django.forms.models import model_to_dict
-from django.shortcuts import HttpResponse
 from django.contrib.auth.models import User
+from django.shortcuts import HttpResponse
 
+from api.decorators import api
 from api.exceptions import WrongArguments, ApiException
-from api.decorators import api, login_required_or_403
-
 from participants.models import Library, UserLibrary
 
 
@@ -81,10 +78,10 @@ class ApiLibrary(object):
         self.postal_address = postal_address
 
         self.http_service = http_service
-        self.ill_service = u'ill%s@localhost' % self.code
-        self.edd_service = u'edd%s@localhost' % self.code
+        self.ill_service = 'ill%s@localhost' % self.code
+        self.edd_service = 'edd%s@localhost' % self.code
         self.mail = mail
-        self.mail_access = u'imap://ill%s:password@localhost.local:993' % self.code
+        self.mail_access = 'imap://ill%s:password@localhost.local:993' % self.code
 
         self.latitude = latitude
         self.longitude = longitude
@@ -146,7 +143,7 @@ class ApiLibrary(object):
         return api_library
 
 def index(request):
-    return HttpResponse(u'Api ok')
+    return HttpResponse('Api ok')
 
 @api
 #@login_required_or_403
@@ -179,7 +176,7 @@ def get_user_orgs(request):
     try:
         user = User.objects.get(id=id)
     except User.DoesNotExist:
-        raise ApiException(u'unknown user id')
+        raise ApiException('unknown user id')
 
     user_libraries = UserLibrary.objects.filter(user=user)
 
@@ -220,7 +217,7 @@ def get_org(request):
         try:
             id = int(id)
         except ValueError:
-            raise ApiException(u'Wrong id value')
+            raise ApiException('Wrong id value')
 
     try:
         if id:
@@ -275,7 +272,7 @@ def get_user(request):
         try:
             id = int(id)
         except ValueError:
-            raise ApiException(u'Wrong id value')
+            raise ApiException('Wrong id value')
 
 
     try:

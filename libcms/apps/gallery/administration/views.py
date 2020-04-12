@@ -5,7 +5,7 @@ from django.http import HttpResponseForbidden
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from ..models import Album, AlbumImage
-from forms import AlbumForm, AlbumImageForm, AlbumImageEditForm
+from .forms import AlbumForm, AlbumImageForm, AlbumImageEditForm
 from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
@@ -85,12 +85,12 @@ def album_view(request, id):
 @csrf_exempt
 def album_upload(request, id):
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         user = request.user
     elif request.method == 'POST':
         user = user_from_session_key(request.POST.get('sessionid', 0))
 
-    if not user.is_authenticated():
+    if not user.is_authenticated:
         return HttpResponseForbidden()
 
     if not user.has_perm('gallery.add_album'):

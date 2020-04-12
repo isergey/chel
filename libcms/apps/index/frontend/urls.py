@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls import re_path
+from . import views
 
-urlpatterns = patterns('index.frontend.views',
-    url(r'^$', 'index', name="index"),
-    url(r'^slider$', 'slider', name="slider"),
+urlpatterns = (
+    re_path(r'^$', views.index, name="index"),
+    re_path(r'^slider$', views.slider, name="slider"),
 )

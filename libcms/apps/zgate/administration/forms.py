@@ -41,9 +41,9 @@ from ..models import get_search_attributes_in_log
 
 
 GROUP_CHOICES = (
-    (u'2', u'По дням'),
-    (u'1', u'По месяцам'),
-    (u'0', u'По годам'),
+    ('2', 'По дням'),
+    ('1', 'По месяцам'),
+    ('0', 'По годам'),
 )
 
 
@@ -51,25 +51,25 @@ GROUP_CHOICES = (
 
 class PeriodForm(CoolForm):
     start_date = forms.DateTimeField(
-        label=u'Дата начала периода',widget=widgets.AdminDateWidget,
+        label='Дата начала периода',widget=widgets.AdminDateWidget,
         initial=datetime.datetime.now()
     )
 
     end_date = forms.DateTimeField(
-        label=u'Дата конца периода',widget=widgets.AdminDateWidget,
+        label='Дата конца периода',widget=widgets.AdminDateWidget,
         initial=datetime.datetime.now()
     )
 
 
 
 class GroupForm(CoolForm):
-    group = forms.ChoiceField(label=u'Группировка', choices=GROUP_CHOICES, initial=2)
+    group = forms.ChoiceField(label='Группировка', choices=GROUP_CHOICES, initial=2)
 
 
 
 class AttributesForm(CoolForm):
     attributes = forms.MultipleChoiceField(
-        label=u'Отображаемые атрибуты',
+        label='Отображаемые атрибуты',
         choices=get_search_attributes_in_log(),
         widget=forms.CheckboxSelectMultiple(),
         required=False
@@ -77,7 +77,7 @@ class AttributesForm(CoolForm):
 
 class ZCatalogForm(CoolForm):
     catalogs = forms.ModelMultipleChoiceField(
-        label=u'Каталоги',
+        label='Каталоги',
         queryset=ZCatalog.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
         required=False

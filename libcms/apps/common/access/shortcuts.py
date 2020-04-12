@@ -25,8 +25,8 @@ def remove_perm_for_groups_id(perm_name, object, groups_ids):
 def get_group_ids_for_object_perm(perm_name, object):
     groups_dict = get_groups_with_perms(object, attach_perms=True)
     groups_ids = []
-    for (group, perms) in  groups_dict.iteritems():
-        if perm_name in perms: groups_ids.append(unicode(group.id))
+    for (group, perms) in  groups_dict.items():
+        if perm_name in perms: groups_ids.append(str(group.id))
     return groups_ids
 
 

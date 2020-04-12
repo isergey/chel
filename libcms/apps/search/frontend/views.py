@@ -4,7 +4,7 @@ from lxml import etree
 from django.conf import settings
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, urlresolvers, Http404, HttpResponse, get_object_or_404
+from django.shortcuts import render,  Http404, HttpResponse, get_object_or_404, reverse
 from django.utils.http import urlunquote_plus
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -31,11 +31,11 @@ class BreadcrumbItem(object):
     def __hash__(self):
         return hash((frozenset(self.attr), frozenset(self.value)))
 
-    def __unicode__(self):
-        return u'%s:%s' % (self.attr, self.value)
+    def __str__(self):
+        return '%s:%s' % (self.attr, self.value)
 
     def __str__(self):
-        return (u'%s:%s' % (self.attr, self.value)).encode('utf-8')
+        return ('%s:%s' % (self.attr, self.value)).encode('utf-8')
 
 
 def index(request):
@@ -75,7 +75,7 @@ def index(request):
     if not titled_attrs:
         titled_attrs.append({
             'attr': 'all_t',
-            'title': u'Везде'
+            'title': 'Везде'
         })
 
     breadcrumbs = []
@@ -105,7 +105,7 @@ def index(request):
     offset = (page - 1) * per_page
     # print attrs_summary
     highlighting_attrs = attrs_summary
-    if u'*' in values:
+    if '*' in values:
         highlighting_attrs = []
 
     sort = []
@@ -243,7 +243,7 @@ def ajax_search(request):
                     'values': attr_values
                 })
 
-        make_attr('document_type', u'Тип документа')
+        make_attr('document_type', 'Тип документа')
         make_attr('author', titles.get_attr_title('author'))
         make_attr('organisation', titles.get_attr_title('organisation'))
         make_attr('date_of_publication', titles.get_attr_title('date_of_publication'))
@@ -328,13 +328,13 @@ def detail(request):
     if view:
         if view == 'xml':
             return HttpResponse(
-                u"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + etree.tounicode(record_tree, pretty_print=True),
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + etree.tounicode(record_tree, pretty_print=True),
                 content_type='text/xml')
         elif view == 'json':
             return HttpResponse(record.content, content_type='application/json')
 
     attrs = rusmarc_template.doc_tree_to_dict(transformers['record_dict'](record_tree, abstract='0', links='0'))
-    libcard = junimarc.utils.beautify(unicode(transformers['libcard'](record_tree, abstract='0')))
+    libcard = junimarc.utils.beautify(str(transformers['libcard'](record_tree, abstract='0')))
     cover = _get_cover(record_obj, size='1')
 
     result_record = {
@@ -407,7 +407,7 @@ def ajax_detail(request):
     #         return HttpResponse(record.content, content_type='application/json')
 
     # attrs = rusmarc_template.doc_tree_to_dict(transformers['record_dict'](record_tree, abstract='0', links='0'))
-    libcard = junimarc.utils.beautify(unicode(transformers['libcard'](record_tree, abstract='0')))
+    libcard = junimarc.utils.beautify(str(transformers['libcard'](record_tree, abstract='0')))
     cover = _get_cover(record_obj, size='1')
 
     result_record = {
@@ -463,44 +463,44 @@ def saved_search_requests(request):
 
 
 def save_search_request(request):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if not request.user.is_authenticated:
+        return HttpResponse('Вы должны быть войти на портал', status=401)
     search_request = request.GET.get('srequest', None)
     if models.SavedRequest.objects.filter(user=request.user).count() > 500:
-        return HttpResponse(u'{"status": "error", "error": "Вы достигли максимально разрешенного количества запросов"}')
+        return HttpResponse('{"status": "error", "error": "Вы достигли максимально разрешенного количества запросов"}')
 
     models.SavedRequest(user=request.user, search_request=search_request).save()
-    return HttpResponse(u'{"status": "ok"}')
+    return HttpResponse('{"status": "ok"}')
 
 
 def delete_search_request(request, id):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if not request.user.is_authenticated:
+        return HttpResponse('Вы должны быть войти на портал', status=401)
     sr = get_object_or_404(models.SavedRequest, user=request.user, id=id)
     sr.delete()
-    return HttpResponse(u'{"status": "ok"}')
+    return HttpResponse('{"status": "ok"}')
 
 
 def _get_cover(record_obj, size='0'):
     f856 = record_obj['856']
-    ft_url = u''
+    ft_url = ''
     if f856 and isinstance(f856[0], junimarc.record.DataField):
         f856_u = f856[0].get_subfields('u')
         if f856_u:
             ft_url = f856_u[0].get_data()
 
     elib_prefixes = ['dl.unilib.neva.ru/dl', 'elib.spbstu.ru/dl/']
-    cleared_ft_url = ft_url.replace(u'http://', '').replace(u'https://', u'')
+    cleared_ft_url = ft_url.replace('http://', '').replace('https://', '')
     for elib_prefix in elib_prefixes:
         if cleared_ft_url.startswith(elib_prefix):
             return {
-                'small': u'http://elib.spbstu.ru/main/picture?url=%s&size=%s' % (ft_url, size),
-                'large': u'http://elib.spbstu.ru/main/picture?url=%s&size=%s' % (ft_url, '0')
+                'small': 'http://elib.spbstu.ru/main/picture?url=%s&size=%s' % (ft_url, size),
+                'large': 'http://elib.spbstu.ru/main/picture?url=%s&size=%s' % (ft_url, '0')
             }
     return {}
 
 def _get_full_text_link(record_obj):
-    ft_url = u''
+    ft_url = ''
     try:
         f856 = record_obj['856']
         if f856 and isinstance(f856[0], junimarc.record.DataField):
@@ -569,7 +569,7 @@ def facets(request):
     facets_fields = list(getattr(settings, 'SEARCH', {}).get('facet_fields', []))
     superuser_facets = getattr(settings, 'SEARCH', {}).get('superuser_facets', [])
 
-    if request.user.is_authenticated() and (request.user.is_superuser or request.user.is_staff):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
         facets_fields += superuser_facets
 
     in_results = request.GET.get('in_results', '0')
@@ -640,7 +640,7 @@ def ajax_facets(request):
 
     superuser_facets = getattr(settings, 'SEARCH', {}).get('superuser_facets', [])
 
-    if request.user.is_authenticated() and (request.user.is_superuser or request.user.is_staff):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
         facets_fields += superuser_facets
 
     if not params:
@@ -712,7 +712,7 @@ def ajax_facets(request):
 
     if pvalues:
         source_facet = {
-            'title': u'Источник',
+            'title': 'Источник',
             'name': 'system_source_s',
             'values': pvalues
         }
@@ -749,7 +749,7 @@ def facet_explore(request):
     try:
         fe = json.loads(fe)
     except:
-        return HttpResponse(u"{}")
+        return HttpResponse("{}")
 
     facet_offset = int(request.GET.get('offset', 0))
     if facet_offset < 0:
@@ -805,20 +805,20 @@ def make_search_breadcumbs(attrs_values):
     :return:
     """
     search_breadcumbs = []
-    search_url = urlresolvers.reverse('search:frontend:index')
+    search_url = reverse('search:frontend:index')
 
     attrs_prepare = []
     values_prepare = []
 
     for item in attrs_values:
-        attr_url_part = u'attr=' + getattr(item, 'attr')
-        value_url_part = u'value=' + urlunquote_plus(getattr(item, 'value'))
+        attr_url_part = 'attr=' + getattr(item, 'attr')
+        value_url_part = 'value=' + urlunquote_plus(getattr(item, 'value'))
 
         search_breadcumbs.append({
             'attr': getattr(item, 'attr'),
             'title': getattr(item, 'title', getattr(item, 'attr')),
-            'href': search_url + u'?' + u'&'.join(attrs_prepare) + u'&' + attr_url_part + u'&' + u'&'.join(
-                values_prepare) + u'&' + value_url_part,
+            'href': search_url + '?' + '&'.join(attrs_prepare) + '&' + attr_url_part + '&' + '&'.join(
+                values_prepare) + '&' + value_url_part,
             'value': titles.get_attr_value_title(getattr(item, 'attr'), getattr(item, 'value')),
         })
 
@@ -836,12 +836,12 @@ def build_search_conditions(key_value_dicts):
     search_conditions = []
     for item in key_value_dicts:
         attr = item['attr']
-        value = u'' + item['value']
+        value = '' + item['value']
         if attr.endswith('_s') and value != '*':
-            value = '"' + value.replace(u"\\", u"\\\\").replace('"', '\\"') + '"'
+            value = '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
         search_conditions.append({
             'attr': attr,
-            'value': u'(%s)' % value
+            'value': '(%s)' % value
         })
 
     return search_conditions
@@ -876,19 +876,19 @@ def build_query(search_conditions, priority={}):
 
 def get_attrs_for_all(value, priority={}):
     default_priority = True
-    for priority_key, priority_value in priority.items():
-        if priority_value != u'1':
+    for priority_key, priority_value in list(priority.items()):
+        if priority_value != '1':
             default_priority = False
             break
     if default_priority:
         priority = {}
 
-    all_sc = solr.SearchCriteria(u"OR")
-    all_sc.add_attr(u'author_t', u'%s^%s' % (value, unicode(priority.get('author_t', 66))))
-    all_sc.add_attr(u'title_t', u'%s^%s' % (value, unicode(priority.get('title_t', 64))))
-    all_sc.add_attr(u'title_tru', u'%s^%s' % (value, unicode(priority.get('title_t', 30))))
-    all_sc.add_attr(u'subject_heading_tru', u'%s^%s' % (value, unicode(priority.get('subject_heading_t', 6))))
-    all_sc.add_attr(u'all_tru', u'%s^%s' % (value, 2))
+    all_sc = solr.SearchCriteria("OR")
+    all_sc.add_attr('author_t', '%s^%s' % (value, str(priority.get('author_t', 66))))
+    all_sc.add_attr('title_t', '%s^%s' % (value, str(priority.get('title_t', 64))))
+    all_sc.add_attr('title_tru', '%s^%s' % (value, str(priority.get('title_t', 30))))
+    all_sc.add_attr('subject_heading_tru', '%s^%s' % (value, str(priority.get('subject_heading_t', 6))))
+    all_sc.add_attr('all_tru', '%s^%s' % (value, 2))
     return all_sc
 
 
@@ -901,7 +901,7 @@ def build_kv_dicts(attrs, values):
     """
     kv_dicts = []
     if len(attrs) == len(values):
-        for i in xrange(len(attrs)):
+        for i in range(len(attrs)):
             kv_dicts.append({
                 'attr': attrs[i],
                 'value': values[i]
@@ -912,7 +912,7 @@ def build_kv_dicts(attrs, values):
 
 def parse_get_params(get_params_string):
     params_dict = {}
-    params = get_params_string.replace(u'?', '')
+    params = get_params_string.replace('?', '')
     if params:
 
         params_parts = params.split('&')

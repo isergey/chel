@@ -1,11 +1,11 @@
 # encoding: utf-8
 
-from django.conf.urls import *
+from django.conf.urls import re_path
 
-import views
+from . import views
 
-urlpatterns = patterns('',
-   url(r'^$', views.index , name="index"),
-   url(r'^detail/(?P<id>\d+)/$', views.detail , name="detail"),
-   url(r'^indexing/$', views.index_sid , name="index_sid"),
+urlpatterns = (
+   re_path(r'^$', views.index , name="index"),
+   re_path(r'^detail/(?P<id>\d+)/$', views.detail , name="detail"),
+   re_path(r'^indexing/$', views.index_sid , name="index_sid"),
 )

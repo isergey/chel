@@ -7,7 +7,7 @@ transformers = {}
 
 
 def transformers_init():
-    for key in TRANSFORMERS.keys():
+    for key in list(TRANSFORMERS.keys()):
         xsl_transformer = TRANSFORMERS[key]
         transformers[key] = etree.XSLT(etree.parse(xsl_transformer))
 

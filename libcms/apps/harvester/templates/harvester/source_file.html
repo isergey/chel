@@ -1,0 +1,24 @@
+{% extends 'harvester/index.html' %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }}</a></li>
+    <li class="active">Файл: {{ source_records_file.file_uri }}</li>
+{% endblock %}
+{% block content %}
+    <div class="well well-sm">
+{#        <a href="{% url 'harvester:source_file_testing' source.id source_records_file.id %}" class="btn btn-primary btn-sm">Тестировать</a>#}
+        <a href="{% url 'harvester:change_source_file' source.id source_records_file.id %}" class="btn btn-default btn-sm">Редактировать</a>
+        <a href="{% url 'harvester:delete_source_file' source.id source_records_file.id %}" class="btn btn-danger btn-sm delete"><i class="glyphicon glyphicon-trash"></i></a>
+    </div>
+    <table class="table">
+        <tr>
+            <th style="width: 200px">Путь к файлу</th>
+            <td>{{ source_records_file.file_uri }}</td>
+        </tr>
+        <tr>
+            <th>Дата модификации</th>
+            <td>{{ source_records_file.get_update_date }}</td>
+        </tr>
+    </table>
+
+{% endblock %}

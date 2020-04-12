@@ -1,85 +1,157 @@
 {% extends "filebrowser/administration/index.html" %}
 {% block module_action %} {% endblock %}
 {% block action_content %}
-    <hr/>
     <div class="row">
-
-        <div class="span5">
-            <form class="well" action="{% url 'filebrowser:administration:upload' %}" method="post"
-                  enctype="multipart/form-data">{% csrf_token %}
-                <legend>Загрузка файла</legend>
-                <fieldset>
-
-                    {% include 'administration/base_form_fields.html' with form=upload_form %}
-                    <input type="submit" value="Загрузить" class="btn btn-primary"/>
-                </fieldset>
+        <div class="col-md-6">
+            <a title="Загрузить файл в текущую директорию" class="btn btn-success btn-sm"
+               href="{% url 'filebrowser:administration:upload_file' %}?path={{ request.GET.path|default:'/' }}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Загрузить файл</a>
+        </div>
+        <div class="col-md-6">
+            <form novalidate title="Создать директорию в теущем располажении" class="form-inline" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_cdf-name">Создать директорию:</label>
+                    <input class="form-control" id="id_cdf-name" maxlength="255" name="cdf-name" type="text" placeholder="Введите название">
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Создать</button>
             </form>
         </div>
-        <div class="span5">
-            <form class="well" action="{% url 'filebrowser:administration:create_directory' %}" method="post">{% csrf_token %}
-                <legend>Создать директорию</legend>
-                <fieldset>
-                    {% include 'administration/base_form_fields.html' with form=dir_form %}
-                    <input type="submit" value="Создать" class="btn btn-primary"/>
-                </fieldset>
-            </form>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <hr/>
+            <ol class="breadcrumb">
+                <li><a title="Домашняя директория" href="?path=/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+                {% for breadcrumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="active">{{ breadcrumb.title }}</li>
+                    {% else %}
+                        <li><a href="?path={{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
         </div>
-        <hr/>
     </div>
-    <hr/>
-    <div style="font-size:16px; text-decoration:NONE">
-        <p>Текущая директория:</p>
-        {% for breadcrumb in breadcrumbs %}
-            {% if forloop.last %}
-                <b>{{ breadcrumb.title }}</b>
-            {% else %}
-                <a style="text-decoration:none" href="?path={{ breadcrumb.url }}">{{ breadcrumb.title }}/</a>
-            {% endif %}
-        {% endfor %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th style="width: 200px">Тип</th>
+                    <th style="width: 200px">Дата создания</th>
+                    <th style="width: 100px">Размер</th>
+                    <th style="width: 100px">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for dir_item in dir_map %}
+                    <tr>
+                        <td>
+                            {% if dir_item.type == 'file' %}
+                                <a {% if dir_item.model  %} hash="{{ dir_item.model.full_path_hash }}" {% endif %} class="file_title" href="{{ dir_item.url|urlencode }}">{{ dir_item.name }}</a>
+                                {% if dir_item.model  %}
+                                    <div class="help-block" style="overflow: hidden" title="{{ dir_item.model.title }}">{{ dir_item.model.title }}</div>
+                                {% endif %}
+                            {% else %}
+                                <a href="?path={{ dir_item.url|urlencode }}">
+                                    <b>{{ dir_item.name }}</b>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if dir_item.mtype == 'image' %}
+                                <img style="width: 100px" src="{{ dir_item.url|urlencode }}">
+                            {% else %}
+                                {{ dir_item.mtype }}
+                            {% endif %}
+                        </td>
+                        <td>{{ dir_item.create_time|date:"d-M-Y H:i:s" }}</td>
+                        <td>{{ dir_item.size.bytes }} ({{ dir_item.size.title }})</td>
+                        <td>
+                            {% if dir_item.type == 'file' %}
+                                <a class="delete btn  btn-sm btn-danger" title="Удалить"
+                                   href="{% url 'filebrowser:administration:delete' %}?path={{ request.GET.path }}&name={{ dir_item.name|urlencode }}">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+
+                            {% else %}
+                                <a class="delete btn btn-sm btn-danger " title="Удалить"
+                                   href="{% url 'filebrowser:administration:delete' %}?path={{ request.GET.path }}&name={{ dir_item.name|urlencode }}">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <hr/>
-    <table class="table table-condensed">
-        <thead>
-        <tr>
-            <th>Название</th>
-            <th>Тип</th>
-            <th>Дата создания</th>
-            <th>Размер</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for dir_item in dir_map %}
-            <tr>
-                <td>
-                    {% if dir_item.type == 'file' %}
-                        <a href="{{ dir_item.url|urlencode }}">{{ dir_item.name }}</a>
-                    {% else %}
-                        <a href="?path={{ dir_item.url|urlencode }}"><b>{{ dir_item.name }}</b></a>
-                    {% endif %}
-                </td>
-                <td>{{ dir_item.mtype }}</td>
-                <td>{{ dir_item.create_time|date:"d-M-Y H:i:s" }}</td>
-                <td>{{ dir_item.size.bytes }} ({{ dir_item.size.title }})</td>
-                <td>
-                    {% if dir_item.type == 'file' %}
-                        <a class="delete btn  btn-mini btn-danger" title="Удалить"
-                           href="{% url 'filebrowser:administration:delete' %}?path={{ dir_item.work_url|urlencode }}">
-                            <i class="icon-trash icon-white"></i>
-                        </a>
-                    {% else %}
-                        <a class="delete btn btn-danger " title="Удалить"
-                           href="{% url 'filebrowser:administration:delete' %}?path={{ dir_item.url|urlencode }}">
-                            <i class="icon-trash icon-white"></i>
-                        </a>
-                    {% endif %}
-
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
 
+    <div  class="modal" id="file_info_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div style="width: 100%; max-width: 800px" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Информация о файле</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="form-group">
+                            <label for="file-local-path">Адрес вставки на сайт</label>
+                            <input onClick="this.select();" type="text" class="form-control" id="file-local-path">
+                        </div>
+                        <div class="form-group">
+                            <label for="file-full-path">Полный адрес ссылки на файл</label>
+                            <input onClick="this.select();" type="text" class="form-control" id="file-full-path">
+                        </div>
+                    </div>
+                    <div class="modal-file-info"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        (function () {
+            var $modal = $('#file_info_modal');
+            $('.file_title').on('click', function () {
+                var fileHash = $(this).attr('hash');
+
+                $modal.find('#file-local-path').val($(this).attr('href'));
+                $modal.find('#file-full-path').val(window.location.origin + $(this).attr('href'));
+
+                $modalFileInfo = $modal.find('.modal-file-info');
+
+                if (!fileHash) {
+                    $modalFileInfo.html('');
+                } else {
+                    $modalFileInfo.html('Загрузка информации...')
+                    $.get('{% url 'filebrowser:administration:ajax_file_info' %}', {hash: fileHash}).done(function (data) {
+                        $modalFileInfo.html(data);
+                    }).error(function (error) {
+                        if (error.status === 404) {
+                            $modalFileInfo.html('<div class="alert alert-warning">Описание файла не найдено</div>');
+                        } else {
+                            $modalFileInfo.html('<div class="alert alert-danger">При получении информации о файле возникла ошибка</div>');
+                        }
+
+                    });
+
+                }
+
+                $modal.modal();
+
+
+                return false;
+            });
+        })();
+    </script>
 {% endblock %}

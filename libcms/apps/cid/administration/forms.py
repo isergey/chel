@@ -6,7 +6,7 @@ from ..models import Type, ImportantDate
 
 class TypeForm(forms.Form):
     types = forms.ModelMultipleChoiceField(
-        label=u'Тип записи',
+        label='Тип записи',
         queryset=Type.objects.all(),
         widget=forms.CheckboxSelectMultiple()
     )
@@ -20,7 +20,7 @@ class TypeForm(forms.Form):
 class ImportantDateForm(forms.ModelForm):
     type = forms.ModelMultipleChoiceField(
         queryset=Type.objects.all(),
-        label=u'Тип знаменательной даты:',
+        label='Тип знаменательной даты:',
         widget=forms.CheckboxSelectMultiple()
     )
 
@@ -34,12 +34,12 @@ class ImportantDateForm(forms.ModelForm):
 
 
 ATTRIBUTES = (
-    ('all_t', u'Везде'),
-    ('fio_t', u'Персоналия'),
-    ('org_title_t', u'Организация'),
-    ('event_title_t', u'Мероприятие'),
-    ('geo_title_t', u'Географический объект'),
-    ('theme_t', u'Тема'),
+    ('all_t', 'Везде'),
+    ('fio_t', 'Персоналия'),
+    ('org_title_t', 'Организация'),
+    ('event_title_t', 'Мероприятие'),
+    ('geo_title_t', 'Географический объект'),
+    ('theme_t', 'Тема'),
 )
 
 

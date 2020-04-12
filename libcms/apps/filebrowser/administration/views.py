@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-import sys
 import os
 import datetime
 import shutil
-from django.conf import settings
-from django.utils.translation import ugettext as _
+from hashlib import md5
 from django.http import HttpResponseForbidden
-from django.shortcuts import HttpResponse, Http404, HttpResponseRedirect, render
-from django.core.urlresolvers import reverse
+from django.shortcuts import HttpResponse, Http404, render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from guardian.decorators import permission_required_or_403
-from forms import UploadFileForm, CreateDirectory
+from django.contrib.contenttypes.models import ContentType
 
-FILE_NAME_ENCODING = 'utf-8'
+from .forms import get_upload_file_form, get_create_directory_form, FileForm
+from . import app_settings
+from .. import models
 
 mtypes = {
     'gif': 'image',
@@ -27,7 +27,7 @@ mtypes = {
 def chek_or_create_dir(path):
     if not os.path.isdir(path):
         try:
-            os.makedirs(path, 0755)
+            os.makedirs(path, 0o755)
         except Exception as e:
             return False
 
@@ -43,7 +43,8 @@ def get_mtype(file_name):
     return 'file'
 
 
-def get_file_map(path, show_path_url, show_path):
+def get_file_map(path, upload_to, current_path):
+
     file_name = os.path.basename(path)
     item_map = {}
 
@@ -51,194 +52,224 @@ def get_file_map(path, show_path_url, show_path):
     item_map['mtype'] = get_mtype(file_name)
     item_map['name'] = file_name
 
-    file_stat = os.stat(path)
+    full_path_hash = models.File.generate_full_path_hash(current_path, file_name)
+    item_map['full_path_hash'] = full_path_hash
+
+    file_stat = os.stat(path.encode(app_settings.FILE_NAME_ENCODING))
     size = file_stat.st_size / 1024
     if size < 1:
         item_map['size'] = {
             'bytes': file_stat.st_size,
-            'title': u'bytes'
+            'title': 'bytes'
         }
     else:
         item_map['size'] = {
             'bytes': size,
-            'title': u'Kbytes'
+            'title': 'Kbytes'
         }
 
     item_map['create_time'] = datetime.datetime.fromtimestamp(file_stat.st_ctime)
-    item_map['url'] = show_path_url.rstrip('/') + '/' + file_name
-    item_map['work_url'] = show_path + '/' + file_name
+    item_map['url'] = app_settings.MEDIA_URL + upload_to + '/' + current_path + '/' + file_name
+    item_map['related_path'] = current_path + '/' + file_name
+
     return item_map
 
 
-def get_dir_map(path, show_path):
-    dir_name = os.path.basename(path)
+def get_dir_map(path, current_dir):
+    dir_name = os.path.basename(path.encode(app_settings.FILE_NAME_ENCODING)).decode(app_settings.FILE_NAME_ENCODING)
     item_map = {}
 
     item_map['type'] = 'dir'
     item_map['mtype'] = 'dir'
     item_map['name'] = dir_name
 
-    dir_stat = os.stat(path)
+    dir_stat = os.stat(path.encode(app_settings.FILE_NAME_ENCODING))
 
     item_map['size'] = {
         'bytes': 0,
-        'title': u'bytes'
+        'title': 'bytes'
     }
 
     item_map['create_time'] = datetime.datetime.fromtimestamp(dir_stat.st_ctime)
-    item_map['url'] = show_path + '/' + dir_name + '/'
+    item_map['url'] = current_dir + '/' + dir_name + '/'
     return item_map
 
 
 def handle_uploaded_file(f, path):
-    destination = open(path + '/' + f.name.encode(FILE_NAME_ENCODING), 'wb+')
+    destination = open(os.path.join(path,f.name).encode(app_settings.FILE_NAME_ENCODING), 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
 
 
-@login_required
-def index(request):
-    if not request.user.has_module_perms('filebrowser'):
-        return HttpResponseForbidden()
-
-    base_uplod_path = settings.FILEBROWSER['upload_dir']
-
-    show_path = u'' # root of upload path
-    show_path_url = settings.FILEBROWSER['upload_dir_url']
+def _is_correct_path(path):
+    wrong_elements = ['..', './', '.\\']
+    for wrong_element in wrong_elements:
+        if wrong_element in path:
+            return False
+    return True
 
 
-    path = request.GET.get('path', u'/').strip('/')
-    if '..' in path or '/.' in path:
-        raise Http404(u"Path not founded")
+def _get_init_pathes(request):
+    base_dir = os.path.join(app_settings.MEDIA_ROOT, app_settings.UPLOAD_TO)
+    current_dir = request.GET.get('path', '').strip('/').strip('\\')
 
-    show_path =  path.encode(FILE_NAME_ENCODING)
+    upload_dir = os.path.join(base_dir, current_dir)
 
-    show_path_url += show_path
+    if not _is_correct_path(current_dir):
+        raise Http404("Некорректный путь")
 
-    if not chek_or_create_dir(base_uplod_path):
-        return HttpResponse(u"Catalog '%s' can't be created" % show_path)
+    if not os.path.isdir(upload_dir.encode(app_settings.FILE_NAME_ENCODING)):
+        raise Http404("Путь не является директорией")
 
-    if not os.path.isdir(base_uplod_path + show_path):
-        raise Http404(u"Path not founded")
+    return {
+        'base_dir': base_dir,
+        'current_dir': current_dir,
+        'upload_dir': upload_dir
+    }
 
-    dir_items = os.listdir(base_uplod_path + show_path)
 
-    dir_map = []
-    for dir_item in dir_items:
-        path_to_dir_item = base_uplod_path + show_path + '/' + dir_item
-        if os.path.isfile(path_to_dir_item):
-            dir_map.append(get_file_map(path_to_dir_item, show_path_url, show_path))
-
-        elif os.path.isdir(path_to_dir_item):
-            dir_map.append(get_dir_map(path_to_dir_item, show_path))
-
-        # не выводим элемент
-        else:
-            continue
-
+def _make_breadcrumbs(pathes):
     breadcrumbs = []
-    path_dirs = show_path.strip('/').split('/')
-    breadcrumbs.append({
-        'title': '/',
-        'url': '/',
-        })
+    path_dirs = pathes['current_dir'].strip('/').strip('\\').split('/')
+
     for i, path_dir in enumerate(path_dirs):
         breadcrumbs.append({
             'title': path_dir,
             'url': '/' + '/'.join(path_dirs[:i + 1]),
-            })
+        })
+    return breadcrumbs
 
-    upload_form = UploadFileForm(initial={'path': show_path})
-    dir_form = CreateDirectory(initial={'path': show_path}, prefix='dir_form')
 
-    dir_map = sorted(dir_map, key=lambda x: x['create_time'], cmp=lambda x, y: cmp(x, y), reverse=True)
-    dir_map = sorted(dir_map, key=lambda x: x['type'], cmp=lambda x, y: cmp(x.lower(), y.lower()))
+@login_required
+def index(request):
+    if not request.user.has_module_perms('filebrowser'):
+        return HttpResponseForbidden('У вас нет права для доступа')
+
+    pathes = _get_init_pathes(request)
+
+    current_dir_items = [x.decode(app_settings.FILE_NAME_ENCODING) for x in os.listdir(pathes['upload_dir'].encode(app_settings.FILE_NAME_ENCODING))]
+    CreateDirectory = get_create_directory_form(pathes)
+
+    if request.method == 'POST':
+        create_dir_form = CreateDirectory(request.POST, prefix='cdf')
+        if create_dir_form.is_valid():
+            create_dir_path = os.path.join(pathes['upload_dir'], create_dir_form.cleaned_data['name']).encode(app_settings.FILE_NAME_ENCODING)
+            os.mkdir(create_dir_path)
+            dir = '%s/%s' % (pathes.get('current_dir', ''), create_dir_form.cleaned_data['name'])
+            return redirect(reverse('filebrowser:administration:index') + '?path=' + pathes['current_dir'])
+    else:
+        create_dir_form = CreateDirectory(prefix='cdf')
+
+        files = []
+        dirs = []
+        for current_dir_item in current_dir_items:
+            current_dir_item_path = os.path.join(pathes['upload_dir'], current_dir_item)
+            if os.path.isfile(current_dir_item_path.encode(app_settings.FILE_NAME_ENCODING)):
+                files.append(get_file_map(current_dir_item_path, app_settings.UPLOAD_TO, pathes['current_dir']))
+
+            elif os.path.isdir(current_dir_item_path.encode(app_settings.FILE_NAME_ENCODING)):
+                dirs.append(get_dir_map(current_dir_item_path, pathes['current_dir']))
+
+
+        full_path_hashes = []
+        for file_item in files:
+            full_path_hashes.append(file_item.get('full_path_hash', ''))
+
+        file_models = models.File.objects.filter(full_path_hash__in=full_path_hashes)
+
+        file_models_index= {}
+
+        for file_model in file_models:
+            file_models_index[file_model.full_path_hash] = file_model
+
+        for file_item in files:
+            file_model = file_models_index.get(file_item.get('full_path_hash', ''), None)
+            if file_model:
+                file_item['model'] = file_model
+
+        dir_map = sorted(dirs, key=lambda x: x['name']) +\
+                  sorted(files, key=lambda x: x['name'])
+
+        breadcrumbs = _make_breadcrumbs(pathes)
 
     return render(request, 'filebrowser/administration/list.html', {
         'dir_map': dir_map,
         'breadcrumbs': breadcrumbs,
-        'upload_form': upload_form,
-        'dir_form': dir_form,
-        'active_module': 'filebrowser'
+        'create_dir_form': create_dir_form
     })
+
+
+
+@login_required
+@permission_required_or_403('filebrowser.add_file')
+@transaction.atomic()
+def upload_file(request):
+    pathes = _get_init_pathes(request)
+    UploadFileForm = get_upload_file_form(pathes)
+
+    if request.method == 'POST':
+        file_info_form = FileForm(request.POST, prefix='fif')
+        upload_form = UploadFileForm(request.POST, request.FILES)
+        if upload_form.is_valid() and file_info_form.is_valid():
+            handle_uploaded_file(f=request.FILES['file'], path=pathes['upload_dir'])
+            file_model = file_info_form.save(commit=False)
+            file_model.path = pathes['current_dir']
+            file_model.name = str(upload_form.cleaned_data['file'])
+            try:
+                exist_file_model = models.File.objects.get(full_path_hash=file_model.full_path_hash)
+                exist_file_model.delete()
+            except models.File.DoesNotExist:
+                pass
+            file_model.save()
+            content_type = ContentType.objects.get_for_model(models.File)
+            return redirect(reverse('filebrowser:administration:index') + '?path=' + pathes['current_dir'])
+    else:
+        upload_form = UploadFileForm(initial={'path': pathes['current_dir']})
+        file_info_form = FileForm(prefix='fif')
+
+    breadcrumbs = _make_breadcrumbs(pathes)
+
+    return render(request, 'filebrowser/administration/upload_file.html', {
+        'form': upload_form,
+        'breadcrumbs': breadcrumbs,
+        'file_info_form': file_info_form
+    })
+
 
 
 @login_required
 @permission_required_or_403('filebrowser.delete_file')
+@transaction.atomic()
 def delete(request):
+    name = request.GET.get('name').replace('..', '').replace('/', '').replace('\\', '')
+    pathes = _get_init_pathes(request)
 
-    base_uplod_path = settings.FILEBROWSER['upload_dir']
+    item_path = os.path.join(pathes['upload_dir'], name).encode(app_settings.FILE_NAME_ENCODING)
+    if os.path.isfile(item_path):
+        os.remove(item_path)
+    elif os.path.isdir(item_path):
+        shutil.rmtree(item_path)
 
-    current_dir = '/'
-    if 'path' in request.GET:
-        path = request.GET['path'].strip('/')
-        if '..' in path or '/.' in path:
-            raise Http404(u"Path not founded")
+    full_path_hash = models.File.generate_full_path_hash(pathes['current_dir'], name)
+    try:
+        file_model = models.File.objects.get(full_path_hash=full_path_hash)
+        file_model.delete()
+        content_type = ContentType.objects.get_for_model(models.File)
+    except models.File.DoesNotExist:
+        pass
 
-        delete_path = '%s' % path.encode(FILE_NAME_ENCODING)
-        current_dir = os.path.split(delete_path)[0]
-        
-        delete_path = base_uplod_path + delete_path
-        print delete_path
-        if os.path.isfile(delete_path):
-            os.remove(delete_path)
-        if os.path.isdir(delete_path):
-            shutil.rmtree(delete_path)
-    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + current_dir.decode(FILE_NAME_ENCODING))
-
+    return redirect(reverse('filebrowser:administration:index') + '?path=' + pathes['current_dir'])
 
 
-@login_required
-@permission_required_or_403('filebrowser.add_file')
-def upload(request):
+def ajax_file_info(request):
+    hash = request.GET.get('hash', '')
 
-    path = u'/'
-    base_uplod_path = settings.FILEBROWSER['upload_dir']
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
+    try:
+        file_info = models.File.objects.get(full_path_hash=hash)
+    except models.File.DoesNotExist:
+        return HttpResponse('Описание файла не найдено')
 
-        if form.is_valid():
-            path = form.cleaned_data['path'].encode(FILE_NAME_ENCODING)
-            upload_path = base_uplod_path + path
-            file_name = request.FILES['file'].name
-            if os.path.isfile(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
-                return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename uploadable file.'))
-            elif  os.path.isdir(upload_path + '/' + file_name.encode(FILE_NAME_ENCODING)):
-                return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or rename uploadable file.'))
-
-            if not os.path.isdir(upload_path):
-                raise Http404(u"Path not founded")
-
-            handle_uploaded_file(f=request.FILES['file'], path=upload_path)
-
-    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + path.decode(FILE_NAME_ENCODING))
-
-
-
-@login_required
-@permission_required_or_403('filebrowser.add_file')
-def create_directory(request):
-
-    path = u'/'
-    base_uplod_path = settings.FILEBROWSER['upload_dir']
-
-    if request.method == 'POST':
-        dir_form = CreateDirectory(request.POST, prefix='dir_form')
-        if dir_form.is_valid():
-            path = dir_form.cleaned_data['path'].encode(FILE_NAME_ENCODING)
-            upload_path = base_uplod_path + path
-            dir_name = dir_form.cleaned_data['name'].encode(FILE_NAME_ENCODING)
-            if os.path.isfile(upload_path + '/' +dir_name):
-                return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename creatable directory.'))
-            elif  os.path.isdir(upload_path + '/' + dir_name):
-                return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or or rename creatable directory.'))
-
-            if not os.path.isdir(upload_path):
-                raise Http404(_(u"Path not founded"))
-            upload_path = upload_path.rstrip('/')
-            os.mkdir(upload_path + '/' + dir_name, 0755)
-
-    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + path.decode(FILE_NAME_ENCODING))
-
-
+    return render(request, 'filebrowser/administration/ajax_file_info.html', {
+        'file_info': file_info
+    })

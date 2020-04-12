@@ -6,8 +6,8 @@ from ..models import Feedback
 
 
 class FeedbackForm(forms.ModelForm):
-    content = forms.CharField(widget=forms.Textarea, label=u'Текст отзыва')
-    captcha = CaptchaField(label=u'Введите текст с картинки')
+    content = forms.CharField(widget=forms.Textarea, label='Текст отзыва')
+    captcha = CaptchaField(label='Введите текст с картинки')
     # captcha = CaptchaField(label=u'Введите текст изображенный на картинке')
     class Meta:
         model = Feedback

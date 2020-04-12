@@ -19,7 +19,7 @@ _isCallable = lambda o: hasattr(o, "__call__")
 # 
 
 def _pickleDictItems(root, node, fabric):
-    for key, value in root.items():
+    for key, value in list(root.items()):
         tempnode = fabric.createElement("item")
         tempnode.appendChild(pickle(key, fabric, "key"))
         tempnode.appendChild(pickle(value, fabric, "value"))
@@ -198,5 +198,5 @@ if __name__=="__main__":
     node = pickle(root = x, fabric=dom.Document())
 
     # that is how the xml document looks like:
-    print node.toprettyxml()
+    print(node.toprettyxml())
 ## end of http://code.activestate.com/recipes/355487/ }}}

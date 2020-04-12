@@ -65,29 +65,29 @@ def index(request):
         q = Q()
         try:
             if year:
-                errors += int_validator(year, u'Год')
-                errors += max_validator(int(year), 9999, u'Год')
-                errors += min_validator(int(year), 1, u'Год')
+                errors += int_validator(year, 'Год')
+                errors += max_validator(int(year), 9999, 'Год')
+                errors += min_validator(int(year), 1, 'Год')
                 q = q & Q(date__year=year)
 
             if month:
-                errors += int_validator(month, u'Месяц')
-                errors += max_validator(int(month), 12, u'Месяц')
-                errors += min_validator(int(month), 1, u'Месяц')
+                errors += int_validator(month, 'Месяц')
+                errors += max_validator(int(month), 12, 'Месяц')
+                errors += min_validator(int(month), 1, 'Месяц')
                 q = q & Q(date__month=month)
 
             if day:
-                errors += int_validator(day, u'День')
-                errors += max_validator(int(day), 31, u'День')
-                errors += min_validator(int(day), 1, u'День')
+                errors += int_validator(day, 'День')
+                errors += max_validator(int(day), 31, 'День')
+                errors += min_validator(int(day), 1, 'День')
                 q = q & Q(date__day=day)
 
             if theme:
-                errors += int_validator(theme, u'Тема')
+                errors += int_validator(theme, 'Тема')
                 q = q & Q(theme_id=int(theme))
 
             if type:
-                errors += int_validator(type, u'Тип')
+                errors += int_validator(type, 'Тип')
                 q = q & Q(type__id=int(type))
 
         except ValueError as e:
@@ -136,26 +136,26 @@ def detail(request, id):
     })
 
 
-def int_validator(value, label=u'Аргумент'):
+def int_validator(value, label='Аргумент'):
     errors = []
     try:
         int(value)
     except ValueError as e:
-        errors.append(label + u' не является целым числом')
+        errors.append(label + ' не является целым числом')
     return errors
 
 
-def min_validator(value, min_value, label=u'Аргумент'):
+def min_validator(value, min_value, label='Аргумент'):
     errors = []
     if value < min_value:
-        errors.append(label + u' не может быть меньше ' + unicode(min_value))
+        errors.append(label + ' не может быть меньше ' + str(min_value))
     return errors
 
 
-def max_validator(value, max_value, label=u'Аргумент'):
+def max_validator(value, max_value, label='Аргумент'):
     errors = []
     if value > max_value:
-        errors.append(label + u' не может быть больше ' + unicode(max_value))
+        errors.append(label + ' не может быть больше ' + str(max_value))
     return errors
 
 
@@ -167,10 +167,10 @@ def get_records(ids):
     records = list(ImportantDate.objects.filter(id__in=ids))
     records_dict = {}
     for record in records:
-        records_dict[unicode(record.id)] = record
+        records_dict[str(record.id)] = record
     nrecords = []
     for id in ids:
-        record = records_dict.get(unicode(id), None)
+        record = records_dict.get(str(id), None)
         if record:
             nrecords.append(record)
     return nrecords
@@ -185,56 +185,56 @@ def construct_query(attrs, values, optimize=True):
         if not value.strip():
             break
 
-        term_operator = u'AND'
+        term_operator = 'AND'
 
         # атрибуты, термы которых будут объеденын чере OR
         or_operators_attrs = [
             'all_t',
         ]
         if attr in or_operators_attrs:
-            term_operator = u'OR'
+            term_operator = 'OR'
 
         attr_type = get_attr_type(attr)
         # если атрибут имеет строковой тип, то представляем его как фразу
-        if attr_type[-1] == u's':
+        if attr_type[-1] == 's':
             value = terms_as_phrase(pair[1])
         else:
             value = terms_as_group(pair[1], term_operator)
 
         # если поиск осуществляется по всем записям, то меняем атрибут на *
-        if len(pairs) == 1 and value == u'(*)':
-            attr = u'*'
+        if len(pairs) == 1 and value == '(*)':
+            attr = '*'
         # если поиск осуществляется по всему атрибуту, то отбрасываем его
-        elif len(pairs) > 1 and value == u'(*)':
+        elif len(pairs) > 1 and value == '(*)':
             continue
         all_fields = []
         if attr == 'all_t':
             # all_fields.append(u'author_t:%s^22' % value)
-            all_fields.append(u'fio_t:%s^16' % value)
-            all_fields.append(u'fio_tru:%s^8' % value)
-            all_fields.append(u'org_title_t:%s^16' % value)
-            all_fields.append(u'org_title_tru:%s^8' % value)
-            all_fields.append(u'event_title_t:%s^16' % value)
-            all_fields.append(u'event_title_tru:%s^8' % value)
-            all_fields.append(u'geo_title_t:%s^16' % value)
-            all_fields.append(u'geo_title_tru:%s^8' % value)
-            all_fields.append(u'theme_t:%s^16' % value)
-            all_fields.append(u'theme_tru:%s^8' % value)
+            all_fields.append('fio_t:%s^16' % value)
+            all_fields.append('fio_tru:%s^8' % value)
+            all_fields.append('org_title_t:%s^16' % value)
+            all_fields.append('org_title_tru:%s^8' % value)
+            all_fields.append('event_title_t:%s^16' % value)
+            all_fields.append('event_title_tru:%s^8' % value)
+            all_fields.append('geo_title_t:%s^16' % value)
+            all_fields.append('geo_title_tru:%s^8' % value)
+            all_fields.append('theme_t:%s^16' % value)
+            all_fields.append('theme_tru:%s^8' % value)
             #            all_fields.append(u'subject_heading_tru:%s^4' % value)
             #            all_fields.append(u'subject_subheading_tru:%s^4' % value)
             #            all_fields.append(u'subject_keywords_tru:%s^4' % value)
             #            all_fields.append(u'all_tru:%s^2' % value)
-            query.append(u'(%s)' % (u' %s ' % term_operator).join(all_fields))
+            query.append('(%s)' % (' %s ' % term_operator).join(all_fields))
         else:
-            query.append(u'%s:%s' % (attr, value))
+            query.append('%s:%s' % (attr, value))
 
-    return u' AND '.join(query)
+    return ' AND '.join(query)
 
 
 def get_pairs(attrs, values):
     pairs = []
     if len(attrs) != len(values):
-        raise ValueError(u'Параметры не соответвуют значениям')
+        raise ValueError('Параметры не соответвуют значениям')
 
     for i, attr in enumerate(attrs):
         pairs.append((attr, values[i]))
@@ -242,9 +242,9 @@ def get_pairs(attrs, values):
 
 
 def get_attr_type(attr):
-    parts = attr.split(u'_')
+    parts = attr.split('_')
     if len(parts) < 2:
-        raise ValueError(u'Неправильный атрибут: ' + attr)
+        raise ValueError('Неправильный атрибут: ' + attr)
     return parts[-1]
 
 
@@ -254,13 +254,13 @@ def terms_as_phrase(text_value):
     :param text_value: строка содержащая поисковые термы
     :return:
     """
-    return u'"%s"' % escape(text_value).strip()
+    return '"%s"' % escape(text_value).strip()
 
 
-group_spaces = re.compile(ur'\s+')
+group_spaces = re.compile(r'\s+')
 
 
-def terms_as_group(text_value, operator=u'OR'):
+def terms_as_group(text_value, operator='OR'):
     """
     Возфращает поисковое выражение в виде строки, где термы объеденены логическим операторм
     :param text_value: строка поисковых термов
@@ -269,11 +269,11 @@ def terms_as_group(text_value, operator=u'OR'):
     """
     gs = group_spaces
     # группировка пробельных символов в 1 пробел и резка по проблеам
-    terms = re.sub(gs, ur' ', text_value.strip()).split(u" ")
+    terms = re.sub(gs, r' ', text_value.strip()).split(" ")
 
-    for i in xrange(len(terms)):
+    for i in range(len(terms)):
         terms[i] = escape(terms[i]).strip()
-    return u'(%s)' % ((u' ' + operator + u' ').join(terms))
+    return '(%s)' % ((' ' + operator + ' ').join(terms))
 
 
 def extract_request_query_attrs(request):
@@ -292,4 +292,4 @@ def index_sid(request):
     dates = ImportantDate.objects.all()
     for date in dates:
         update_doc(sender=None, instance=date)
-    return HttpResponse(u'Indexed' + str(len(dates)))
+    return HttpResponse('Indexed' + str(len(dates)))

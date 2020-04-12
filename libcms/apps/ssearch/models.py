@@ -5,19 +5,21 @@ import binascii
 from collections import Counter
 from datetime import datetime, timedelta
 import hashlib
-from cStringIO import StringIO
+from io import BytesIO
 from django.db import models
 from django.contrib.auth.models import User
+from harvester.models import RecordContent
+from junimarc.json.junimarc import record_from_json
 
 # from common.pagination import get_page2
 
-RECORDS_DB_CONNECTION = 'harvester'
+# RECORDS_DB_CONNECTION = 'harvester'
 
 
 class ViewDocLog(models.Model):
     record_id = models.CharField(max_length=32, db_index=True)
     collection_id = models.CharField(max_length=64, db_index=True, null=True)
-    user = models.ForeignKey(User, null=True, db_index=True)
+    user = models.ForeignKey(User, null=True, db_index=True, on_delete=models.CASCADE)
     view_date_time = models.DateTimeField(auto_now_add=True, db_index=True)
 
     @staticmethod
@@ -26,8 +28,6 @@ class ViewDocLog(models.Model):
 
 
 class ZippedTextField(models.TextField):
-    __metaclass__ = models.SubfieldBase
-
     def db_type(self, connection):
         if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2' \
                 or connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql':
@@ -36,7 +36,7 @@ class ZippedTextField(models.TextField):
             return 'BLOB'
 
     def to_python(self, value):
-        fp = StringIO(value)
+        fp = BytesIO(value)
         zfp = zipfile.ZipFile(fp, "r")
         value = zfp.open("record.json").read()
         value = value.decode('utf-8')
@@ -44,8 +44,8 @@ class ZippedTextField(models.TextField):
         return value
 
     def get_db_prep_save(self, value, connection):
-        if isinstance(value, unicode):
-            zvalue = StringIO()
+        if isinstance(value, str):
+            zvalue = BytesIO()
             myzip = zipfile.ZipFile(zvalue, 'w')
             myzip.writestr('record', value.encode('UTF-8'), 8)
             myzip.close()
@@ -71,7 +71,7 @@ class ZippedTextField(models.TextField):
 #     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
 #     deleted= models.BooleanField()
 #     hash = models.TextField(max_length=24)
-#     def __unicode__(self):
+#     def __str__(self):
 #         return self.record_id
 #     class Meta:
 #         db_table = 'spstu'
@@ -86,7 +86,7 @@ class ZippedTextField(models.TextField):
 #     update_date = models.DateTimeField(auto_now_add=True, db_index=True)
 #     deleted= models.BooleanField()
 #     hash = models.TextField(max_length=24)
-#     def __unicode__(self):
+#     def __str__(self):
 #         return self.record_id
 #     class Meta:
 #         db_table = 'authorities'
@@ -138,36 +138,168 @@ class ZippedTextField(models.TextField):
 #     class Meta:
 #         db_table = 'record'
 
-class RecordContent(models.Model):
-    record_id = models.CharField(max_length=32L, db_column='original_id_hash')
-    source_id = models.CharField(max_length=32L)
-    content = models.BinaryField()
-    create_date_time = models.DateTimeField()
+# class RecordContent(models.Model):
+#     record_id = models.CharField(max_length=32, db_column='original_id_hash')
+#     source_id = models.CharField(max_length=32)
+#     content = models.BinaryField()
+#     create_date_time = models.DateTimeField()
+#
+#     class Meta:
+#         db_table = 'records'
+#
+#     def unpack_content(self):
+#         fp = BytesIO(self.content)
+#         zfp = zipfile.ZipFile(fp, "r")
+#         value = zfp.open("record.json").read()
+#         return value.decode('utf-8')
 
-    class Meta:
-        db_table = 'records'
 
-    def unpack_content(self):
-        fp = StringIO(self.content)
-        zfp = zipfile.ZipFile(fp, "r")
-        value = zfp.open("record.json").read()
-        return value.decode('utf-8')
-
-
-def get_records(ids, db_config='records'):
-    cleaned_ids = []
-    for id in ids:
-        cleaned_ids.append(id.strip())
-    records = list(RecordContent.objects.using(RECORDS_DB_CONNECTION).filter(record_id__in=cleaned_ids))
+def get_records(record_ids):
+    """
+    :param record_ids: record_id идентификаторы записей
+    :return: списко записей
+    """
+    records_objects = list(RecordContent.objects.filter(record_id__in=record_ids))
+    records = []
+    for record in records_objects:
+        rdict = json.loads(record.content)
+        jrecord = record_from_json(rdict)
+        records.append({
+            'id': record.record_id,
+            'dict': rdict,
+            'tree': record_to_ruslan_xml(jrecord),
+            'jrecord': jrecord
+        })
+        # record.tree = record_to_ruslan_xml(json.loads(record.content))
     records_dict = {}
     for record in records:
-        records_dict[record.record_id] = record
-    result_records = []
-    for id in cleaned_ids:
-        record = records_dict.get(id, None)
-        if not record: continue
-        result_records.append(record)
-    return result_records
+        records_dict[record['id']] = record
+    nrecords = []
+    for record_id in record_ids:
+        record = records_dict.get(record_id, None)
+        if record:
+            nrecords.append(record)
+    return nrecords
+
+
+# def get_records(ids, db_config='records'):
+#     cleaned_ids = []
+#     for id in ids:
+#         cleaned_ids.append(id.strip())
+#     records = list(RecordContent.objects.using(RECORDS_DB_CONNECTION).filter(record_id__in=cleaned_ids))
+#     records_dict = {}
+#     for record in records:
+#         records_dict[record.record_id] = record
+#     result_records = []
+#     for id in cleaned_ids:
+#         record = records_dict.get(id, None)
+#         if not record: continue
+#         result_records.append(record)
+#     return result_records
+
+from junimarc import ruslan_xml
+def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=False):
+    return ruslan_xml.record_to_xml(map_record, syntax, namespace)
+    """
+    default syntax rusmarc
+    """
+    string_leader = map_record['l']
+
+    root = etree.Element('record')
+    root.set('syntax', syntax)
+    leader = etree.SubElement(root, 'leader')
+
+    length = etree.SubElement(leader, 'length')
+    length.text = string_leader[0:5]
+
+    status = etree.SubElement(leader, 'status')
+    status.text = string_leader[5]
+
+    type = etree.SubElement(leader, 'status')
+    type.text = string_leader[6]
+
+    leader07 = etree.SubElement(leader, 'leader07')
+    leader07.text = string_leader[7]
+
+    leader08 = etree.SubElement(leader, 'leader08')
+    leader08.text = string_leader[8]
+
+    leader09 = etree.SubElement(leader, 'leader09')
+    leader09.text = string_leader[9]
+
+    indicator_count = etree.SubElement(leader, 'indicatorCount')
+    indicator_count.text = string_leader[10]
+
+    indicator_length = etree.SubElement(leader, 'identifierLength')
+    indicator_length.text = string_leader[11]
+
+    data_base_address = etree.SubElement(leader, 'dataBaseAddress')
+    data_base_address.text = string_leader[12:17]
+
+    leader17 = etree.SubElement(leader, 'leader17')
+    leader17.text = string_leader[17]
+
+    leader18 = etree.SubElement(leader, 'leader18')
+    leader18.text = string_leader[18]
+
+    leader19 = etree.SubElement(leader, 'leader19')
+    leader19.text = string_leader[19]
+
+    entry_map = etree.SubElement(leader, 'entryMap')
+    entry_map.text = string_leader[20:23]
+
+    if 'cf' in map_record:
+        for cfield in map_record['cf']:
+            control_field = etree.SubElement(root, 'field')
+            control_field.set('id', cfield['id'])
+            control_field.text = cfield['d']
+
+    if 'df' in map_record:
+        for field in map_record['df']:
+            data_field = etree.SubElement(root, 'field')
+            data_field.set('id', field['id'])
+
+            ind1 = etree.SubElement(data_field, 'indicator')
+            ind1.set('id', '1')
+            ind1.text = field['i1']
+
+            ind2 = etree.SubElement(data_field, 'indicator')
+            ind2.set('id', '2')
+            ind2.text = field['i2']
+
+            for subfield in field['sf']:
+                if 'inner' in subfield:
+                    linked_subfield = etree.SubElement(data_field, 'subfield')
+                    linked_subfield.set('id', subfield['id'])
+
+                    if 'cf' in subfield['inner']:
+                        for cfield in subfield['inner']['cf']:
+                            linked_control_field = etree.SubElement(linked_subfield, 'field')
+                            linked_control_field.set('id', cfield['id'])
+                            linked_control_field.text = cfield['d']
+                    else:
+                        for lfield in subfield['inner']['df']:
+                            linked_data_field = etree.SubElement(linked_subfield, 'field')
+                            linked_data_field.set('id', lfield['id'])
+
+                            linked_ind1 = etree.SubElement(linked_data_field, 'indicator')
+                            linked_ind1.set('id', '1')
+                            linked_ind1.text = lfield['i1']
+
+                            linked_ind2 = etree.SubElement(linked_data_field, 'indicator')
+                            linked_ind2.set('id', '2')
+                            linked_ind2.text = lfield['i2']
+
+                            for lsubfield in lfield['sf']:
+                                linkeddata_subfield = etree.SubElement(linked_data_field, 'subfield')
+                                linkeddata_subfield.set('id', lsubfield['id'])
+                                linkeddata_subfield.text = lsubfield['d']
+
+                else:
+                    data_subfield = etree.SubElement(data_field, 'subfield')
+                    data_subfield.set('id', subfield['id'])
+                    data_subfield.text = subfield['d']
+    return root
 
 
 from collections import defaultdict
@@ -178,7 +310,7 @@ def fill_records(detail_log_dict_list):
     for detail_log_dict in detail_log_dict_list:
         record_ids_index[detail_log_dict['detail_log'].record_id].append(detail_log_dict)
 
-    for record_content in get_records(record_ids_index.keys()):
+    for record_content in get_records(list(record_ids_index.keys())):
         for detail_log_dict in record_ids_index.get(record_content.record_id, []):
             detail_log_dict['record_content'] = record_content
 
@@ -203,43 +335,43 @@ class SearchLog(models.Model):
 DETAIL_ACTIONS_REFERENCE = {
     'VIEW_DETAIL': {
         'code': 0,
-        'title': u'просмотр записи',
+        'title': 'просмотр записи',
     },
     'LOAD_FULL_TEXT': {
         'code': 1,
-        'title': u'загрузка полного текста',
+        'title': 'загрузка полного текста',
     },
     'VIEW_FULL_TEXT': {
         'code': 2,
-        'title': u'просмотр полного текста',
+        'title': 'просмотр полного текста',
     },
     'LOAD_VIDEO': {
         'code': 3,
-        'title': u'загрузка видео',
+        'title': 'загрузка видео',
     },
     'VIEW_VIDEO': {
         'code': 4,
-        'title': u'просмотр видео',
+        'title': 'просмотр видео',
     },
     'LOAD_AUDIO': {
         'code': 5,
-        'title': u'загрузка аудио',
+        'title': 'загрузка аудио',
     },
     'VIEW_AUDIO': {
         'code': 6,
-        'title': u'прослушивание аудио',
+        'title': 'прослушивание аудио',
     },
     'LOAD_CONTENT_LIST': {
         'code': 7,
-        'title': u'загрузка содержания',
+        'title': 'загрузка содержания',
     },
     'LOAD_DOCUMENT': {
         'code': 8,
-        'title': u'загрузка электронного документа',
+        'title': 'загрузка электронного документа',
     },
     'SOCIAL_SHARE': {
         'code': 9,
-        'title': u'отправка в соц. сети',
+        'title': 'отправка в соц. сети',
     },
 }
 
@@ -268,10 +400,10 @@ init_detail_actions()
 class DetailLog(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, blank=True)
     record_id = models.CharField(max_length=64, db_index=True)
-    action = models.IntegerField(verbose_name=u'Действие', default=DETAIL_ACTIONS['VIEW_DETAIL'], db_index=True)
-    session_id = models.CharField(verbose_name=u'Идентификатор сесии', max_length=64, db_index=True)
+    action = models.IntegerField(verbose_name='Действие', default=DETAIL_ACTIONS['VIEW_DETAIL'], db_index=True)
+    session_id = models.CharField(verbose_name='Идентификатор сесии', max_length=64, db_index=True)
     attrs = models.TextField(
-        verbose_name=u'JSON атрибуты',
+        verbose_name='JSON атрибуты',
         blank=True,
         max_length=10 * 1024
     )
@@ -286,8 +418,8 @@ class DetailLog(models.Model):
             return {}
         return json.loads(self.attrs)
 
-    def __unicode__(self):
-        return u'{record_id} {action}'.format(record_id=self.record_id, action=self.action)
+    def __str__(self):
+        return '{record_id} {action}'.format(record_id=self.record_id, action=self.action)
 
 
 def log_search_request(params, user=None, total=0, in_results=False, session_id=''):
@@ -305,7 +437,8 @@ def log_search_request(params, user=None, total=0, in_results=False, session_id=
 
     json_params = json.dumps(params, ensure_ascii=False).lower()
 
-    params_crc32 = binascii.crc32(json_params.encode('utf-8'))
+    params_crc32 = binascii.crc32(json_params.encode('utf-8')) / 10
+
     now = datetime.now()
 
     q = models.Q(
@@ -323,7 +456,7 @@ def log_search_request(params, user=None, total=0, in_results=False, session_id=
     if id_q:
         q &= models.Q(date_time__gte=now - timedelta(minutes=REPEAT_LOG_TIMEOUT_MINUTES))
         q &= id_q
-    print q
+    print(q)
     if user or session_id:
         if SearchLog.objects.filter(q).exists():
             return
@@ -470,7 +603,7 @@ def get_rating_records(start_date, end_date):
 
     most_commons = counter.most_common()[:20]
     record_ids = [x[0] for x in most_commons]
-    records = get_records(record_ids, RECORDS_DB_CONNECTION)
+    records = get_records(record_ids)
     records_index = {}
 
     for record in records:

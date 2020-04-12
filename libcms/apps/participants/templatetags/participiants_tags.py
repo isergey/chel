@@ -10,10 +10,10 @@ def make_library_dict(library):
         'id': library.id,
         'code': library.code,
         'name': library.name,
-        'postal_address': getattr(library, 'postal_address', u"не указан"),
-        'phone': getattr(library, 'phone', u"не указан"),
-        'plans': getattr(library, 'plans', u"не указано"),
-        'http_service': getattr(library, 'http_service', u"не указан"),
+        'postal_address': getattr(library, 'postal_address', "не указан"),
+        'phone': getattr(library, 'phone', "не указан"),
+        'plans': getattr(library, 'plans', "не указано"),
+        'http_service': getattr(library, 'http_service', "не указан"),
         'latitude': library.latitude,
         'longitude': library.longitude,
         }
@@ -25,7 +25,7 @@ def cbs_map():
     for org in cbs_list:
         js_orgs.append(make_library_dict(org))
 
-    js_orgs = simplejson.dumps(js_orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = simplejson.dumps(js_orgs, ensure_ascii=False)
     return {
         'cbs_list': cbs_list,
         'js_orgs': js_orgs

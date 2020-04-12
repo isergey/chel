@@ -1,9 +1,9 @@
-from __future__ import absolute_import
+
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 import datetime
 
@@ -70,150 +70,150 @@ interface = MockInterface()
 good_query_data = {
     "query_by_term":(
         (["hello"], {},
-         [("q", u"hello")]),
+         [("q", "hello")]),
         (["hello"], {"int_field":3},
-         [("q", u"hello AND int_field:3")]),
+         [("q", "hello AND int_field:3")]),
         (["hello", "world"], {},
-         [("q", u"hello AND world")]),
+         [("q", "hello AND world")]),
         # NB this next is not really what we want,
         # probably this should warn
         (["hello world"], {},
-         [("q", u"hello\\ world")]),
+         [("q", "hello\\ world")]),
         ),
 
     "query_by_phrase":(
         (["hello"], {},
-         [("q", u"hello")]),
+         [("q", "hello")]),
         (["hello"], {"int_field":3},
-         [("q", u"int_field:3 AND hello")]), # Non-text data is always taken to be a term, and terms come before phrases, so order is reversed
+         [("q", "int_field:3 AND hello")]), # Non-text data is always taken to be a term, and terms come before phrases, so order is reversed
         (["hello", "world"], {},
-         [("q", u"hello AND world")]),
+         [("q", "hello AND world")]),
         (["hello world"], {},
-         [("q", u"hello\\ world")]),
+         [("q", "hello\\ world")]),
         ([], {'string_field':['hello world', 'goodbye, cruel world']},
-         [("q", u"string_field:goodbye,\\ cruel\\ world AND string_field:hello\\ world")]),
+         [("q", "string_field:goodbye,\\ cruel\\ world AND string_field:hello\\ world")]),
         ),
 
     "filter_by_term":(
         (["hello"], {},
-         [("fq", u"hello"), ("q", "*:*")]),
+         [("fq", "hello"), ("q", "*:*")]),
         (["hello"], {"int_field":3},
-         [("fq", u"hello AND int_field:3"), ("q", "*:*")]),
+         [("fq", "hello AND int_field:3"), ("q", "*:*")]),
         (["hello", "world"], {},
-         [("fq", u"hello AND world"), ("q", "*:*")]),
+         [("fq", "hello AND world"), ("q", "*:*")]),
         # NB this next is not really what we want,
         # probably this should warn
         (["hello world"], {},
-         [("fq", u"hello\\ world"), ("q", "*:*")]),
+         [("fq", "hello\\ world"), ("q", "*:*")]),
         ),
 
     "filter_by_phrase":(
         (["hello"], {},
-         [("fq", u"hello"), ("q", "*:*")]),
+         [("fq", "hello"), ("q", "*:*")]),
         (["hello"], {"int_field":3},
-         [("fq", u"int_field:3 AND hello"), ("q", "*:*")]),
+         [("fq", "int_field:3 AND hello"), ("q", "*:*")]),
         (["hello", "world"], {},
-         [("fq", u"hello AND world"), ("q", "*:*")]),
+         [("fq", "hello AND world"), ("q", "*:*")]),
         (["hello world"], {},
-         [("fq", u"hello\\ world"), ("q", "*:*")]),
+         [("fq", "hello\\ world"), ("q", "*:*")]),
         ),
 
     "query":(
         (["hello"], {},
-         [("q", u"hello")]),
+         [("q", "hello")]),
         (["hello"], {"int_field":3},
-         [("q", u"hello AND int_field:3")]),
+         [("q", "hello AND int_field:3")]),
         (["hello", "world"], {},
-         [("q", u"hello AND world")]),
+         [("q", "hello AND world")]),
         (["hello world"], {},
-         {"q":u"\"hello world\""}),
+         {"q":"\"hello world\""}),
         ),
 
     "filter":(
         (["hello"], {},
-         [("fq", u"hello"), ("q", "*:*")]),
+         [("fq", "hello"), ("q", "*:*")]),
         (["hello"], {"int_field":3},
-         [("fq", u"hello AND int_field:3"), ("q", "*:*")]),
+         [("fq", "hello AND int_field:3"), ("q", "*:*")]),
         (["hello", "world"], {},
-         [("fq", u"hello AND world"), ("q", "*:*")]),
+         [("fq", "hello AND world"), ("q", "*:*")]),
         (["hello world"], {},
-         [("fq", u"hello\\ world"), ("q", "*:*")]),
+         [("fq", "hello\\ world"), ("q", "*:*")]),
         ),
 
     "query":(
         ([], {"boolean_field":True},
-         {"q":u"boolean_field:true"}),
+         {"q":"boolean_field:true"}),
         ([], {"boolean_field":"false"},
-         {"q":u"boolean_field:true"}), # boolean field takes any truth-y value
+         {"q":"boolean_field:true"}), # boolean field takes any truth-y value
         ([], {"boolean_field":0},
-         {"q":u"boolean_field:false"}),
+         {"q":"boolean_field:false"}),
         ([], {"int_field":3},
-         {"q":u"int_field:3"}),
+         {"q":"int_field:3"}),
         ([], {"int_field":3.1}, # casting from float should work
-         {"q":u"int_field:3"}),
+         {"q":"int_field:3"}),
         ([], {"sint_field":3},
-         {"q":u"sint_field:3"}),
+         {"q":"sint_field:3"}),
         ([], {"sint_field":3.1}, # casting from float should work
-         {"q":u"sint_field:3"}),
+         {"q":"sint_field:3"}),
         ([], {"long_field":2**31},
-         {"q":u"long_field:2147483648"}),
+         {"q":"long_field:2147483648"}),
         ([], {"slong_field":2**31},
-         {"q":u"slong_field:2147483648"}),
+         {"q":"slong_field:2147483648"}),
         ([], {"float_field":3.0},
-         {"q":u"float_field:3.0"}),
+         {"q":"float_field:3.0"}),
         ([], {"float_field":3}, # casting from int should work
-         {"q":u"float_field:3.0"}),
+         {"q":"float_field:3.0"}),
         ([], {"sfloat_field":3.0},
-         {"q":u"sfloat_field:3.0"}),
+         {"q":"sfloat_field:3.0"}),
         ([], {"sfloat_field":3}, # casting from int should work
-         {"q":u"sfloat_field:3.0"}),
+         {"q":"sfloat_field:3.0"}),
         ([], {"double_field":3.0},
-         {"q":u"double_field:3.0"}),
+         {"q":"double_field:3.0"}),
         ([], {"double_field":3}, # casting from int should work
-         {"q":u"double_field:3.0"}),
+         {"q":"double_field:3.0"}),
         ([], {"sdouble_field":3.0},
-         {"q":u"sdouble_field:3.0"}),
+         {"q":"sdouble_field:3.0"}),
         ([], {"sdouble_field":3}, # casting from int should work
-         {"q":u"sdouble_field:3.0"}),
+         {"q":"sdouble_field:3.0"}),
         ([], {"date_field":datetime.datetime(2009, 1, 1)},
-         {"q":u"date_field:2009-01-01T00\\:00\\:00Z"}),
+         {"q":"date_field:2009-01-01T00\\:00\\:00Z"}),
         ([], {"date_field":mx.DateTime.DateTime(2009, 1, 1)},
-         {"q":u"date_field:2009-01-01T00\\:00\\:00Z"}),
+         {"q":"date_field:2009-01-01T00\\:00\\:00Z"}),
         ),
 
     "query":(
         ([], {"int_field__any":True},
-         [("q", u"int_field:[* TO *]")]),
+         [("q", "int_field:[* TO *]")]),
         ([], {"int_field__lt":3},
-         [("q", u"int_field:{* TO 3}")]),
+         [("q", "int_field:{* TO 3}")]),
         ([], {"int_field__gt":3},
-         [("q", u"int_field:{3 TO *}")]),
+         [("q", "int_field:{3 TO *}")]),
         ([], {"int_field__rangeexc":(-3, 3)},
-         [("q", u"int_field:{\-3 TO 3}")]),
+         [("q", "int_field:{\-3 TO 3}")]),
         ([], {"int_field__rangeexc":(3, -3)},
-         [("q", u"int_field:{\-3 TO 3}")]),
+         [("q", "int_field:{\-3 TO 3}")]),
         ([], {"int_field__lte":3},
-         [("q", u"int_field:[* TO 3]")]),
+         [("q", "int_field:[* TO 3]")]),
         ([], {"int_field__gte":3},
-         [("q", u"int_field:[3 TO *]")]),
+         [("q", "int_field:[3 TO *]")]),
         ([], {"int_field__range":(-3, 3)},
-         [("q", u"int_field:[\-3 TO 3]")]),
+         [("q", "int_field:[\-3 TO 3]")]),
         ([], {"int_field__range":(3, -3)},
-         [("q", u"int_field:[\-3 TO 3]")]),
+         [("q", "int_field:[\-3 TO 3]")]),
         ([], {"date_field__lt":datetime.datetime(2009, 1, 1)},
-         [("q", u"date_field:{* TO 2009\\-01\\-01T00\\:00\\:00Z}")]),
+         [("q", "date_field:{* TO 2009\\-01\\-01T00\\:00\\:00Z}")]),
         ([], {"date_field__gt":datetime.datetime(2009, 1, 1)},
-         [("q", u"date_field:{2009\\-01\\-01T00\\:00\\:00Z TO *}")]),
+         [("q", "date_field:{2009\\-01\\-01T00\\:00\\:00Z TO *}")]),
         ([], {"date_field__rangeexc":(datetime.datetime(2009, 1, 1), datetime.datetime(2009, 1, 2))},
          [("q", "date_field:{2009\\-01\\-01T00\\:00\\:00Z TO 2009\\-01\\-02T00\\:00\\:00Z}")]),
         ([], {"date_field__lte":datetime.datetime(2009, 1, 1)},
-         [("q", u"date_field:[* TO 2009\\-01\\-01T00\\:00\\:00Z]")]),
+         [("q", "date_field:[* TO 2009\\-01\\-01T00\\:00\\:00Z]")]),
         ([], {"date_field__gte":datetime.datetime(2009, 1, 1)},
-         [("q", u"date_field:[2009\\-01\\-01T00\\:00\\:00Z TO *]")]),
+         [("q", "date_field:[2009\\-01\\-01T00\\:00\\:00Z TO *]")]),
         ([], {"date_field__range":(datetime.datetime(2009, 1, 1), datetime.datetime(2009, 1, 2))},
-         [("q", u"date_field:[2009\\-01\\-01T00\\:00\\:00Z TO 2009\\-01\\-02T00\\:00\\:00Z]")]),
+         [("q", "date_field:[2009\\-01\\-01T00\\:00\\:00Z TO 2009\\-01\\-02T00\\:00\\:00Z]")]),
         ([], {'string_field':['hello world', 'goodbye, cruel world']},
-         [("q", u"string_field:goodbye,\\ cruel\\ world AND string_field:hello\\ world")]),
+         [("q", "string_field:goodbye,\\ cruel\\ world AND string_field:hello\\ world")]),
         # Raw strings
         ([], {'string_field':RawString("abc*???")},
          [("q", "string_field:abc\\*\\?\\?\\?")]),
@@ -227,15 +227,15 @@ def check_query_data(method, args, kwargs, output):
         assert p == output, "Unequal: %r, %r" % (p, output)
     except AssertionError:
         if debug:
-            print p
-            print output
+            print(p)
+            print(output)
             import pdb;pdb.set_trace()
             raise
         else:
             raise
 
 def test_query_data():
-    for method, data in good_query_data.items():
+    for method, data in list(good_query_data.items()):
         for args, kwargs, output in data:
             yield check_query_data, method, args, kwargs, output
 
@@ -352,7 +352,7 @@ def check_good_option_data(OptionClass, kwargs, output):
     assert optioner.options() == output
 
 def test_good_option_data():
-    for OptionClass, option_data in good_option_data.items():
+    for OptionClass, option_data in list(good_option_data.items()):
         for kwargs, output in option_data:
             yield check_good_option_data, OptionClass, kwargs, output
 
@@ -399,80 +399,80 @@ def check_bad_option_data(OptionClass, kwargs):
         assert False
 
 def test_bad_option_data():
-    for OptionClass, option_data in bad_option_data.items():
+    for OptionClass, option_data in list(bad_option_data.items()):
         for kwargs in option_data:
             yield check_bad_option_data, OptionClass, kwargs
 
 
 complex_boolean_queries = (
     (lambda q: q.query("hello world").filter(q.Q(text_field="tow") | q.Q(boolean_field=False, int_field__gt=3)),
-     [('fq', u'text_field:tow OR (boolean_field:false AND int_field:{3 TO *})'), ('q', u'hello\\ world')]),
+     [('fq', 'text_field:tow OR (boolean_field:false AND int_field:{3 TO *})'), ('q', 'hello\\ world')]),
     (lambda q: q.query("hello world").filter(q.Q(text_field="tow") & q.Q(boolean_field=False, int_field__gt=3)),
-     [('fq', u'boolean_field:false AND text_field:tow AND int_field:{3 TO *}'), ('q',  u'hello\\ world')]),
+     [('fq', 'boolean_field:false AND text_field:tow AND int_field:{3 TO *}'), ('q',  'hello\\ world')]),
 # Test various combinations of NOTs at the top level.
 # Sometimes we need to do the *:* trick, sometimes not.
     (lambda q: q.query(~q.Q("hello world")),
-     [('q',  u'NOT hello\\ world')]),
+     [('q',  'NOT hello\\ world')]),
     (lambda q: q.query(~q.Q("hello world") & ~q.Q(int_field=3)),
-     [('q',  u'NOT hello\\ world AND NOT int_field:3')]),
+     [('q',  'NOT hello\\ world AND NOT int_field:3')]),
     (lambda q: q.query("hello world", ~q.Q(int_field=3)),
-     [('q', u'hello\\ world AND NOT int_field:3')]),
+     [('q', 'hello\\ world AND NOT int_field:3')]),
     (lambda q: q.query("abc", q.Q("def"), ~q.Q(int_field=3)),
-     [('q', u'abc AND def AND NOT int_field:3')]),
+     [('q', 'abc AND def AND NOT int_field:3')]),
     (lambda q: q.query("abc", q.Q("def") & ~q.Q(int_field=3)),
-     [('q', u'abc AND def AND NOT int_field:3')]),
+     [('q', 'abc AND def AND NOT int_field:3')]),
     (lambda q: q.query("abc", q.Q("def") | ~q.Q(int_field=3)),
-     [('q', u'abc AND (def OR (*:* AND NOT int_field:3))')]),
+     [('q', 'abc AND (def OR (*:* AND NOT int_field:3))')]),
     (lambda q: q.query(q.Q("abc") | ~q.Q("def")),
-     [('q', u'abc OR (*:* AND NOT def)')]),
+     [('q', 'abc OR (*:* AND NOT def)')]),
     (lambda q: q.query(q.Q("abc") | q.Q(~q.Q("def"))),
-     [('q', u'abc OR (*:* AND NOT def)')]),
+     [('q', 'abc OR (*:* AND NOT def)')]),
 # Make sure that ANDs are flattened
     (lambda q: q.query("def", q.Q("abc"), q.Q(q.Q("xyz"))),
-     [('q', u'abc AND def AND xyz')]),
+     [('q', 'abc AND def AND xyz')]),
 # Make sure that ORs are flattened
     (lambda q: q.query(q.Q("def") | q.Q(q.Q("xyz"))),
-     [('q', u'def OR xyz')]),
+     [('q', 'def OR xyz')]),
 # Make sure that empty queries are discarded in ANDs
     (lambda q: q.query("def", q.Q("abc"), q.Q(), q.Q(q.Q() & q.Q("xyz"))),
-     [('q', u'abc AND def AND xyz')]),
+     [('q', 'abc AND def AND xyz')]),
 # Make sure that empty queries are discarded in ORs
     (lambda q: q.query(q.Q() | q.Q("def") | q.Q(q.Q() | q.Q("xyz"))),
-     [('q', u'def OR xyz')]),
+     [('q', 'def OR xyz')]),
 # Test cancellation of NOTs.
     (lambda q: q.query(~q.Q(~q.Q("def"))),
-     [('q', u'def')]),
+     [('q', 'def')]),
     (lambda q: q.query(~q.Q(~q.Q(~q.Q("def")))),
-     [('q', u'NOT def')]),
+     [('q', 'NOT def')]),
 # Test it works through sub-sub-queries
     (lambda q: q.query(~q.Q(q.Q(q.Q(~q.Q(~q.Q("def")))))),
-     [('q', u'NOT def')]),
+     [('q', 'NOT def')]),
 # Even with empty queries in there
     (lambda q: q.query(~q.Q(q.Q(q.Q() & q.Q(q.Q() | ~q.Q(~q.Q("def")))))),
-     [('q', u'NOT def')]),
+     [('q', 'NOT def')]),
 # Test escaping of AND, OR, NOT
     (lambda q: q.query("AND", "OR", "NOT"),
-     [('q', u'"AND" AND "NOT" AND "OR"')]),
+     [('q', '"AND" AND "NOT" AND "OR"')]),
 # Test exclude (rather than explicit NOT
     (lambda q: q.query("blah").exclude(q.Q("abc") | q.Q("def") | q.Q("ghi")),
-     [('q', u'blah AND NOT (abc OR def OR ghi)')]),
+     [('q', 'blah AND NOT (abc OR def OR ghi)')]),
 # Try boosts
     (lambda q: q.query("blah").query(q.Q("def")**1.5),
-     [('q', u'blah AND def^1.5')]),
+     [('q', 'blah AND def^1.5')]),
     (lambda q: q.query("blah").query((q.Q("def") | q.Q("ghi"))**1.5),
-     [('q', u'blah AND (def OR ghi)^1.5')]),
+     [('q', 'blah AND (def OR ghi)^1.5')]),
     (lambda q: q.query("blah").query(q.Q("def", ~q.Q("pqr") | q.Q("mno"))**1.5),
-     [('q', u'blah AND (def AND ((*:* AND NOT pqr) OR mno))^1.5')]),
+     [('q', 'blah AND (def AND ((*:* AND NOT pqr) OR mno))^1.5')]),
 # And boost_relevancy
     (lambda q: q.query("blah").boost_relevancy(1.5, int_field=3),
-     [('q', u'blah OR (blah AND int_field:3^1.5)')]),
+     [('q', 'blah OR (blah AND int_field:3^1.5)')]),
     (lambda q: q.query("blah").query("blah2").boost_relevancy(1.5, int_field=3),
-     [('q', u'(blah AND blah2) OR (blah AND blah2 AND int_field:3^1.5)')]),
+     [('q', '(blah AND blah2) OR (blah AND blah2 AND int_field:3^1.5)')]),
 # And ranges
     (lambda q: q.query(int_field__any=True),
-     [('q', u'int_field:[* TO *]')]),
+     [('q', 'int_field:[* TO *]')]),
     (lambda q: q.query("blah", ~q.Q(int_field__any=True)),
-     [('q', u'blah AND NOT int_field:[* TO *]')]),
+     [('q', 'blah AND NOT int_field:[* TO *]')]),
 )
 
 def check_complex_boolean_query(solr_search, query, output):
@@ -481,8 +481,8 @@ def check_complex_boolean_query(solr_search, query, output):
         assert p == output
     except AssertionError:
         if debug:
-            print p
-            print output
+            print(p)
+            print(output)
             import pdb;pdb.set_trace()
             raise
         else:
@@ -493,8 +493,8 @@ def check_complex_boolean_query(solr_search, query, output):
         assert p == q
     except AssertionError:
         if debug:
-            print p
-            print q
+            print(p)
+            print(q)
             import pdb;pdb.set_trace()
             raise
 
@@ -505,11 +505,11 @@ def test_complex_boolean_queries():
 
 
 param_encode_data = (
-    ({"int":3, "string":"string", "unicode":u"unicode"},
+    ({"int":3, "string":"string", "unicode":"unicode"},
      [("int", "3"), ("string", "string"), ("unicode", "unicode")]),
-    ({"int":3, "string":"string", "unicode":u"\N{UMBRELLA}nicode"},
+    ({"int":3, "string":"string", "unicode":"\N{UMBRELLA}nicode"},
      [("int", "3"), ("string", "string"), ("unicode", "\xe2\x98\x82nicode")]),
-    ({"int":3, "string":"string", u"\N{UMBRELLA}nicode":u"\N{UMBRELLA}nicode"},
+    ({"int":3, "string":"string", "\N{UMBRELLA}nicode":"\N{UMBRELLA}nicode"},
      [("int", "3"), ("string", "string"), ("\xe2\x98\x82nicode", "\xe2\x98\x82nicode")]),
     ({"true":True, "false":False},
      [("false", "false"), ("true", "true")]),
@@ -519,7 +519,7 @@ param_encode_data = (
 
 def check_url_encode_data(kwargs, output):
     # Convert for pre-2.6.5 python
-    s_kwargs = dict((k.encode('utf8'), v) for k, v in kwargs.items())
+    s_kwargs = dict((k.encode('utf8'), v) for k, v in list(kwargs.items()))
     assert params_from_dict(**s_kwargs) == output
 
 def test_url_encode_data():

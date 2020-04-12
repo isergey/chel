@@ -6,7 +6,7 @@ import xml.etree.cElementTree as ET
 
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.shortcuts import HttpResponse, render, get_object_or_404, redirect, urlresolvers
+from django.shortcuts import HttpResponse, render, get_object_or_404, redirect, resolve_url, reverse
 from django.contrib.auth.decorators import login_required
 
 from ..ill import ILLRequest
@@ -20,7 +20,7 @@ from ..models import UserOrderTimes
 
 from participants.models import Library
 #from order_manager.manager import OrderManager
-from forms import DeliveryOrderForm, CopyOrderForm
+from .forms import DeliveryOrderForm, CopyOrderForm
 #from ssearch.models import  Record, Ebook
 
 def set_cookies_to_response(cookies, response, domain=None):
@@ -45,9 +45,9 @@ def set_cookies_to_response(cookies, response):
 
 def ajax_login_required(view_func):
     def wrap(request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return view_func(request, *args, **kwargs)
-        json = simplejson.dumps({'status': 'error', 'error': u'Необходимо войти в систему'}, ensure_ascii=False)
+        json = simplejson.dumps({'status': 'error', 'error': 'Необходимо войти в систему'}, ensure_ascii=False)
         return HttpResponse(json, content_type='application/json')
 
     wrap.__doc__ = view_func.__doc__
@@ -251,44 +251,44 @@ def json_error(error):
 #
 
 order_statuses_titles = {
-    'new': u'принят на обработку',
-    'recall': u'отказ',
-    'conditional': u'в обработке',
-    'shipped': u'доставлен',
-    'pending': u'в ожидании',  #Доставлен
-    'notsupplied': u'выполнение невозможно',
+    'new': 'принят на обработку',
+    'recall': 'отказ',
+    'conditional': 'в обработке',
+    'shipped': 'доставлен',
+    'pending': 'в ожидании',  #Доставлен
+    'notsupplied': 'выполнение невозможно',
 }
 
 apdy_type_titles = {
-    'ILLRequest': u'Заказ',
-    'ILLAnswer': u'Ответ',
-    'Shipped': u'Доставлен',
-    'Recall': u'Задолженность',
+    'ILLRequest': 'Заказ',
+    'ILLAnswer': 'Ответ',
+    'Shipped': 'Доставлен',
+    'Recall': 'Задолженность',
 }
 
 apdu_reason_will_supply = {
-    '1': u'Заказ будет выполнен позднее',
-    '2': u'Необходимо повторить запрос позднее',
-    '3': u'Отказ',
-    '4': u'Получена информация о местонахождении документа',
-    '5': u'Заказ будет выполнен позднее',
-    '6': u'Запрос поставлен в очередь',
-    '7': u'Получена информация о стоимости выполнения заказа',
+    '1': 'Заказ будет выполнен позднее',
+    '2': 'Необходимо повторить запрос позднее',
+    '3': 'Отказ',
+    '4': 'Получена информация о местонахождении документа',
+    '5': 'Заказ будет выполнен позднее',
+    '6': 'Запрос поставлен в очередь',
+    '7': 'Получена информация о стоимости выполнения заказа',
 }
 apdu_unfilled_results = {
-    '1': u'Документ выдан',
-    '2': u'Документ в обработке',
-    '3': u'Документ утерян и/или списан',
-    '4': u'Документ не выдается',
-    '5': u'Документа нет в фонде',
-    '6': u'Документ заказан, но еще не получен ',
-    '7': u'Том / выпуск еще не приобретен',
-    '8': u'Документ в переплете',
-    '9': u'Отсутствуют необходимые части / страницы документа',
-    '10': u'Нет на месте',
-    '11': u'Документ временно не выдается',
-    '12': u'Документ в плохом состоянии',
-    '13': u'Недостаточно средств для выполнения заказа',
+    '1': 'Документ выдан',
+    '2': 'Документ в обработке',
+    '3': 'Документ утерян и/или списан',
+    '4': 'Документ не выдается',
+    '5': 'Документа нет в фонде',
+    '6': 'Документ заказан, но еще не получен ',
+    '7': 'Том / выпуск еще не приобретен',
+    '8': 'Документ в переплете',
+    '9': 'Отсутствуют необходимые части / страницы документа',
+    '10': 'Нет на месте',
+    '11': 'Документ временно не выдается',
+    '12': 'Документ в плохом состоянии',
+    '13': 'Недостаточно средств для выполнения заказа',
     #'14':u'',
     #'15':u'Документ в плохом состоянии',
 }
@@ -342,7 +342,7 @@ def index(request):
                                            encoding="UTF-8"))
             result_tree = xslt_bib_draw_transformer(doc)
             res = str(result_tree)
-        except Exception, e:
+        except Exception as e:
             raise e
         res = res.replace('– –', '—')
         res = res.replace('\n', '</br>')
@@ -380,11 +380,11 @@ def index(request):
                 order['user_comments'] = apdu.delivery_status.requester_note
                 apdu_map['record'] = res
                 if apdu.delivery_status.ill_service_type == '1':
-                    apdu_map['service_type'] = u'доставка'
+                    apdu_map['service_type'] = 'доставка'
                     order['type'] = 'doc'
 
                 elif apdu.delivery_status.ill_service_type == '2':
-                    apdu_map['service_type'] = u'копия'
+                    apdu_map['service_type'] = 'копия'
                     order['type'] = 'copy'
                     order['copy_info'] = apdu.delivery_status.item_id['pagination']
 
@@ -425,8 +425,8 @@ def index(request):
 
 
 def mba_order_reserve(request):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if not request.user.is_authenticated:
+        return HttpResponse('Вы должны быть войти на портал', status=401)
 
     if request.method == "POST":
         form = CopyOrderForm(request.POST, prefix='copy')
@@ -441,9 +441,9 @@ def mba_order_reserve(request):
                     comments=form.cleaned_data['comments'],
                 )
             except MBAOrderException as e:
-                return HttpResponse(u'{"status":"error", "error":"%s"}' % e.message)
+                return HttpResponse('{"status":"error", "error":"%s"}' % e.message)
 
-            return HttpResponse(u'{"status":"ok"}')
+            return HttpResponse('{"status":"ok"}')
         else:
             response = {
                 'status': 'error',
@@ -451,12 +451,12 @@ def mba_order_reserve(request):
             }
             return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
     else:
-        return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
+        return HttpResponse('{"status":"error", "error":"Only POST requests"}')
 
 
 def mba_order_copy(request):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if not request.user.is_authenticated:
+        return HttpResponse('Вы должны быть войти на портал', status=401)
 
     if request.method == "POST":
         form = CopyOrderForm(request.POST, prefix='copy')
@@ -471,9 +471,9 @@ def mba_order_copy(request):
                     comments=form.cleaned_data['comments'],
                 )
             except MBAOrderException as e:
-                return HttpResponse(u'{"status":"error", "error":"%s"}' % e.message)
+                return HttpResponse('{"status":"error", "error":"%s"}' % e.message)
 
-            return HttpResponse(u'{"status":"ok"}')
+            return HttpResponse('{"status":"ok"}')
         else:
             response = {
                 'status': 'error',
@@ -481,12 +481,12 @@ def mba_order_copy(request):
             }
             return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
     else:
-        return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
+        return HttpResponse('{"status":"error", "error":"Only POST requests"}')
 
 
 def mba_order_delivery(request):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if not request.user.is_authenticated:
+        return HttpResponse('Вы должны быть войти на портал', status=401)
 
     if request.method == "POST":
         form = DeliveryOrderForm(request.POST, prefix='delivery')
@@ -500,8 +500,8 @@ def mba_order_delivery(request):
                     comments=form.cleaned_data['comments'],
                 )
             except MBAOrderException as e:
-                return HttpResponse(u'{"status":"error", "error":"%s"}' % e.message)
-            return HttpResponse(u'{"status":"ok"}')
+                return HttpResponse('{"status":"error", "error":"%s"}' % e.message)
+            return HttpResponse('{"status":"ok"}')
         else:
             response = {
                 'status': 'error',
@@ -509,7 +509,7 @@ def mba_order_delivery(request):
             }
             return HttpResponse(simplejson.dumps(response, ensure_ascii=False))
     else:
-        return HttpResponse(u'{"status":"error", "error":"Only POST requests"}')
+        return HttpResponse('{"status":"error", "error":"Only POST requests"}')
 
 
 def _check_order_times(user, order_manager_id, order_type):
@@ -534,7 +534,7 @@ def _check_order_times(user, order_manager_id, order_type):
         if user_order_times >= order_copy_limit:
             return False
     else:
-        raise ValueError(u'Wrong order type' + str(order_type))
+        raise ValueError('Wrong order type' + str(order_type))
 
     return True
 
@@ -544,11 +544,11 @@ def _save_order_time(user):
     user_order_times.save()
 
 
-def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u'', comments=u''):
+def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info='', comments=''):
     user_id = str(user_id)
     order_types = ('delivery', 'copy')
     if order_type not in order_types:
-        raise ValueError(u'Wrong order type ' + str(order_type))
+        raise ValueError('Wrong order type ' + str(order_type))
 
     doc = None
     try:
@@ -559,7 +559,7 @@ def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u''
         try:
             doc = Ebook.objects.using('records').get(gen_id=gen_id)
         except Ebook.DoesNotExist:
-            raise MBAOrderException(u'Record not founded')
+            raise MBAOrderException('Record not founded')
 
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
 
@@ -567,7 +567,7 @@ def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u''
     try:
         library = Library.objects.get(id=order_manager_id)
     except Library.DoesNotExist:
-        raise MBAOrderException(u'Library not founded')
+        raise MBAOrderException('Library not founded')
 
 
     def get_first_recivier_code(library):
@@ -588,7 +588,7 @@ def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u''
         reciver_id = get_first_recivier_code(library)
 
         if not reciver_id:
-            raise MBAOrderException(u'Library cant manage orders')
+            raise MBAOrderException('Library cant manage orders')
 
     sender_id = user_id
     copy_info = copy_info
@@ -607,13 +607,13 @@ def _make_mba_order(gen_id, user_id, order_type, order_manager_id, copy_info=u''
 @login_required
 def delete_order(request, order_id):
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
-    transactions = order_manager.get_order(order_id=order_id.encode('utf-8'), user_id=unicode(request.user.id))
+    transactions = order_manager.get_order(order_id=order_id.encode('utf-8'), user_id=str(request.user.id))
     if len(transactions):
         if check_for_can_delete(transactions[0]):
             pass
-    order_manager.delete_order(order_id=order_id.encode('utf-8'), user_id=unicode(request.user.id))
+    order_manager.delete_order(order_id=order_id.encode('utf-8'), user_id=str(request.user.id))
 
-    return redirect(urlresolvers.reverse('orders:frontend:index'))
+    return redirect(reverse('orders:frontend:index'))
 
 
 @csrf_exempt
@@ -624,9 +624,9 @@ def org_by_code(request):
         org = {
             'code': library.code,
             'title': library.name,
-            'postal_address': getattr(library, 'postal_address', u'не указан'),
-            'phone': getattr(library, 'phone', u'не указан'),
-            'email': getattr(library, 'mail', u'не указан')
+            'postal_address': getattr(library, 'postal_address', 'не указан'),
+            'phone': getattr(library, 'phone', 'не указан'),
+            'email': getattr(library, 'mail', 'не указан')
         }
 
         json = simplejson.dumps({'status': 'ok', 'org_info': org}, ensure_ascii=False)
@@ -636,8 +636,8 @@ def org_by_code(request):
         return HttpResponse('Only post requests')
 
 def make_order(request):
-    if not request.user.is_authenticated():
-        return HttpResponse(u'Вы должны быть войти на портал', status=401)
+    if not request.user.is_authenticated:
+        return HttpResponse('Вы должны быть войти на портал', status=401)
     if request.method != 'POST':
         return HttpResponse('Only post requests');
     order_type = request.POST.get('type')
@@ -693,7 +693,7 @@ def make_order(request):
     try:
         tree = ET.XML(xml_record)
     except SyntaxError as e:
-        return HttpResponse(json_error(u'Заказ не выполнен. Возможно, время сессии истекло'))
+        return HttpResponse(json_error('Заказ не выполнен. Возможно, время сессии истекло'))
 
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
 

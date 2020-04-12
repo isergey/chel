@@ -18,7 +18,7 @@ def get_page_form(parent=None):
                 return slug
             else:
                 if Page.objects.filter(parent=parent, slug=slug).count():
-                    raise forms.ValidationError(u'На этом уровне страницы с таким slug уже существует')
+                    raise forms.ValidationError('На этом уровне страницы с таким slug уже существует')
             return slug
 
     return PageForm

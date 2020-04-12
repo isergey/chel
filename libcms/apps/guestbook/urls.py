@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls import re_path, include
 
-urlpatterns = patterns('',
-    (r'^admin/', include('guestbook.administration.urls', namespace='administration')),
-    (r'^', include('guestbook.frontend.urls', namespace='frontend')),
+urlpatterns = (
+    re_path(r'^admin/', include(('guestbook.administration.urls', 'administration'))),
+    re_path(r'^', include(('guestbook.frontend.urls', 'frontend'))),
 
 )
 

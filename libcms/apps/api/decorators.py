@@ -2,14 +2,14 @@
 import time
 from django.conf import settings
 from django.utils.cache import patch_vary_headers
-from django.utils.http import cookie_date
-from django.utils.importlib import import_module
+from django.utils.http import http_date
+from importlib import import_module
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseForbidden
-from django.utils.decorators import available_attrs
 
-from exceptions import ApiException
-from common import response
+
+from .exceptions import ApiException
+from .common import response
 
 
 def process_request(request):
@@ -43,7 +43,7 @@ def process_response(request, response):
             else:
                 max_age = request.session.get_expiry_age()
                 expires_time = time.time() + max_age
-                expires = cookie_date(expires_time)
+                expires = http_date(expires_time)
                 # Save the session data and refresh the client cookie.
             request.session.save()
             response.set_cookie(settings.SESSION_COOKIE_NAME,
@@ -75,13 +75,13 @@ def api(func):
         except ApiException as e:
             vars = {
                 'status':'error',
-                'error': e.message
+                'error': str(e)
             }
         return process_response(args[0], response(vars))
 
     return wrapper
 
-import urlparse
+import urllib.parse
 try:
     from functools import wraps
 except ImportError:
@@ -94,7 +94,7 @@ except ImportError:
 def user_passes_test(test_func):
 
     def decorator(view_func):
-        @wraps(view_func, assigned=available_attrs(view_func))
+        @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
             if test_func(request.user):
                 return view_func(request, *args, **kwargs)
@@ -107,7 +107,7 @@ def user_passes_test(test_func):
 def login_required_or_403(function=None):
 
     actual_decorator = user_passes_test(
-        lambda u: u.is_authenticated()
+        lambda u: u.is_authenticated
     )
     if function:
         return actual_decorator(function)

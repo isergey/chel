@@ -1,0 +1,88 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Администрирование</a>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">Модули<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    {% if perms.news %}
+                        <li><a href="{% url 'news:administration:index' %}">Новости</a></li>
+                    {% endif %}
+                    {% if perms.ask_librarian %}
+                        <li><a href="{% url 'ask_librarian:administration:index' %}">Консультация специалиста</a></li>
+                    {% endif %}
+                    {% if perms.gallery %}
+                        <li><a href="{% url 'gallery:administration:index' %}">Галерея</a></li>
+                    {% endif %}
+                    {% if perms.polls %}
+                        <li><a href="{% url 'polls:administration:index' %}">Опросы</a></li>
+                    {% endif %}
+                    {% if perms.glossarium %}
+                        <li><a href="{% url 'glossarium:administration:index' %}">Глоссарий</a></li>
+                    {% endif %}
+                    {% if perms.harvester %}
+                        <li><a href="{% url 'harvester:index' %}">Харвестер</a></li>
+                    {% endif %}
+                    {% if perms.rbooks %}
+                        <li><a href="{% url 'rbooks:administration:index' %}">RBooks</a></li>
+                    {% endif %}
+                    {% if perms.video_player %}
+                        <li><a href="{% url 'video_player:administration:index' %}">Медиаплеер</a></li>
+                    {% endif %}
+                    {% if perms.subscribe %}
+                        <li><a href="{% url 'subscribe:administration:statistics' %}">Рассылки</a></li>
+                    {% endif %}
+                    <li class="divider"></li>
+                    {% if perms.menu %}
+                        <li><a href="{% url 'menu:administration:index' %}">Меню</a></li>
+                    {% endif %}
+                    {% if perms.pages %}
+                        <li><a href="{% url 'pages:administration:index' %}">Страницы</a></li>
+                    {% endif %}
+                    {% if perms.filebrowser %}
+                        <li><a href="{% url 'filebrowser:administration:index' %}">Файлы</a></li>
+                    {% endif %}
+                    {% if request.user.is_staff %}
+                        <li><a href="{% url 'accounts:administration:index' %}">Аккаунты</a></li>
+                    {% endif %}
+                    {#{% if perms.irbis_formular %}#}
+                    {#    <li><a href="{% url 'irbis_formular:administration:index' %}">IRBIS</a></li>#}
+                    {#{% endif %}#}
+                    {#{% if perms.active_directory %}#}
+                    {#    <li><a href="{% url 'active_directory:index' %}">Active Directory</a></li>#}
+                    {#{% endif %}#}
+                    <li class="divider"></li>
+                    {% if perms.search %}
+                    <li><a href="{% url 'search:administration:reviews' %}">Рецензии</a></li>
+                    {% endif %}
+                    {% if perms.order_copy %}
+                        <li><a href="{% url 'order_copy:administration:index' %}">Заявки на оцифровку</a></li>
+                    {% endif %}
+                    {% if perms.ordernewbook %}
+                        <li><a href="{% url 'ordernewbook:administration:index' %}">Заказ новой книги</a></li>
+                    {% endif %}
+                    {% if perms.reginlib %}
+                        <li><a href="{% url 'reginlib:administration:index' %}">Регистрация в библиотеке</a></li>
+                    {% endif %}
+                    <li class="divider"></li>
+                    {% if perms.statistics %}
+                        <li><a href="{% url 'statistics:administration:index' %}">Статистика посещений</a></li>
+                    {% endif %}
+                    {% if perms.search %}
+                        <li><a href="{% url 'search:administration:index' %}">Статистика поиска</a></li>
+                    {% endif %}
+                    {% if perms.subscribe %}
+                        <li><a href="{% url 'subscribe:administration:statistics' %}">Статистика подписок</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

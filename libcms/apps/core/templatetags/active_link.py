@@ -1,20 +1,19 @@
 # -*- ecoding: utf-8 -*-
-
 from django import template
-from django.core.urlresolvers import reverse
-from django.utils.safestring import SafeUnicode
+from django.urls import reverse
+
 register = template.Library()
+
 
 @register.simple_tag(takes_context=True)
 def active(context, urls):
-
-    if type(urls) == unicode:
+    if type(urls) == str:
         if context['request'].path == urls:
             return "active"
         else:
             return ""
 
-    if context['request'].path in ( reverse(url) for url in urls.split() ):
+    if context['request'].path in (reverse(url) for url in urls.split()):
         return "active"
     return ""
 
@@ -24,7 +23,7 @@ def active_path(context, urls):
     """
     Если адрес ссылки начинается с адреса запроса
     """
-    if type(urls) == unicode:
+    if type(urls) == str:
         if context['request'].path.startswith(urls):
             return "active"
         else:

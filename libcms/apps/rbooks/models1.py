@@ -1,5 +1,5 @@
 # coding: utf-8
-import cPickle as pickle
+import pickle as pickle
 from netaddr import IPAddress, IPNetwork, IPRange
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -12,21 +12,21 @@ class Bookmarc(models.Model):
     page_number = models.IntegerField()
     position_x = models.FloatField()
     position_y = models.FloatField()
-    comments = models.CharField(max_length=2048, blank=True, verbose_name=u"Комментарии к документу")
-    add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Дата добваления документа")
+    comments = models.CharField(max_length=2048, blank=True, verbose_name="Комментарии к документу")
+    add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Дата добваления документа")
 
 
 RANGE_TYPES = (
-    (0, u'Сеть'),
-    (1, u'Хост'),
-    (2, u'Диапазон'),
+    (0, 'Сеть'),
+    (1, 'Хост'),
+    (2, 'Диапазон'),
 )
 class InternalAccessRange(models.Model):
-    range = models.CharField(verbose_name=u'IP адрес или сеть', max_length=256,
-        help_text=u'Пример. 192.168.11.11 - ip адрес; 192.168.0.0/16 - сеть; 192.168.1.1-192.168.1.10 - диапазон'
+    range = models.CharField(verbose_name='IP адрес или сеть', max_length=256,
+        help_text='Пример. 192.168.11.11 - ip адрес; 192.168.0.0/16 - сеть; 192.168.1.1-192.168.1.10 - диапазон'
     )
-    comments = models.TextField(verbose_name=u'Коментарии', max_length=512, blank=True)
-    type = models.IntegerField(verbose_name=u'Тип введенного значения', choices=RANGE_TYPES)
+    comments = models.TextField(verbose_name='Коментарии', max_length=512, blank=True)
+    type = models.IntegerField(verbose_name='Тип введенного значения', choices=RANGE_TYPES)
     pickle = models.CharField(max_length=1024)
     def clean(self):
         error = False
@@ -59,7 +59,7 @@ class InternalAccessRange(models.Model):
             error = True
 
         if error:
-            raise ValidationError(u'Введеное значение не может быть сопоставлено с адресом, сетью или диапазоном')
+            raise ValidationError('Введеное значение не может быть сопоставлено с адресом, сетью или диапазоном')
 
     def get_ip_object(self):
         return pickle.loads(str(self.pickle))

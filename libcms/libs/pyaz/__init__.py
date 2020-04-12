@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import _pyaz
+from . import _pyaz
 
 
 class ZException(Exception): pass
@@ -13,13 +13,13 @@ class ZResultSetException(ZException): pass
 class ZOptions(object):
     def __init__(self, args={}):
         self.zoptions = _pyaz.ZOptions()
-        for key in args.keys():
-            if not isinstance(args[key], unicode):
-                raise TypeError(u'value of args must be unicode strings')
+        for key in list(args.keys()):
+            if not isinstance(args[key], str):
+                raise TypeError('value of args must be unicode strings')
             self.zoptions.set_option(str(key), args[key].encode('utf-8'))
 
     def set_option(self, key, value):
-        if isinstance(value, unicode):
+        if isinstance(value, str):
             value = value.encode('utf-8')
         self.zoptions.set_option(key, value)
 
@@ -54,7 +54,7 @@ class ZOptions(object):
 
 class ZQuery(object):
     def __init__(self, query_string):
-        if isinstance(query_string, unicode):
+        if isinstance(query_string, str):
             try:
                 self.zquery = _pyaz.ZQuery(query_string.encode('utf-8'))
             except _pyaz.ZQueryException as e:
@@ -117,7 +117,7 @@ class ZResultSet(object):
         self.records = self.get_records(0, self.get_size())
         return self
 
-    def next(self):
+    def __next__(self):
         self.__next += 1
         while self.__next < len(self.records):
             return self.records[self.__next]
@@ -220,7 +220,7 @@ class ZConnection(object):
 
 
     def search(self, zquery):
-        if isinstance(zquery, unicode):
+        if isinstance(zquery, str):
             zquery = ZQuery(zquery)
         elif not isinstance(zquery, ZQuery):
             raise TypeError('zquery must be ZQuery object or unicode string')
@@ -232,7 +232,7 @@ class ZConnection(object):
             raise ZConnectionException(e.message)
 
     def scan(self, zquery):
-        if isinstance(zquery, unicode):
+        if isinstance(zquery, str):
             zquery = ZQuery(zquery)
         elif not isinstance(zquery, ZQuery):
             raise TypeError('zquery must be ZQuery object or unicode string')
@@ -279,58 +279,58 @@ class ZPackage(object):
 
 class RPNQueryBuilder(object):
     RELATION_VALUES = ( # attr 2
-        u'1', # Less than
-        u'2', # Less than or equal
-        u'3', # Equal (default)
-        u'4', # Greater or equal
-        u'5', # Greater than
-        u'6', # Not equal (unsupported in Zebra)
-        u'100', # Phonetic (unsupported in Zebra)
-        u'101', # Stem (unsupported in Zebra)
-        u'102', # Relevance
-        u'103', # AlwaysMatches  (in Zebra: AlwaysMatches searches are only supported
+        '1', # Less than
+        '2', # Less than or equal
+        '3', # Equal (default)
+        '4', # Greater or equal
+        '5', # Greater than
+        '6', # Not equal (unsupported in Zebra)
+        '100', # Phonetic (unsupported in Zebra)
+        '101', # Stem (unsupported in Zebra)
+        '102', # Relevance
+        '103', # AlwaysMatches  (in Zebra: AlwaysMatches searches are only supported
         # if alwaysmatches indexing has been enabled)
     )
 
     POSITION_VALUES = ( # attr 3
-        u'1', # First in field
-        u'2', # First in subfield
-        u'3', # Any position in field (default)
+        '1', # First in field
+        '2', # First in subfield
+        '3', # Any position in field (default)
     )
 
     STRUCTURE_VALUES = ( # attr 4
-        u'1', # Phrase (default)
-        u'2', # Word
-        u'3', # Key
-        u'4', # Year
-        u'5', # Date (normalized)
-        u'6', # Word list
-        u'100', # Date (un-normalized) (unsupported in Zebra)
-        u'101', # Name (normalized)(unsupported in Zebra)
-        u'102', # Name (un-normalized)(unsupported in Zebra)
-        u'103', # Structure (unsupported in Zebra)
-        u'104', # Urx
-        u'105', # Free-form-text
-        u'106', # Document-text
-        u'107', # Local-number
-        u'108', # String (unsupported in Zebra)
-        u'109', # Numeric string
+        '1', # Phrase (default)
+        '2', # Word
+        '3', # Key
+        '4', # Year
+        '5', # Date (normalized)
+        '6', # Word list
+        '100', # Date (un-normalized) (unsupported in Zebra)
+        '101', # Name (normalized)(unsupported in Zebra)
+        '102', # Name (un-normalized)(unsupported in Zebra)
+        '103', # Structure (unsupported in Zebra)
+        '104', # Urx
+        '105', # Free-form-text
+        '106', # Document-text
+        '107', # Local-number
+        '108', # String (unsupported in Zebra)
+        '109', # Numeric string
     )
 
     TRUNCATION_VALUES = ( # attr 5
-        u'1', # Right truncation
-        u'2', # Left truncation
-        u'3', # Left and right truncation
-        u'100', # Do not truncate  (default)
-        u'101', # Process # in search term
-        u'102', # RegExpr-1 (in Zebra)
-        u'103', # RegExpr-2 (in Zebra)
+        '1', # Right truncation
+        '2', # Left truncation
+        '3', # Left and right truncation
+        '100', # Do not truncate  (default)
+        '101', # Process # in search term
+        '102', # RegExpr-1 (in Zebra)
+        '103', # RegExpr-2 (in Zebra)
     )
 
     COMPLETENESS_VALUES = ( # attr 6
-        u'1', # Incomplete subfield (default)
-        u'2', # Complete subfield
-        u'3', # Complete field
+        '1', # Incomplete subfield (default)
+        '2', # Complete subfield
+        '3', # Complete field
     )
 
     def __init__(self):
@@ -343,51 +343,51 @@ class RPNQueryBuilder(object):
     def __str__(self):
         return self.build().encode('UTF-8')
 
-    def add_condition(self, term, use, relation=u'', position=u'', structure=u'',
-                      truncation=u'', completeness=u'', operator=u'@and'):
+    def add_condition(self, term, use, relation='', position='', structure='',
+                      truncation='', completeness='', operator='@and'):
 
         if self.query_pieces:
             self.query_pieces.insert(0, operator)
 
-        if not isinstance(term, unicode):
-            raise TypeError(u'term must be unicode string')
+        if not isinstance(term, str):
+            raise TypeError('term must be unicode string')
         term = term.replace("\\","\\\\")
-        if not isinstance(use, unicode):
-            raise TypeError(u'use must be unicode string')
-        self.query_pieces.append(u'@attr 1=' + use)
+        if not isinstance(use, str):
+            raise TypeError('use must be unicode string')
+        self.query_pieces.append('@attr 1=' + use)
 
         if relation:
             if relation not in self.RELATION_VALUES:
-                raise ValueError(u'wrong relation attribute')
-            self.query_pieces.append(u'@attr 2=' + relation)
+                raise ValueError('wrong relation attribute')
+            self.query_pieces.append('@attr 2=' + relation)
 #        else:
 #            relation = u'3'
 
         if position:
             if  position not in self.POSITION_VALUES:
-                raise ValueError(u'wrong position attribute')
-            self.query_pieces.append(u'@attr 3=' + position)
+                raise ValueError('wrong position attribute')
+            self.query_pieces.append('@attr 3=' + position)
 #        else:
 #            position = u'3'
 
         if structure:
             if structure not in self.STRUCTURE_VALUES:
-                raise ValueError(u'wrong structure attribute')
-            self.query_pieces.append(u'@attr 4=' + structure)
+                raise ValueError('wrong structure attribute')
+            self.query_pieces.append('@attr 4=' + structure)
 #        else:
 #            structure = u'1'
 
         if truncation:
             if truncation not in self.TRUNCATION_VALUES:
-                raise ValueError(u'wrong truncation attribute')
-            self.query_pieces.append(u'@attr 5=' + truncation)
+                raise ValueError('wrong truncation attribute')
+            self.query_pieces.append('@attr 5=' + truncation)
 #        else:
 #            truncation = u'100'
 
         if completeness:
             if completeness not in self.COMPLETENESS_VALUES:
-                raise ValueError(u'wrong completeness attribute')
-            self.query_pieces.append(u'@attr 6=' + completeness)
+                raise ValueError('wrong completeness attribute')
+            self.query_pieces.append('@attr 6=' + completeness)
 #        else:
 #            completeness = u'1'
 
@@ -400,9 +400,9 @@ class RPNQueryBuilder(object):
 
 
 
-        term = u'"' + term.strip(u'"').strip() + u'"'
+        term = '"' + term.strip('"').strip() + '"'
         self.query_pieces.append(term)
 
     def build(self):
-        return u' '.join(self.query_pieces)
+        return ' '.join(self.query_pieces)
 

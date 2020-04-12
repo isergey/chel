@@ -16,7 +16,7 @@ from guardian.shortcuts import get_perms_for_model, get_perms, remove_perm, assi
 from django.core.paginator import Paginator, InvalidPage
 from core.forms import get_permissions_form
 from ..models import Forum, Topic, Article
-from forms import ArticleForm, TopicForm, ForumForm
+from .forms import ArticleForm, TopicForm, ForumForm
 
 
 postmarkup_render = postmarkup.create()
@@ -50,13 +50,13 @@ def forums(request):
         last_articles_dict[last_article.id] = {'article': last_article}
         last_topics_dict[last_article.topic_id] = None
 
-    topics = Topic.objects.filter(id__in=last_topics_dict.keys())
+    topics = Topic.objects.filter(id__in=list(last_topics_dict.keys()))
 
     for topic in topics:
         last_topics_dict[topic.id] = topic
         last_forums_dict[topic.forum_id] = None
 
-    lforums = Forum.objects.filter(id__in=last_forums_dict.keys())
+    lforums = Forum.objects.filter(id__in=list(last_forums_dict.keys()))
 
     for lforum in lforums:
         last_forums_dict[lforum.id] = lforum
@@ -89,7 +89,7 @@ def forum_close(request, id):
     forum.save()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:forums', slug=forum.slug)
 
@@ -104,7 +104,7 @@ def forum_open(request, id):
     forum.save()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:forums', slug=forum.slug)
 
@@ -119,7 +119,7 @@ def forum_delete(request, id):
     forum.delete()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:forums')
 
@@ -180,11 +180,11 @@ def forum_topics(request, slug):
 
             groups =  get_groups_with_perms(forum, attach_perms=True)
             for group in groups:
-                if  u"can_create_topics" in  groups[group]:
-                    assign(u"can_add_articles", group, topic)
+                if  "can_create_topics" in  groups[group]:
+                    assign("can_add_articles", group, topic)
                 #                    assign(u"can_view_articles", group, topic)
-                if  u"can_view_topics" in  groups[group]:
-                    assign(u"can_view_articles", group, topic)
+                if  "can_view_topics" in  groups[group]:
+                    assign("can_view_articles", group, topic)
 
             if request.user.has_perm('can_hide_topics', forum):
                 return redirect('forum:frontend:articles', slug=forum.slug, id=topic.id)
@@ -210,7 +210,7 @@ def topic_delete(request, id):
     topic.delete()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:topics', slug=topic.forum.slug)
 
@@ -224,7 +224,7 @@ def topic_close(request, id):
     topic.save()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:topics', slug=topic.forum.slug)
 
@@ -238,7 +238,7 @@ def topic_open(request, id):
     topic.save()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:topics', slug=topic.forum.slug)
 
@@ -314,7 +314,7 @@ def topic_articles(request, slug, id, aid=None, eid=None):
             article.author = request.user
             article.topic = topic
             if quote_article:
-                article.text = u"[quote][b]%s[/b]:\n%s[/quote] %s" % (
+                article.text = "[quote][b]%s[/b]:\n%s[/quote] %s" % (
                     quote_article.author.username, quote_article.text, article.text)
 
             article.save()
@@ -353,7 +353,7 @@ def article_delete(request, id):
     article.delete()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:articles', slug=topic.forum.slug, id=topic.id)
 
@@ -369,7 +369,7 @@ def article_hide(request, id):
     article.save()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:articles', slug=article.topic.forum.slug, id=article.topic.id)
 
@@ -385,14 +385,14 @@ def article_show(request, id):
     article.save()
 
     if request.is_ajax():
-        return HttpResponse(u'{"status":"ok"}')
+        return HttpResponse('{"status":"ok"}')
     else:
         return redirect('forum:frontend:articles', slug=article.topic.forum.slug, id=article.topic.id)
 
 
 
 def article_preview(request):
-    return HttpResponse(postmarkup_render(request.GET.get('data', u' ')))
+    return HttpResponse(postmarkup_render(request.GET.get('data', ' ')))
 
 
 

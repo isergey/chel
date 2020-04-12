@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
+from hashlib import md5 as md5_constructor
+
+from django.contrib.auth.models import User, Group
+from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import transaction
-from django.contrib.sites.models import Site
-from django.contrib.auth.models import User, Group
-from hashlib import md5 as md5_constructor
-from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.contrib.messages.api import get_messages
+from django.shortcuts import render, HttpResponse
 
 # from social_auth import __version__ as version
-from forms import RegistrationForm
+from .forms import RegistrationForm
 from ..models import RegConfirm
+
 
 def index(request):
     return render(request, 'accounts/frontend/index.html')
@@ -28,7 +28,7 @@ def register(request):
 
 # def home(request):
 #     """Home view, displays login mechanism"""
-#     if request.user.is_authenticated():
+#     if request.user.is_authenticated:
 #         return redirect('accounts:frontend:done')
 #     else:
 #         return render(request, 'accounts/frontend/oauth/home.html', {
@@ -68,15 +68,15 @@ def registration(request):
             )
             user.set_password(form.cleaned_data['password'])
             user.save()
-            hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
+            hash = md5_constructor((str(user.id) + form.cleaned_data['username']).encode('utf-8')).hexdigest()
             confirm = RegConfirm(hash=hash, user_id=user.id)
             confirm.save()
             current_site = Site.objects.get(id=1)
-            message = u'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
+            message = 'Поздравляем! Вы зарегистрировались на %s . Пожалуйста, пройдите по адресу %s для активации учетной записи.' % \
                       (current_site.domain, "http://" + current_site.domain + "/accounts/confirm/" + hash, )
 
 
-            send_mail(u'Активация аккаунта ' + current_site.domain, message, 'system@'+current_site.domain,
+            send_mail('Активация аккаунта ' + current_site.domain, message, 'system@'+current_site.domain,
                 [form.cleaned_data['email']])
 
             return render(request, 'accounts/frontend/registration_done.html')
@@ -90,11 +90,11 @@ def confirm_registration(request, hash):
     try:
         confirm = RegConfirm.objects.get(hash=hash)
     except RegConfirm.DoesNotExist:
-        return HttpResponse(u'Код подтверждения не верен')
+        return HttpResponse('Код подтверждения не верен')
     try:
         user = User.objects.get(id=confirm.user_id)
     except User.DoesNotExist:
-        return HttpResponse(u'Код подтверждения не верен')
+        return HttpResponse('Код подтверждения не верен')
 
     if user.is_active == False:
         #тут надо создать пользователя в лдапе

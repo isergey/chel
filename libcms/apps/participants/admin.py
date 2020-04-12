@@ -3,7 +3,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from models import Library, UserLibrary, LibraryContentEditor #, Country, City, District
+from .models import Library, UserLibrary, LibraryContentEditor #, Country, City, District
 
 
 admin.site.register(Library, MPTTModelAdmin)

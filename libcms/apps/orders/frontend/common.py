@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 
-import Queue
+import queue
 import threading
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 
 
@@ -42,7 +42,7 @@ class ThreadWorker(object):
 
     def __threaded_func(self, request_queue, values):
         sum = ''
-        response_queue = Queue.Queue()
+        response_queue = queue.Queue()
         for value in values:
             request_queue.put((value, response_queue))
             # accumulate results; the response order will not be the same as the input!
@@ -53,7 +53,7 @@ class ThreadWorker(object):
         return results
 
     def do(self):
-        request_queue = Queue.Queue()
+        request_queue = queue.Queue()
 
         # Initialize the thread pool with three compute threads
         for arg in self.args:

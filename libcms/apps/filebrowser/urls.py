@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
+from .administration import urls
 
-
-urlpatterns = patterns('',
-    (r'^admin/', include('filebrowser.administration.urls', namespace='administration')),
+urlpatterns = (
+    url(r'^admin/', include((urls, 'administration'))),
 )
 

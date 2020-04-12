@@ -1,0 +1,51 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% load static %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'harvester:index_transformation_rules' %}">Правила индексирования</a></li>
+    {% if not indexing_rule %}
+        <li class="active">Добавление правила преобразования</li>
+    {% else %}
+        <li class="active">Редактирование правила преобразования</li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    {% if not request.GET.disable_editor %}
+        <link data-name="vs/editor/editor.main" rel="stylesheet" href="{% static 'harvester/vs/editor/editor.main.css' %}">
+        <script type="text/javascript" src="{% static 'harvester/vs/loader.js' %}"></script>
+        <script>
+            require.config({paths: {'vs': '{% static 'harvester/vs' %}'}});
+            require(['vs/editor/editor.main'], function () {
+
+                var textArea = document.getElementById('id_content');
+
+                var editorContainer = document.createElement('div');
+                editorContainer.style.height = '700px';
+                editorContainer.style.border = '1px solid #d1d1d3';
+
+                textArea.parentNode.insertBefore(editorContainer, textArea.nextSibling);
+                var editor = monaco.editor.create(editorContainer, {
+                    value: textArea.value,
+                    language: 'python'
+                });
+                textArea.style.display = 'none';
+                document.getElementById('indexing_rule_form').addEventListener('submit', function () {
+                    textArea.value = editor.getValue();
+                    return false;
+                });
+            });
+        </script>
+    {% endif %}
+    <form method="post" id="indexing_rule_form" novalidate>{% csrf_token %}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="submit" class="btn btn-default" name="sae" value="1">
+            Сохранить и продолжить редактировать
+        </button>
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="submit" class="btn btn-default" name="sae" value="1">
+            Сохранить и продолжить редактировать
+        </button>
+    </form>
+{% endblock %}

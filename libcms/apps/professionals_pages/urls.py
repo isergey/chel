@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls import re_path, include
 
-urlpatterns = patterns('',
-    (r'^admin/', include('professionals_pages.administration.urls', namespace='administration')),
-    (r'^', include('professionals_pages.frontend.urls', namespace='frontend')),
-
+urlpatterns = (
+    re_path(r'^admin/', include(('professionals_pages.administration.urls', 'administration'))),
+    re_path(r'^', include(('professionals_pages.frontend.urls', 'frontend'))),
 )
 

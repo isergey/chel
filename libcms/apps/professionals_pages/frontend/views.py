@@ -25,7 +25,7 @@ def index(request):
 def show(request, slug):
     cur_language = translation.get_language()
     page = get_object_or_404(Page, url_path=slug)
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         anaons = Group.objects.get(name='anonymouses')
         if 'view_page' not in  get_perms(anaons, page):
             raise PermissionDenied()

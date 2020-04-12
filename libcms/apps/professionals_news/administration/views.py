@@ -11,7 +11,7 @@ from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
 from ..models import News, NewsContent
-from forms import NewsForm, NewsContentForm
+from .forms import NewsForm, NewsContentForm
 
 @login_required
 @permission_required_or_403('professionals_news.add_news')
@@ -62,7 +62,7 @@ def create_news(request):
             valid = False
             for news_content_form in news_content_forms:
                 valid = news_content_form['form'].is_valid()
-                print valid
+                print(valid)
                 if not valid:
                     break
 

@@ -1,0 +1,47 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if source %}
+        <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }} ({{ source.code }})</a></li>
+    {% endif %}
+    <li><a href="{% url 'harvester:records' %}">Записи</a></li>
+    <li class="active">Запись <b>{{ record.id }}</b></li>
+{% endblock %}
+{% block content %}
+    <style>
+    .field_tag {
+        color: #010084;
+    }
+    .subfield_code {
+        color: blue;
+    }
+    </style>
+    <div>
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#jrecord" aria-controls="jrecord" role="tab" data-toggle="tab">Запись</a>
+    </li>
+    <li role="presentation">
+        <a href="#index_document_json" aria-controls="index_document_json" role="tab" data-toggle="tab">Индексный документ</a>
+    </li>
+    <li role="presentation">
+        <a href="#record_content_json" aria-controls="record_content_json" role="tab" data-toggle="tab">JSON</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="jrecord">
+        {{ jrecord.to_html|safe }}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="index_document_json">
+        <pre>{{ index_document_json|safe }}</pre>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="record_content_json">
+        <pre>{{ record_content_json|safe }}</pre>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

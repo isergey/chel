@@ -1,5 +1,7 @@
 # coding=utf-8
 from collections import OrderedDict
+from junimarc.marc_query import MarcQuery
+
 
 def _get_df_index(field):
     index = OrderedDict()
@@ -54,14 +56,14 @@ def _get_inner_fields_index(inner_subfields=None):
     index = OrderedDict()
     inner_subfields = inner_subfields or []
     for inner_subfield in inner_subfields:
-        for tag, fields in inner_subfield.items():
+        for tag, fields in list(inner_subfield.items()):
             index[tag] = fields
     return index
 
 
 def _get_fields(fields_index, tags):
     lookup_tags = []
-    for key in fields_index.keys():
+    for key in list(fields_index.keys()):
         if key in tags:
             lookup_tags.append(key)
     fields = []
@@ -87,78 +89,56 @@ def _append_if_not_endswith_to(parts, item, additionals=None):
     parts.append(item)
 
 
+def get_title(field):
+    return field.get_subfield('a').get_data()
+
+
 class RusmarcTemplate(object):
-    def __init__(self, record_dict, references=None):
-        self.record_dict = record_dict
-        self.fields_index = _get_fields_index(record_dict)
+    def __init__(self, rq: MarcQuery, references=None):
+        self.rq = rq
         self.references = references or {}
         self.cache = {}
 
-    def get_title(self, fields_index=None):
-        if fields_index is None:
-            fields_index = self.fields_index
-        title_parts = []
-        f200 = fields_index.get('200', [{}])[0]
-        sfa = _get_first_subfield_data(f200, 'a').strip()
-        title_parts.append(sfa)
-
-        f200_items = f200.items()
-        for i, (sf_id, sf_values) in enumerate(f200_items):
-            if sf_id == 'e':
-                data = _get_first_value(sf_values).strip()
-                if data:
-                    _append_if_not_endswith_to(title_parts, ':')
-                    title_parts.append(' ' + data)
-            elif sf_id == 'h':
-                data = _get_first_value(sf_values).strip()
-                if data:
-                    _append_if_not_endswith_to(title_parts, '.', [u'…'])
-                    title_parts.append(' ' + data)
-            elif sf_id == 'i':
-                data = _get_first_value(sf_values).strip()
-                if data:
-                    _append_if_not_endswith_to(title_parts, ',')
-                    title_parts.append(' ' + data)
-            elif sf_id == 'v':
-                data = _get_first_value(sf_values).strip()
-                if data:
-                    _append_if_not_endswith_to(title_parts, '.')
-                    title_parts.append(' ' + data)
-        return u''.join(title_parts)
+    def get_title(self, field=None):
+        return get_title(self.rq.get_field('200'))
 
     def annotations(self):
-        items = []
-        fields = _get_fields(self.fields_index, ['330'])
-        for field in fields:
-            subfields = field.get('a', [])
-            for subfield in subfields:
-                items.append(subfield)
-        return items
+        values = []
+        data = self.rq.get_field('330').get_subfield('a').get_data()
+        if data:
+            values.append(data)
+        return values
 
     def get_source(self):
 
-        f461_link = self._get_link_from_inner(_get_inner_fields_index(self.fields_index.get('461', [{}])[0].get('1')))
-        f463_link = self._get_link_from_inner(_get_inner_fields_index(self.fields_index.get('463', [{}])[0].get('1')))
-
-        sources_parts = []
-
-        link_title = f461_link.get('title', '')
-        if link_title:
-            sources_parts.append(link_title)
-
-        link_title = f463_link.get('title', '')
-        if link_title:
-            sources_parts.append(link_title)
-
-        title = u' — '.join(sources_parts)
-        link = f463_link.get('id', '')
-
-        if not link:
-            link = f461_link.get('id', '')
+        # f461_link = self._get_link_from_inner(_get_inner_fields_index(self.fields_index.get('461', [{}])[0].get('1')))
+        # f463_link = self._get_link_from_inner(_get_inner_fields_index(self.fields_index.get('463', [{}])[0].get('1')))
+        #
+        # sources_parts = []
+        #
+        # link_title = f461_link.get('title', '')
+        # if link_title:
+        #     sources_parts.append(link_title)
+        #
+        # link_title = f463_link.get('title', '')
+        # if link_title:
+        #     sources_parts.append(link_title)
+        #
+        # title = ' — '.join(sources_parts)
+        # link = f463_link.get('id', '')
+        #
+        # if not link:
+        #     link = f461_link.get('id', '')
+        #
+        # if not title:
+        #     return []
+        #
+        f461q = self.rq.get_field('461')
+        title = f461q.get_field('200').get_subfield('a').get_data()
+        link = f461q.get_field('001').get_data()
 
         if not title:
             return []
-
         return [{
             'title': title,
             'link_id': link
@@ -187,67 +167,69 @@ class RusmarcTemplate(object):
 
     def subject_heading(self):
         items = []
-        fields = self.fields_index.get('606', [])
+        fields = self.rq.get_field('606').list()
         for field in fields:
             parts = []
-            sfa = field.get('a', [''])[0]
+            sfa = field.get_subfield('a').get_data()
             if not sfa:
                 continue
             parts.append(sfa)
-            sfds_x = field.get('x', [])
+            sfds_x = field.get_subfield('x').list()
             for sf_x in sfds_x:
-                parts.append(sf_x)
-            items.append(u' — '.join(parts))
+                parts.append(sf_x.get_data())
+            items.append(' — '.join(parts))
         return items
 
     def subject_keywords(self):
         items = []
-        fields = self.fields_index.get('610', [])
+        fields = self.rq.get_field('610').list()
         for field in fields:
-            for sfa in field.get('a', []):
+            for sfaq in field.get_subfield('a').list():
+                sfa = sfaq.get_data()
                 if not sfa in items:
                     items.append(sfa)
         return items
 
     def holders(self):
         items = []
-        fields = _get_fields(self.fields_index, ['850', '899'])
+        fields = self.rq.get_field('850').list() + self.rq.get_field('899').list()
         for field in fields:
-            subfields = field.get('a', [])
+            subfields = field.get_subfield('a').list()
             for subfield in subfields:
+                sfd = subfield.get_data()
                 items.append({
-                    'title': self.references.get('holders', {}).get(subfield, subfield),
-                    'value': subfield
+                    'title': self.references.get('holders', {}).get(sfd, sfd),
+                    'value': sfd
                 })
         return items
 
     def shelving(self):
         items = []
-        fields = self.fields_index.get('852', [])
+        fields = self.rq.get_field('852').list()
         for field in fields:
-            subfields = field.get('a', [])
+            subfields = field.get_subfield('a').list()
             for subfield in subfields:
+                sfd = subfield.get_data()
                 items.append({
-                    'title': self.references.get('holders', {}).get(subfield, subfield),
-                    'value': subfield
+                    'title': self.references.get('holders', {}).get(sfd, sfd),
+                    'value': sfd
                 })
         return items
 
     def _get_inner_links(self, tag):
         links = []
-        fields = self.fields_index.get(tag, [])
+        fields = self.rq.get_field(tag).list()
         for field in fields:
-            link = self._get_link_from_inner(_get_inner_fields_index(field.get('1')))
+            link = self._get_link_from_inner(field)
             if link.get('title'):
                 links.append(link)
         return links
 
-    def _get_link_from_inner(self, fields_index):
-        link = {}
-        if fields_index:
-            link['title'] = self.get_title(fields_index)
-            link['id'] = fields_index.get('001', [''])[0]
-        return link
+    def _get_link_from_inner(self, field):
+        return {
+            'title': self.get_title(field),
+            'id': field.get_field('001').get_data(),
+        }
 
 
 def get_full_text_links(marq_query):
@@ -255,6 +237,6 @@ def get_full_text_links(marq_query):
     for fq in marq_query.get_field('856').list():
         ft_links.append({
             'url': fq.get_subfield('u').get_data(),
-            'title': fq.get_subfield('2').get_data() or u'полный текст',
+            'title': fq.get_subfield('2').get_data() or 'полный текст',
         })
     return ft_links

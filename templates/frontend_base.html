@@ -1,0 +1,51 @@
+{% load i18n %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>{% block title %}Челябинская областная универсальная научная библиотека{% endblock %}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/frontend/styles.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.fancybox.css">
+
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script type='text/javascript' src='http://yandex.st/jquery/tmpl/1.0.0pre/jquery.tmpl.min.js'></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+    <meta name="yandex-verification" content="9c44f9ae56a80399" />
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="span8">
+            {#                <img src="{{ STATIC_URL }}images/theme/logo.png" alt="" style="float: left;">#}
+            <h3>Челябинская областная универсальная научная библиотека</h3>
+                <h4>Информационный портал библиотек Челябинской области</h4>
+        </div>
+        <div class="span4">
+            {% if request.user.is_authenticated %}
+                Вы вошли как: {{ request.user.username }} <a href="{% url 'accounts:frontend:logout' %}">Выйти</a>
+            {% else %}
+                <a href="{% url 'accounts:frontend:login' %}">Войти</a> <a href="{% url 'accounts:frontend:registration' %}">Зарегистрироваться</a>
+            {% endif %}
+
+        </div>
+        <div class="span12" align="right">
+            <span style=" font-size: 18px;">
+                <a href="{% url 'forum:frontend:forums' %}">Форум</a>
+            </span>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+    {% block index_content %}wefwefwef{% endblock %}
+    </div>
+    <div style="background-color: whiteSmoke; min-height: 50px;">
+        Библиотеки Челябинска
+    </div>
+</div>
+</body>
+</html>

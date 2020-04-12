@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
-import views
-urlpatterns = patterns(views,
-    url(r'^$', views.index , name="index"),
-    url(r'^send/$', views.send_feedback , name="send_feedback"),
+from django.conf.urls import re_path
+from . import views
+urlpatterns = (
+    re_path(r'^$', views.index , name="index"),
+    re_path(r'^send/$', views.send_feedback , name="send_feedback"),
 )

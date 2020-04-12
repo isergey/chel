@@ -1,6 +1,6 @@
-from __future__ import absolute_import
 
-import cStringIO as StringIO
+
+import io as StringIO
 import datetime
 import uuid
 
@@ -16,41 +16,41 @@ not_utc = pytz.timezone('Etc/GMT-3')
 
 samples_from_pydatetimes = {
     "2009-07-23T03:24:34.000376Z":
-        [datetime.datetime(2009, 07, 23, 3, 24, 34, 376),
-         datetime.datetime(2009, 07, 23, 3, 24, 34, 376, pytz.utc)],
+        [datetime.datetime(2009, 0o7, 23, 3, 24, 34, 376),
+         datetime.datetime(2009, 0o7, 23, 3, 24, 34, 376, pytz.utc)],
     "2009-07-23T00:24:34.000376Z":
-        [not_utc.localize(datetime.datetime(2009, 07, 23, 3, 24, 34, 376)),
-         datetime.datetime(2009, 07, 23, 0, 24, 34, 376, pytz.utc)],
+        [not_utc.localize(datetime.datetime(2009, 0o7, 23, 3, 24, 34, 376)),
+         datetime.datetime(2009, 0o7, 23, 0, 24, 34, 376, pytz.utc)],
     "2009-07-23T03:24:34Z":
-        [datetime.datetime(2009, 07, 23, 3, 24, 34),
-         datetime.datetime(2009, 07, 23, 3, 24, 34, tzinfo=pytz.utc)],
+        [datetime.datetime(2009, 0o7, 23, 3, 24, 34),
+         datetime.datetime(2009, 0o7, 23, 3, 24, 34, tzinfo=pytz.utc)],
     "2009-07-23T00:24:34Z":
-        [not_utc.localize(datetime.datetime(2009, 07, 23, 3, 24, 34)),
-         datetime.datetime(2009, 07, 23, 0, 24, 34, tzinfo=pytz.utc)]
+        [not_utc.localize(datetime.datetime(2009, 0o7, 23, 3, 24, 34)),
+         datetime.datetime(2009, 0o7, 23, 0, 24, 34, tzinfo=pytz.utc)]
     }
 
 samples_from_mxdatetimes = {
     "2009-07-23T03:24:34.000376Z":
-        [mx.DateTime.DateTime(2009, 07, 23, 3, 24, 34.000376),
-         datetime.datetime(2009, 07, 23, 3, 24, 34, 376, pytz.utc)],
+        [mx.DateTime.DateTime(2009, 0o7, 23, 3, 24, 34.000376),
+         datetime.datetime(2009, 0o7, 23, 3, 24, 34, 376, pytz.utc)],
     "2009-07-23T03:24:34Z":
-        [mx.DateTime.DateTime(2009, 07, 23, 3, 24, 34),
-         datetime.datetime(2009, 07, 23, 3, 24, 34, tzinfo=pytz.utc)],
+        [mx.DateTime.DateTime(2009, 0o7, 23, 3, 24, 34),
+         datetime.datetime(2009, 0o7, 23, 3, 24, 34, tzinfo=pytz.utc)],
     }
 
 
 samples_from_strings = {
     # These will not have been serialized by us, but we should deal with them
     "2009-07-23T03:24:34Z":
-        datetime.datetime(2009, 07, 23, 3, 24, 34, tzinfo=pytz.utc),
+        datetime.datetime(2009, 0o7, 23, 3, 24, 34, tzinfo=pytz.utc),
     "2009-07-23T03:24:34.1Z":
-        datetime.datetime(2009, 07, 23, 3, 24, 34, 100000, pytz.utc),
+        datetime.datetime(2009, 0o7, 23, 3, 24, 34, 100000, pytz.utc),
     "2009-07-23T03:24:34.123Z":
-        datetime.datetime(2009, 07, 23, 3, 24, 34, 123000, pytz.utc)
+        datetime.datetime(2009, 0o7, 23, 3, 24, 34, 123000, pytz.utc)
     }
 
 def check_solr_date_from_date(s, date, canonical_date):
-    assert unicode(solr_date(date)) == s, "Unequal representations of %r: %r and %r" % (date, unicode(solr_date(date)), s)
+    assert str(solr_date(date)) == s, "Unequal representations of %r: %r and %r" % (date, str(solr_date(date)), s)
     check_solr_date_from_string(s, canonical_date)
 
 def check_solr_date_from_string(s, date):
@@ -58,15 +58,15 @@ def check_solr_date_from_string(s, date):
 
 
 def test_solr_date_from_pydatetimes():
-    for k, v in samples_from_pydatetimes.items():
+    for k, v in list(samples_from_pydatetimes.items()):
         yield check_solr_date_from_date, k, v[0], v[1]
 
 def test_solr_date_from_mxdatetimes():
-    for k, v in samples_from_mxdatetimes.items():
+    for k, v in list(samples_from_mxdatetimes.items()):
         yield check_solr_date_from_date, k, v[0], v[1]
 
 def test_solr_date_from_strings():
-    for k, v in samples_from_strings.items():
+    for k, v in list(samples_from_strings.items()):
         yield check_solr_date_from_string, k, v
 
 
@@ -105,10 +105,10 @@ class TestReadingSchema(object):
     def test_serialize_dict(self):
         """ Test that each of the fields will serialize the relevant
         datatype appropriately."""
-        for k, v, v2 in (('int_field', 1, u'1'),
-                         ('text_field', 'text', u'text'),
-                         ('text_field', u'text', u'text'),
-                         ('boolean_field', True, u'true')):
+        for k, v, v2 in (('int_field', 1, '1'),
+                         ('text_field', 'text', 'text'),
+                         ('text_field', 'text', 'text'),
+                         ('boolean_field', True, 'true')):
                              assert self.s.field_from_user_data(k, v).to_solr() == v2
 
     def test_missing_fields(self):
@@ -182,7 +182,7 @@ def check_broken_schemata(n, s):
         assert False
 
 def test_broken_schemata():
-    for k, v in broken_schemata.items():
+    for k, v in list(broken_schemata.items()):
         yield check_broken_schemata, k, v
 
 
@@ -271,8 +271,8 @@ def check_update_serialization(s, obj, xml_string):
         try:
             assert p == xml_string
         except AssertionError:
-            print p
-            print xml_string
+            print(p)
+            print(xml_string)
             import pdb;pdb.set_trace()
     else:
         assert p == xml_string
@@ -359,8 +359,8 @@ def check_delete_queries(s, queries, xml_string):
         try:
             assert p == xml_string
         except AssertionError:
-            print p
-            print xml_string
+            print(p)
+            print(xml_string)
             import pdb;pdb.set_trace()
             raise
     else:

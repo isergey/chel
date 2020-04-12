@@ -22,7 +22,7 @@ def xslt(request):
             tansformer = transformers.get(form.cleaned_data['transformer'])
             record_tree = etree.fromstring(form.cleaned_data['xml'].encode('utf-8'))
             transformed = tansformer(record_tree, abstract='0')
-            transform_result = unicode(transformed)
+            transform_result = str(transformed)
             transform_result_pretty = etree.tounicode(transformed, pretty_print=True)
     else:
         form = forms.TransformForm()

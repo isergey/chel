@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
-from models import QuestionManager
+from .models import QuestionManager
 
 
 class QuestionManagerAdmin(admin.ModelAdmin):

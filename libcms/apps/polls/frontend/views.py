@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
 import uuid
-from django.shortcuts import redirect, render, HttpResponse, get_object_or_404
-from django.core.urlresolvers import reverse
+from django.shortcuts import redirect, render, HttpResponse, get_object_or_404, reverse
 
 from common.pagination import get_page
 from ..models import Poll, Choice, PolledUser
@@ -36,7 +35,7 @@ def vote(request, poll_id):
         elif poll.poll_type == 'checkboxes':
             choices = Choice.objects.filter(poll=poll, pk__in=request.POST.getlist('answer'))
         else:
-            raise ValueError(u'Type of poll must be "radio" or "checkboxes"')
+            raise ValueError('Type of poll must be "radio" or "checkboxes"')
 
         for choice in choices:
             choice.votes += 1
@@ -95,15 +94,15 @@ def results(request, poll_id, poll=None):
                                                  (choices_dict['choice'].votes * 100.0 / summ_number_of_answers)
 
     show_results = False
-    message = u"Спасибо за ответ. Ваше мнение очень важно для нас!"
+    message = "Спасибо за ответ. Ваше мнение очень важно для нас!"
     if request.method == 'GET':
         if poll.show_results_after_end_poll:
-            message = u"Результаты будут доступны после завершения опроса."
+            message = "Результаты будут доступны после завершения опроса."
         else:
-            message = u"Результаты опроса недоступны."
+            message = "Результаты опроса недоступны."
     elif request.method == 'POST':
         if poll.show_results_after_end_poll:
-            message = u"Спасибо за ответ! Результаты будут доступны после завершения опроса!"
+            message = "Спасибо за ответ! Результаты будут доступны после завершения опроса!"
 
     # если голосование активно и разрешено показывать результаты
     if poll.is_active() and poll.show_results_on_vote:
@@ -135,7 +134,7 @@ def set_cookies(response, poller_id):
 
 
 def get_poller_id(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         poller_id = hashlib.md5(request.user.username).hexdigest()
     else:
         poller_id = request.COOKIES.get('polls.id', uuid.uuid4().hex)

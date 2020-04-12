@@ -16,29 +16,29 @@ def get_album_dir(slug):
 
 def image_file_name(instance, filename):
     if instance.id:
-        gen_name = unicode(instance.id) + u'.jpg'
+        gen_name = str(instance.id) + '.jpg'
     else:
-        gen_name = (u"%.9f" % time.time()).replace(u'.', u'') + u'.jpg'
+        gen_name = ("%.9f" % time.time()).replace('.', '') + '.jpg'
 
     return (get_album_dir(instance.album.slug) + gen_name)
 
 
 class Album(models.Model):
     slug = models.SlugField(
-        verbose_name=u'Slug',
+        verbose_name='Slug',
         max_length=64,
         db_index=True,
         unique=True
     )
-    title = models.CharField(max_length=512, verbose_name=u'Название')
-    description = models.TextField(verbose_name=u'Описание', blank=True)
-    public = models.BooleanField(verbose_name=u'Опубликован', default=False, db_index=True)
-    create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
+    title = models.CharField(max_length=512, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание', blank=True)
+    public = models.BooleanField(verbose_name='Опубликован', default=False, db_index=True)
+    create_date = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, db_index=True)
 
     #    def save(self):
     #        if getattr(self, 'id', None):
     #            self.slug = Album.objects.get(id=self.id).slug
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -51,16 +51,16 @@ class Album(models.Model):
         return get_album_dir(self.slug)
 
     def get_description(self):
-        return self.description.replace(u'\n', u'<br/>')
+        return self.description.replace('\n', '<br/>')
 
 
 class AlbumImage(models.Model):
-    album = models.ForeignKey(Album)
-    image = models.FileField(upload_to=image_file_name, verbose_name=u'Файл с изображением', max_length=512)
-    comments = models.CharField(max_length=512, blank=True, verbose_name=u'Коментарии к изображению')
-    create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
+    image = models.FileField(upload_to=image_file_name, verbose_name='Файл с изображением', max_length=512)
+    comments = models.CharField(max_length=512, blank=True, verbose_name='Коментарии к изображению')
+    create_date = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.comments
 
     def get_thumbinail_dir(self):
@@ -73,7 +73,7 @@ class AlbumImage(models.Model):
         os.remove(self.get_thumbinail_path())
 
     def get_image_file_name(self):
-        return unicode(self.image).split('/')[-1]
+        return str(self.image).split('/')[-1]
 
     def delete_thumbinail(self):
         get_thumbinail_path = instance.get_thumbinail_path()
@@ -104,8 +104,8 @@ def image_post_save(instance, **kwargs):
 
 @receiver(pre_delete, sender=AlbumImage)
 def image_pre_delete(instance, **kwargs):
-    if os.path.isfile(unicode(instance.image)):
-        os.remove(unicode(instance.image))
+    if os.path.isfile(str(instance.image)):
+        os.remove(str(instance.image))
 
     get_thumbinail_path = instance.get_thumbinail_path()
     if os.path.isfile(get_thumbinail_path):
@@ -115,7 +115,7 @@ def image_pre_delete(instance, **kwargs):
 def handle_uploaded_file(instance):
     thumbinail_path = instance.get_thumbinail_path()
     thumbinail_dir = instance.get_thumbinail_dir()
-    image_file_path = unicode(instance.image)
+    image_file_path = str(instance.image)
     if not os.path.exists(thumbinail_dir):
         os.makedirs(thumbinail_dir)
     final_hight = 768

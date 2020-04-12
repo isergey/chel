@@ -1,0 +1,34 @@
+{% extends 'harvester/index.html' %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">Источники</li>
+{% endblock %}
+{% block content %}
+    <div class="well well-sm">
+        <a class="btn btn-success btn-sm" href="{% url 'harvester:add_source' %}">+ Добавить источник</a>
+    </div>
+    <table class="table">
+        <tr>
+            <th>Код</th>
+            <th>Название</th>
+            <th>Активен</th>
+            <th>Режим сброса</th>
+            <th>Дата создания</th>
+        </tr>
+        {% for source in sources %}
+            <tr>
+                <td><a href="{% url 'harvester:source' source.id %}">{{ source.code }}</a></td>
+                <td>{{ source.name }}</td>
+                <td>
+                    {% if source.active %}
+                        <span class="label label-success">да</span>
+                    {% else %}
+                        <span class="label label-danger">нет</span>
+                    {% endif %}
+                </td>
+                <td>{{ source.reset }}</td>
+                <td>{{ source.create_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

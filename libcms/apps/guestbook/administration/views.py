@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from guardian.decorators import permission_required_or_403
 from common.pagination import get_page
 from ..models import Feedback
-from forms import FeedbackForm
+from .forms import FeedbackForm
 
 @login_required
 def index(request):

@@ -172,7 +172,7 @@ class SearchResults(object):
 
         if r.status_code != 400:
             r.raise_for_status()
-        response_dict = simplejson.loads(r.text, encoding='utf-8')
+        response_dict = simplejson.loads(r.text)
         # if 'responseHeader' not in response_dict:
         #     raise SolrError(u'Solr request is wrong')
 
@@ -279,7 +279,7 @@ class Collection(object):
             #params['hl.simple.post'] = u"</em>"
 
         if faset_params:
-            print faset_params.get_dicted_params()
+            print(faset_params.get_dicted_params())
             params.update(faset_params.get_dicted_params())
 
 
@@ -321,23 +321,23 @@ class Solr(object):
 
 def escape(string):
     special = [
-        u'\\',
-        u'+',
-        u'-',
-        u'&&',
-        u'||',
-        u'!',
-        u'(',
-        u')',
-        u'{',
-        u'}',
-        u'[',
-        u']',
-        u'^',
-        u'"',
-        u'~',
-        u'?',
-        u':'
+        '\\',
+        '+',
+        '-',
+        '&&',
+        '||',
+        '!',
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '^',
+        '"',
+        '~',
+        '?',
+        ':'
     ]
     for s in special:
         string = string.replace(s,'\\'+s)
@@ -373,19 +373,19 @@ class SearchCriteria:
         self.query.append(search_criteria)
 
     def to_lucene_query(self):
-        query_string_parts = [u"("]
+        query_string_parts = ["("]
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:%s' % (query_part['key'], query_part['value']))
+                query_string_parts.append('%s:%s' % (query_part['key'], query_part['value']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_lucene_query())
             if i < len(self.query) - 1:
-                query_string_parts.append(u' ' + self.operator + u' ')
-        query_string_parts.append(u')')
+                query_string_parts.append(' ' + self.operator + ' ')
+        query_string_parts.append(')')
         if self.boost:
-            query_string_parts.append(u'^' + str(self.boost))
-        return u''.join(query_string_parts)
+            query_string_parts.append('^' + str(self.boost))
+        return ''.join(query_string_parts)
 
     def to_dict(self):
         dict_criteria = {
@@ -411,27 +411,27 @@ class SearchCriteria:
                     sc.add_search_criteria(SearchCriteria.from_dict(query_part))
             return sc
         except KeyError as e:
-            raise ValueError(u'Wrong dict_criteria %s. Error:' % (unicode(dict_criteria), unicode(e)))
+            raise ValueError('Wrong dict_criteria %s. Error:' % (str(dict_criteria), str(e)))
 
-    def to_human_read(self, parent=None, lang=u'ru'):
+    def to_human_read(self, parent=None, lang='ru'):
         operators_title = {
-            u'AND': {
-                u'ru': u'И'
+            'AND': {
+                'ru': 'И'
             },
-            u'OR': {
-                u'ru': u'ИЛИ'
+            'OR': {
+                'ru': 'ИЛИ'
             },
-            u'NOT': {
-                u'ru': u'НЕ'
+            'NOT': {
+                'ru': 'НЕ'
             },
         }
         query_string_parts = []
         if parent:
-            query_string_parts.append(u'(')
+            query_string_parts.append('(')
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:"%s"' % (query_part['k'], query_part['v']))
+                query_string_parts.append('%s:"%s"' % (query_part['k'], query_part['v']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_human_read(parent=True, lang=lang))
             if i < len(self.query) - 1:
@@ -441,7 +441,7 @@ class SearchCriteria:
                 except KeyError:
                     operator_title = self.operator
 
-                query_string_parts.append(u' ' + operator_title + u' ')
+                query_string_parts.append(' ' + operator_title + ' ')
         if parent:
-            query_string_parts.append(u')')
-        return u''.join(query_string_parts)
+            query_string_parts.append(')')
+        return ''.join(query_string_parts)

@@ -16,5 +16,5 @@ from django.db import models
 
 class RegConfirm(models.Model):
     hash = models.CharField(max_length=32, db_index=True, null=False, blank=False)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, db_index=True)

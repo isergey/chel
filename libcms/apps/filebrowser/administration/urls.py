@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
-import views
+from . import views
 
-urlpatterns = patterns('',
+urlpatterns = (
     url(r'^$', views.index, name="index"),
-    url(r'^upload/$', views.upload, name="upload"),
-    url(r'^create_directory/$', views.create_directory, name="create_directory"),
+    url(r'^upload_file/$', views.upload_file, name="upload_file"),
     url(r'^delete/$', views.delete, name="delete"),
+    url(r'^ajax_file_info/$', views.ajax_file_info,  name="ajax_file_info"),
 )

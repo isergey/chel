@@ -1,8 +1,8 @@
 # encoding: utf-8
 from lxml import etree as ET
 
-from record import Record, UnimarcRecord
-from field import ControlField, LinkedSubfield
+from .record import Record, UnimarcRecord
+from .field import ControlField, LinkedSubfield
 
 XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
 MARC_XML_NS = "http://www.loc.gov/MARC21/slim"
@@ -23,7 +23,7 @@ def record_to_marc_xml(record, namespace=False):
     leader = ET.SubElement(root, 'leader')
     leader.text = record.leader.tostring()
 
-    for key in sorted(record.fields.iterkeys()):
+    for key in sorted(record.fields.keys()):
         for field in record.fields[key]:
             if isinstance(field, ControlField):
                 control_field = ET.SubElement(root, 'controlfield')
@@ -34,7 +34,7 @@ def record_to_marc_xml(record, namespace=False):
                 data_field.set('tag', field.tag)
                 data_field.set('ind1', field.ind1)
                 data_field.set('ind2', field.ind2)
-                for sf_key in sorted(field.subfields.iterkeys()):
+                for sf_key in sorted(field.subfields.keys()):
                     for subfield in field.subfields[sf_key]:
                         data_subfield = ET.SubElement(data_field, 'subfield')
                         data_subfield.set('code', subfield.code)
@@ -68,7 +68,7 @@ def record_to_unimarc_xml(record, namespace=False):
     leader = ET.SubElement(root, 'leader')
     leader.text = record.leader.tostring()
 
-    for key in sorted(record.fields.iterkeys()):
+    for key in sorted(record.fields.keys()):
         for field in record.fields[key]:
             if isinstance(field, ControlField):
                 control_field = ET.SubElement(root, 'controlfield')
@@ -79,7 +79,7 @@ def record_to_unimarc_xml(record, namespace=False):
                 data_field.set('tag', field.tag)
                 data_field.set('ind1', field.ind1)
                 data_field.set('ind2', field.ind2)
-                for sf_key in sorted(field.subfields.iterkeys()):
+                for sf_key in sorted(field.subfields.keys()):
                     for subfield in field.subfields[sf_key]:
                         if isinstance(subfield, LinkedSubfield):
                             linked_subfield = ET.SubElement(data_field, 's1')
@@ -94,7 +94,7 @@ def record_to_unimarc_xml(record, namespace=False):
                                 linked_data_field.set('ind2', subfield.field.ind2)
 
                                 # глубже! еще глубже!
-                                for sf_key in sorted(subfield.field.subfields.iterkeys()):
+                                for sf_key in sorted(subfield.field.subfields.keys()):
                                     for lsubfield in subfield.field.subfields[sf_key]:
                                         linkeddata_subfield = ET.SubElement(linked_data_field, 'subfield')
                                         linkeddata_subfield.set('code', lsubfield.code)
@@ -162,7 +162,7 @@ def record_to_rustam_xml(record, syntax='1.2.840.10003.5.28', namespace=False):
     entry_map = ET.SubElement(leader, 'entryMap')
     entry_map.text = string_leader[20:23]
 
-    for key in sorted(record.fields.iterkeys()):
+    for key in sorted(record.fields.keys()):
         for field in record.fields[key]:
             if isinstance(field, ControlField):
                 control_field = ET.SubElement(root, 'field')
@@ -181,7 +181,7 @@ def record_to_rustam_xml(record, syntax='1.2.840.10003.5.28', namespace=False):
                 ind2.text = field.ind2
 
 
-                for sf_key in sorted(field.subfields.iterkeys()):
+                for sf_key in sorted(field.subfields.keys()):
                     for subfield in field.subfields[sf_key]:
                         if isinstance(subfield, LinkedSubfield):
                             linked_subfield = ET.SubElement(data_field, 'subfield')
@@ -205,7 +205,7 @@ def record_to_rustam_xml(record, syntax='1.2.840.10003.5.28', namespace=False):
 
 
                                 # глубже! еще глубже!
-                                for sf_key in sorted(subfield.field.subfields.iterkeys()):
+                                for sf_key in sorted(subfield.field.subfields.keys()):
                                     for lsubfield in subfield.field.subfields[sf_key]:
                                         linkeddata_subfield = ET.SubElement(linked_data_field, 'subfield')
                                         linkeddata_subfield.set('id', lsubfield.code)

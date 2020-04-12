@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 import datetime, math, re, warnings
 
@@ -81,7 +81,7 @@ else:
             kwargs['microsecond'] = int(f * 1000000)
         try:
             return datetime.datetime(**kwargs)
-        except ValueError, e:
+        except ValueError as e:
             raise DateTimeRangeError(e.args[0])
 
 if mx:

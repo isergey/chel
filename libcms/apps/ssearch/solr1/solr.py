@@ -173,9 +173,9 @@ class SearchResults(object):
         if r.status_code != 400:
             r.raise_for_status()
 
-        response_dict = simplejson.loads(r.text, encoding='utf-8')
+        response_dict = simplejson.loads(r.text)
         if 'responseHeader' not in response_dict:
-            raise SolrError(u'Solr request is wrong')
+            raise SolrError('Solr request is wrong')
 
         if 'error' in response_dict:
             raise SolrError(response_dict['error']['msg'])
@@ -205,10 +205,10 @@ class SearchResults(object):
         try:
             facets = {}
             facet_fields = self.response_dict['facet_counts']['facet_fields']
-            for facet_title in facet_fields.keys():
+            for facet_title in list(facet_fields.keys()):
                 facet = facet_fields[facet_title]
                 facets[facet_title] = []
-                for i in xrange(1,len(facet), 2):
+                for i in range(1,len(facet), 2):
                     facets[facet_title].append((facet[i-1], facet[i]))
             return facets
         except KeyError:
@@ -251,16 +251,16 @@ class Collection(object):
         address = self.__solr. get_base_url() + self.__name + '/select/'
         params = {}
         params['q'] = query
-        params['fl'] = u','.join(fields)
+        params['fl'] = ','.join(fields)
         params['wt'] = 'json'
         params['start'] = start
         params['rows'] = rows
 
         if hl:
             params['hl'] = 'true'
-            params['hl.fl'] = u",".join(hl)
-            params['hl.simple.pre'] = u"<em>"
-            params['hl.simple.post'] = u"</em>"
+            params['hl.fl'] = ",".join(hl)
+            params['hl.simple.pre'] = "<em>"
+            params['hl.simple.post'] = "</em>"
 
         if faset_params:
             params.update(faset_params.get_dicted_params())
@@ -290,29 +290,29 @@ class Solr(object):
 
 
 def escape(string):
-    print 'ecefed'
+    print('ecefed')
     special = [
-        u'\\',
-        u'+',
-        u'-',
-        u'&&',
-        u'||',
-        u'!',
-        u'(',
-        u')',
-        u'{',
-        u'}',
-        u'[',
-        u']',
-        u'^',
-        u'"',
-        u'~',
-        u'?',
-        u':'
+        '\\',
+        '+',
+        '-',
+        '&&',
+        '||',
+        '!',
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '^',
+        '"',
+        '~',
+        '?',
+        ':'
     ]
     for s in special:
         string = string.replace(s,'\\'+s)
-        print 's', string
+        print('s', string)
     return string
 
 
@@ -345,17 +345,17 @@ class SearchCriteria:
         self.query.append(search_criteria)
 
     def to_lucene_query(self):
-        query_string_parts = [u"("]
+        query_string_parts = ["("]
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:"%s"' % (query_part['k'], query_part['v']))
+                query_string_parts.append('%s:"%s"' % (query_part['k'], query_part['v']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_lucene_query())
             if i < len(self.query) - 1:
-                query_string_parts.append(u' ' + self.operator + u' ')
-        query_string_parts.append(u')')
-        return u''.join(query_string_parts)
+                query_string_parts.append(' ' + self.operator + ' ')
+        query_string_parts.append(')')
+        return ''.join(query_string_parts)
 
     def to_dict(self):
         dict_criteria = {
@@ -381,27 +381,27 @@ class SearchCriteria:
                     sc.add_search_criteria(SearchCriteria.from_dict(query_part))
             return sc
         except KeyError as e:
-            raise ValueError(u'Wrong dict_criteria %s. Error:' % (unicode(dict_criteria), unicode(e)))
+            raise ValueError('Wrong dict_criteria %s. Error:' % (str(dict_criteria), str(e)))
 
-    def to_human_read(self, parent=None, lang=u'ru'):
+    def to_human_read(self, parent=None, lang='ru'):
         operators_title = {
-            u'AND': {
-                u'ru': u'И'
+            'AND': {
+                'ru': 'И'
             },
-            u'OR': {
-                u'ru': u'ИЛИ'
+            'OR': {
+                'ru': 'ИЛИ'
             },
-            u'NOT': {
-                u'ru': u'НЕ'
+            'NOT': {
+                'ru': 'НЕ'
             },
         }
         query_string_parts = []
         if parent:
-            query_string_parts.append(u'(')
+            query_string_parts.append('(')
 
         for i, query_part in enumerate(self.query):
             if isinstance(query_part, dict):
-                query_string_parts.append(u'%s:"%s"' % (query_part['k'], query_part['v']))
+                query_string_parts.append('%s:"%s"' % (query_part['k'], query_part['v']))
             elif isinstance(query_part, SearchCriteria):
                 query_string_parts.append(query_part.to_human_read(parent=True, lang=lang))
             if i < len(self.query) - 1:
@@ -411,7 +411,7 @@ class SearchCriteria:
                 except KeyError:
                     operator_title = self.operator
 
-                query_string_parts.append(u' ' + operator_title + u' ')
+                query_string_parts.append(' ' + operator_title + ' ')
         if parent:
-            query_string_parts.append(u')')
-        return u''.join(query_string_parts)
+            query_string_parts.append(')')
+        return ''.join(query_string_parts)

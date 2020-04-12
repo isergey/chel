@@ -1,9 +1,9 @@
 # encoding: utf-8
 from array import array
-import exc
-from marc8 import marc8_to_unicode
-from field import ControlField, DataField, Subfield, LinkedSubfield
-from constants import LEADER_LEN, DIRECTORY_ENTRY_LEN, SUBFIELD_INDICATOR, END_OF_FIELD, END_OF_RECORD
+from . import exc
+from .marc8 import marc8_to_unicode
+from .field import ControlField, DataField, Subfield, LinkedSubfield
+from .constants import LEADER_LEN, DIRECTORY_ENTRY_LEN, SUBFIELD_INDICATOR, END_OF_FIELD, END_OF_RECORD
 
 class Record(object):
     def __init__(self, raw='', raw_encoding='utf-8'):
@@ -51,7 +51,7 @@ class Record(object):
             'controlfields': {},
             'datafields': {}
         }
-        for key in sorted(self.fields.iterkeys()):
+        for key in sorted(self.fields.keys()):
             for field in self._fields[key]:
                 if isinstance(field, ControlField):
                     if field.tag not in record_dict['controlfields']:
@@ -164,7 +164,7 @@ class Record(object):
         # each element of the directory includes the tag, the byte length of
         # the field and the offset from the base address where the field data
         # can be found
-        for key in sorted(self._fields.iterkeys()):
+        for key in sorted(self._fields.keys()):
             for field in self._fields[key]:
                 field_data = field.as_marc(to_encoding)
                 fields.append(field_data)
@@ -199,13 +199,13 @@ class Record(object):
     def __unicode__(self):
         self._load()
         lines = [self._leader.tostring().replace(' ', '#')]
-        for key in sorted(self._fields.iterkeys()):
+        for key in sorted(self._fields.keys()):
             for field in self._fields[key]:
-                lines.append(unicode(field))
-        return u'\n'.join(lines)
+                lines.append(str(field))
+        return '\n'.join(lines)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
 
 class UnimarcRecord(Record):
@@ -215,13 +215,13 @@ class UnimarcRecord(Record):
     def __unicode__(self):
         self._load()
         lines = [self._leader.tostring().replace(' ', '#')]
-        for key in sorted(self._fields.iterkeys()):
+        for key in sorted(self._fields.keys()):
             for field in self._fields[key]:
-                lines.append(unicode(field))
-        return u'\n'.join(lines)
+                lines.append(str(field))
+        return '\n'.join(lines)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
 
     def decode(self, raw, raw_encoding):
@@ -314,7 +314,7 @@ class UnimarcRecord(Record):
                                 try:
                                     data = data.decode(raw_encoding)
                                 except UnicodeDecodeError:
-                                    data = u"Can't decode field data"
+                                    data = "Can't decode field data"
                             subfields.append(Subfield(code=code, data=data))
 
                     if start_linked_parse:
@@ -334,7 +334,7 @@ class UnimarcRecord(Record):
                             try:
                                 data = data.decode(raw_encoding)
                             except UnicodeDecodeError:
-                                data = u"Can't decode field data"
+                                data = "Can't decode field data"
                         subfields.append(Subfield(code=code, data=data))
 
                 field = DataField(

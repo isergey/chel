@@ -3,15 +3,14 @@
 from django import forms
 from ..models import Question, Category, Recomendation
 from mptt.forms import TreeNodeChoiceField
-from django.forms.extras import widgets
 
 
 class QuestionForm(forms.ModelForm):
     category = TreeNodeChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        label=u"Тематика",
-        help_text=u'Выберите тему, к которой относиться задаваемый вопрос. Если подходящей темы нет, оставьте поле темы пустым.'
+        label="Тематика",
+        help_text='Выберите тему, к которой относиться задаваемый вопрос. Если подходящей темы нет, оставьте поле темы пустым.'
     )
 
     class Meta:
@@ -26,4 +25,4 @@ class RecomendationForm(forms.ModelForm):
 
 
 class DateFilterForm(forms.Form):
-    date = forms.DateField(label=u'', help_text=u'формат даты: дд.мм.гггг')
+    date = forms.DateField(label='', help_text='формат даты: дд.мм.гггг')

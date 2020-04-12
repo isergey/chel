@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pyaz import *
+from .pyaz import *
 import pymarc
 from pymarc.marcxml import record_to_xml
 import time
@@ -44,22 +44,22 @@ s = time.time()
 
 def delete(zcon, records):
     zopts = ZOptions()
-    zopts.set_option('databaseName', u'USTORUS')
-    zopts.set_option('syntax', u'usmarc')
+    zopts.set_option('databaseName', 'USTORUS')
+    zopts.set_option('syntax', 'usmarc')
 
     zpac = ZPackage(zcon, zopts)
     zpac.set_option('action', 'recordDelete')
 
     for i, record in enumerate(records):
-        print i
+        print(i)
         zpac.set_option('record', record)
         zpac.send('update')
 
 
 def insert(zcon):
     zopts = ZOptions()
-    zopts.set_option('databaseName', u'USTORUS')
-    zopts.set_option('syntax', u'usmarc')
+    zopts.set_option('databaseName', 'USTORUS')
+    zopts.set_option('syntax', 'usmarc')
 
     zpac = ZPackage(zcon, zopts)
     zpac.set_option('action', 'recordInsert')
@@ -67,7 +67,7 @@ def insert(zcon):
     reader = pymarc.MARCReader(file('utf.mrc', 'r'), to_unicode=True, encoding='utf-8')
 
     for i, record in enumerate(reader):
-        print i
+        print(i)
         zpac.set_option('record', record.as_marc(encoding='utf-8'))
         zpac.send('update')
 
@@ -83,23 +83,23 @@ def write_records(file_name, records):
 def test_zwork():
     zcon = ZConnection(
         {
-            'user': u'erm',
-            'password': u'123456',
-            'databaseName': u'USTORUS',
-            'preferredRecordSyntax': u'rusmarc',
+            'user': 'erm',
+            'password': '123456',
+            'databaseName': 'USTORUS',
+            'preferredRecordSyntax': 'rusmarc',
         }
     )
     zcon.connect('172.16.174.128', 210)
     #zcon.connect('arch.zi.ipq.co', 9999)
     s = time.time()
 
-    for i in xrange(1000):
-        res = zcon.search(u'@attr 1=4 a')
+    for i in range(1000):
+        res = zcon.search('@attr 1=4 a')
 
-    print'time: ', time.time() - s,
+    print('time: ', time.time() - s, end=' ')
 
-    print res.get_size()
-    print res.get_record(0)
+    print(res.get_size())
+    print(res.get_record(0))
     #records = res.get_records(0,res.get_size())
 
     #write_records('rusmarc_ebsco.mrc', records)
@@ -109,7 +109,7 @@ def test_reader():
     reader = pymarc.MARCReader(file('rusmarc_ebsco.mrc', 'r'), to_unicode=True, encoding='utf-8')
     for i, record in enumerate(reader):
         if i == 100: break
-        print record_to_xml(record)
+        print(record_to_xml(record))
 
 
 test_zwork()
@@ -138,7 +138,7 @@ test_zwork()
 #    record =  pymarc.Record(data=zrecord,to_unicode=True, encoding='utf-8')
 
 
-print'time: ', time.time() - s
+print('time: ', time.time() - s)
 #zopts = ZOptions()
 ##zopts.set_option('databaseName',u'test')
 #zopts.set_option('syntax', u'rusmarc')

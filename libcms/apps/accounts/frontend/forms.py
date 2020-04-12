@@ -10,22 +10,22 @@ class RegistrationForm(forms.ModelForm):
 
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=50, label=u"Логин", help_text=u"Разрешены буквы латинского алфавита и цифры")
+    username = forms.CharField(max_length=50, label="Логин", help_text="Разрешены буквы латинского алфавита и цифры")
     password = forms.CharField(min_length=6, max_length=50,
-                               label=u"Пароль", widget=forms.PasswordInput)
+                               label="Пароль", widget=forms.PasswordInput)
     password2 = forms.CharField(min_length=6, max_length=50,
-                                label=u"Повторите пароль", widget=forms.PasswordInput)
-    email = forms.EmailField(label=u"Электронная почта")
-    first_name = forms.CharField(max_length=50, label=u"Имя")
-    last_name = forms.CharField(max_length=50, label=u"Фамилия")
-    agree = forms.BooleanField(label=u"Согласен на обработку персональных данных")
-    captcha = CaptchaField(label=u'Введите текст на картинке')
+                                label="Повторите пароль", widget=forms.PasswordInput)
+    email = forms.EmailField(label="Электронная почта")
+    first_name = forms.CharField(max_length=50, label="Имя")
+    last_name = forms.CharField(max_length=50, label="Фамилия")
+    agree = forms.BooleanField(label="Согласен на обработку персональных данных")
+    captcha = CaptchaField(label='Введите текст на картинке')
     def clean_username(self):
         import re
 
         format = re.compile(r"^[a-zA-z0-9]+$")
         if re.match(format, self.cleaned_data["username"]) == None:
-            raise forms.ValidationError(u"Имя пользователя может содержать только латинские символы")
+            raise forms.ValidationError("Имя пользователя может содержать только латинские символы")
 
         username = self.cleaned_data["username"]
         try:
@@ -33,7 +33,7 @@ class RegistrationForm(forms.Form):
         except User.DoesNotExist:
             return username
 
-        raise forms.ValidationError(u"Такой логин уже существует.")
+        raise forms.ValidationError("Такой логин уже существует.")
 
     def clean_email(self):
         email = self.cleaned_data["email"]
@@ -42,17 +42,17 @@ class RegistrationForm(forms.Form):
         except User.DoesNotExist:
             return email
 
-        raise forms.ValidationError(u"Такой email уже зарегистрирован.")
+        raise forms.ValidationError("Такой email уже зарегистрирован.")
 
     def clean_password2(self):
         password = self.cleaned_data.get("password", "")
         password2 = self.cleaned_data["password2"]
         if password != password2:
-            raise forms.ValidationError(u'пароли не совпадают')
+            raise forms.ValidationError('пароли не совпадают')
         return password2
 
     def clean_agree(self):
         agree = self.cleaned_data.get("agree", False)
         if not agree:
-            raise forms.ValidationError(u'Необходимо дать согласие на обработку персональных данных')
+            raise forms.ValidationError('Необходимо дать согласие на обработку персональных данных')
         return agree

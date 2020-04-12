@@ -9,9 +9,9 @@ from django.contrib.syndication.views import Feed
 
 
 class LatestEntriesFeed(Feed):
-    title = u"Новости"
+    title = "Новости"
     link = "/news/"
-    description = u"Новостная лента"
+    description = "Новостная лента"
 
     def items(self):
         return index()

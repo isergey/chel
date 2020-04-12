@@ -1,11 +1,11 @@
-from __future__ import absolute_import
+
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
-import cgi, datetime, urlparse
+import cgi, datetime, urllib.parse
 
 from lxml.builder import E
 from lxml.etree import tostring
@@ -68,7 +68,7 @@ class MockResponse(object):
         (9, 'nine'),
     ]
     mock_docs = [
-        dict(zip(("int_field", "string_field"), m)) for m in mock_doc_seeds
+        dict(list(zip(("int_field", "string_field"), m))) for m in mock_doc_seeds
     ]
 
     def __init__(self, start, rows):
@@ -109,7 +109,7 @@ class MockConnection(object):
 
     def request(self, uri, method='GET', body=None, headers=None):
 
-        u = urlparse.urlparse(uri)
+        u = urllib.parse.urlparse(uri)
         params = cgi.parse_qs(u.query)
 
         self.tracking_dict.update(url=uri,
@@ -138,7 +138,7 @@ class PaginationMockConnection(MockConnection):
 conn = SolrInterface("http://test.example.com/", http_connection=PaginationMockConnection())
 
 pagination_slice_tests = (
-((None, None), range(0, 10),
+((None, None), list(range(0, 10)),
     (slice(None, None, None),
      slice(0, 10, None),
      slice(0, 10, 1),
@@ -167,7 +167,7 @@ pagination_slice_tests = (
      slice(-9, -5, -1))),
 
 ### and now with pre-paginated queries:
-((2, 6), range(2, 8),
+((2, 6), list(range(2, 8)),
     (slice(None, None, None),
      slice(0, 6, None),
      slice(0, 6, 1),
@@ -205,7 +205,7 @@ def test_slice_pagination():
 # IndexErrors as appropriate
 
 pagination_index_tests = (
-((None, None), range(0, 10),
+((None, None), list(range(0, 10)),
    ((0, None),
     (5, None),
     (9, None),
@@ -216,7 +216,7 @@ pagination_index_tests = (
     (20, IndexError),
     (-10, IndexError),
     (-20, IndexError))),
-((2, 6), range(2, 8),
+((2, 6), list(range(2, 8)),
    ((0, None),
     (3, None),
     (5, None),
@@ -259,7 +259,7 @@ mlt_query_tests = (
         (("Content", None, "http://source.example.com"), (), ValueError),
         ((None, None, None), ({'mlt.fl': ['text_field']}, 'GET', ''), None),
         (('Content', 'not-an-encoding', None), (), LookupError),
-        ((u'Content', None, None), ({'stream.body': ['Content'], 'mlt.fl': ['text_field']}, 'GET', ''), None),
+        (('Content', None, None), ({'stream.body': ['Content'], 'mlt.fl': ['text_field']}, 'GET', ''), None),
         (('Cont\xe9nt', 'iso-8859-1', None), ({'stream.body': ['Cont\xc3\xa9nt'], 'mlt.fl': ['text_field']}, 'GET', ''), None),
         )
 

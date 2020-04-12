@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from django.contrib.admin import DateFieldListFilter
-from models import ImportantDate
+from .models import ImportantDate
 
 
 class ImportantDateAdmin(admin.ModelAdmin):

@@ -1,0 +1,18 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'harvester:sources' %}">Источники</a></li>
+    {% if not source %}
+        <li class="active">Добавление источника</li>
+    {% else %}
+        <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }}</a></li>
+        <li class="active">Редактирование</li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <form method="post" novalidate>{% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+{% endblock %}

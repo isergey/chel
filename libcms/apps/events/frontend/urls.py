@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
-import views
-urlpatterns = patterns(views,
-    url(r'^$', views.index , name="index"),
-    url(r'^(?P<id>\d+)/$', views.show , name="show"),
-    url(r'^date/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$', views.filer_by_date, name="events_by_date"),
-    url(r'^favorits/$', views.favorit_events , name="favorit_events"),
-    url(r'^favorits/(?P<id>\d+)/$', views.favorite_show , name="favorite_show"),
-    url(r'^(?P<id>\d+)/add_to_favorite/$', views.add_to_favorits , name="add_to_favorits"),
-    url(r'^(?P<id>\d+)/delete_from_favorite/$', views.delete_from_favorite , name="delete_from_favorite"),
+from django.conf.urls import re_path
+from . import views
+urlpatterns = (
+    re_path(r'^$', views.index , name="index"),
+    re_path(r'^(?P<id>\d+)/$', views.show , name="show"),
+    re_path(r'^date/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$', views.filer_by_date, name="events_by_date"),
+    re_path(r'^favorits/$', views.favorit_events , name="favorit_events"),
+    re_path(r'^favorits/(?P<id>\d+)/$', views.favorite_show , name="favorite_show"),
+    re_path(r'^(?P<id>\d+)/add_to_favorite/$', views.add_to_favorits , name="add_to_favorits"),
+    re_path(r'^(?P<id>\d+)/delete_from_favorite/$', views.delete_from_favorite , name="delete_from_favorite"),
 )

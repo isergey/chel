@@ -4,4 +4,4 @@ from guardian.shortcuts import get_perms
 
 
 def index(request):
-    return HttpResponse(u'ok')
+    return HttpResponse('ok')

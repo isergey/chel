@@ -1,0 +1,39 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }} ({{ source.code }})</a></li>
+    <li class="active">Журнла индексирования</li>
+{% endblock %}
+{% block content %}
+    <div class="well well-sm">
+        <a class="btn btn-sm btn-danger delete" href="{% url 'harvester:clean_indexing_journal' source.id %}">
+            Очистить журнал
+        </a>
+    </div>
+    <table class="table">
+        <tr>
+            <th>Дата индексирования</th>
+            <th>Проиндексировано</th>
+            <th>Удалено</th>
+            <th>Ошибка</th>
+            <th>Сообщение</th>
+        </tr>
+        {% for indexing_statuse in indexing_statuses.object_list %}
+            <tr>
+                <td>{{ indexing_statuse.create_date }}</td>
+                <td>{{ indexing_statuse.indexed }}</td>
+                <td>{{ indexing_statuse.deleted }}</td>
+                <td>
+                    {% if indexing_statuse.error %}
+                        <span class="label label-danger">да</span>
+                    {% else %}
+                        <span class="label label-success">нет</span>
+                    {% endif %}
+                </td>
+                <td>{{ indexing_statuse.message }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% bootstrap_pagination indexing_statuses %}
+{% endblock %}

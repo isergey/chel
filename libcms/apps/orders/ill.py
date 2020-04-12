@@ -57,14 +57,14 @@ class ILLTransaction(object):
             raise TypeError('Argument must be  ILLAPDU object')
 
     def from_xml(self, xml_transaction):
-        if isinstance(xml_transaction, str) or isinstance(xml_transaction, unicode):
+        if isinstance(xml_transaction, str) or isinstance(xml_transaction, str):
             try:
                 tree = ET.XML(xml_transaction)
             except SyntaxError as e:
                 raise SyntaxError('Not valid xml: ' + e.message)
         # иначе проверим является ли объект типа Element
         else:
-            print type(xml_transaction)
+            print(type(xml_transaction))
             if type(xml_transaction) == ET._Element:
                 tree = xml_transaction
             else:
@@ -121,7 +121,7 @@ class ILLAPDU(object):
 
     def from_xml(self, xml_illapdu):
 
-        if isinstance(xml_illapdu, str) or isinstance(xml_illapdu, unicode):
+        if isinstance(xml_illapdu, str) or isinstance(xml_illapdu, str):
             try:
                 tree = ET.XML(xml_illapdu)
             except SyntaxError as e:
@@ -233,7 +233,7 @@ class ILLRequest(object):
                                        }
         }
     def from_xml(self, xml_illrequest):
-        if isinstance(xml_illrequest, str) or isinstance(xml_illrequest, unicode):
+        if isinstance(xml_illrequest, str) or isinstance(xml_illrequest, str):
             try:
                 tree = ET.XML(xml_illrequest)
             except SyntaxError as e:
@@ -404,9 +404,9 @@ class ILLRequest(object):
         if self.supplemental_item_description:
         # если строка XML то преобразуем в Element
             if isinstance(self.supplemental_item_description, str) or\
-               isinstance(self.supplemental_item_description, unicode):
+               isinstance(self.supplemental_item_description, str):
                 try:
-                    if isinstance(self.supplemental_item_description, unicode):
+                    if isinstance(self.supplemental_item_description, str):
                         self.supplemental_item_description = self.supplemental_item_description.encode('UTF-8')
                     sid = ET.XML(self.supplemental_item_description)
                 except SyntaxError as e:
@@ -487,7 +487,7 @@ class ILLShipped(object):
         self.responder_note = '' # responderNote
 
     def from_xml(self, xml_shipped):
-        if isinstance(xml_shipped, str) or isinstance(xml_shipped, unicode):
+        if isinstance(xml_shipped, str) or isinstance(xml_shipped, str):
             try:
                 tree = ET.XML(xml_shipped)
             except SyntaxError as e:
@@ -704,7 +704,7 @@ class ILLAnswer(object):
 
     def from_xml(self, xml_illanswer):
 
-        if isinstance(xml_illanswer, str) or isinstance(xml_illanswer, unicode):
+        if isinstance(xml_illanswer, str) or isinstance(xml_illanswer, str):
             try:
                 tree = ET.XML(xml_illanswer)
             except SyntaxError as e:
@@ -830,7 +830,7 @@ class Recall(object):
 
     def from_xml(self, xml_illanswer):
 
-        if isinstance(xml_illanswer, str) or isinstance(xml_illanswer, unicode):
+        if isinstance(xml_illanswer, str) or isinstance(xml_illanswer, str):
             try:
                 tree = ET.XML(xml_illanswer)
             except SyntaxError as e:

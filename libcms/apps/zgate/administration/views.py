@@ -2,16 +2,15 @@
 import json as simplejson
 import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, reverse
 #from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
 from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from ..models import ZCatalog
 from ..models import requests_count, requests_by_attributes, requests_by_term
-from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm, ZCatalogForm
+from .forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm, ZCatalogForm
 from django.forms.models import model_to_dict
 
 # from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
@@ -62,7 +61,7 @@ def create(request):
 def edit(request, id):
     zcatalog = get_object_or_404(ZCatalog, id=id)
 
-    old_catalog_groups_ids = get_group_ids_for_object_perm(u'view_zcatalog', zcatalog)
+    old_catalog_groups_ids = get_group_ids_for_object_perm('view_zcatalog', zcatalog)
 
     if request.method == 'POST':
         form = ZCatalogForm(request.POST, instance=zcatalog)
@@ -103,9 +102,9 @@ def statistics(request):
     подпись по y
     """
     chart_type = 'column'
-    chart_title = u'Название графика'
-    row_title = u'Параметр'
-    y_title = u'Ось Y'
+    chart_title = 'Название графика'
+    row_title = 'Параметр'
+    y_title = 'Ось Y'
 
 
     statistics = request.GET.get('statistics', 'requests')
@@ -113,7 +112,7 @@ def statistics(request):
     catalogs = ZCatalog.objects.all()
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
-    date_group = u'2' # группировка по дням
+    date_group = '2' # группировка по дням
     attributes = []
 
     period_form = PeriodForm()
@@ -148,9 +147,9 @@ def statistics(request):
             group = date_group,
             catalogs = catalogs
         )
-        chart_title = u'Число поисковых запросов по дате'
-        row_title = u'Число поисковых запросов'
-        y_title = u'Число поисковых запросов'
+        chart_title = 'Число поисковых запросов по дате'
+        row_title = 'Число поисковых запросов'
+        y_title = 'Число поисковых запросов'
 
     elif statistics == 'attributes':
         group_form = None
@@ -161,9 +160,9 @@ def statistics(request):
             catalogs = catalogs
         )
 
-        chart_title = u'Число поисковых запросов по поисковым атрибутам'
-        row_title = u'Число поисковых запросов'
-        y_title = u'Число поисковых запросов'
+        chart_title = 'Число поисковых запросов по поисковым атрибутам'
+        row_title = 'Число поисковых запросов'
+        y_title = 'Число поисковых запросов'
         chart_type = 'bar'
 
     elif statistics == 'terms':
@@ -175,12 +174,12 @@ def statistics(request):
             catalogs = catalogs
         )
 
-        chart_title = u'Число поисковых запросов по фразам'
-        row_title = u'Число поисковых запросов'
-        y_title = u'Число поисковых запросов'
+        chart_title = 'Число поисковых запросов по фразам'
+        row_title = 'Число поисковых запросов'
+        y_title = 'Число поисковых запросов'
         chart_type = 'bar'
     else:
-        return HttpResponse(u'Неправильный тип статистики')
+        return HttpResponse('Неправильный тип статистики')
 
 
     data_rows =  simplejson.dumps(rows, ensure_ascii=False)

@@ -1,0 +1,284 @@
+{% extends 'harvester/index.html' %}
+{#{% load task_status_tags %}#}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{{ source.name }} ({{ source.code }})</li>
+{% endblock %}
+{% block content %}
+{#    {% get_task_status 'harvester:collect_source' as  collect_status %}#}
+{#    {% get_task_status 'harvester:index_source' as  index_status %}#}
+    <div class="well well-sm">
+        <div class="btn-group">
+            <a href="{% url 'harvester:change_source' source.id %}" class="btn btn-default btn-sm">Редактировать</a>
+            <a href="{% url 'harvester:delete_source' source.id %}" class="btn btn-danger btn-sm delete">
+                <i class="glyphicon glyphicon-trash"></i>
+            </a>
+        </div>
+        <div class="btn-group">
+            {% if is_exist_active_harvesting_rules %}
+                {% if collect_status.status == 'started1' %}
+                    <a class="btn btn-info btn-sm">
+                        Собрать -
+                        {% if  collect_status.status == 'started' %}запущено...{% endif %}
+                    </a>
+                {% else %}
+                    <a class="btn btn-primary btn-sm harvesting_btn" href="{% url 'harvester:collect_source' source.id %}" title="{{ collect_status.message }}">
+                        Собрать <span  style="display: none" class="harvesting_loader">- запущено...</span>
+                    {% if collect_status.status == 'error' %}
+                        - Ошибка
+                    {% endif %}
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="#" class="btn btn-default btn-sm" disabled>Нет активных правил сбора</a>
+            {% endif %}
+
+            <a href="{% url 'harvester:harvesting_journal' source.id %}" class="btn btn-default btn-sm">Журнал сбора</a>
+        </div>
+        <div class="btn-group">
+            {% if is_exist_active_harvesting_rules %}
+
+                {% if index_status.status == 'started1' %}
+                    <a class="btn btn-info btn-sm">
+                        Индексировать -
+                        {% if  index_status.status == 'started' %}запущено...{% endif %}
+                    </a>
+                {% else %}
+                    <a class="btn btn-primary btn-sm indexing_btn" href="{% url 'harvester:index_source' source.id %}" title="{{ index_status.message }}">
+                        Индексировать <span  style="display: none" class="indexing_loader">- запущено...</span>
+                    {% if index_status.status == 'error' %}
+                        - Ошибка
+                    {% endif %}
+                    </a>
+                {% endif %}
+
+            {% else %}
+                <a href="#" class="btn btn-default btn-sm" disabled>Нет активных правил индексирования</a>
+            {% endif %}
+            <a href="{% url 'harvester:indexing_journal' source.id %}" class="btn btn-default btn-sm">Журнал
+                индексирования
+            </a>
+            <a href="{% url 'harvester:reset_source_index' source.id %}" class="btn btn-warning btn-sm delete"
+               title="Удалить из индекса все записи источника"
+            >
+                Сбросить индекс</a>
+            <a href="{% url 'harvester:clean_source_index' source.id %}" class="btn btn-warning btn-sm"
+               title="Удалить из индекса записи помеченные к удалению"
+            >
+                Очистить
+            </a>
+        </div>
+        <div class="btn-group">
+            <a href="{% url 'harvester:source_records' source.id %}" class="btn btn-default btn-sm">Записи</a>
+            <a href="{% url 'harvester:clean_source_records' source.id %}" class="btn btn-warning btn-sm"
+               title="Удалить записи помеченные к удалению"
+            >
+                Очистить
+            </a>
+            <a href="{% url 'harvester:delete_source_records' source.id %}" class="btn btn-danger btn-sm delete">
+                Удалить записи
+            </a>
+        </div>
+    </div>
+    <h3>
+        Файлы источника
+    </h3>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+
+            <div class="btn-group">
+                <a href="{% url 'harvester:add_source_file' source.id %}" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Добавить
+                </a>
+            </div>
+        </div>
+        <table class="table">
+            <tr>
+                <th>URI</th>
+                <th>Формат</th>
+                <th>Схема</th>
+                <th>Кодировка</th>
+            </tr>
+            {% for source_records_file in source_records_files %}
+                <tr>
+                    <td>
+                        <a href="{% url 'harvester:source_file' source.id source_records_file.id %}"
+                           title="source_records_file.file_uri">
+                            {{ source_records_file.file_uri|truncatechars:50 }}
+                        </a>
+                    </td>
+                    <td>{{ source_records_file.format }}</td>
+                    <td>{{ source_records_file.schema }}</td>
+                    <td>{{ source_records_file.encoding }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <h3>
+        Правила сбора
+    </h3>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+
+            <div class="btn-group">
+                <a href="{% url 'harvester:add_harvesting_rule' source.id %}" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Добавить
+                </a>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tr>
+                <th>Активно</th>
+                <th>Режим очистки</th>
+                <th>Сбор по расписанию</th>
+{#                <th>Расписание</th>#}
+                <th>Индексировать после сбора</th>
+                <th>Дата последнего запуска</th>
+                <th>Ошибка при сборе</th>
+                <th>Действия</th>
+            </tr>
+            {% for harvesting_rule in harvesting_rules %}
+                <tr>
+                    <td>
+                        {% if harvesting_rule.active %}
+                            <span class="label label-success">да</span>
+                        {% else %}
+                            <span class="label label-danger">нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if harvesting_rule.reset %}
+                            <span class="label label-warning">да</span>
+                        {% else %}
+                            <span class="label label-success">нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if harvesting_rule.scheduled %}
+                            <span class="label label-default">да</span>
+                        {% else %}
+                            <span class="label label-default">нет</span>
+                        {% endif %}
+                    </td>
+{#                    <td>{{ harvesting_rule.cron_rule }}</td>#}
+                    <td>
+                        {% if harvesting_rule.index_after_harvesting %}
+                            <span class="label label-default">да</span>
+                        {% else %}
+                            <span class="label label-default">нет</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ harvesting_rule.last_harvested|default:'' }}</td>
+                    <td>
+                        {% if harvesting_rule.error %}
+                            <span class="label label-danger">да</span>
+                        {% else %}
+                            <span class="label label-success">нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+{#                        <a href="{% url 'harvester:run_harvesting_rule'  source.id harvesting_rule.id %}" class="btn btn-sm btn-primary" title="Запустить сбор">#}
+{#                            <i class="glyphicon glyphicon-play"></i>#}
+{#                        </a>#}
+                        <a href="{% url 'harvester:change_harvesting_rule' source.id harvesting_rule.id %}"
+                           class="btn btn-sm btn-default" title="Редактировать">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>
+                        <a href="{% url 'harvester:delete_harvesting_rule' source.id harvesting_rule.id %}"
+                           title="Удалить"
+                           class="btn btn-danger btn-sm delete">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <h3>
+        Правила индексирования
+    </h3>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+
+            <div class="btn-group">
+                <a href="{% url 'harvester:add_indexing_rule' source.id %}" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Добавить
+                </a>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tr>
+                <th>Активно</th>
+                <th>Индексирование по расписанию</th>
+{#                <th>Расписание</th>#}
+                <th>Дата последнего запуска</th>
+                <th>Ошибка при индексировании</th>
+                <th>Действия</th>
+            </tr>
+            {% for indexing_rule in indexing_rules %}
+                <tr>
+                    <td>
+                        {% if indexing_rule.active %}
+                            <span class="label label-success">да</span>
+                        {% else %}
+                            <span class="label label-danger">нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if indexing_rule.scheduled %}
+                            <span class="label label-success">да</span>
+                        {% else %}
+                            <span class="label label-default">нет</span>
+                        {% endif %}
+                    </td>
+{#                    <td>{{ indexing_rule.cron_rule }}</td>#}
+                    <td>{{ indexing_rule.last_indexed|default:'' }}</td>
+                    <td>
+                        {% if indexing_rule.error %}
+                            <span class="label label-danger">да</span>
+                        {% else %}
+                            <span class="label label-success">нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'harvester:change_indexing_rule' source.id indexing_rule.id %}"
+                           class="btn btn-sm btn-default" title="Редактировать">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>
+                        <a href="{% url 'harvester:delete_indexing_rule' source.id indexing_rule.id %}"
+                           class="btn btn-danger btn-sm delete">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+<script type="application/javascript">
+    $('.indexing_btn').on('click', function () {
+        $('.indexing_loader').show();
+        $.get($(this).attr('href')).done(function () {
+            $('.indexing_loader').hide();
+        }).fail(function () {
+            $('.indexing_loader').hide();
+            alert('Ошибка при индексировании')
+        });
+        return false;
+    });
+    $('.harvesting_btn').on('click', function () {
+        $('.harvesting_loader').show();
+        $.get($(this).attr('href')).done(function () {
+            $('.harvesting_loader').hide();
+        }).fail(function () {
+            $('.harvesting_loader').hide();
+            alert('Ошибка при сборе')
+        });
+        return false;
+    });
+</script>
+{% endblock %}

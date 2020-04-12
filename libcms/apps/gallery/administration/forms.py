@@ -17,7 +17,7 @@ class AlbumImageForm(forms.ModelForm):
 
 
 class AlbumImageEditForm(forms.ModelForm):
-    comments = forms.CharField(label=u'Коментарии к изображению', widget=forms.Textarea, required=False)
+    comments = forms.CharField(label='Коментарии к изображению', widget=forms.Textarea, required=False)
 
     class Meta:
         model = AlbumImage

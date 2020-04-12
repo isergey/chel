@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, get_list_or_404, Http404, HttpResponse
 import json as simplejson
 from districts import districts_list, find_district
-from models import Library, District
+from .models import Library, District
 from django.contrib.auth.decorators import login_required
 
 
@@ -11,10 +11,10 @@ def make_library_dict(library):
     return {
         'code': library.code,
         'title': library.name,
-        'address': getattr(library, 'postal_address', u"не указан"),
-        'phone': getattr(library, 'phone', u"не указан"),
-        'plans': getattr(library, 'plans', u"не указано"),
-        'http_service': getattr(library, 'http_service', u"не указан"),
+        'address': getattr(library, 'postal_address', "не указан"),
+        'phone': getattr(library, 'phone', "не указан"),
+        'plans': getattr(library, 'plans', "не указано"),
+        'http_service': getattr(library, 'http_service', "не указан"),
         'latitude': library.latitude,
         'longitude': library.longitude,
         }
@@ -27,8 +27,8 @@ def index(request):
     for cbs in library_systems:
         letters.append(cbs.letter)
     letters = list(set(letters))
-    print letters
-    print 'edwedweded'
+    print(letters)
+    print('edwedweded')
     return render(request, 'participants/cbs_list.html', {
         'orgs': library_systems,
         'letters': letters
@@ -44,7 +44,7 @@ def detail(request, code):
         for org in libraries:
             orgs.append(make_library_dict(org))
 
-        js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+        js_orgs = simplejson.dumps(orgs, ensure_ascii=False)
         return render(request, 'participants/participants_list_by_cbs.html', {
             'cbs_name': library.name,
             'cbs_code': library.code,
@@ -56,7 +56,7 @@ def detail(request, code):
 
         orgs.append(make_library_dict(library))
 
-        js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+        js_orgs = simplejson.dumps(orgs, ensure_ascii=False)
         return render(request, 'participants/participants_detail_by_cbs.html', {
             'cbs_name': getattr(library.parent, 'name', None),
             'cbs_code': getattr(library.parent, 'code', None),
@@ -72,7 +72,7 @@ def detail_by_district(request, code):
 
     orgs = [make_library_dict(library)]
 
-    js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = simplejson.dumps(orgs, ensure_ascii=False)
     return render(request, 'participants/participants_detail_by_district.html', {
         'library': library,
         'js_orgs': js_orgs
@@ -92,7 +92,7 @@ def by_district(request, id):
     for org in libraries:
         orgs.append(make_library_dict(org))
 
-    js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+    js_orgs = simplejson.dumps(orgs, ensure_ascii=False)
     return render(request, 'participants/participants_list_by_districts.html', {
         'ldap_orgs': libraries,
         'district': district,
@@ -117,13 +117,13 @@ def by_district_json(request):
 
 @login_required
 def xml_dump(request):
-    lines = [u'<?xml version="1.0" encoding="UTF-8"?>', u'<organizations>', u'<localization language="rus">']
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<organizations>', '<localization language="rus">']
     libraries = Library.objects.select_related().all()
     for library in libraries:
         if library.parent:
-            lines.append(u'<org id="' + library.code + '">' + library.name + ' (' + library.parent.name + ')</org>')
+            lines.append('<org id="' + library.code + '">' + library.name + ' (' + library.parent.name + ')</org>')
         else:
-            lines.append(u'<org id="' + library.code + '">' + library.name + '</org>')
-    lines.append(u'</localization>')
-    lines.append(u'</organizations>')
-    return HttpResponse(u'\n'.join(lines))
+            lines.append('<org id="' + library.code + '">' + library.name + '</org>')
+    lines.append('</localization>')
+    lines.append('</organizations>')
+    return HttpResponse('\n'.join(lines))

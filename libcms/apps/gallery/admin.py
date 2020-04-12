@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 
-from models import Album, AlbumImage
+from .models import Album, AlbumImage
 
 
 class AlbumAdmin(admin.ModelAdmin):

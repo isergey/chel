@@ -1,0 +1,17 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }}</a></li>
+    {% if not indexing_rule %}
+        <li class="active">Добавление правила индексирования</li>
+    {% else %}
+        <li class="active">Редактирование правила индексирования</li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <form method="post" novalidate>{% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+{% endblock %}

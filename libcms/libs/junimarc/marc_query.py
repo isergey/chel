@@ -1,10 +1,15 @@
 from collections import OrderedDict
-from record import Record, ControlField, DataField, DataSubfield, ExtendedSubfield
+from .record import Record, ControlField, DataField, DataSubfield, ExtendedSubfield
 
 
 class SubfieldQuery(object):
     def __init__(self, subfields):
         self.subfields = subfields or []
+
+    def get_code(self):
+        if self.is_exist():
+            return self.get_element().get_code()
+        return ''
 
     def get_data(self, default_value=''):
         if not self.subfields:
@@ -21,6 +26,16 @@ class SubfieldQuery(object):
             if isinstance(subfield, ExtendedSubfield):
                 fields += subfield.get_fields(tag)
         return FieldQuery(fields)
+
+    def get_fields(self):
+        fields = []
+        for subfield in self.subfields:
+            if isinstance(subfield, ExtendedSubfield):
+                fields += subfield.get_fields()
+        fq = []
+        for field in fields:
+            fq.append(FieldQuery([field]))
+        return fq
 
     def each(self, callback):
         for subfield in self.subfields:
@@ -63,10 +78,18 @@ class FieldQuery(object):
                 break
         return SubfieldQuery(subfields)
 
-    def get_field(self, tag):
-        return self.get_inner_field(tag)
+    def get_subfields(self):
+        subfields = []
+        for field in self.fields:
+            if not isinstance(field, DataField):
+                continue
+            exist_subfields = field.get_subfields()
+            if exist_subfields:
+                subfields = exist_subfields
+                break
+        return SubfieldQuery(subfields)
 
-    def get_inner_field(self, tag):
+    def get_field(self, tag):
         fields = []
         for extended_subfield in self.extended_subfields:
             subfield_queries = self.get_subfield(extended_subfield).list()
@@ -75,6 +98,15 @@ class FieldQuery(object):
                 if field_query.is_exist():
                     fields.append(field_query.get_element())
         return FieldQuery(fields)
+
+    def get_fields(self):
+        fields = []
+        for extended_subfield in self.extended_subfields:
+            subfield_queries = self.get_subfield(extended_subfield).list()
+            for subfield_query in subfield_queries:
+                for field_query in subfield_query.get_fields():
+                    fields.append(field_query.get_element())
+        return fields
 
     def get_ind1(self, default_value=' '):
         if self.fields:
@@ -95,6 +127,11 @@ class FieldQuery(object):
         if isinstance(field, DataField):
             return field.get_ind2()
         return default_value
+
+    def get_tag(self):
+        if self.is_exist():
+            return self.get_element().get_tag()
+        return ''
 
     def each(self, callback):
         for field in self.fields:
@@ -139,6 +176,12 @@ class MarcQuery(object):
 
         fields = self.fields_index.get(tag, [])
         return FieldQuery(fields)
+
+    def get_fields(self):
+        fq = []
+        for field in self.record.get_fields():
+            fq.append(FieldQuery([FieldQuery([field])]))
+        return fq
 
     def leader_data(self):
         return self.record.get_leader()

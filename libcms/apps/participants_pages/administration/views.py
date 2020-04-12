@@ -11,7 +11,7 @@ from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
 from ..models import Page, Content
-from forms import get_content_form, get_page_form
+from .forms import get_content_form, get_page_form
 from participants.models import Library, LibraryContentEditor
 
 def get_cbs(library_node):
@@ -72,7 +72,7 @@ def create_page(request, code, parent=None):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на создание страниц в этой ЦБС')
+        return HttpResponse('У Вас нет прав на создание страниц в этой ЦБС')
     if parent:
         parent = get_object_or_404(Page, id=parent)
     PageForm = get_page_form(library, parent)
@@ -104,7 +104,7 @@ def edit_page(request, code, id):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на редактирование страницы в этой ЦБС')
+        return HttpResponse('У Вас нет прав на редактирование страницы в этой ЦБС')
 
     langs = []
     for lang in settings.LANGUAGES:
@@ -154,7 +154,7 @@ def delete_page(request, code, id):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на удаление страницы в этой ЦБС')
+        return HttpResponse('У Вас нет прав на удаление страницы в этой ЦБС')
     page = get_object_or_404(Page, id=id)
     page.delete()
     return redirect('participants_pages:administration:pages_list', code=code)
@@ -167,7 +167,7 @@ def create_page_content(request, code, page_id):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на создание страницы в этой ЦБС')
+        return HttpResponse('У Вас нет прав на создание страницы в этой ЦБС')
     page = get_object_or_404(Page, id=page_id)
     ContentForm = get_content_form(('page',))
     if request.method == 'POST':
@@ -178,8 +178,8 @@ def create_page_content(request, code, page_id):
             content.page = page
             content.save()
 
-            save = request.POST.get('save', u'save_edit')
-            if save == u'save':
+            save = request.POST.get('save', 'save_edit')
+            if save == 'save':
                 return redirect('participants_pages:administration:edit_page', id=page_id, code=code)
             else:
                 return redirect('participants_pages:administration:edit_page_content', page_id=page_id, lang=content.lang)
@@ -197,10 +197,10 @@ def edit_page_content(request, code,  page_id, lang):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на редактирование страницы в этой ЦБС')
+        return HttpResponse('У Вас нет прав на редактирование страницы в этой ЦБС')
     lang_form = LanguageForm({'lang': lang})
     if not lang_form.is_valid():
-        return HttpResponse(_(u'Language is not registered in system.') + _(u" Language code: ") + lang)
+        return HttpResponse(_('Language is not registered in system.') + _(" Language code: ") + lang)
 
     page = get_object_or_404(Page, id=page_id)
 
@@ -219,8 +219,8 @@ def edit_page_content(request, code,  page_id, lang):
             content.page = page
             content.save()
 
-        save = request.POST.get('save', u'save_edit')
-        if save == u'save':
+        save = request.POST.get('save', 'save_edit')
+        if save == 'save':
             return redirect('participants_pages:administration:edit_page', id=page_id, code=code)
 
     else:
@@ -238,7 +238,7 @@ def page_up(request, code, id):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на редактирование страниц в этой ЦБС')
+        return HttpResponse('У Вас нет прав на редактирование страниц в этой ЦБС')
     page = get_object_or_404(Page, id=id)
     page.up()
 
@@ -252,7 +252,7 @@ def page_down(request, code, id):
     library = get_object_or_404(Library, code=code)
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
-        return HttpResponse(u'У Вас нет прав на редактирование страниц в этой ЦБС')
+        return HttpResponse('У Вас нет прав на редактирование страниц в этой ЦБС')
 
     page = get_object_or_404(Page, id=id)
     page.down()

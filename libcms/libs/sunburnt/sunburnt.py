@@ -1,10 +1,10 @@
-from __future__ import absolute_import
+
 
 import cgi
-import cStringIO as StringIO
+import io as StringIO
 from itertools import islice
 import logging
-import socket, time, urllib, urlparse
+import socket, time, urllib.request, urllib.parse, urllib.error, urllib.parse
 import warnings
 
 
@@ -95,12 +95,12 @@ class SolrConnection(object):
         if 'maxSegments' in extra_params and 'optimize' not in extra_params:
             raise ValueError("Can't do maxSegments without optimize")
         if extra_params:
-            return "%s?%s" % (self.update_url, urllib.urlencode(sorted(extra_params.items())))
+            return "%s?%s" % (self.update_url, urllib.parse.urlencode(sorted(extra_params.items())))
         else:
             return self.update_url
 
     def select(self, params):
-        qs = urllib.urlencode(params)
+        qs = urllib.parse.urlencode(params)
         url = "%s?%s" % (self.select_url, qs)
         if len(url) > self.max_length_get_url:
             warnings.warn("Long query URL encountered - POSTing instead of "
@@ -122,12 +122,12 @@ class SolrConnection(object):
         """Perform a MoreLikeThis query using the content specified
         There may be no content if stream.url is specified in the params.
         """
-        qs = urllib.urlencode(params)
+        qs = urllib.parse.urlencode(params)
         base_url = "%s?%s" % (self.mlt_url, qs)
         if content is None:
             kwargs = {'uri': base_url, 'method': "GET"}
         else:
-            get_url = "%s&stream.body=%s" % (base_url, urllib.quote_plus(content))
+            get_url = "%s&stream.body=%s" % (base_url, urllib.parse.quote_plus(content))
             if len(get_url) <= self.max_length_get_url:
                 kwargs = {'uri': get_url, 'method': "GET"}
             else:
@@ -167,7 +167,7 @@ class SolrInterface(object):
             schemadoc = self.schemadoc
         else:
             r, c = self.conn.request(
-                urlparse.urljoin(self.conn.url, self.remote_schema_file))
+                urllib.parse.urljoin(self.conn.url, self.remote_schema_file))
             if r.status != 200:
                 raise EnvironmentError("Couldn't retrieve schema document from server - received status code %s\n%s" % (r.status, c))
             schemadoc = StringIO.StringIO(c)

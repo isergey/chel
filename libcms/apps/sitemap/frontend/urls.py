@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
-import views
+from . import views
 
 urlpatterns = (
     url(r'^sitemap.xml$', views.index, name="index"),

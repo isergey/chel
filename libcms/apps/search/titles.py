@@ -1,801 +1,801 @@
 # encoding: utf-8
 
 attr_value_title = {
-    u'author': {
+    'author': {
         'title': {
-            u'ru': u'Автор'
+            'ru': 'Автор'
         },
     },
     #########################################################
-    u'author_name_corporate': {
+    'author_name_corporate': {
         'title': {
-            u'ru': u'Коллектив'
+            'ru': 'Коллектив'
         },
     },
     #########################################################
-    u'autograph': {
+    'autograph': {
         'title': {
-            u'ru': u'Автограф'
+            'ru': 'Автограф'
         },
     },
     #########################################################
-    u'catalog': {
+    'catalog': {
         'title': {
-            u'ru': u'Каталог'
+            'ru': 'Каталог'
         },
         'values': {
-            u'BOOKS': {
-                u'ru': u'Книги',
+            'BOOKS': {
+                'ru': 'Книги',
             },
-            u'DEP': {
-                u'ru': u'Фонд редких книг',
+            'DEP': {
+                'ru': 'Фонд редких книг',
             },
-            u'MAG_R': {
-                u'ru': u'Журналы на русск. языке',
+            'MAG_R': {
+                'ru': 'Журналы на русск. языке',
             },
-            u'MAG_F': {
-                u'ru': u'Журналы на иностр. языке',
+            'MAG_F': {
+                'ru': 'Журналы на иностр. языке',
             },
-            u'ND': {
-                u'ru': u'Неопубликованные документы',
+            'ND': {
+                'ru': 'Неопубликованные документы',
             },
         }
     },
     #########################################################
-    u'code_language': {
+    'code_language': {
         'title': {
-            u'ru': u'Язык'
+            'ru': 'Язык'
         },
         'values': {
-            u'rus': {
-                u'ru': u'Русский',
+            'rus': {
+                'ru': 'Русский',
             },
-            u'eng': {
-                u'ru': u'Английски',
+            'eng': {
+                'ru': 'Английски',
             },
-            u'ger': {
-                u'ru': u'Немецкий',
+            'ger': {
+                'ru': 'Немецкий',
             },
-            u'fre': {
-                u'ru': u'Французский',
+            'fre': {
+                'ru': 'Французский',
             },
-            u'ita': {
-                u'ru': u'Итальянский',
+            'ita': {
+                'ru': 'Итальянский',
             },
-            u'dan': {
-                u'ru': u'Датский',
+            'dan': {
+                'ru': 'Датский',
             },
-            u'ukr': {
-                u'ru': u'Украинский',
+            'ukr': {
+                'ru': 'Украинский',
             },
-            u'spa': {
-                u'ru': u'Испанский',
+            'spa': {
+                'ru': 'Испанский',
             },
-            u'chi': {
-                u'ru': u'Китайский',
+            'chi': {
+                'ru': 'Китайский',
             },
-            u'ara': {
-                u'ru': u'Арабский',
+            'ara': {
+                'ru': 'Арабский',
             },
-            u'vie': {
-                u'ru': u'Вьетнамский',
+            'vie': {
+                'ru': 'Вьетнамский',
             },
-            u'fin': {
-                u'ru': u'Финский',
+            'fin': {
+                'ru': 'Финский',
             },
-            u'swe': {
-                u'ru': u'Швейцарский',
+            'swe': {
+                'ru': 'Швейцарский',
             },
-            u'dut': {
-                u'ru': u'Голландский',
+            'dut': {
+                'ru': 'Голландский',
             },
-            u'lat': {
-                u'ru': u'Латинский',
+            'lat': {
+                'ru': 'Латинский',
             },
-            u'nor': {
-                u'ru': u'Норвежский',
+            'nor': {
+                'ru': 'Норвежский',
             },
-            u'jpn': {
-                u'ru': u'Японский',
+            'jpn': {
+                'ru': 'Японский',
             },
-            u'est': {
-                u'ru': u'Эстонский',
+            'est': {
+                'ru': 'Эстонский',
             },
-            u'pol': {
-                u'ru': u'Польский',
+            'pol': {
+                'ru': 'Польский',
             },
-            u'mul': {
-                u'ru': u'Многоязычный',
+            'mul': {
+                'ru': 'Многоязычный',
             },
-            u'rum': {
-                u'ru': u'Румынский',
+            'rum': {
+                'ru': 'Румынский',
             },
-            u'per': {
-                u'ru': u'Персидский',
+            'per': {
+                'ru': 'Персидский',
             },
-            u'bul': {
-                u'ru': u'Болгарский',
+            'bul': {
+                'ru': 'Болгарский',
             },
-            u'cze': {
-                u'ru': u'Чешский',
+            'cze': {
+                'ru': 'Чешский',
             },
-            u'hun': {
-                u'ru': u'Венгерский',
+            'hun': {
+                'ru': 'Венгерский',
             },
-            u'por': {
-                u'ru': u'Португальский',
+            'por': {
+                'ru': 'Португальский',
             },
-            u'scc': {
-                u'ru': u'Сербский',
+            'scc': {
+                'ru': 'Сербский',
             },
-            u'bel': {
-                u'ru': u'Белорусский',
+            'bel': {
+                'ru': 'Белорусский',
             },
-            u'hin': {
-                u'ru': u'Хинди',
+            'hin': {
+                'ru': 'Хинди',
             },
-            u'gre': {
-                u'ru': u'Греческий',
+            'gre': {
+                'ru': 'Греческий',
             },
-            u'tue': {
-                u'ru': u'Турецкий',
+            'tue': {
+                'ru': 'Турецкий',
             },
-            u'urd': {
-                u'ru': u'Урду',
+            'urd': {
+                'ru': 'Урду',
             },
-            u'kor': {
-                u'ru': u'Корейский',
+            'kor': {
+                'ru': 'Корейский',
             },
-            u'pus': {
-                u'ru': u'Пушту',
+            'pus': {
+                'ru': 'Пушту',
             },
-            u'aze': {
-                u'ru': u'Азербайджанский',
+            'aze': {
+                'ru': 'Азербайджанский',
             },
-            u'heb': {
-                u'ru': u'Иврит',
+            'heb': {
+                'ru': 'Иврит',
             },
-            u'mon': {
-                u'ru': u'Монгольский',
+            'mon': {
+                'ru': 'Монгольский',
             },
-            u'lav': {
-                u'ru': u'Латвийский',
+            'lav': {
+                'ru': 'Латвийский',
             },
-            u'tuk': {
-                u'ru': u'Туркменский',
+            'tuk': {
+                'ru': 'Туркменский',
             },
-            u'ru': {
-                u'ru': u'Русский',
+            'ru': {
+                'ru': 'Русский',
             }
         }
     },
-    u'system_collection': {
+    'system_collection': {
         'title': {
-            u'ru': u'Коллекция'
+            'ru': 'Коллекция'
         },
         'values': {
-            u'chelreglib.chel_elib.Газета "Утро Сибири". 1918-1919 гг.': {
-                u'ru': u'Газета "Утро Сибири". 1918-1919\u00A0гг."',
+            'chelreglib.chel_elib.Газета "Утро Сибири". 1918-1919 гг.': {
+                'ru': 'Газета "Утро Сибири". 1918-1919\u00A0гг."',
             },
-            u'chelreglib.chel_elib.Газета «Власть народа». 1918 г.': {
-                u'ru': u'Газета «Власть народа». 1918\u00A0г.',
+            'chelreglib.chel_elib.Газета «Власть народа». 1918 г.': {
+                'ru': 'Газета «Власть народа». 1918\u00A0г.',
             },
-            u'chelreglib.chel_elib.Газета «Курганская свободная мысль». 1918–1919 гг.': {
-                u'ru': u'Газета «Курганская свободная мысль». 1918–1919\u00A0гг.',
+            'chelreglib.chel_elib.Газета «Курганская свободная мысль». 1918–1919 гг.': {
+                'ru': 'Газета «Курганская свободная мысль». 1918–1919\u00A0гг.',
             },
-            u'chelreglib.chel_elib.Газета «Вестник Приуралья». 1919 г.': {
-                u'ru': u'Газета «Вестник Приуралья». 1919\u00A0г.',
+            'chelreglib.chel_elib.Газета «Вестник Приуралья». 1919 г.': {
+                'ru': 'Газета «Вестник Приуралья». 1919\u00A0г.',
             },
-            u'chelreglib.chel_elib.Народное образование на Урале': {
-                u'ru': u'Народное образование на Урале',
+            'chelreglib.chel_elib.Народное образование на Урале': {
+                'ru': 'Народное образование на Урале',
             },
-            u'chelreglib.chel_elib.Уральская область': {
-                u'ru': u'Уральская область',
+            'chelreglib.chel_elib.Уральская область': {
+                'ru': 'Уральская область',
             },
-            u'chelreglib.chel_elib.Оренбургская губерния': {
-                u'ru': u'Оренбургская губерния',
+            'chelreglib.chel_elib.Оренбургская губерния': {
+                'ru': 'Оренбургская губерния',
             },
-            u'chelreglib.chel_elib.Челябинская область: история': {
-                u'ru': u'Челябинская область: история',
+            'chelreglib.chel_elib.Челябинская область: история': {
+                'ru': 'Челябинская область: история',
             },
-            u'chelreglib.chel_elib.Урал. XIX-XXI вв.': {
-                u'ru': u'Урал. XIX-XXI\u00A0вв.',
+            'chelreglib.chel_elib.Урал. XIX-XXI вв.': {
+                'ru': 'Урал. XIX-XXI\u00A0вв.',
             },
-            u'chelreglib.chel_elib.Челябинская губерния. 1919-1923 гг.': {
-                u'ru': u'Челябинская губерния. 1919-1923\u00A0гг.',
+            'chelreglib.chel_elib.Челябинская губерния. 1919-1923 гг.': {
+                'ru': 'Челябинская губерния. 1919-1923\u00A0гг.',
             },
-            u'chelreglib.chel_elib.Уфимская губерния. 1865–1919 гг.': {
-                u'ru': u'Уфимская губерния. 1865–1919\u00A0гг.',
+            'chelreglib.chel_elib.Уфимская губерния. 1865–1919 гг.': {
+                'ru': 'Уфимская губерния. 1865–1919\u00A0гг.',
             },
-            u'chelreglib.chel_elib.Библиотеки Урала. XIX-XXI вв.': {
-                u'ru': u'Библиотеки Урала. XIX-XXI\u00A0вв.',
+            'chelreglib.chel_elib.Библиотеки Урала. XIX-XXI вв.': {
+                'ru': 'Библиотеки Урала. XIX-XXI\u00A0вв.',
             },
-            u'chelreglib.chel_elib.Гражданская война на Урале': {
-                u'ru': u'Гражданская война на Урале',
+            'chelreglib.chel_elib.Гражданская война на Урале': {
+                'ru': 'Гражданская война на Урале',
             },
-            u'chelreglib.chel_elib.Календари знаменательных дат': {
-                u'ru': u'Календари знаменательных дат',
+            'chelreglib.chel_elib.Календари знаменательных дат': {
+                'ru': 'Календари знаменательных дат',
             },
-            u'chelreglib.chel_elib.Природа Урала': {
-                u'ru': u'Природа Урала',
+            'chelreglib.chel_elib.Природа Урала': {
+                'ru': 'Природа Урала',
             },
-            u'chelreglib.chel_elib.Краеведы и краеведение': {
-                u'ru': u'Краеведы и краеведение',
+            'chelreglib.chel_elib.Краеведы и краеведение': {
+                'ru': 'Краеведы и краеведение',
             },
-            u'chelreglib.chel_elib.Челябинск. XIX–XXI вв.': {
-                u'ru': u'Челябинск. XIX–XXI\u00A0вв.',
+            'chelreglib.chel_elib.Челябинск. XIX–XXI вв.': {
+                'ru': 'Челябинск. XIX–XXI\u00A0вв.',
             },
-            u'chelreglib.chel_elib.Музыкальная жизнь Урала': {
-                u'ru': u'Музыкальная жизнь Урала',
+            'chelreglib.chel_elib.Музыкальная жизнь Урала': {
+                'ru': 'Музыкальная жизнь Урала',
             },
-            u'chelreglib.chel_elib.Оренбургское казачье войско': {
-                u'ru': u'Оренбургское казачье войско',
+            'chelreglib.chel_elib.Оренбургское казачье войско': {
+                'ru': 'Оренбургское казачье войско',
             },
-            u'chelreglib.chel_elib.Религия на Урале': {
-                u'ru': u'Религия на Урале',
+            'chelreglib.chel_elib.Религия на Урале': {
+                'ru': 'Религия на Урале',
             },
         }
     },
-    u'system_database': {
+    'system_database': {
         'title': {
-            u'ru': u'База'
+            'ru': 'База'
         },
         'values': {
-            u'chelreglib.chel_elib': {
-                u'ru': u'Электронная библиотека',
+            'chelreglib.chel_elib': {
+                'ru': 'Электронная библиотека',
             },
-            u'cbs.cbs_agapov': {
-                u'ru': u'Агаповский МР',
+            'cbs.cbs_agapov': {
+                'ru': 'Агаповский МР',
             },
-            u'cbs.cbs_argayash': {
-                u'ru': u'Аргаяшский МР',
+            'cbs.cbs_argayash': {
+                'ru': 'Аргаяшский МР',
             },
-            u'cbs.cbs_ashin': {
-                u'ru': u'Ашинский МР',
+            'cbs.cbs_ashin': {
+                'ru': 'Ашинский МР',
             },
-            u'cbs.cbs_bredin': {
-                u'ru': u'Брединский МР',
+            'cbs.cbs_bredin': {
+                'ru': 'Брединский МР',
             },
-            u'cbs.cbs_warnen': {
-                u'ru': u'Варненский МР',
+            'cbs.cbs_warnen': {
+                'ru': 'Варненский МР',
             },
-            u'cbs.cbs_vural': {
-                u'ru': u'Верхнеуральский МР',
+            'cbs.cbs_vural': {
+                'ru': 'Верхнеуральский МР',
             },
-            u'cbs.cbs_vufaley': {
-                u'ru': u'Верхнеуфалейский ГО',
+            'cbs.cbs_vufaley': {
+                'ru': 'Верхнеуфалейский ГО',
             },
-            u'cbs.cbs_emanzelin': {
-                u'ru': u'Еманжелинский МР',
+            'cbs.cbs_emanzelin': {
+                'ru': 'Еманжелинский МР',
             },
-            u'cbs.cbs_zlatoust': {
-                u'ru': u'Златоустовский ГО',
+            'cbs.cbs_zlatoust': {
+                'ru': 'Златоустовский ГО',
             },
-            u'cbs.cbs_karabash': {
-                u'ru': u'Карабашский ГО',
+            'cbs.cbs_karabash': {
+                'ru': 'Карабашский ГО',
             },
-            u'cbs.cbs_kartalin': {
-                u'ru': u'Карталинский МР',
+            'cbs.cbs_kartalin': {
+                'ru': 'Карталинский МР',
             },
-            u'cbs.cbs_kaslin': {
-                u'ru': u'Каслинский МР',
+            'cbs.cbs_kaslin': {
+                'ru': 'Каслинский МР',
             },
-            u'cbs.cbs_katavivanov': {
-                u'ru': u'Катав-Ивановский МР',
+            'cbs.cbs_katavivanov': {
+                'ru': 'Катав-Ивановский МР',
             },
-            u'cbs.cbs_kizil': {
-                u'ru': u'Кизильский МР',
+            'cbs.cbs_kizil': {
+                'ru': 'Кизильский МР',
             },
-            u'cbs.cbs_kopeysk': {
-                u'ru': u'Копейский ГО',
+            'cbs.cbs_kopeysk': {
+                'ru': 'Копейский ГО',
             },
-            u'cbs.cbs_korkin': {
-                u'ru': u'Коркинский МР',
+            'cbs.cbs_korkin': {
+                'ru': 'Коркинский МР',
             },
-            u'cbs.cbs_krasnoarme': {
-                u'ru': u'Красноармейский МР',
+            'cbs.cbs_krasnoarme': {
+                'ru': 'Красноармейский МР',
             },
-            u'cbs.cbs_kunashak': {
-                u'ru': u'Кунашакский МР',
+            'cbs.cbs_kunashak': {
+                'ru': 'Кунашакский МР',
             },
-            u'cbs.cbs_kusin': {
-                u'ru': u'Кусинский МР',
+            'cbs.cbs_kusin': {
+                'ru': 'Кусинский МР',
             },
-            u'cbs.cbs_kyshtym': {
-                u'ru': u'Кыштымский ГО',
+            'cbs.cbs_kyshtym': {
+                'ru': 'Кыштымский ГО',
             },
-            u'cbs.cbs_magnitogorsk': {
-                u'ru': u'Магнитогорский ГО',
+            'cbs.cbs_magnitogorsk': {
+                'ru': 'Магнитогорский ГО',
             },
-            u'cbs.cbsd_magnitogorsk': {
-                u'ru': u'Магнитогорский ГО (детская)',
+            'cbs.cbsd_magnitogorsk': {
+                'ru': 'Магнитогорский ГО (детская)',
             },
-            u'cbs.cbs_miass': {
-                u'ru': u'Миасский ГО',
+            'cbs.cbs_miass': {
+                'ru': 'Миасский ГО',
             },
-            u'cbs.cbs_nagaibak': {
-                u'ru': u'Нагайбакский МР',
+            'cbs.cbs_nagaibak': {
+                'ru': 'Нагайбакский МР',
             },
-            u'cbs.cbs_njazepetrov': {
-                u'ru': u'Нязепетровский МР',
+            'cbs.cbs_njazepetrov': {
+                'ru': 'Нязепетровский МР',
             },
-            u'cbs.cbs_oktyabrsk': {
-                u'ru': u'Октябрьский МР',
+            'cbs.cbs_oktyabrsk': {
+                'ru': 'Октябрьский МР',
             },
-            u'cbs.cbs_plastov': {
-                u'ru': u'Пластовский МР',
+            'cbs.cbs_plastov': {
+                'ru': 'Пластовский МР',
             },
-            u'cbs.cbs_snezhinsk': {
-                u'ru': u'Снежинский ГО',
+            'cbs.cbs_snezhinsk': {
+                'ru': 'Снежинский ГО',
             },
-            u'cbs.cbs_sosnov': {
-                u'ru': u'Сосновский МР',
+            'cbs.cbs_sosnov': {
+                'ru': 'Сосновский МР',
             },
-            u'cbs.cbs_trekhgorn': {
-                u'ru': u'Трехгорный ГО',
+            'cbs.cbs_trekhgorn': {
+                'ru': 'Трехгорный ГО',
             },
-            u'cbs.cbs_troitsk': {
-                u'ru': u'Троицкий ГО',
+            'cbs.cbs_troitsk': {
+                'ru': 'Троицкий ГО',
             },
-            u'cbs.cbs_troitskr': {
-                u'ru': u'Троицкий МР',
+            'cbs.cbs_troitskr': {
+                'ru': 'Троицкий МР',
             },
-            u'cbs.cbs_uvelka': {
-                u'ru': u'Увельский МР',
+            'cbs.cbs_uvelka': {
+                'ru': 'Увельский МР',
             },
-            u'cbs.cbs_uyskoe': {
-                u'ru': u'Уйский МР',
+            'cbs.cbs_uyskoe': {
+                'ru': 'Уйский МР',
             },
-            u'cbs.cbs_ustkatav': {
-                u'ru': u'Усть-Катавский ГО',
+            'cbs.cbs_ustkatav': {
+                'ru': 'Усть-Катавский ГО',
             },
-            u'cbs.cbs_chebarkulg': {
-                u'ru': u'Чебаркульский ГО',
+            'cbs.cbs_chebarkulg': {
+                'ru': 'Чебаркульский ГО',
             },
-            u'cbs.cbs_chebarkul': {
-                u'ru': u'Чебаркульский МР',
+            'cbs.cbs_chebarkul': {
+                'ru': 'Чебаркульский МР',
             },
-            u'cbs.cbs_cheljabinsk': {
-                u'ru': u'Челябинский ГО',
+            'cbs.cbs_cheljabinsk': {
+                'ru': 'Челябинский ГО',
             },
-            u'cbs.cbsd_cheljabinsk': {
-                u'ru': u'Челябинский ГО (детская)',
+            'cbs.cbsd_cheljabinsk': {
+                'ru': 'Челябинский ГО (детская)',
             },
-            u'cbs.cbs_chesmen': {
-                u'ru': u'Чесменский МР',
+            'cbs.cbs_chesmen': {
+                'ru': 'Чесменский МР',
             },
-            u'cbs.cbs_yuzhnouralsk': {
-                u'ru': u'Южноуральский ГО',
+            'cbs.cbs_yuzhnouralsk': {
+                'ru': 'Южноуральский ГО',
             },
         }
     },
-    u'system_source': {
+    'system_source': {
         'title': {
-            u'ru': u'Источник'
+            'ru': 'Источник'
         },
         'values': {
-            u'analytics': {
-                u'ru': u'Аналитика',
+            'analytics': {
+                'ru': 'Аналитика',
             },
-            u'chelreglib': {
-                u'ru': u'Челябинская ОУНБ',
+            'chelreglib': {
+                'ru': 'Челябинская ОУНБ',
             },
-            u'cbs': {
-                u'ru': u'Библиотеки Челябинской области',
+            'cbs': {
+                'ru': 'Библиотеки Челябинской области',
             },
-            u'spstu': {
-                u'ru': u'ФБ СПбПУ',
+            'spstu': {
+                'ru': 'ФБ СПбПУ',
             },
-            u'viniti': {
-                u'ru': u'ВИНИТИ',
+            'viniti': {
+                'ru': 'ВИНИТИ',
             },
         }
     },
-    u'document_type': {
+    'document_type': {
         'title': {
-            u'ru': u'Вид документа'
+            'ru': 'Вид документа'
         },
         'values': {
-            u'article': {
-                u'ru': u'статья',
+            'article': {
+                'ru': 'статья',
             },
-            u'author_abstract': {
-                u'ru': u'автореферат',
+            'author_abstract': {
+                'ru': 'автореферат',
             },
-            u'dict': {
-                u'ru': u'словарь',
+            'dict': {
+                'ru': 'словарь',
             },
-            u'disser': {
-                u'ru': u'диссертация',
+            'disser': {
+                'ru': 'диссертация',
             },
-            u'encyc': {
-                u'ru': u'энциклопедия',
+            'encyc': {
+                'ru': 'энциклопедия',
             },
-            u'issue': {
-                u'ru': u'выпуск',
+            'issue': {
+                'ru': 'выпуск',
             },
-            u'journal_np': {
-                u'ru': u'журнал, газета',
+            'journal_np': {
+                'ru': 'журнал, газета',
             },
-            u'other': {
-                u'ru': u'не определен',
+            'other': {
+                'ru': 'не определен',
             },
-            u'ref': {
-                u'ru': u'справочник',
+            'ref': {
+                'ru': 'справочник',
             },
-            u'tech_report': {
-                u'ru': u'технический отчет',
+            'tech_report': {
+                'ru': 'технический отчет',
             },
-            u'textbook': {
-                u'ru': u'учебник',
+            'textbook': {
+                'ru': 'учебник',
             }
         },
     },
-    u'source': {
+    'source': {
         'title': {
-            u'ru': u'Источник'
+            'ru': 'Источник'
         },
         'values': {
-            u'spbstu_uc': {
-                u'ru': u'Электронный каталог',
+            'spbstu_uc': {
+                'ru': 'Электронный каталог',
             },
-            u'spbstu_edoc': {
-                u'ru': u'Электронная библиотека',
+            'spbstu_edoc': {
+                'ru': 'Электронная библиотека',
             }
         },
     },
-    u'content_type': {
+    'content_type': {
         'title': {
-            u'ru': u'Тип контента'
+            'ru': 'Тип контента'
         },
         'values': {
-            u'a': {
-                u'ru': u'библиографическое издание',
+            'a': {
+                'ru': 'библиографическое издание',
             },
-            u'b': {
-                u'ru': u'каталог',
+            'b': {
+                'ru': 'каталог',
             },
-            u'c': {
-                u'ru': u'указатель',
+            'c': {
+                'ru': 'указатель',
             },
-            u'd': {
-                u'ru': u'реферат',
+            'd': {
+                'ru': 'реферат',
             },
-            u'e': {
-                u'ru': u'словарь',
+            'e': {
+                'ru': 'словарь',
             },
-            u'f': {
-                u'ru': u'энциклопедия',
+            'f': {
+                'ru': 'энциклопедия',
             },
-            u'g': {
-                u'ru': u'справочное издание',
+            'g': {
+                'ru': 'справочное издание',
             },
-            u'h': {
-                u'ru': u'описание проекта',
+            'h': {
+                'ru': 'описание проекта',
             },
-            u'i': {
-                u'ru': u'статистические данные',
+            'i': {
+                'ru': 'статистические данные',
             },
-            u'j': {
-                u'ru': u'учебник',
+            'j': {
+                'ru': 'учебник',
             },
-            u'k': {
-                u'ru': u'патент',
+            'k': {
+                'ru': 'патент',
             },
-            u'l': {
-                u'ru': u'стандарт',
+            'l': {
+                'ru': 'стандарт',
             },
-            u'm': {
-                u'ru': u'диссертация',
+            'm': {
+                'ru': 'диссертация',
             },
-            u'n': {
-                u'ru': u'законы',
+            'n': {
+                'ru': 'законы',
             },
-            u'o': {
-                u'ru': u'словарь',
+            'o': {
+                'ru': 'словарь',
             },
-            u'p': {
-                u'ru': u'технический отчет',
+            'p': {
+                'ru': 'технический отчет',
             },
-            u'q': {
-                u'ru': u'экзаменационный лист',
+            'q': {
+                'ru': 'экзаменационный лист',
             },
-            u'r': {
-                u'ru': u'литературный обзор/рецензия',
+            'r': {
+                'ru': 'литературный обзор/рецензия',
             },
-            u's': {
-                u'ru': u'договоры',
+            's': {
+                'ru': 'договоры',
             },
-            u't': {
-                u'ru': u'карикатуры или комиксы',
+            't': {
+                'ru': 'карикатуры или комиксы',
             },
-            u'w': {
-                u'ru': u'религиозные тексты',
+            'w': {
+                'ru': 'религиозные тексты',
             },
-            u'z': {
-                u'ru': u'другое',
+            'z': {
+                'ru': 'другое',
             },
         }
     },
     #########################################################
-    u'date_of_publication': {
+    'date_of_publication': {
         'title': {
-            u'ru': u'Дата публикации'
+            'ru': 'Дата публикации'
         }
     },
     #########################################################
-    u'date_of_publication_of_original': {
+    'date_of_publication_of_original': {
         'title': {
-            u'ru': u'Год издания оригинала'
+            'ru': 'Год издания оригинала'
         }
     },
     #########################################################
-    u'date_time_added_to_db': {
+    'date_time_added_to_db': {
         'title': {
-            u'ru': u'Дата ввода в БД'
+            'ru': 'Дата ввода в БД'
         }
     },
-    u'first_letter': {
+    'first_letter': {
         'title': {
-            u'ru': u'A to Z'
-        }
-    },
-    #########################################################
-    u'full_text': {
-        'title': {
-            u'ru': u'Полный текст'
+            'ru': 'A to Z'
         }
     },
     #########################################################
-    u'has_full_text_url': {
+    'full_text': {
         'title': {
-            u'ru': u'Полный текст'
+            'ru': 'Полный текст'
+        }
+    },
+    #########################################################
+    'has_full_text_url': {
+        'title': {
+            'ru': 'Полный текст'
         },
         'values': {
-            u'1': {
-                u'ru': u'Есть',
+            '1': {
+                'ru': 'Есть',
             },
         }
     },
     #########################################################
-    u'host_item': {
+    'host_item': {
         'title': {
-            u'ru': u'Источник статьи'
+            'ru': 'Источник статьи'
         }
     },
     #########################################################
-    u'isbn': {
+    'isbn': {
         'title': {
-            u'ru': u'ISBN'
+            'ru': 'ISBN'
         }
     },
     #########################################################
-    u'issn': {
+    'issn': {
         'title': {
-            u'ru': u'ISSN'
+            'ru': 'ISSN'
         }
     },
     #########################################################
-    u'literary_incipit': {
+    'literary_incipit': {
         'title': {
-            u'ru': u'Инцип'
+            'ru': 'Инцип'
         }
     },
     #########################################################
-    u'local_number': {
+    'local_number': {
         'title': {
-            u'ru': u'Контрольный номер'
+            'ru': 'Контрольный номер'
         }
     },
     'material_type': {
         'title': {
-            u'ru': u'Вид документа'
+            'ru': 'Вид документа'
         },
         'values': {
-            u'monography': {
-                u'ru': u'монография',
+            'monography': {
+                'ru': 'монография',
             },
-            u'journal_paper': {
-                u'ru': u'журнал/газета',
+            'journal_paper': {
+                'ru': 'журнал/газета',
             },
-            u'issues': {
-                u'ru': u'выпуск',
+            'issues': {
+                'ru': 'выпуск',
             },
-            u'articles_reports': {
-                u'ru': u'статья/доклад',
+            'articles_reports': {
+                'ru': 'статья/доклад',
             },
-            u'collections': {
-                u'ru': u'подборка',
+            'collections': {
+                'ru': 'подборка',
             },
-            u'integrity': {
-                u'ru': u'интегрируемый ресурс',
+            'integrity': {
+                'ru': 'интегрируемый ресурс',
             },
-            u'texts': {
-                u'ru': u'текст',
+            'texts': {
+                'ru': 'текст',
             },
-            u'musical_scores': {
-                u'ru': u'музыкальная партитура',
+            'musical_scores': {
+                'ru': 'музыкальная партитура',
             },
-            u'maps': {
-                u'ru': u'карты',
+            'maps': {
+                'ru': 'карты',
             },
-            u'video': {
-                u'ru': u'видео',
+            'video': {
+                'ru': 'видео',
             },
-            u'sound_records': {
-                u'ru': u'звукозапись',
+            'sound_records': {
+                'ru': 'звукозапись',
             },
-            u'graphics': {
-                u'ru': u'графика',
+            'graphics': {
+                'ru': 'графика',
             },
-            u'e_resources': {
-                u'ru': u'электронный ресурс',
+            'e_resources': {
+                'ru': 'электронный ресурс',
             },
-            u'dissertation_abstracts': {
-                u'ru': u'диссертация/реферат',
+            'dissertation_abstracts': {
+                'ru': 'диссертация/реферат',
             },
-            u'textbook': {
-                u'ru': u'учебник',
+            'textbook': {
+                'ru': 'учебник',
             },
-            u'patents': {
-                u'ru': u'патент',
+            'patents': {
+                'ru': 'патент',
             },
-            u'standarts': {
-                u'ru': u'стандарты',
+            'standarts': {
+                'ru': 'стандарты',
             },
-            u'legislative_acts': {
-                u'ru': u'законодательный акт',
+            'legislative_acts': {
+                'ru': 'законодательный акт',
             },
-            u'technical_reports': {
-                u'ru': u'технический отчет',
+            'technical_reports': {
+                'ru': 'технический отчет',
             },
-            u'references': {
-                u'ru': u'справочник',
+            'references': {
+                'ru': 'справочник',
             },
-            u'dictionaries': {
-                u'ru': u'словарь',
+            'dictionaries': {
+                'ru': 'словарь',
             },
-            u'encyclopedias': {
-                u'ru': u'энциклопедия',
+            'encyclopedias': {
+                'ru': 'энциклопедия',
             },
         }
     },
     #########################################################
-    u'org_creator': {
+    'org_creator': {
         'title': {
-            u'ru': u'Организация создатель'
+            'ru': 'Организация создатель'
         }
     },
     #########################################################
-    u'owner': {
+    'owner': {
         'title': {
-            u'ru': u'Держатель'
+            'ru': 'Держатель'
         }
     },
     #########################################################
-    u'place_publication': {
+    'place_publication': {
         'title': {
-            u'ru': u'Место публикации'
+            'ru': 'Место публикации'
         }
     },
     #########################################################
-    u'publisher': {
+    'publisher': {
         'title': {
-            u'ru': u'Издательство'
+            'ru': 'Издательство'
         }
     },
     #########################################################
-    u'subject': {
+    'subject': {
         'title': {
-            u'ru': u'Тематика'
+            'ru': 'Тематика'
         }
     },
     #########################################################
-    u'subject_heading': {
+    'subject_heading': {
         'title': {
-            u'ru': u'Тематика'
+            'ru': 'Тематика'
         }
     },
     #########################################################
-    u'subject_name_geographical': {
+    'subject_name_geographical': {
         'title': {
-            u'ru': u'География'
+            'ru': 'География'
         }
     },
     #########################################################
-    u'subject_name_personal': {
+    'subject_name_personal': {
         'title': {
-            u'ru': u'Персоналия'
+            'ru': 'Персоналия'
         }
     },
     #########################################################
-    u'subject_subheading': {
+    'subject_subheading': {
         'title': {
-            u'ru': u'Подрубрика'
+            'ru': 'Подрубрика'
         }
     },
     #########################################################
-    u'subject_keywords': {
+    'subject_keywords': {
         'title': {
-            u'ru': u'Ключевые слова'
+            'ru': 'Ключевые слова'
         }
     },
     #########################################################
-    u'title': {
+    'title': {
         'title': {
-            u'ru': u'Заглавие'
+            'ru': 'Заглавие'
         }
     },
     #########################################################
-    u'title_series': {
+    'title_series': {
         'title': {
-            u'ru': u'Заглавие серии'
+            'ru': 'Заглавие серии'
         }
     },
     #########################################################
-    u'type': {
+    'type': {
         'title': {
-            u'ru': u'Тип БД'
+            'ru': 'Тип БД'
         }
     },
     #########################################################
-    u'all': {
+    'all': {
         'title': {
-            u'ru': u'Везде'
+            'ru': 'Везде'
         }
     },
     #########################################################
-    u'bbk': {
+    'bbk': {
         'title': {
-            u'ru': u'ББК'
+            'ru': 'ББК'
         }
     },
     #########################################################
-    u'udc': {
+    'udc': {
         'title': {
-            u'ru': u'УДК'
+            'ru': 'УДК'
         }
     },
     #########################################################
-    u'grnti': {
+    'grnti': {
         'title': {
-            u'ru': u'ГРНТИ'
+            'ru': 'ГРНТИ'
         }
     },
     #########################################################
-    u'url_source': {
+    'url_source': {
         'title': {
-            u'ru': u'Источник'
+            'ru': 'Источник'
         },
         'values': {
-            u'elib': {
-                u'ru': u'Электронная библиотека',
+            'elib': {
+                'ru': 'Электронная библиотека',
             },
-            u'inner': {
-                u'ru': u'Внутренний',
+            'inner': {
+                'ru': 'Внутренний',
             },
-            u'external': {
-                u'ru': u'Внешний',
+            'external': {
+                'ru': 'Внешний',
             },
         }
     },
     #########################################################
-    u'system_source_id': {
+    'system_source_id': {
         'title': {
-            u'ru': u'Базы'
+            'ru': 'Базы'
         },
         'values': {
-            u'spstu': {
-                u'ru': u'ФБ СПбГПУ',
+            'spstu': {
+                'ru': 'ФБ СПбГПУ',
             },
-            u'mars': {
-                u'ru': u'МАРС',
+            'mars': {
+                'ru': 'МАРС',
             }
         }
     },
-    u'collection': {
+    'collection': {
         'title': {
-            u'ru': u'Электронная библиотека'
+            'ru': 'Электронная библиотека'
         },
         # 'values': {
         #     u'Уральская область.Уральская электронная библиотека': {
@@ -807,23 +807,23 @@ attr_value_title = {
 }
 
 
-def get_attr_title(attr, lang=u'ru'):
+def get_attr_title(attr, lang='ru'):
     try:
         return attr_value_title[attr.lower()]['title'][lang]
     except KeyError:
         pass
 
-    parts = attr.split(u'_')
+    parts = attr.split('_')
     # if len(parts) < 2:
     #     return attr
     #     #raise ValueError(u'Неправильный атрибут')
     try:
-        return attr_value_title[u'_'.join(parts[:-1])]['title'][lang]
+        return attr_value_title['_'.join(parts[:-1])]['title'][lang]
     except KeyError:
         return attr
 
 
-def get_attr_value_title(attr, value, lang=u'ru'):
+def get_attr_value_title(attr, value, lang='ru'):
     try:
         return attr_value_title[attr]['values'][value][lang]
     except KeyError:
@@ -834,16 +834,16 @@ def get_attr_value_title(attr, value, lang=u'ru'):
     except KeyError:
         pass
 
-    parts = attr.split(u'_')
+    parts = attr.split('_')
     # if len(parts) < 2:
     #
     #     raise ValueError(u'Неправильный атрибут')
     try:
-        return attr_value_title[u'_'.join(parts[:-1])]['values'][value][lang]
+        return attr_value_title['_'.join(parts[:-1])]['values'][value][lang]
     except KeyError:
         pass
 
     try:
-        return attr_value_title[u'_'.join(parts[:-1])]['values'][value.lower()][lang]
+        return attr_value_title['_'.join(parts[:-1])]['values'][value.lower()][lang]
     except KeyError:
         return value

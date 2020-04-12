@@ -5,14 +5,16 @@ import datetime
 
 
 class PollForm(forms.ModelForm):
-    start_poll_date = forms.DateTimeField(('%d.%m.%Y %H:%M:%S',), label=u"Дата начала голосования",
-                                          widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
-                                          initial=datetime.datetime.now()
-                                          )
-    end_poll_date = forms.DateTimeField(('%d.%m.%Y %H:%M:%S',), label=u"Дата окончания голосования",
-                                        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
-                                        initial=datetime.datetime.now()
-                                        )
+    start_poll_date = forms.DateTimeField(
+        label="Дата начала голосования",
+        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
+        initial=datetime.datetime.now
+    )
+    end_poll_date = forms.DateTimeField(
+        label="Дата окончания голосования",
+        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M:%S'),
+        initial=datetime.datetime.now
+    )
 
     class Meta:
         model = Poll
@@ -26,7 +28,7 @@ class PollForm(forms.ModelForm):
             return end_poll_date
 
         if end_poll_date < start_poll_date:
-            raise forms.ValidationError(u"Дата окончания голосования меньше даты начала")
+            raise forms.ValidationError("Дата окончания голосования меньше даты начала")
         return end_poll_date
 
 
@@ -49,5 +51,5 @@ class ChoiceForm(forms.ModelForm):
     def clean_votes(self):
         votes = self.cleaned_data['votes']
         if votes < 0:
-            raise forms.ValidationError(u"Количество голосов должно быть больше или равно 0")
+            raise forms.ValidationError("Количество голосов должно быть больше или равно 0")
         return votes

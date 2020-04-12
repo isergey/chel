@@ -1,10 +1,10 @@
 import zipfile
-import StringIO
+import io
 
 class InMemoryZip(object):
     def __init__(self):
         # Create the in-memory file-like object
-        self.in_memory_zip = StringIO.StringIO()
+        self.in_memory_zip = io.StringIO()
 
     def append(self, filename_in_zip, file_contents):
         '''Appends a file with name filename_in_zip and contents of 

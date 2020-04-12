@@ -6,38 +6,38 @@ from django.utils.html import strip_tags
 from solr.solr import Solr, SolrError
 
 types = (
-    (0, u'Персоналия'),
-    (1, u'Организация'),
-    (2, u'Мероприятие'),
-    (3, u'Географический объект'),
-    (4, u'Тема'),
+    (0, 'Персоналия'),
+    (1, 'Организация'),
+    (2, 'Мероприятие'),
+    (3, 'Географический объект'),
+    (4, 'Тема'),
 )
 
 
 class Type(models.Model):
     variant = models.IntegerField(choices=types, unique=True, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.get_variant_display()
 
 
 class ImportantDate(models.Model):
-    date = models.DateField(verbose_name=u'Дата события', db_index=True,
-                            help_text=u'Если неизвестен день или месяц даты, то выставлять 01. 01.01.1061')
-    count_day = models.BooleanField(verbose_name=u'Учитывать день даты', db_index=True, default=True)
-    count_month = models.BooleanField(verbose_name=u'Учитывать месяц даты', db_index=True, default=True)
-    count_year = models.BooleanField(verbose_name=u'Учитывать год даты', db_index=True, default=True)
-    type = models.ManyToManyField(Type, verbose_name=u'Тип события')
-    fio = models.CharField(verbose_name=u'ФИО персоналии', max_length=512, blank=True, null=True)
-    org_title = models.CharField(verbose_name=u'Название организации', max_length=512, blank=True, null=True)
-    event_title = models.CharField(verbose_name=u'Название мероприятия', max_length=512, blank=True, null=True)
-    geo_title = models.CharField(verbose_name=u'Наименование геогр. объекта', max_length=512, blank=True, null=True)
-    theme = models.CharField(verbose_name=u'Тема', max_length=512, blank=True, null=True)
-    description = models.TextField(verbose_name=u'Описание', blank=True)
-    literature = models.TextField(verbose_name=u'Литература', blank=True)
-    create_date = models.DateTimeField(verbose_name=u'Дата создания', db_index=True, auto_now_add=True)
+    date = models.DateField(verbose_name='Дата события', db_index=True,
+                            help_text='Если неизвестен день или месяц даты, то выставлять 01. 01.01.1061')
+    count_day = models.BooleanField(verbose_name='Учитывать день даты', db_index=True, default=True)
+    count_month = models.BooleanField(verbose_name='Учитывать месяц даты', db_index=True, default=True)
+    count_year = models.BooleanField(verbose_name='Учитывать год даты', db_index=True, default=True)
+    type = models.ManyToManyField(Type, verbose_name='Тип события')
+    fio = models.CharField(verbose_name='ФИО персоналии', max_length=512, blank=True, null=True)
+    org_title = models.CharField(verbose_name='Название организации', max_length=512, blank=True, null=True)
+    event_title = models.CharField(verbose_name='Название мероприятия', max_length=512, blank=True, null=True)
+    geo_title = models.CharField(verbose_name='Наименование геогр. объекта', max_length=512, blank=True, null=True)
+    theme = models.CharField(verbose_name='Тема', max_length=512, blank=True, null=True)
+    description = models.TextField(verbose_name='Описание', blank=True)
+    literature = models.TextField(verbose_name='Литература', blank=True)
+    create_date = models.DateTimeField(verbose_name='Дата создания', db_index=True, auto_now_add=True)
 
-    def __unicode__(self):
+    def __str__(self):
         lines = []
         if self.fio:
             lines.append(self.fio)
@@ -52,9 +52,9 @@ class ImportantDate(models.Model):
             lines.append(self.geo_title)
 
         if self.theme:
-            lines.append(unicode(self.theme))
+            lines.append(str(self.theme))
 
-        return u'. '.join(lines)
+        return '. '.join(lines)
 
     @staticmethod
     def get_ids_by_year(year, mod=5):
@@ -100,6 +100,7 @@ def important_date_to_index_doc(idmodel):
         doc['literature_t'] = strip_tags(idmodel.literature)
     return doc
 
+
 def update_doc(sender, **kwargs):
     idmodel = (kwargs['instance'])
     doc = important_date_to_index_doc(idmodel)
@@ -114,7 +115,7 @@ def update_doc(sender, **kwargs):
         raise e
 
 
-post_save.connect(update_doc, sender=ImportantDate)
+# post_save.connect(update_doc, sender=ImportantDate)
 
 
 def delete_doc(sender, **kwargs):

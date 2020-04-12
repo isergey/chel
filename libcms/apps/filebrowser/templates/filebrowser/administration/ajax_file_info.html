@@ -1,0 +1,19 @@
+<h4 class="well well-sm">Описание файла</h4>
+<table class="table table-bordered">
+    <tr>
+        <th style="width: 150px">Название содержимого</th>
+        <td>{{ file_info.title }}</td>
+    </tr>
+    <tr>
+        <th>Тип содержимого</th>
+        <td>{{ file_info.content_type|default:'не указано' }}</td>
+    </tr>
+    <tr>
+        <th>Ключевые слова</th>
+        <td>{{ file_info.keywords }}</td>
+    </tr>
+    <tr>
+        <th>Описание</th>
+        <td>{{ file_info.description }}</td>
+    </tr>
+</table>

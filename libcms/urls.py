@@ -2,44 +2,51 @@
 from django.conf import settings
 
 from django.conf.urls.static import static
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include,re_path
 from django.contrib.admin.sites import site
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+from django.conf.urls.i18n import i18n_patterns
 
-urlpatterns = patterns('',
-    (r'^', include('index.urls', namespace='index')),
-    url(r'^robots.txt', include('robots_txt.urls')),
-    url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),
-    (r'^core/', include('core.urls', namespace='core')),
-    (r'^accounts/', include('accounts.urls', namespace='accounts')),
-    (r'^filebrowser/', include('filebrowser.urls', namespace='filebrowser')),
-    (r'^menu/', include('menu.urls', namespace='menu')),
-    (r'^pages/', include('pages.urls', namespace='pages')),
-    (r'^news/', include('news.urls', namespace='news')),
-    (r'^events/', include('events.urls', namespace='events')),
-    (r'^professionals/pages/', include('professionals_pages.urls', namespace='professionals_pages')),
-    (r'^professionals/news/', include('professionals_news.urls', namespace='professionals_news')),
-    (r'^professionals/', include('professionals.urls', namespace='professionals')),
-    (r'^participants/(?P<code>[_\-0-9A-Za-z]+)/pages/', include('participants_pages.urls', namespace='participants_pages')),
-    (r'^participants/', include('participants.urls', namespace='participants')),
-    (r'^forum/', include('forum.urls', namespace='forum')),
-    (r'^orders/', include('orders.urls', namespace='orders')),
-    (r'^zgate/', include('zgate.urls')),
-    (r'^ask_librarian/', include('ask_librarian.urls', namespace='ask_librarian')),
-    (r'^gallery/', include('gallery.urls', namespace='gallery')),
-    (r'^guestbook/', include('guestbook.urls', namespace='guestbook')),
-    (r'^polls/', include('polls.urls', namespace='polls')),
-    (r'^cid/', include('cid.urls', namespace='cid')),
-    (r'^dl/', include('rbooks.urls', namespace='rbooks')),
-    (r'^ssearch/', include('ssearch.urls', namespace='ssearch')),
-    (r'^search/', include('search.urls', namespace='search')),
+urlpatterns = []
+
+urlpatterns += i18n_patterns(
+    re_path(r'^', include(('index.urls', 'index'))),
+    re_path(r'^auth/', include('django.contrib.auth.urls')),
+    re_path(r'^robots.txt', include('robots_txt.urls')),
+    re_path(r'^sitemap/', include(('sitemap.urls', 'sitemap'))),
+    re_path(r'^core/', include(('core.urls', 'core'))),
+    re_path(r'^accounts/', include(('accounts.urls', 'accounts'))),
+    re_path(r'^filebrowser/', include(('filebrowser.urls', 'filebrowser'))),
+    re_path(r'^menu/', include(('menu.urls', 'menu'))),
+    re_path(r'^pages/', include(('pages.urls', 'pages'))),
+    re_path(r'^news/', include(('news.urls', 'news'))),
+    re_path(r'^events/', include(('events.urls', 'events'))),
+    re_path(r'^professionals/pages/', include(('professionals_pages.urls', 'professionals_pages'))),
+    re_path(r'^professionals/news/', include(('professionals_news.urls', 'professionals_news'))),
+    re_path(r'^professionals/', include(('professionals.urls', 'professionals'))),
+    re_path(r'^participants/(?P<code>[_\-0-9A-Za-z]+)/pages/', include(('participants_pages.urls', 'participants_pages'))),
+    re_path(r'^participants/', include(('participants.urls', 'participants'))),
+    re_path(r'^forum/', include(('forum.urls', 'forum'))),
+    re_path(r'^orders/', include(('orders.urls', 'orders'))),
+    #re_path(r'^zgate/', include(('zgate.urls'))),
+    re_path(r'^ask_librarian/', include(('ask_librarian.urls', 'ask_librarian'))),
+    re_path(r'^gallery/', include(('gallery.urls', 'gallery'))),
+    re_path(r'^guestbook/', include(('guestbook.urls', 'guestbook'))),
+    re_path(r'^polls/', include(('polls.urls', 'polls'))),
+    re_path(r'^cid/', include(('cid.urls', 'cid'))),
+    re_path(r'^dl/', include(('rbooks.urls', 'rbooks'))),
+    re_path(r'^ssearch/', include(('ssearch.urls', 'ssearch'))),
+    #re_path(r'^search/', include(('search.urls', 'search'))),
+    re_path(r'^harvester/', include(('harvester.urls', 'harvester'))),
     # Uncomment the next line to enable the admin:
-    url(r'^radmin/', include(admin.site.urls)),
-    url(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
+    re_path(r'^radmin/', admin.site.urls),
+    re_path(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
     # url(r'^sauth/', include('social_auth.urls')),
-    url(r'^captcha/', include('captcha.urls')),
-    url(r'^sql/', include('explorer.urls')),
-) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    re_path(r'^captcha/', include('captcha.urls')),
+    # url(r'^sql/', include('explorer.urls')),
+)
 
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

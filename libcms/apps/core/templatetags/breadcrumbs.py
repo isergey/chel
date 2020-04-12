@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 from django import template
-from django.template import loader, Node, Variable
-from django.utils.encoding import smart_str, smart_unicode
+from django.template import Node, Variable
+from django.utils.encoding import smart_text
 from django.template.defaulttags import url
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template import VariableDoesNotExist
 from django.utils.translation import ugettext as _
+
 register = template.Library()
+
 
 @register.tag
 def breadcrumb(parser, token):
-#    print token.split_contents()[1:]
+    #    print token.split_contents()[1:]
     """
      Renders the breadcrumb.
      Examples:
@@ -42,7 +44,7 @@ def breadcrumb_url(parser, token):
      """
 
     bits = token.split_contents()
-    if len(bits)==2:
+    if len(bits) == 2:
         return breadcrumb(parser, token)
 
     # Extract our extra title parameter
@@ -59,15 +61,15 @@ class BreadcrumbNode(Node):
         """
           First var is title, second var is url context variable
           """
-        self.vars = map(Variable,vars)
+        self.vars = list(map(Variable, vars))
 
     def render(self, context):
         title = self.vars[0].var
         do_translate = False
-        if title.startswith(u'_(') and title.endswith(u')'):
+        if title.startswith('_(') and title.endswith(')'):
             do_translate = True
-            title=title.strip(u'_(').strip(u')')
-        if title.find("'")==-1 and title.find('"')==-1:
+            title = title.strip('_(').strip(')')
+        if title.find("'") == -1 and title.find('"') == -1:
             try:
                 val = self.vars[0]
                 title = val.resolve(context)
@@ -75,15 +77,15 @@ class BreadcrumbNode(Node):
                 title = ''
 
         else:
-            title=title.strip("'").strip('"')
-            title=smart_unicode(title)
+            title = title.strip("'").strip('"')
+            title = smart_text(title)
 
         url = None
 
-        if len(self.vars)>1:
+        if len(self.vars) > 1:
             val = self.vars[1]
             try:
-                url = reverse( unicode(val))
+                url = reverse(str(val))
             except VariableDoesNotExist:
                 url = None
         if do_translate:
@@ -99,29 +101,25 @@ class UrlBreadcrumbNode(Node):
     def render(self, context):
         title = self.title.var
 
-        if title.find("'")==-1 and title.find('"')==-1:
+        if title.find("'") == -1 and title.find('"') == -1:
             try:
                 val = self.title
                 title = val.resolve(context)
             except:
                 title = ''
         else:
-            title=title.strip("'").strip('"')
-            title=smart_unicode(title)
+            title = title.strip("'").strip('"')
+            title = smart_text(title)
 
         url = self.url_node.render(context)
         return create_crumb(title, url)
 
-"""
-<li>
-            <a href="/accounts/admin/">Users</a> <span class="divider">/</span>
-        </li>
-"""
+
 def create_crumb(title, url=None):
     """
      Helper function
      """
     if url:
-        return	'<li><a href="%s">%s</a> <span class="divider">/</span></li>' % (url, title)
+        return '<li><a href="%s">%s</a> <span class="divider"></span></li>' % (url, title)
     else:
         return '<li class="active">%s</li>' % (title,)

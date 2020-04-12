@@ -4,13 +4,13 @@ from lxml import etree
 from lxml import etree as ET
 #import xml.etree.cElementTree as ET
 import time
-import pymorphy
+# import pymorphy
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.http import urlquote
 from django.http import HttpResponse
-from django.shortcuts import redirect, get_object_or_404, render, Http404
-from django.core.urlresolvers import reverse
+from django.shortcuts import redirect, get_object_or_404, render, Http404, reverse
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -19,8 +19,8 @@ from guardian.core import ObjectPermissionChecker
 from participants.models import Library, District
 #catalogs = settings.ZGATE['catalogs']
 
-from models import ZCatalog, SavedRequest, SavedDocument
-import zworker
+from .models import ZCatalog, SavedRequest, SavedDocument
+from . import zworker
 from common import humanquery
 
 def json_error(error):
@@ -65,7 +65,7 @@ def render_search_result(request, catalog, zresult=''):
 
         zresults_body_element = zworker.change_links_href(zresults_body_element)
     except Exception:
-        return HttpResponse(u'Некорректный url')
+        return HttpResponse('Некорректный url')
     result = zworker.make_html_body_content(zresults_body_element)
 
     response = render(request, 'zgate/search_results.html', {
@@ -163,12 +163,12 @@ def save_requests(request, catalog):
                 raise  e
 
     else:
-        return HttpResponse(u'Неверные параметры запроса. Не указаны поисковые параметры.')
+        return HttpResponse('Неверные параметры запроса. Не указаны поисковые параметры.')
 
     if 'DB' in request.GET and request.GET['DB']:
         zurls = request.GET['DB']
     else:
-        return HttpResponse(u'Неверные параметры запроса, Не указаны параметры баз данных.')
+        return HttpResponse('Неверные параметры запроса, Не указаны параметры баз данных.')
 
     saved_request = SavedRequest(zcatalog=catalog, user=request.user, zurls=zurls, query=query, human_query=human_query)
     saved_request.save()
@@ -184,13 +184,13 @@ def save_document(request):
 
 
     expiry_date = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         owner_id = request.user.username
     elif request.session.session_key:
         owner_id = request.session.session_key
         expiry_date = request.session.get_expiry_date()
     else:
-        return HttpResponse(json_error(u'Документ не может быть сохранен, возможно в Вашем браузере отключены cookies.'))
+        return HttpResponse(json_error('Документ не может быть сохранен, возможно в Вашем браузере отключены cookies.'))
 
     catalog = get_object_or_404(ZCatalog, latin_title=request.POST['catalog_id'])
     zgate_url = catalog.url
@@ -204,20 +204,20 @@ def save_document(request):
     try:
         tree = ET.XML(xml_record)
     except SyntaxError as e:
-        return HttpResponse(json_error(u'Заказ не выполнен. Возможно, время сессии истекло'))
+        return HttpResponse(json_error('Заказ не выполнен. Возможно, время сессии истекло'))
 
-    comments = u''
+    comments = ''
     if 'comments' in request.POST and request.POST['comments']:
         comments = request.POST['comments']
 
     try:
         doc = etree.XML(xml_record)
         result_tree = full_transform(doc)
-        full_document = unicode(result_tree)
+        full_document = str(result_tree)
 
         result_tree = short_transform(doc)
-        short_document = unicode(result_tree)
-    except Exception, e:
+        short_document = str(result_tree)
+    except Exception as e:
         raise e
 
     saved_document = SavedDocument(
@@ -237,27 +237,27 @@ def save_document(request):
 
 
 import uuid
-from models import SearchRequestLog
+from .models import SearchRequestLog
 
 def log_search_request(request, catalog):
-    morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
+    # morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
     def clean_term(term):
         """
         Возвращает кортеж из ненормализованног и нормализованного терма
         """
         terms = term.strip().lower().split()
-        nn_term = u' '.join(terms)
+        nn_term = ' '.join(terms)
 
         n_terms = []
         #нормализация
         for t in terms:
-            n_term = morph.normalize(t.upper())
+            n_term = t #morph.normalize(t.upper())
             if isinstance(n_term, set):
                 n_terms.append(n_term.pop().lower())
-            elif isinstance(n_term, unicode):
+            elif isinstance(n_term, str):
                 n_terms.append(n_term.lower())
 
-        n_term = u' '.join(n_terms)
+        n_term = ' '.join(n_terms)
         return (nn_term, n_term)
 
 
@@ -271,7 +271,7 @@ def log_search_request(request, catalog):
         term_groups.append({
             'nn': forms[0],
             'n':  forms[1],
-            'use': request.POST.get('USE_1',u'not defined'),
+            'use': request.POST.get('USE_1','not defined'),
 
         })
 
@@ -281,7 +281,7 @@ def log_search_request(request, catalog):
         term_groups.append({
             'nn': forms[0],
             'n':  forms[1],
-            'use': request.POST.get('USE_2',u'not defined'),
+            'use': request.POST.get('USE_2','not defined'),
 
         })
 
@@ -291,7 +291,7 @@ def log_search_request(request, catalog):
         term_groups.append({
             'nn': forms[0],
             'n':  forms[1],
-            'use': request.POST.get('USE_3',u'not defined'),
+            'use': request.POST.get('USE_3','not defined'),
 
         })
 
@@ -318,7 +318,7 @@ def draw_order(request, catalog_id='', slug=''):
     id = request.GET.get('id', None)
     if not id:
         raise Http404()
-    print id
+    print(id)
 
 
     (zgate_form, cookies) = zworker.get_zgate_form(
@@ -335,10 +335,10 @@ def draw_order(request, catalog_id='', slug=''):
     form_params['term_1']= id
     result = zworker.request(catalog.url, data=form_params, cookies=cookies)
 
-    if  result[0].decode('utf-8').find(u'id="%s' % (id,)) >= 0:
+    if  result[0].decode('utf-8').find('id="%s' % (id,)) >= 0:
         link = catalog.url + '?preorder+%s+1+default+1+1.2.840.10003.5.28+rus' % session_id
         return redirect(link)
-    return HttpResponse(u'Ok')
+    return HttpResponse('Ok')
 
 @csrf_exempt
 def index(request, catalog_id='', slug=''):
@@ -381,7 +381,7 @@ def index(request, catalog_id='', slug=''):
                 try:
                     (zresult, cookies) = zworker.request(url, cookies=request.COOKIES)
                 except Exception:
-                    return HttpResponse(u'Получен некорретный ответ. Попробуйте осуществить поиск еще раз.')
+                    return HttpResponse('Получен некорретный ответ. Попробуйте осуществить поиск еще раз.')
 
                 response = render_form(request, zresult=zresult, catalog=catalog)
                 return set_cookies_to_response(cookies, response)
@@ -392,7 +392,7 @@ def index(request, catalog_id='', slug=''):
                     try:
                         response = render_detail(request, catalog)
                     except Exception:
-                        return HttpResponse(u'Сервер не может корректно отобразить результат. Повторите запрос еще раз.')
+                        return HttpResponse('Сервер не может корректно отобразить результат. Повторите запрос еще раз.')
 
                     return set_cookies_to_response(cookies,response)
 
@@ -419,7 +419,7 @@ def index(request, catalog_id='', slug=''):
 
 def saved_document_list(request):
     owner_id = ''
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         owner_id = request.user.username
     elif request.session.session_key:
         owner_id = request.session.session_key
@@ -442,7 +442,7 @@ def load_documents(request):
     response['Content-Disposition'] = 'attachment; filename=documents.txt'
     if request.method == 'POST':
         owner_id = ''
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             owner_id = request.user.username
         elif request.session.session_key:
             owner_id = request.session.session_key.session_key
@@ -467,7 +467,7 @@ def load_documents(request):
 
 def delete_saved_document(request, document_id=''):
     owner_id = ''
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         owner_id = request.user.username
     elif request.session.session_key:
         owner_id = request.session.session_key
@@ -563,7 +563,7 @@ def simple_search(request):
         response = redirect(link)
         return set_cookies_to_response(cookies, response)
     else:
-        return HttpResponse(u'Указаны неправильные параметры')
+        return HttpResponse('Указаны неправильные параметры')
 
 
 

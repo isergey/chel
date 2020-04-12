@@ -12,7 +12,7 @@ from django.contrib.auth.models import Group
 from common.pagination import get_page
 from core.forms import LanguageForm, get_groups_form
 from pages.models import Page, Content
-from forms import ContentForm, get_content_form, get_page_form
+from .forms import ContentForm, get_content_form, get_page_form
 
 
 #@permission_required_or_403('accounts.view_users')
@@ -145,8 +145,8 @@ def create_page_content(request, page_id):
             content.page = page
             content.save()
 
-            save = request.POST.get('save', u'save_edit')
-            if save == u'save':
+            save = request.POST.get('save', 'save_edit')
+            if save == 'save':
                 return redirect('pages:administration:edit_page', id=page_id)
             else:
                 return redirect('pages:administration:edit_page_content', page_id=page_id, lang=content.lang)
@@ -163,7 +163,7 @@ def create_page_content(request, page_id):
 def edit_page_content(request, page_id, lang):
     lang_form = LanguageForm({'lang': lang})
     if not lang_form.is_valid():
-        return HttpResponse(_(u'Language is not registered in system.') + _(u" Language code: ") + lang)
+        return HttpResponse(_('Language is not registered in system.') + _(" Language code: ") + lang)
 
     page = get_object_or_404(Page, id=page_id)
 
@@ -182,8 +182,8 @@ def edit_page_content(request, page_id, lang):
             content.page = page
             content.save()
 
-        save = request.POST.get('save', u'save_edit')
-        if save == u'save':
+        save = request.POST.get('save', 'save_edit')
+        if save == 'save':
             return redirect('pages:administration:edit_page', id=page_id)
 
     else:
@@ -224,7 +224,7 @@ def assign_page_permissions(request, id):
         if groups_form.is_valid():
             assign_permission(groups_form.cleaned_data['groups'], [obj], perm)
             assign_permission(groups_form.cleaned_data['groups'], obj.get_descendants(), perm)
-    return HttpResponse(u'{"status":"ok"}')
+    return HttpResponse('{"status":"ok"}')
 
 @transaction.atomic
 def assign_permission(new_groups, objects, perm):

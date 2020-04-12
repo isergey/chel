@@ -30,14 +30,14 @@ def _idates_to_word(idates):
 
         format = ' '.join(format)
 
-        run = paragraph.add_run((defaultfilters.date(idate.date, format) + u' г').replace(' ', u'\u00A0'))
+        run = paragraph.add_run((defaultfilters.date(idate.date, format) + ' г').replace(' ', '\u00A0'))
         run.bold = True
         style_run(run)
-        run = paragraph.add_run(u'. ')
+        run = paragraph.add_run('. ')
         style_run(run)
-        run = paragraph.add_run(unicode(idate).strip().strip('.').strip())
+        run = paragraph.add_run(str(idate).strip().strip('.').strip())
         style_run(run)
-        run = paragraph.add_run(u'.')
+        run = paragraph.add_run('.')
         style_run(run)
     doc_file = tempfile.TemporaryFile()
     document.save(doc_file)

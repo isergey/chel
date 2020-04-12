@@ -5,37 +5,37 @@ from django.db import models
 from django.contrib.auth.models import User
 
 DEFAULT_LANG_CHICES = (
-    ('rus', u'Русский'),
-    ('eng', u'English'),
+    ('rus', 'Русский'),
+    ('eng', 'English'),
 )
 
 ATTRIBUTES = {
-    "1003:1.2.840.10003.3.1": u"Автор",
-    '1004:1.2.840.10003.3.1': u'Автор',
-    '1005:1.2.840.10003.3.1': u'Коллектив',
-    "4:1.2.840.10003.3.1": u"Заглавие",
-    '5:1.2.840.10003.3.1': u'Заглавие серии',
-    '5000:1.2.840.10003.3.1': u'Инципит',
-    '1033:1.2.840.10003.3.1': u'Источник статьи',
-    '1009:1.2.840.10003.3.1': u'Персоналия',
-    "1018:1.2.840.10003.3.1": u"Издающая организация",
-    "1080:1.2.840.10003.3.1": u"Ключевые слова",
-    "21:1.2.840.10003.3.1": u"Предмет",
-    "1:1.2.840.10003.3.1": u"Персоналия",
-    "59:1.2.840.10003.3.1": u"Место издания",
-    "31:1.2.840.10003.3.1": u"Год издания",
-    "5:1.2.840.10003.3.1": u"Заглавие серии",
-    "1076:1.2.840.10003.3.1": u"География",
-    '1011:1.2.840.10003.3.1': u'Дата ввода в БД',
-    '1035:1.2.840.10003.3.1': u'Везде',
-    '5001:1.2.840.10003.3.1': u'Автограф',
+    "1003:1.2.840.10003.3.1": "Автор",
+    '1004:1.2.840.10003.3.1': 'Автор',
+    '1005:1.2.840.10003.3.1': 'Коллектив',
+    "4:1.2.840.10003.3.1": "Заглавие",
+    '5:1.2.840.10003.3.1': 'Заглавие серии',
+    '5000:1.2.840.10003.3.1': 'Инципит',
+    '1033:1.2.840.10003.3.1': 'Источник статьи',
+    '1009:1.2.840.10003.3.1': 'Персоналия',
+    "1018:1.2.840.10003.3.1": "Издающая организация",
+    "1080:1.2.840.10003.3.1": "Ключевые слова",
+    "21:1.2.840.10003.3.1": "Предмет",
+    "1:1.2.840.10003.3.1": "Персоналия",
+    "59:1.2.840.10003.3.1": "Место издания",
+    "31:1.2.840.10003.3.1": "Год издания",
+    "5:1.2.840.10003.3.1": "Заглавие серии",
+    "1076:1.2.840.10003.3.1": "География",
+    '1011:1.2.840.10003.3.1': 'Дата ввода в БД',
+    '1035:1.2.840.10003.3.1': 'Везде',
+    '5001:1.2.840.10003.3.1': 'Автограф',
     }
 
 def dictfetchall(cursor):
     """Returns all rows from a cursor as a dict"""
     desc = cursor.description
     return [
-    dict(zip([col[0] for col in desc], row))
+    dict(list(zip([col[0] for col in desc], row)))
     for row in cursor.fetchall()
     ]
 
@@ -73,10 +73,10 @@ def get_search_attributes_in_log():
 def date_group(group):
     group_by = ['YEAR(datetime)']
 
-    if group > u'0':
+    if group > '0':
         group_by.append('MONTH(datetime)')
 
-    if group > u'1':
+    if group > '1':
         group_by.append('DAY(datetime)')
 
     group_by = 'GROUP BY ' + ', '.join(group_by)
@@ -86,7 +86,7 @@ def date_group(group):
 
 
 
-def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
+def requests_count(start_date=None, end_date=None, group='2', catalogs=list()):
     """
     Статистика по количеству запросов в каталог(и)
     """
@@ -116,21 +116,21 @@ def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
         catalog_ids = []
         for catalog in catalogs:
             catalog_ids.append(str(catalog.id))
-        catalog_ids = u', '.join(catalog_ids)
+        catalog_ids = ', '.join(catalog_ids)
         where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
 
-    where = u' '.join(where)
+    where = ' '.join(where)
     results = execute( select + where + group_by, params)
 
 
 
     rows = []
     format = '%d.%m.%Y'
-    if group == u'0':
+    if group == '0':
         format = '%Y'
-    if group == u'1':
+    if group == '1':
         format = '%m.%Y'
-    if group == u'2':
+    if group == '2':
         format = '%d.%m.%Y'
 
     for row in results:
@@ -151,7 +151,7 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
     end_date = end_date.strftime('%Y-%m-%d 23:59:59')
 
 
-    select = u"""
+    select = """
         SELECT
             count(zgate_searchrequestlog.use) as count, zgate_searchrequestlog.use as attribute
         FROM
@@ -171,24 +171,24 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
         catalog_ids = []
         for catalog in catalogs:
             catalog_ids.append(str(catalog.id))
-        catalog_ids = u', '.join(catalog_ids)
+        catalog_ids = ', '.join(catalog_ids)
         where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
 
     if attributes:
         attributes_args = []
         for attribute in attributes:
-            attributes_args.append(u'%s')
+            attributes_args.append('%s')
             params.append(attribute)
 
-        attributes_args = u', '.join(attributes_args)
+        attributes_args = ', '.join(attributes_args)
         where.append('AND zgate_searchrequestlog.use in (%s)' % attributes_args)
 
-    where = u' '.join(where)
+    where = ' '.join(where)
 
 
     results = execute(
         select + ' ' + where +
-        u"""
+        """
         GROUP BY
             zgate_searchrequestlog.use
         ORDER BY
@@ -214,7 +214,7 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
     end_date = end_date.strftime('%Y-%m-%d 23:59:59')
 
 
-    select = u"""
+    select = """
         SELECT
             count(zgate_searchrequestlog.not_normalize) as count, zgate_searchrequestlog.not_normalize as normalize
         FROM
@@ -225,7 +225,7 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
 
 
 
-    where = [u'WHERE date(datetime) BETWEEN %s  AND  %s']
+    where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
     params.append(start_date)
     params.append(end_date)
 
@@ -234,24 +234,24 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
         catalog_ids = []
         for catalog in catalogs:
             catalog_ids.append(str(catalog.id))
-        catalog_ids = u', '.join(catalog_ids)
+        catalog_ids = ', '.join(catalog_ids)
         where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
 
     if attributes:
         attributes_args = []
         for attribute in attributes:
-            attributes_args.append(u'%s')
+            attributes_args.append('%s')
             params.append(attribute)
 
-        attributes_args = u', '.join(attributes_args)
-        where.append(u'AND zgate_searchrequestlog.use in (%s)' % attributes_args)
+        attributes_args = ', '.join(attributes_args)
+        where.append('AND zgate_searchrequestlog.use in (%s)' % attributes_args)
 
-    where = u' '.join(where)
+    where = ' '.join(where)
 
 
     results = execute(
         'select normalize, count from (' + select + ' ' + where +
-        u"""
+        """
         GROUP BY
             zgate_searchrequestlog.not_normalize
         ORDER BY
@@ -270,111 +270,111 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
 
 class ZCatalog(models.Model):
     title = models.CharField(
-        verbose_name=u"Название каталога",
+        verbose_name="Название каталога",
         max_length=64, null=False, blank=False
     )
 
     latin_title = models.SlugField(
-        verbose_name=u"Название каталога (латинскими буквами)",
+        verbose_name="Название каталога (латинскими буквами)",
         unique=True
     )
 
     description = models.TextField(
-        verbose_name=u"Описание каталога",
+        verbose_name="Описание каталога",
         null=False, blank=False
     )
 
     help = models.TextField(
-        verbose_name=u"Справка для каталога",
+        verbose_name="Справка для каталога",
         null=True, blank=True
     )
 
     default_lang = models.CharField(
-        verbose_name=u"Язык каталога по умолчанию",
+        verbose_name="Язык каталога по умолчанию",
         choices=DEFAULT_LANG_CHICES,
-        default=('rus', u'Русский'),
+        default=('rus', 'Русский'),
         max_length=10
     )
 
     url = models.URLField(
-        verbose_name=u"URL АРМ Читателя",
+        verbose_name="URL АРМ Читателя",
         null=False, blank=False,
-        help_text=u'Например: http://consortium.ruslan.ru/cgi-bin/zgate'
+        help_text='Например: http://consortium.ruslan.ru/cgi-bin/zgate'
     )
 
     xml = models.CharField(
-        verbose_name=u"Имя XML файла",
+        verbose_name="Имя XML файла",
         max_length=256, null=False, blank=False,
-        help_text=u'Нужно уточнить у администратора'
+        help_text='Нужно уточнить у администратора'
     )
 
     xsl = models.CharField(
-        verbose_name=u"Имя XSL файла",
+        verbose_name="Имя XSL файла",
         max_length=256, null=False, blank=False,
-        help_text=u'Нужно уточнить у администратора'
+        help_text='Нужно уточнить у администратора'
     )
 
     can_search = models.BooleanField(
-        verbose_name=u"Возможность поиска", blank=False, default=True,
-        help_text=u'Доступ к каталогу для поиска'
+        verbose_name="Возможность поиска", blank=False, default=True,
+        help_text='Доступ к каталогу для поиска'
     )
 
     can_order_auth_only = models.BooleanField(
-        verbose_name=u"Возможность заказа в каталоге только авторизированным пользователям на портале",
+        verbose_name="Возможность заказа в каталоге только авторизированным пользователям на портале",
         blank=False, default=True,
-        help_text=u"Заказ в каталоге возможен только если пользователь авторизирован на портале"
+        help_text="Заказ в каталоге возможен только если пользователь авторизирован на портале"
     )
 
     can_order_copy = models.BooleanField(
-        verbose_name=u"Возможность заказа копии документа", blank=False,
+        verbose_name="Возможность заказа копии документа", blank=False,
     )
 
     can_order_document = models.BooleanField(
-        verbose_name=u"Возможность заказа документа во временное пользование", blank=False,
+        verbose_name="Возможность заказа документа во временное пользование", blank=False,
     )
 
     can_reserve = models.BooleanField(
-        verbose_name=u"Возможность  бронирования документа", blank=False,
+        verbose_name="Возможность  бронирования документа", blank=False,
     )
 
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
     class Meta:
-        verbose_name = u"Каталог (АРМ читателя)"
-        verbose_name_plural = u"Каталоги (АРМ читателя)"
-        permissions = (
-            ('view_zcatalog', u'Доступ к каталогу'),
-            )
+        verbose_name = "Каталог (АРМ читателя)"
+        verbose_name_plural = "Каталоги (АРМ читателя)"
+        # permissions = (
+        #     ('view_zcatalog', 'Доступ к каталогу'),
+        #     )
 
 
 class SavedRequest(models.Model):
-    zcatalog = models.ForeignKey(ZCatalog)
-    user = models.ForeignKey(User)
-    zurls = models.CharField(max_length=2048, null=False, blank=False, verbose_name=u"Список баз данных для поиска")
-    query = models.CharField(max_length=1024, null=False, blank=False, verbose_name=u"Запрос АРМ Читателя")
-    human_query = models.CharField(max_length=1024, blank=True, verbose_name=u"Расшифровка запроса")
+    zcatalog = models.ForeignKey(ZCatalog, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    zurls = models.CharField(max_length=2048, null=False, blank=False, verbose_name="Список баз данных для поиска")
+    query = models.CharField(max_length=1024, null=False, blank=False, verbose_name="Запрос АРМ Читателя")
+    human_query = models.CharField(max_length=1024, blank=True, verbose_name="Расшифровка запроса")
     add_date = models.DateTimeField(auto_now_add=True, db_index=True)
 
 
 class SavedDocument(models.Model):
-    zcatalog = models.ForeignKey(ZCatalog)
-    owner_id = models.CharField(max_length=32, verbose_name=u"Идентификатор сессии (md5) или имя пользователя",
+    zcatalog = models.ForeignKey(ZCatalog, on_delete=models.CASCADE)
+    owner_id = models.CharField(max_length=32, verbose_name="Идентификатор сессии (md5) или имя пользователя",
         db_index=True)
-    document = models.TextField(null=False, blank=False, verbose_name=u"Тело документа (xml rusmarc)")
-    comments = models.CharField(max_length=2048, blank=True, verbose_name=u"Комментарий к документу")
-    add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=u"Дата добваления документа")
-    expiry_date = models.DateTimeField(db_index=True, null=True, verbose_name=u"Дата когда документ удалится")
-    full_document = models.TextField(null=True, blank=True, verbose_name=u"Полная запись на документ")
-    short_document = models.TextField(null=True, blank=True, verbose_name=u"Краткая запись на документ")
+    document = models.TextField(null=False, blank=False, verbose_name="Тело документа (xml rusmarc)")
+    comments = models.CharField(max_length=2048, blank=True, verbose_name="Комментарий к документу")
+    add_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Дата добваления документа")
+    expiry_date = models.DateTimeField(db_index=True, null=True, verbose_name="Дата когда документ удалится")
+    full_document = models.TextField(null=True, blank=True, verbose_name="Полная запись на документ")
+    short_document = models.TextField(null=True, blank=True, verbose_name="Краткая запись на документ")
 
 
 class SearchRequestLog(models.Model):
-    catalog = models.ForeignKey(ZCatalog, null=True)
-    search_id = models.CharField(max_length=32, verbose_name=u'Идентификатор запроса', db_index=True)
-    use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
-    normalize = models.CharField(max_length=256, verbose_name=u'Нормализованный терм', db_index=True)
-    not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм', db_index=True)
+    catalog = models.ForeignKey(ZCatalog, null=True, on_delete=models.CASCADE)
+    search_id = models.CharField(max_length=32, verbose_name='Идентификатор запроса', db_index=True)
+    use = models.CharField(max_length=32, verbose_name="Точка доступа", db_index=True)
+    normalize = models.CharField(max_length=256, verbose_name='Нормализованный терм', db_index=True)
+    not_normalize = models.CharField(max_length=256, verbose_name='Ненормализованный терм', db_index=True)
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import exc
+from . import exc
 
 
 
@@ -40,7 +40,7 @@ class Reader(object):
 
         self.__indexed = True
 
-    def next(self):
+    def __next__(self):
         self.__next +=1
         return self[self.__next]
 

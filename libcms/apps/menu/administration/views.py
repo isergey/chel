@@ -12,7 +12,7 @@ from django.utils.translation import to_locale, get_language
 
 from core.forms import LanguageForm
 from menu.models import Menu, MenuTitle, MenuItem, MenuItemTitle
-from forms import MenuForm,MenuTitleForm,  MenuItemForm, MenuItemTitleForm
+from .forms import MenuForm,MenuTitleForm,  MenuItemForm, MenuItemTitleForm
 
 
 
@@ -42,7 +42,7 @@ def menu_list(request):
     for menu_title in menu_titles:
         menus_dict[menu_title.menu_id]['menu'].menu_title = menu_title
 
-    menus = [menu['menu'] for menu in menus_dict.values()]
+    menus = [menu['menu'] for menu in list(menus_dict.values())]
 
 
     return render(request, 'menu/administration/menus_list.html', {
@@ -289,7 +289,7 @@ def create_item(request, menu_id, parent=None):
         menu_item_title_forms = []
         for lang in settings.LANGUAGES:
             menu_item_title_forms.append({
-                'form':MenuItemTitleForm(initial={'url': u'/'+lang[0]+u'/#'},prefix='menu_item_title_' + lang[0]),
+                'form':MenuItemTitleForm(initial={'url': '/'+lang[0]+'/#'},prefix='menu_item_title_' + lang[0]),
                 'lang':lang[0]
             })
 

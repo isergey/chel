@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models import DetailLog, SearchLog
+from .models import DetailLog, SearchLog
 
 
 class SearchLogAdmin(admin.ModelAdmin):

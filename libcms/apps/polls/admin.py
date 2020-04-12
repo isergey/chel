@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from models import Poll, Choice
+from .models import Poll, Choice
 
 class ChoiceInline(admin.StackedInline):
     model = Choice

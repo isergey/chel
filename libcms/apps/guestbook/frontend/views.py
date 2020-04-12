@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from common.pagination import get_page
 from ..models import Feedback
-from forms import FeedbackForm
+from .forms import FeedbackForm
 
 
 def index(request):

@@ -11,7 +11,7 @@ from django.utils.translation import get_language
 
 from common.pagination import get_page
 from ..models import Event, EventContent
-from forms import EventForm, EventContentForm, EventFilterForm
+from .forms import EventForm, EventContentForm, EventFilterForm
 
 
 @login_required
@@ -105,7 +105,7 @@ def create_event(request):
             valid = False
             for event_content_form in event_content_forms:
                 valid = event_content_form['form'].is_valid()
-                print valid
+                print(valid)
                 if not valid:
                     break
 

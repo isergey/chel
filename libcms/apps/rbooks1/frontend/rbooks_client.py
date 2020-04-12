@@ -1,8 +1,8 @@
 # encoding: utf-8
 from lxml import etree
 import requests
-from StringIO import StringIO
-import xmltodict
+from io import StringIO
+from . import xmltodict
 
 class LinkInfo(object):
     def __init__(self, file, url):
@@ -27,7 +27,7 @@ class LinkInfo(object):
 
 
 class PermissionsInfo(object):
-    def __init__(self, allow_copy_to_clipboard, allow_print, deny_print_message=u'You do not have permission to print'):
+    def __init__(self, allow_copy_to_clipboard, allow_print, deny_print_message='You do not have permission to print'):
         """
         :param allow_copy_to_clipboard: bool
         :param allow_print: bool
@@ -47,19 +47,19 @@ class PermissionsInfo(object):
         """
         root = etree.Element('Permissions')
         allow_copy_to_clipboard_element = etree.SubElement(root, 'AllowCopyToClipboard')
-        allow_copy_to_clipboard_element.text = unicode(self.allow_copy_to_clipboard).lower()
+        allow_copy_to_clipboard_element.text = str(self.allow_copy_to_clipboard).lower()
 
 
         allow_print_element = etree.SubElement(root, 'AllowPrint')
-        allow_print_element.text = unicode(self.allow_print).lower()
+        allow_print_element.text = str(self.allow_print).lower()
 
         deny_print_message_element = etree.SubElement(root, 'DenyPrintMessage')
-        deny_print_message_element.text = unicode(self.deny_print_message).lower()
+        deny_print_message_element.text = str(self.deny_print_message).lower()
 
         return root
 
 class DownloadInfo(object):
-    def __init__(self, format, size, url, deny_message=u'Access denied'):
+    def __init__(self, format, size, url, deny_message='Access denied'):
         """
         :param deny_message: string
         :param format: string
@@ -83,7 +83,7 @@ class DownloadInfo(object):
         root = etree.Element('Download')
         root.attrib['DenyMessage'] = self.deny_message
         root.attrib['Format'] = self.format
-        root.attrib['Size'] = unicode(self.size)
+        root.attrib['Size'] = str(self.size)
         root.attrib['URL'] = self.url
         return root
 
@@ -175,7 +175,7 @@ class RBooksWebServiceClient(object):
         responce = requests.get(self.__url + path, params={
             'dir': self.__documents_directory,
             'code': self.__code,
-            'enc': unicode(enc).lower()
+            'enc': str(enc).lower()
         })
 
         responce.raise_for_status()
@@ -242,7 +242,7 @@ class RBooksWebServiceClient(object):
                 'dir': self.__documents_directory,
                 'code': self.__code,
                 'part': part,
-                'enc': unicode(encrypted).lower()
+                'enc': str(encrypted).lower()
             }
         )
         responce.raise_for_status()
@@ -257,7 +257,7 @@ class RBooksWebServiceClient(object):
                 'dir': self.__documents_directory,
                 'code': self.__code,
                 'part': part,
-                'enc': unicode(encrypted).lower()
+                'enc': str(encrypted).lower()
             },
             stream=True
         )

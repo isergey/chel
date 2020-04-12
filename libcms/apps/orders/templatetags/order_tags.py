@@ -62,7 +62,7 @@ def drow_el_order_menu(owners_codes, record_id):
         }
 
     # ищем zgate для каждого держателя, чтобы можно было сделать зазказ
-    zcatalogs = ZCatalog.objects.filter(latin_title__in=owners_dict.keys()).values('latin_title')
+    zcatalogs = ZCatalog.objects.filter(latin_title__in=list(owners_dict.keys())).values('latin_title')
 
     for zcatalog in zcatalogs:
         # в latin_title хранится сигла держателя
@@ -74,7 +74,7 @@ def drow_el_order_menu(owners_codes, record_id):
         if owner_code not in owners_dict:
             empty_codes.append(owner_code)
 
-    owners = owners_dict.values()
+    owners = list(owners_dict.values())
     return {
         'owners': owners,
         'record_id': record_id,

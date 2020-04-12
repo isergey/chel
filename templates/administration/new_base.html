@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Администрирование{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'administration/bootstrap/css/bootstrap.min.css' %}">
+    <link href="{% static 'datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'administration/styles.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'administration/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'datepicker/locales/bootstrap-datepicker.ru.min.js' %}"></script>
+</head>
+<body>
+{#{% include 'administration/navbar.html' %}#}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {% endblock %}
+            </ol>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('.delete').on('click', function () {
+            return confirm("Уверены, что хотите удалить?");
+        });
+    })
+</script>
+</body>
+</html>

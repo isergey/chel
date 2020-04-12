@@ -1,6 +1,6 @@
 # encoding: utf-8
-from django.template import Library, Node, resolve_variable
-
+from django.template import Library, Node
+from django.template import Variable
 register = Library()
 
 
@@ -33,9 +33,9 @@ class AddGetParameter(Node):
         self.values = values
 
     def render(self, context):
-        req = resolve_variable('request', context)
+        req = Variable('request').resolve(context)
         params = req.GET.copy()
-        for key, value in self.values.items():
+        for key, value in list(self.values.items()):
             params[key] = value.resolve(context)
         return '?%s' %  params.urlencode()
 
@@ -50,21 +50,21 @@ def add_get(parser, token):
     return AddGetParameter(values)
 
 
-
 class AddGetParameterAppend(Node):
     def __init__(self, values):
         self.values = values
 
     def render(self, context):
-        req = resolve_variable('request', context)
+        req = Variable('request').resolve(context)
         params = req.GET.copy()
-        for key, value in self.values.items():
+        for key, value in list(self.values.items()):
             old_value = params.getlist(key, None)
             if not old_value:
                 params[key] = value.resolve(context)
             else:
                 old_value.append(value.resolve(context))
-        return '?%s' %  params.urlencode()
+        res = '?%s' % params.urlencode()
+        return res
 
 
 @register.tag

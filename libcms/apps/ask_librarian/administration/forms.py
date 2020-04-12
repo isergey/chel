@@ -9,7 +9,7 @@ from mptt.forms import TreeNodeChoiceField
 class AnswerQuestionForm(forms.ModelForm):
     category = TreeNodeChoiceField(
         queryset=Category.objects.all(), required=False, label="Тематика",
-        help_text=u'Если тематика не соотвевует вопросу, укажите другую.')
+        help_text='Если тематика не соотвевует вопросу, укажите другую.')
 
     class Meta:
         model = Question

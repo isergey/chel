@@ -1,0 +1,48 @@
+{% extends 'harvester/index.html' %}
+{% load bootstrap3 %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if source %}
+        <li><a href="{% url 'harvester:source' source.id %}">{{ source.name }} ({{ source.code }})</a></li>
+    {% endif %}
+    <li class="active">Записи (Всего - <b>{{ total_records }}</b>. Для удаления - <b>{{ records_for_delete }}</b>)</li>
+{% endblock %}
+{% block content %}
+{#    <div class="well well-sm">#}
+{#    </div>#}
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>Источник</th>
+            <th>Оригинальный id</th>
+            <th>Сессия</th>
+            <th>Удалена</th>
+            <th>Дата создания</th>
+            <th>Дата модификации</th>
+        </tr>
+        {% for record in records.object_list %}
+            <tr>
+                <td>
+                    {% if not source %}
+                        <a href="{% url 'harvester:record' %}?id={{ record.id|urlencode }}">{{ record.id }}</a>
+                    {% else %}
+                        <a href="{% url 'harvester:source_record' source.id %}?id={{ record.id|urlencode }}">{{ record.id }}</a>
+                    {% endif %}
+                </td>
+                <td>{{ record.source }}</td>
+                <td>{{ record.original_id }}</td>
+                <td>{{ record.session_id }}</td>
+                <td>
+                    {% if record.deleted %}
+                        <span class="label label-danger">да</span>
+                    {% else %}
+                        <span class="label label-success">нет</span>
+                    {% endif %}
+                </td>
+                <td>{{ record.create_date }}</td>
+                <td>{{ record.update_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% bootstrap_pagination records %}
+{% endblock %}

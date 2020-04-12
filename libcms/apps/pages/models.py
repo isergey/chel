@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import get_language
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import get_language
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -13,46 +12,47 @@ class Page(MPTTModel):
         null=True,
         blank=True,
         related_name='children',
-        verbose_name=u'Родительская страница'
+        verbose_name='Родительская страница',
+        on_delete=models.CASCADE
     )
     slug = models.SlugField(
-        verbose_name=u'Slug',
+        verbose_name='Slug',
         max_length=255,
         db_index=True,
-        help_text=u'Внимание! Последующее редактирование поля slug невозможно!'
+        help_text='Внимание! Последующее редактирование поля slug невозможно!'
     )
     url_path = models.CharField(
-        max_length=2048,
+        max_length=1500,
         db_index=True,
     )
 
     public = models.BooleanField(
-        verbose_name=u'Опубликована?',
+        verbose_name='Опубликована?',
         default=False, db_index=True,
-        help_text=u'Публиковать страницу могут только пользователи с правами публикации страниц'
+        help_text='Публиковать страницу могут только пользователи с правами публикации страниц'
     )
 
     show_children = models.BooleanField(
-        verbose_name=u'Показывать меню подстраниц',
+        verbose_name='Показывать меню подстраниц',
         default=False,
     )
 
     show_neighbors = models.BooleanField(
-        verbose_name=u'Показывать меню соедних страниц',
+        verbose_name='Показывать меню соедних страниц',
         default=False,
     )
 
 
-    create_date = models.DateTimeField(verbose_name=u"Дата создания", auto_now_add=True, db_index=True)
+    create_date = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, db_index=True)
 
     class Meta:
         ordering = ['-create_date']
         permissions = (
-            ("view_page", "Can view page"),
+            # ("view_page", "Can view page"),
             ("public_page", "Can public page"),
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
     def get_cur_lang_content(self):
@@ -100,7 +100,7 @@ class Page(MPTTModel):
             else:
                 url_pathes.append(self.slug)
 
-            self.url_path = u'/'.join(url_pathes)
+            self.url_path = '/'.join(url_pathes)
 
         return super(Page, self).save(*args, **kwargs)
 
@@ -116,19 +116,19 @@ class Page(MPTTModel):
 
 
 class Content(models.Model):
-    page = models.ForeignKey(Page, verbose_name=u'Родительская страница')
-    lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
-    title = models.CharField(verbose_name=u'Заглавие', max_length=512)
-    meta = models.CharField(verbose_name=u"Meta keywords", max_length=512, blank=True,
-                            help_text=u'Укажите ключевые слова для страницы')
-    meta_description = models.CharField(verbose_name=u"Meta description", max_length=512, blank=True,
-                            help_text=u'Краткое описаие страницы')
-    content = models.TextField(verbose_name=u'Контент')
+    page = models.ForeignKey(Page, verbose_name='Родительская страница', on_delete=models.CASCADE)
+    lang = models.CharField(verbose_name="Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
+    title = models.CharField(verbose_name='Заглавие', max_length=512)
+    meta = models.CharField(verbose_name="Meta keywords", max_length=512, blank=True,
+                            help_text='Укажите ключевые слова для страницы')
+    meta_description = models.CharField(verbose_name="Meta description", max_length=512, blank=True,
+                            help_text='Краткое описаие страницы')
+    content = models.TextField(verbose_name='Контент')
 
     class Meta:
         unique_together = (('page', 'lang'),)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def return_in_lang(self):
@@ -136,6 +136,6 @@ class Content(models.Model):
 
 
 class ViewLog(models.Model):
-    user = models.ForeignKey(User)
-    page = models.ForeignKey(Page)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -12,10 +12,10 @@ class CoolForm(forms.Form):
     def as_div(self):
         "Returns this form rendered as HTML <div>s."
         return self._html_output(
-            normal_row = u'<div%(html_class_attr)s>%(label)s %(field)s %(errors)s %(help_text)s </div>',
-            error_row = u'<div class="error">%s</div>',
+            normal_row = '<div%(html_class_attr)s>%(label)s %(field)s %(errors)s %(help_text)s </div>',
+            error_row = '<div class="error">%s</div>',
             row_ender = '</div>',
-            help_text_html = u'<span class="help-block">%s</span>',
+            help_text_html = '<span class="help-block">%s</span>',
             errors_on_separate_row = False)
 
 
@@ -30,8 +30,8 @@ class CoolModelForm(forms.ModelForm):
     def as_div(self):
         "Returns this form rendered as HTML <div>s."
         return self._html_output(
-            normal_row = u'<div%(html_class_attr)s>%(label)s %(field)s %(errors)s %(help_text)s </div>',
-            error_row = u'<div class="error">%s</div>',
+            normal_row = '<div%(html_class_attr)s>%(label)s %(field)s %(errors)s %(help_text)s </div>',
+            error_row = '<div class="error">%s</div>',
             row_ender = '</div>',
-            help_text_html = u'<span class="help-block">%s</span>',
+            help_text_html = '<span class="help-block">%s</span>',
             errors_on_separate_row = False)

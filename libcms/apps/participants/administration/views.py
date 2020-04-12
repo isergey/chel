@@ -9,7 +9,7 @@ from django.contrib.auth import login, REDIRECT_FIELD_NAME
 from django.utils.translation import to_locale, get_language
 
 from ..models import Library, LibraryType, District, LibraryContentEditor
-from forms import get_library_form, LibraryTypeForm, DistrictForm
+from .forms import get_library_form, LibraryTypeForm, DistrictForm
 #@permission_required_or_403('accounts.view_users')
 
 def check_owning(user, library):
@@ -67,19 +67,19 @@ def create(request, parent=None):
 
     if parent:
         if not request.user.has_perm('participants.add_library'):
-            return HttpResponse(u'У Вас нет прав на создание филиалов')
+            return HttpResponse('У Вас нет прав на создание филиалов')
 
         parent = get_object_or_404(Library, id=parent)
 
         # находим цбс для этого узла и пррверяем, не принадлежит ли пользователь к ней
         cbs = get_cbs(parent)
         if not check_owning(request.user, cbs):
-            return HttpResponse(u'У Вас нет прав на создание филиалов в этой ЦБС')
+            return HttpResponse('У Вас нет прав на создание филиалов в этой ЦБС')
 
     else:
         # тут происходит создание цбс, проверяем глобальное право
         if not request.user.has_perm('participants.add_cbs'):
-            return HttpResponse(u'У Вас нет прав на создание ЦБС')
+            return HttpResponse('У Вас нет прав на создание ЦБС')
 
     if request.method == 'POST':
         library_form = LibraryForm(request.POST, prefix='library_form')
@@ -110,11 +110,11 @@ def edit(request, id):
     parent = library.parent
     if not parent:
         if not check_owning(request.user, library) or not request.user.has_perm('participants.change_cbs'):
-            return HttpResponse(u'У Вас нет прав на редактирование этой ЦБС')
+            return HttpResponse('У Вас нет прав на редактирование этой ЦБС')
     else:
         cbs = get_cbs(parent)
         if not check_owning(request.user, cbs) or not request.user.has_perm('participants.change_library'):
-            return HttpResponse(u'У Вас нет прав на редактирование филиалов в этой ЦБС')
+            return HttpResponse('У Вас нет прав на редактирование филиалов в этой ЦБС')
 
     if parent:
         LibraryForm = get_library_form(exclude_fields=('parent',))
@@ -150,11 +150,11 @@ def delete(request, id):
     parent = library.parent
     if not parent:
         if not check_owning(request.user, library) or not request.user.has_perm('participants.delete_cbs'):
-            return HttpResponse(u'У Вас нет прав на удаление этой ЦБС')
+            return HttpResponse('У Вас нет прав на удаление этой ЦБС')
     else:
         cbs = get_cbs(parent)
         if not check_owning(request.user, cbs) or not request.user.has_perm('participants.delete_library'):
-            return HttpResponse(u'У Вас нет прав на удаление филиалов в этой ЦБС')
+            return HttpResponse('У Вас нет прав на удаление филиалов в этой ЦБС')
 
     library.delete()
     if parent:

@@ -1,19 +1,19 @@
 # encoding: utf-8
 from lxml import etree
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from hashlib import md5
 from django.conf import settings
 from django.shortcuts import render, HttpResponse, urlresolvers, Http404, redirect
 from django.views.decorators.cache import cache_control
-import rbooks_client
-from in_memory_zip import InMemoryZip
+from . import rbooks_client
+from .in_memory_zip import InMemoryZip
 
 RBOOKS_SETTINGS = settings.RBOOKS
 
 def index(request):
     code = request.GET.get('code', None)
     if not code:
-        raise Http404(u'Файл книги не найден')
+        raise Http404('Файл книги не найден')
     # li = rbooks_client.LinkInfo('weded', 'edwed')
     # pi = rbooks_client.PermissionsInfo(True, True, 'ewdwed')
     # di = rbooks_client.DownloadInfo('gergerg', 'rferf', 1212, 'wefwef')
@@ -29,7 +29,7 @@ def index(request):
 def edoc(request):
     code = request.GET.get('code', None)
     if not code:
-        raise Http404(u'Файл книги не найден')
+        raise Http404('Файл книги не найден')
     token1 = request.GET.get('token1', None)
 
     # if not token1:
@@ -47,22 +47,22 @@ def edoc(request):
 def key(request):
     code = request.GET.get('code', None)
     if not code:
-        return HttpResponse(u'Нет параметра code', status=400)
+        return HttpResponse('Нет параметра code', status=400)
 
     dh = request.GET.get('dh', None)
     if not dh:
-        return HttpResponse(u'Нет параметра dh', status=400)
+        return HttpResponse('Нет параметра dh', status=400)
 
     sign = request.GET.get('sign', None)
     if not dh:
-        return HttpResponse(u'Нет параметра sign', status=400)
+        return HttpResponse('Нет параметра sign', status=400)
 
     rbclient = rbooks_client.RBooksWebServiceClient(
         RBOOKS_SETTINGS['service_url'],
         RBOOKS_SETTINGS['documents_directory'],
         code, extension=''
     )
-    responce = HttpResponse(content_type=u'text/plain')
+    responce = HttpResponse(content_type='text/plain')
     responce.write(rbclient.get_document_key(dh, sign))
     return responce
 
@@ -70,14 +70,14 @@ def key(request):
 def picture(request):
     code = request.GET.get('code', None)
     if not code:
-        return HttpResponse(u'Нет параметра code', status=400)
+        return HttpResponse('Нет параметра code', status=400)
     rbclient = rbooks_client.RBooksWebServiceClient(
         RBOOKS_SETTINGS['service_url'],
         RBOOKS_SETTINGS['documents_directory'],
         code
     )
 
-    response = HttpResponse(content_type=u'image/png')
+    response = HttpResponse(content_type='image/png')
     response.write(rbclient.get_document_picture())
     return response
 
@@ -88,11 +88,11 @@ import time
 def edoc_stream(request):
     code = request.GET.get('code', None)
     if not code:
-        return HttpResponse(u'Нет параметра code', status=400)
+        return HttpResponse('Нет параметра code', status=400)
 
     part = request.GET.get('part', None)
     if not part:
-        return HttpResponse(u'Нет параметра part', status=400)
+        return HttpResponse('Нет параметра part', status=400)
 
     resp = HttpResponse( stream_response_generator(code, part), mimetype='application/octet-stream')
     return resp

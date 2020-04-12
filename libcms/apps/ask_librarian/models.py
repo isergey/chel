@@ -14,7 +14,7 @@ class AskLibraryError(Exception):
 
 class Category(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children',
-                            verbose_name=u'Родительский элемент')
+                            verbose_name='Родительский элемент', on_delete=models.CASCADE)
 
     def get_t_ancestors(self):
         """
@@ -35,7 +35,7 @@ class Category(MPTTModel):
         lang = get_language()[:2]
         return CategoryTitle.objects.get(lang=lang, category=self).title
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title()
 
     def up(self):
@@ -50,11 +50,11 @@ class Category(MPTTModel):
 
 
 class CategoryTitle(models.Model):
-    category = models.ForeignKey(Category)
-    lang = models.CharField(verbose_name=u"Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
-    title = models.CharField(verbose_name=u'Название', max_length=512)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    lang = models.CharField(verbose_name="Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
+    title = models.CharField(verbose_name='Название', max_length=512)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -62,19 +62,19 @@ class CategoryTitle(models.Model):
 
 
 QUESTION_STATUSES = (
-    (0, u'Новый'),
-    (1, u'Готов'),
-    (2, u'В обработке'),
+    (0, 'Новый'),
+    (1, 'Готов'),
+    (2, 'В обработке'),
 )
 
 
 class QuestionManager(models.Model):
-    user = models.OneToOneField(User, verbose_name=u'Пользователь')
-    available = models.BooleanField(verbose_name=u'Доступен?', default=False, db_index=True)
+    user = models.OneToOneField(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    available = models.BooleanField(verbose_name='Доступен?', default=False, db_index=True)
 
     class Meta:
-        verbose_name = u"Менеджер вопросов"
-        verbose_name_plural = u"Менеджеры вопросов"
+        verbose_name = "Менеджер вопросов"
+        verbose_name_plural = "Менеджеры вопросов"
 
     @staticmethod
     def get_manager(user):
@@ -86,26 +86,26 @@ class QuestionManager(models.Model):
 
 
 class Question(models.Model):
-    user = models.ForeignKey(User, null=True, verbose_name=u'Пользователь')
-    fio = models.CharField(verbose_name=u'ФИО', blank=True, max_length=128)
-    email = models.EmailField(verbose_name=u'email', blank=True, max_length=256,
-                              help_text=u'На этот адрес будет выслан ответ на вопрос')
-    city = models.CharField(verbose_name=u'Город', blank=True, max_length=64)
-    country = models.CharField(verbose_name=u'Страна', blank=True, max_length=64)
-    category = models.ForeignKey(Category, null=True, verbose_name=u'Тематика',
-                                 help_text=u'Укажите тематику, к которой относиться вопрос')
-    question = models.TextField(max_length=2048, verbose_name=u'Вопрос')
-    answer = models.TextField(max_length=50000, verbose_name=u'Ответ')
-    status = models.IntegerField(choices=QUESTION_STATUSES, verbose_name=u'Статус', db_index=True, default=0)
-    create_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата создания', db_index=True)
+    user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE)
+    fio = models.CharField(verbose_name='ФИО', blank=True, max_length=128, default='')
+    email = models.EmailField(verbose_name='email', blank=True, max_length=256,
+                              help_text='На этот адрес будет выслан ответ на вопрос')
+    city = models.CharField(verbose_name='Город', blank=True, max_length=64)
+    country = models.CharField(verbose_name='Страна', blank=True, max_length=64)
+    category = models.ForeignKey(Category, null=True, verbose_name='Тематика',
+                                 help_text='Укажите тематику, к которой относиться вопрос', on_delete=models.CASCADE)
+    question = models.TextField(max_length=2048, verbose_name='Вопрос')
+    answer = models.TextField(max_length=50000, verbose_name='Ответ')
+    status = models.IntegerField(choices=QUESTION_STATUSES, verbose_name='Статус', db_index=True, default=0)
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)
 
-    manager = models.ForeignKey(QuestionManager, verbose_name=u'Менеджер', null=True, blank=True)
+    manager = models.ForeignKey(QuestionManager, verbose_name='Менеджер', null=True, blank=True, on_delete=models.CASCADE)
     start_process_date = models.DateTimeField(blank=True, null=True, db_index=True,
-                                              verbose_name=u'Дата взятия вопроса на обработку')
+                                              verbose_name='Дата взятия вопроса на обработку')
     end_process_date = models.DateTimeField(blank=True, null=True, db_index=True,
-                                            verbose_name=u'Дата окончания обработки вопроса')
+                                            verbose_name='Дата окончания обработки вопроса')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.question
 
     def is_ready(self):
@@ -143,8 +143,8 @@ class Question(models.Model):
 
 
 class Recomendation(models.Model):
-    user = models.ForeignKey(User, null=True, verbose_name=u'Пользователь')
-    question = models.ForeignKey(Question, verbose_name=u'Вопрос, к которому относиться рекомендация')
+    user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, verbose_name='Вопрос, к которому относиться рекомендация', on_delete=models.CASCADE)
     text = models.TextField(max_length=2048, verbose_name='Текст рекомендации')
-    public = models.BooleanField(default=False, db_index=True, verbose_name=u'Публиковать Вместе с ответом')
-    create_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата создания', db_index=True)
+    public = models.BooleanField(default=False, db_index=True, verbose_name='Публиковать Вместе с ответом')
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)

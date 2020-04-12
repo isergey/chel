@@ -26,8 +26,8 @@ class MenuItemForm(forms.ModelForm):
 
 
 class MenuTitleForm(forms.Form):
-    lang = forms.ChoiceField(label=u"Language", choices=settings.LANGUAGES, widget=forms.HiddenInput)
-    title = forms.CharField(label=_(u'Title'), max_length=512)
+    lang = forms.ChoiceField(label="Language", choices=settings.LANGUAGES, widget=forms.HiddenInput)
+    title = forms.CharField(label=_('Title'), max_length=512)
 
 # def get_content_form(exclude_list = ('page',)):
 #    class ContentForm(forms.ModelForm):

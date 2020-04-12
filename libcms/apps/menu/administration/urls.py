@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
+from django.conf.urls import re_path
 
-import views
+from . import views
 
-urlpatterns = patterns('',
-    url(r'^$', views.index , name="index"),
-    url(r'^menu/$', views.menu_list, name="menu_list"),
-    url(r'^menu/create/$', views.create_menu , name="create_menu"),
-    url(r'^menu/edit/(?P<id>\d+)/$', views.edit_menu, name="edit_menu"),
-    url(r'^menu/(?P<menu_id>\d+)/items/$', views.item_list, name="item_list"),
-    url(r'^menu/(?P<menu_id>\d+)/items/create/$', views.create_item, name="item_create"),
-    url(r'^menu/(?P<menu_id>\d+)/items/(?P<parent>\d+)/create/$', views.create_item, name="item_create"),
-    url(r'^menu/(?P<menu_id>\d+)/items/edit/(?P<id>\d+)/$', views.item_edit, name="item_edit"),
-    url(r'^menu/(?P<menu_id>\d+)/items/delete/(?P<id>\d+)/$', views.item_delete, name="item_delete"),
-    url(r'^menu/(?P<menu_id>\d+)/items/up/(?P<id>\d+)/$', views.item_up, name="item_up"),
-    url(r'^menu/(?P<menu_id>\d+)/items/down/(?P<id>\d+)/$', views.item_down, name="item_down"),
+urlpatterns = (
+    re_path(r'^$', views.index , name="index"),
+    re_path(r'^menu/$', views.menu_list, name="menu_list"),
+    re_path(r'^menu/create/$', views.create_menu , name="create_menu"),
+    re_path(r'^menu/edit/(?P<id>\d+)/$', views.edit_menu, name="edit_menu"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/$', views.item_list, name="item_list"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/create/$', views.create_item, name="item_create"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/(?P<parent>\d+)/create/$', views.create_item, name="item_create"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/edit/(?P<id>\d+)/$', views.item_edit, name="item_edit"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/delete/(?P<id>\d+)/$', views.item_delete, name="item_delete"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/up/(?P<id>\d+)/$', views.item_up, name="item_up"),
+    re_path(r'^menu/(?P<menu_id>\d+)/items/down/(?P<id>\d+)/$', views.item_down, name="item_down"),
 #    url(r'^pages/(?P<parent>\d+)/$', views.pages_list, name="pages_list"),
 #    url(r'^pages/create/$', views.create_page , name="create_page"),
 #    url(r'^pages/create/(?P<parent>\d+)/$', views.create_page , name="create_page"),

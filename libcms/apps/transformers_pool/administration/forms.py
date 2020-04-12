@@ -5,7 +5,7 @@ from django import forms
 from ..transformers import transformers
 
 TRANSFORMERS_CHOICES = []
-for key in transformers.keys():
+for key in list(transformers.keys()):
     TRANSFORMERS_CHOICES.append((key, key))
 
 
@@ -14,7 +14,7 @@ class TransformForm(forms.Form):
     xml = forms.CharField(
         max_length=1024 * 1024,
         widget=forms.Textarea,
-        help_text=u'Не указывйте параметр кодировки в xml декларации'
+        help_text='Не указывйте параметр кодировки в xml декларации'
     )
 
     def clean_xml(self):
@@ -22,7 +22,7 @@ class TransformForm(forms.Form):
         try:
             etree.fromstring(xml.encode('utf-8'))
         except etree.Error as e:
-            raise forms.ValidationError(u'Некорректный xml: %s' % (e.message, ))
+            raise forms.ValidationError('Некорректный xml: %s' % (e.message, ))
         except ValueError as e:
-            raise forms.ValidationError(u'Некорректный xml: %s' % (e.message, ))
+            raise forms.ValidationError('Некорректный xml: %s' % (e.message, ))
         return xml

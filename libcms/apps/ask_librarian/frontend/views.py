@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
 from ..models import Question, Category, Recomendation
-from forms import QuestionForm, RecomendationForm, DateFilterForm
+from .forms import QuestionForm, RecomendationForm, DateFilterForm
 
 
 def index(request):
@@ -29,7 +29,7 @@ def index(request):
         try:
             category_m = Category.objects.get(id=category)
         except Category.DoesNotExist:
-            raise Http404(u'Категория не найдена')
+            raise Http404('Категория не найдена')
 
         if category_m:
             categories.append(category_m)
@@ -85,7 +85,7 @@ def detail(request, id):
         if recomendation_form.is_valid():
             with transaction.atomic():
                 recomendation = recomendation_form.save(commit=False)
-                if request.user.is_authenticated():
+                if request.user.is_authenticated:
                     recomendation.user = request.user
                 recomendation.question = question
                 recomendation.save()
@@ -115,17 +115,17 @@ def ask(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False)
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 question.user = request.user
             question.save()
             return render(request, 'ask_librarian/frontend/thanks.html', {
                 'question': question,
             })
     else:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             form = QuestionForm(
                 initial={
-                    'fio': request.user.last_name + u' ' + request.user.first_name,
+                    'fio': request.user.last_name + ' ' + request.user.first_name,
                     'email': request.user.email,
                 }
             )
