@@ -11,7 +11,7 @@ urls = {} - словарь с URL документов
 \"\"\"
 
 
-FULL_TEXT_URL = 'http://scairbis.vip.cbr.ru'
+FULL_TEXT_URL = 'http://localhost'
 GROUP_FIELDS_CACHE = {}
 EACH_FIELD_QUERY_CACHE = {}
 
