@@ -75,7 +75,7 @@ def show(request, slug):
     user = request.user
     log = ViewLog(page=page)
     if not user.id:
-        log.user_id = ANON_USER
+        log.user_id = ANON_USER.id
     else:
         log.user = user
     log.save()
