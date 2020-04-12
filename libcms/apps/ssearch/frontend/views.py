@@ -528,7 +528,7 @@ def _is_request_from_detail(request):
     is_from_detail = False
     if referer:
         parse_result = urlparse(referer)
-        if resolve_url('search:frontend:detail').strip('/') == parse_result.path.strip('/'):
+        if resolve_url('ssearch:frontend:detail').strip('/') == parse_result.path.strip('/'):
             is_from_detail = True
     return is_from_detail
 
