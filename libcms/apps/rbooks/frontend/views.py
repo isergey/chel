@@ -31,7 +31,7 @@ def show(request):
     try:
         book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
-        return HttpResponse(e.message + ' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
+        return HttpResponse(str(e) + ' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
     if not book_path:
         raise Http404('Книга не найдена')
 
@@ -69,7 +69,7 @@ def book(request, book):
     try:
         book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
-        return HttpResponse(e.message + ' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
+        return HttpResponse(str(e) + ' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
     if not book_path or not os.path.isfile(book_path):
         raise Http404('Книга не найдена')
     token1 = request.GET.get('token1')
@@ -84,7 +84,7 @@ def book(request, book):
     zip_file_content = io.StringIO()
 
     zip_file = ZipFile(zip_file_content, 'w')
-    zip_file.writestr('doc.xml', xml)
+    zip_file.writestr('doc.xml', xml.encode('utf-8'))
     zip_file.close()
 
     response = HttpResponse(content_type="application/zip")
@@ -102,7 +102,7 @@ def draw(request, book):
     try:
         book_path = get_book_path(book, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
-        return HttpResponse(e.message)
+        return HttpResponse(str(e))
 
     if not book_path or not os.path.isfile(book_path):
         raise Http404('Книга не найдена')
