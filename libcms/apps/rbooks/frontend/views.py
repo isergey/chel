@@ -81,7 +81,7 @@ def book(request, book):
 <Permissions><AllowCopyToClipboard>true</AllowCopyToClipboard><AllowPrint>true</AllowPrint></Permissions>\
 </Document>""" % (request.META['HTTP_HOST'], book, book, request.META['HTTP_HOST'], book, book, token1)
 
-    zip_file_content = io.StringIO()
+    zip_file_content = io.BytesIO()
 
     zip_file = ZipFile(zip_file_content, 'w')
     zip_file.writestr('doc.xml', xml.encode('utf-8'))
