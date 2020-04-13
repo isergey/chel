@@ -48,12 +48,7 @@ def events_calendar(context, y=0, m=0):
     for week in weeks:
         week_events = []
         for day in week:
-            day_events = {
-                'day': 0,
-                'today': False,
-                'events': [],
-            }
-            day_events['day'] = day
+            day_events = {'day': day, 'today': False, 'events': []}
             if day == today.day and year == today.year and month == today.month:
                 day_events['today'] = True
             for event in events:
@@ -68,7 +63,6 @@ def events_calendar(context, y=0, m=0):
                     })
             week_events.append(day_events)
         calendar_of_events.append(week_events)
-    print(calendar_of_events)
     return {
         'calendar': calendar_of_events,
         'month': month,
