@@ -1,7 +1,9 @@
 {% extends 'index/frontend/index.html' %}
+{% load static %}
 {% load pagination_tag %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
+    {% get_media_prefix as MEDIA_URL %}
     <main class="main">
         <div class="container">
             <div class="crumb">

@@ -151,18 +151,27 @@ def index(request):
     current_dir_items = [x.decode(app_settings.FILE_NAME_ENCODING) for x in os.listdir(pathes['upload_dir'].encode(app_settings.FILE_NAME_ENCODING))]
     CreateDirectory = get_create_directory_form(pathes)
 
+    files = []
+    dirs = []
+
     if request.method == 'POST':
         create_dir_form = CreateDirectory(request.POST, prefix='cdf')
         if create_dir_form.is_valid():
             create_dir_path = os.path.join(pathes['upload_dir'], create_dir_form.cleaned_data['name']).encode(app_settings.FILE_NAME_ENCODING)
             os.mkdir(create_dir_path)
             dir = '%s/%s' % (pathes.get('current_dir', ''), create_dir_form.cleaned_data['name'])
+            # journal_models.log_action(
+            #     'filebrowser',
+            #     'create_dir',
+            #     user_id=request.user.id,
+            #     content_id=md5(dir.encode('utf-8')).hexdigest(),
+            #     message=dir
+            # )
             return redirect(reverse('filebrowser:administration:index') + '?path=' + pathes['current_dir'])
     else:
         create_dir_form = CreateDirectory(prefix='cdf')
 
-        files = []
-        dirs = []
+
         for current_dir_item in current_dir_items:
             current_dir_item_path = os.path.join(pathes['upload_dir'], current_dir_item)
             if os.path.isfile(current_dir_item_path.encode(app_settings.FILE_NAME_ENCODING)):
@@ -188,10 +197,10 @@ def index(request):
             if file_model:
                 file_item['model'] = file_model
 
-        dir_map = sorted(dirs, key=lambda x: x['name']) +\
-                  sorted(files, key=lambda x: x['name'])
+    dir_map = sorted(dirs, key=lambda x: x['name']) +\
+              sorted(files, key=lambda x: x['name'])
 
-        breadcrumbs = _make_breadcrumbs(pathes)
+    breadcrumbs = _make_breadcrumbs(pathes)
 
     return render(request, 'filebrowser/administration/list.html', {
         'dir_map': dir_map,
@@ -223,6 +232,14 @@ def upload_file(request):
                 pass
             file_model.save()
             content_type = ContentType.objects.get_for_model(models.File)
+            # journal_models.log_action(
+            #     'filebrowser',
+            #     'upload_file',
+            #     user_id=request.user.id,
+            #     content_type=content_type,
+            #     content_id=file_model.full_path_hash,
+            #     message='%s/%s' %(file_model.path, file_model.name)
+            # )
             return redirect(reverse('filebrowser:administration:index') + '?path=' + pathes['current_dir'])
     else:
         upload_form = UploadFileForm(initial={'path': pathes['current_dir']})
@@ -256,6 +273,14 @@ def delete(request):
         file_model = models.File.objects.get(full_path_hash=full_path_hash)
         file_model.delete()
         content_type = ContentType.objects.get_for_model(models.File)
+        # journal_models.log_action(
+        #     'filebrowser',
+        #     'delete_file',
+        #     user_id=request.user.id,
+        #     content_type=content_type,
+        #     content_id=file_model.full_path_hash,
+        #     message='%s/%s' %(file_model.path, file_model.name)
+        # )
     except models.File.DoesNotExist:
         pass
 
@@ -272,4 +297,4 @@ def ajax_file_info(request):
 
     return render(request, 'filebrowser/administration/ajax_file_info.html', {
         'file_info': file_info
-    })
+    });

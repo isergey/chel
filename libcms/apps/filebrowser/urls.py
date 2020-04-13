@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import *
-from .administration import urls
+from django.conf.urls import re_path, include
+from .administration import urls as aurls
 
 urlpatterns = (
-    url(r'^admin/', include((urls, 'administration'))),
+    re_path(r'^admin/', include((aurls, 'administration'))),
 )
 
