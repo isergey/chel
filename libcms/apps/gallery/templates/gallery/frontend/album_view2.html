@@ -1,6 +1,8 @@
 {% extends 'index/frontend/index.html' %}
+{% load static %}
 {% block title %}{{ album.title }}{% endblock %}
 {% block content %}
+    {% get_static_prefix as  STATIC_URL%}
     <link type="text/css" href="{{ STATIC_URL }}gallery/picachooce/styles/bottom.css" rel="stylesheet" />
     <script type="text/javascript" src="{{ STATIC_URL }}gallery/picachooce/lib/jquery.jcarousel.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}gallery/picachooce/lib/jquery.pikachoose.full.js"></script>

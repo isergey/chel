@@ -1,4 +1,5 @@
 {% extends 'cid/administration/index.html' %}
+{% load static %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block action_content %}
-
+    {% get_static_prefix as  STATIC_URL%}
     <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/core.js"></script>

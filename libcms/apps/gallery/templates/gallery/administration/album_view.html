@@ -1,4 +1,5 @@
 {% extends 'gallery/administration/index.html' %}
+{% load static %}
 {% load  breadcrumbs %}
 {% block breadcrumb %}
     {% breadcrumb "Галерея" gallery:administration:index %}
@@ -6,6 +7,7 @@
     {% breadcrumb album  %}
 {% endblock %}
 {% block action_content %}
+    {% get_static_prefix as  STATIC_URL%}
     <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.fancybox.pack.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.ad-gallery.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.fancybox.css">

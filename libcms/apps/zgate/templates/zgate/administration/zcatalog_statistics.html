@@ -1,6 +1,8 @@
 {% extends "zgate/administration/zcatalogs.html" %}
 {% block module_action %}статистика{% endblock %}
 {% block module_page %}
+    {% load static %}
+    {% get_static_prefix as  STATIC_URL%}
     <script type="text/javascript" src="{{ STATIC_URL }}highcharts/highcharts.js"></script>
     <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>

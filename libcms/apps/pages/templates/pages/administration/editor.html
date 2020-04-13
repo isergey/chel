@@ -1,3 +1,5 @@
+{% load static %}
+{% get_static_prefix as  STATIC_URL%}
 <script type="text/javascript" src="{{ STATIC_URL }}js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
     tinyMCE.init({

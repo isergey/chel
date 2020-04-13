@@ -1,4 +1,5 @@
 {% extends 'gallery/administration/index.html' %}
+{% load static %}
 {% load  breadcrumbs %}
 {% block breadcrumb %}
     {% breadcrumb "Галерея" gallery:administration:index %}
@@ -7,6 +8,7 @@
     {% breadcrumb "Загрузка изображений"  %}
 {% endblock %}
 {% block action_content %}
+    {% get_static_prefix as  STATIC_URL%}
     <link rel="stylesheet" href="{{ STATIC_URL }}gallery/uploadify/uploadify.css">
     <script type="text/javascript" src="{{ STATIC_URL }}gallery/uploadify/jquery.uploadify-3.1.min.js"></script>
 

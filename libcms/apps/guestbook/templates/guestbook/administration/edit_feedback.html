@@ -1,4 +1,5 @@
 {% extends 'news/administration/index.html' %}
+{% load static %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
@@ -11,6 +12,7 @@
 {% endblock %}
 
 {% block action_content %}
+    {% get_static_prefix as  STATIC_URL%}
     <style>
     form input[type=text], textarea{
         width: 99%;

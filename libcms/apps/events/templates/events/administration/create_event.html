@@ -1,4 +1,5 @@
 {% extends 'events/administration/index.html' %}
+{% load static %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block action_content %}
-
+{% get_static_prefix as  STATIC_URL%}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/forms.css" />
 <script type="text/javascript">window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";</script>
 <script type="text/javascript">window.__admin_utc_offset__ = "10800";</script>
