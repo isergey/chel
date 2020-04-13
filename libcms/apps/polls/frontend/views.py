@@ -135,7 +135,7 @@ def set_cookies(response, poller_id):
 
 def get_poller_id(request):
     if request.user.is_authenticated:
-        poller_id = hashlib.md5(request.user.username).hexdigest()
+        poller_id = hashlib.md5(request.user.username.encode('utf-8')).hexdigest()
     else:
         poller_id = request.COOKIES.get('polls.id', uuid.uuid4().hex)
     return poller_id
