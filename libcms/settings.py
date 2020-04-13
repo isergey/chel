@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'guardian',
     # 'debug_toolbar',
     # 'django_sorting',
+    'bootstrapform',
     'bootstrap3',
     'captcha',
     # cms apps
