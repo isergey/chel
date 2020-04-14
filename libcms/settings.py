@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'sitemap',
     'robots_txt',
     'harvester',
+    'contact_form',
 ]
 
 MIDDLEWARE = [

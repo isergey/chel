@@ -1,0 +1,28 @@
+{% extends 'themed_frontend_base.html' %}
+{% load bootstrap3 %}
+{% block title %}Контактная форма{% endblock %}
+{% block index_content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                {% block breadcrumb %}
+                    <ol class="crumb__list">
+                        <li>
+                            <a href="{% url 'index:frontend:index' %}">Главная</a>
+                        </li>
+                        <li>
+                            <span class="crumb__current">
+                                Контактная форма
+                            </span>
+                        </li>
+                    </ol>
+                {% endblock %}
+            </div>
+            <div class="row ">
+                <div class="col-lg-9 col-md-9 col-sm-12 col-pl">
+                    <p>Спасибо. Ваше обращение отправлено. Мы свяжемся с Вам.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

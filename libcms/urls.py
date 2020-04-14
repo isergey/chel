@@ -44,6 +44,7 @@ urlpatterns += i18n_patterns(
     re_path(r'^jsi18n/$', site.i18n_javascript, name='jsi18n'),
     # url(r'^sauth/', include('social_auth.urls')),
     re_path(r'^captcha/', include('captcha.urls')),
+    re_path(r'^contact_form/', include(('contact_form.urls', 'contact_form'))),
     # url(r'^sql/', include('explorer.urls')),
 )
 

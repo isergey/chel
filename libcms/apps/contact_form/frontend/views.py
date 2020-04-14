@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.core.mail import EmailMessage
 from django.db import transaction
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.template.loader import get_template
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -35,7 +35,10 @@ def index(request):
             contact_request.ip_address = get_client_ip(request)
             contact_request.save()
             _send_email(contact_request)
-            return HttpResponse(status=200)
+            if request.is_ajax():
+                return HttpResponse(status=200)
+            else:
+                return redirect('contact_form:frontend:done')
 
         else:
             return HttpResponse(status=400)
