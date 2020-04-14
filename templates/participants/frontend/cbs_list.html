@@ -25,14 +25,17 @@
                     {% for cbs in  cbs_list %}
                         {% if cbs.parent_id %}
                             <li>
-                                <a href="#" onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
-                                Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
+                                <a href="#"
+                                   onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}<br/></a>
+                                Сайт: {% if cbs.http_service %}
+                                <a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                             {% else %} не указан {% endif %}
                             </li>
                         {% else %}
                             <li>
                                 <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}<br/></a>
-                                Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
+                                Сайт: {% if cbs.http_service %}
+                                <a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>
                             {% else %} не указан {% endif %}
                             <li>
                         {% endif %}
@@ -49,29 +52,31 @@
                     {% endfor %}
                 </div>
                 <hr/>
-                <div class="districts">
-                    <h3>По районам:</h3>
-                    <form method="GET" style="margin: 0">
+                <form method="GET" style="margin: 0">
+                    <div class="districts">
+                        <h3>По районам:</h3>
+
                         <select onchange="this.form.submit();" name="district" id="id_district">
                             <option>Укажите район</option>
                             {% for district in districts %}
-                                <option value="{{ district.id }}" {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>
+                                <option value="{{ district.id }}"
+                                        {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>
                             {% endfor %}
                         </select>
-                    </form>
-                </div>
-                <hr/>
-                <div class="types">
-                    <h3>По типу:</h3>
-                    <form method="GET" style="margin: 0">
+
+                    </div>
+                    <hr/>
+                    <div class="types">
+                        <h3>По типу:</h3>
                         <select onchange="this.form.submit();" name="type" id="id_type">
                             <option>Укажите тип библиотеки</option>
                             {% for type in types %}
-                                <option value="{{ type.id }}" {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>
+                                <option value="{{ type.id }}"
+                                        {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>
                             {% endfor %}
                         </select>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
             <div class="span12">
                 {% admin_pagination cbs_page %}
@@ -83,11 +88,11 @@
     <script type="text/javascript">
         function modalWin(url) {
             if (window.showModalDialog) {
-                window.showModalDialog(url,"name",
-                        "dialogWidth:550px;dialogHeight:460px");
+                window.showModalDialog(url, "name",
+                    "dialogWidth:550px;dialogHeight:460px");
             } else {
-                window.open(url,'name',
-                        'height=550px,width=460px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
+                window.open(url, 'name',
+                    'height=550px,width=460px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
             }
         }
     </script>
