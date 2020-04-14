@@ -41,9 +41,10 @@
                             {% endfor %}
                             <br>
                             <br>
-                            <div class="form-group">
-                                <label>По типу:</label>
-                                <form method="GET">
+                            <form method="GET">
+                                <div class="form-group">
+                                    <label>По типу:</label>
+
                                     <select onchange="this.form.submit();" name="type" id="id_type">
                                         <option>Укажите тип библиотеки</option>
                                         {% for type in types %}
@@ -51,11 +52,11 @@
                                                     {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>
                                         {% endfor %}
                                     </select>
-                                </form>
-                            </div>
-                            <div class="form-group">
-                                <label>По районам:</label>
-                                <form method="GET">
+
+                                </div>
+                                <div class="form-group">
+                                    <label>По районам:</label>
+
                                     <select onchange="this.form.submit();" name="district"
                                             id="id_district">
                                         <option>Укажите район</option>
@@ -64,8 +65,9 @@
                                                     {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>
                                         {% endfor %}
                                     </select>
-                                </form>
-                            </div>
+
+                                </div>
+                            </form>
                         </div>
                     </div>
 
@@ -470,10 +472,10 @@
         function modalWin(url) {
             if (window.showModalDialog) {
                 window.showModalDialog(url, "name",
-                        "dialogWidth:550px;dialogHeight:520px");
+                    "dialogWidth:550px;dialogHeight:520px");
             } else {
                 window.open(url, 'name',
-                        'height=520px,width=550px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
+                    'height=520px,width=550px,toolbar=no,directories=no,status=no, menubar=no,scrollbars=no,resizable=no ,modal=yes');
             }
         }
     </script>
