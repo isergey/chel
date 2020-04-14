@@ -20,6 +20,7 @@ admin.site.register(QuestionTarget, QuestionTargetAdmin)
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'category')
     list_filter = ['category']
+    raw_id_fields = ['user']
 
 
 admin.site.register(Question, QuestionAdmin)
