@@ -103,7 +103,7 @@ class Question(models.Model):
         (STATUS_ON_PROCESS, 'В обработке'),
     )
 
-    user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE, blank=True)
     fio = models.CharField(verbose_name='ФИО', blank=True, max_length=128, default='')
     email = models.EmailField(verbose_name='email', blank=True, max_length=256)
     city = models.CharField(verbose_name='Город', blank=True, max_length=64)
@@ -114,6 +114,7 @@ class Question(models.Model):
         QuestionTarget,
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
         verbose_name='Цель запроса'
     )
 
