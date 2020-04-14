@@ -195,7 +195,7 @@ def generate_popular_records_report(start_date, end_date, action=DETAIL_ACTIONS_
 
         return ''.join(title).strip()
 
-    for record_id, amount in report.most_common(50):
+    for record_id, amount in report.most_common(100):
         record_content = (get_records([record_id]) or [None])[0]
         record_data = {
             'id': record_id,
