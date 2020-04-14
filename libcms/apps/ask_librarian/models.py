@@ -33,7 +33,10 @@ class Category(MPTTModel):
 
     def title(self):
         lang = get_language()[:2]
-        return CategoryTitle.objects.get(lang=lang, category=self).title
+        category_title = CategoryTitle.objects.filter(lang=lang, category=self).first()
+        if category_title is None:
+            return ''
+        return category_title.title
 
     def __str__(self):
         return self.title()
@@ -61,12 +64,16 @@ class CategoryTitle(models.Model):
         unique_together = (('category', 'lang'),)
 
 
-QUESTION_STATUSES = (
-    (0, 'Новый'),
-    (1, 'Готов'),
-    (2, 'В обработке'),
-)
+class QuestionTarget(models.Model):
+    title = models.CharField(verbose_name='Название', max_length=512)
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['title']
+        verbose_name_plural = 'Цели вопросов'
+        verbose_name = 'Цель вопроса'
 
 class QuestionManager(models.Model):
     user = models.OneToOneField(User, verbose_name='Пользователь', on_delete=models.CASCADE)
@@ -86,20 +93,38 @@ class QuestionManager(models.Model):
 
 
 class Question(models.Model):
+    STATUS_NEW = 0
+    STATUS_DONE = 1
+    STATUS_ON_PROCESS = 2
+
+    STATUSES = (
+        (STATUS_NEW, 'Новый'),
+        (STATUS_DONE, 'Готов'),
+        (STATUS_ON_PROCESS, 'В обработке'),
+    )
+
     user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE)
     fio = models.CharField(verbose_name='ФИО', blank=True, max_length=128, default='')
-    email = models.EmailField(verbose_name='email', blank=True, max_length=256,
-                              help_text='На этот адрес будет выслан ответ на вопрос')
+    email = models.EmailField(verbose_name='email', blank=True, max_length=256)
     city = models.CharField(verbose_name='Город', blank=True, max_length=64)
     country = models.CharField(verbose_name='Страна', blank=True, max_length=64)
     category = models.ForeignKey(Category, null=True, verbose_name='Тематика',
-                                 help_text='Укажите тематику, к которой относиться вопрос', on_delete=models.CASCADE)
+                                 help_text='Укажите тематику, к которой относиться вопрос', on_delete=models.PROTECT)
+    question_target = models.ForeignKey(
+        QuestionTarget,
+        on_delete=models.PROTECT,
+        null=True,
+        verbose_name='Цель запроса'
+    )
+
     question = models.TextField(max_length=2048, verbose_name='Вопрос')
     answer = models.TextField(max_length=50000, verbose_name='Ответ')
-    status = models.IntegerField(choices=QUESTION_STATUSES, verbose_name='Статус', db_index=True, default=0)
-    create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)
+    status = models.IntegerField(choices=STATUSES, verbose_name='Статус', db_index=True, default=STATUS_NEW)
 
-    manager = models.ForeignKey(QuestionManager, verbose_name='Менеджер', null=True, blank=True, on_delete=models.CASCADE)
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)
+    update_date = models.DateTimeField(auto_now=True, verbose_name='Дата обновления', db_index=True)
+    manager = models.ForeignKey(QuestionManager, verbose_name='Менеджер', null=True, blank=True,
+                                on_delete=models.CASCADE)
     start_process_date = models.DateTimeField(blank=True, null=True, db_index=True,
                                               verbose_name='Дата взятия вопроса на обработку')
     end_process_date = models.DateTimeField(blank=True, null=True, db_index=True,
@@ -126,25 +151,51 @@ class Question(models.Model):
         else:
             return False
 
-    def take_to_process(self, manager, commit=True):
+    def take_to_process(self, manager, message='', commit=True):
         if self.is_new():
             self.start_process_date = datetime.datetime.now()
             self.manager = manager
-            self.status = 2
+            self.status = Question.STATUS_ON_PROCESS
             if commit:
                 self.save()
+            StatusJournal.objects.bulk_create([
+                StatusJournal(question=self, user_id=manager.user_id, status=self.status, message=message)
+            ])
 
-    def close_process(self, commit=True):
+    def close_process(self, manager, message='', commit=True):
         if self.is_processing():
             self.end_process_date = datetime.datetime.now()
-            self.status = 1
+            self.status = Question.STATUS_DONE
             if commit:
                 self.save()
+            StatusJournal.objects.bulk_create(
+                [StatusJournal(question=self, user_id=manager.user_id, status=self.status, message=message)]
+            )
+
+    def edit_process(self, manager, commit=True):
+        if commit:
+            self.save()
+        if self.status != Question.STATUS_ON_PROCESS:
+            StatusJournal.objects.bulk_create([
+                StatusJournal(question=self, user_id=manager.user_id, status=self.STATUS_ON_PROCESS, message='Редактирование'),
+                StatusJournal(question=self, user_id=manager.user_id, status=self.status)
+            ])
+
+class StatusJournal(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='Пользователь сменивший статус', on_delete=models.SET_NULL, null=True)
+    status = models.IntegerField(choices=Question.STATUSES, verbose_name='Статус', db_index=True)
+    message = models.TextField(
+        max_length=10 * 1024,
+        blank=True
+    )
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)
 
 
 class Recomendation(models.Model):
     user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, verbose_name='Вопрос, к которому относиться рекомендация', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, verbose_name='Вопрос, к которому относиться рекомендация',
+                                 on_delete=models.CASCADE)
     text = models.TextField(max_length=2048, verbose_name='Текст рекомендации')
     public = models.BooleanField(default=False, db_index=True, verbose_name='Публиковать Вместе с ответом')
     create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)

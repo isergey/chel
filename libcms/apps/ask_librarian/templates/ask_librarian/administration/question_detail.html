@@ -27,6 +27,8 @@
     <div>
         <hr/>
         <b>Статус</b>: <span class="question_status{{ question.status }}">{{ question.get_status_display }} </span><br/>
+        <b>Дата создания</b>: {{ question.create_date }}<br/>
+        <b>Дата последнего редактирования</b>: {{ question.update_date }}<br/>
         {% if question.category_id %}
             <b>Категория</b>:
                 {% for ancestor in  question.category.get_t_ancestors %}
@@ -35,6 +37,8 @@
                 {{ question.category }}
 
         {% endif %}
+        <br/>
+        <b>Цель вопроса</b>: {{ question.question_target|default_if_none:'не указана' }}<br/>
     </div>
 
     {% if question.is_processing or question.is_ready %}
@@ -61,6 +65,36 @@
                 <input type="submit" value="Назначить ответственным" class="btn">
             </form>
         {% endif %}
+    </div>
+    <div>
+    <h3>Журнал обработки</h3>
+    <table class="table">
+        <tr>
+            <th>Статус</th>
+            <th>Дата</th>
+            <th>Пользователь</th>
+            <th>Сообщение</th>
+        </tr>
+        {% for status in statuses %}
+            <tr>
+            <td>{{status.get_status_display}}</td>
+            <td>{{ status.create_date }}</td>
+            <td>
+                {% if not status.user %}
+                    Анонимный
+                {% else %}
+                    {{ status.user.last_name }} {{ status.user.first_name }} {{ status.user }}
+                {% endif %}
+            </td>
+            <td>{{ status.message }}</td>
+
+        </tr>
+            {% empty %}
+            <tr>
+            <td colspan="4">Журнал отсутствует</td>
+            </tr>
+        {% endfor %}
+    </table>
     </div>
     {% if recomendations %}
         <div>

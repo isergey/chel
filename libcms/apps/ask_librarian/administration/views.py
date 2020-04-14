@@ -10,12 +10,11 @@ from common.pagination import get_page
 from django.utils.translation import get_language
 from common.pagination import get_page
 from django.db.models import Q
-from ..models import Category, CategoryTitle,  Question, QuestionManager, Recomendation
-from .forms import CategoryForm, CategoryTitleForm,  AnswerQuestionForm
+from ..models import Category, CategoryTitle, Question, QuestionManager, Recomendation, StatusJournal
+from .forms import CategoryForm, CategoryTitleForm, AnswerQuestionForm
 
 
-
-#@permission_required_or_403('accounts.view_users')
+# @permission_required_or_403('accounts.view_users')
 @login_required
 def index(request):
     manager = QuestionManager.get_manager(request.user)
@@ -23,7 +22,6 @@ def index(request):
         return HttpResponseForbidden()
 
     return render(request, 'ask_librarian/administration/index.html')
-
 
 
 @login_required
@@ -34,16 +32,29 @@ def questions_list(request, my=None):
 
     if manager:
         manager.user = request.user
+    id = request.GET.get('id', None)
+    error = ''
+    if id:
+        try:
+            id = int(id)
+            if not Question.objects.filter(id=id).exists():
+                error = 'Вопрос не найден'
+            else:
+                return redirect('ask_librarian:administration:question_detail', id=id)
+        except ValueError:
+            error = 'неправильный идентификатор'
+
 
     status = request.GET.get('status', 0)
 
     if my:
-        questions_page = get_page(request, Question.objects.filter(status=status, manager=manager).exclude(manager=None).order_by('-create_date'), 10)
+        questions_page = get_page(request, Question.objects.filter(status=status, manager=manager).exclude(
+            manager=None).order_by('-create_date'), 50)
         questions_page.object_list = list(questions_page.object_list)
         for question in questions_page.object_list:
             question.manager = manager
     else:
-        questions_page = get_page(request, Question.objects.filter(status=status).order_by('-create_date'), 10)
+        questions_page = get_page(request, Question.objects.filter(status=status).order_by('-create_date'), 50)
         questions_page.object_list = list(questions_page.object_list)
         md = {}
         for question in questions_page.object_list:
@@ -59,10 +70,10 @@ def questions_list(request, my=None):
             if question.manager_id:
                 question.manager = md[question.manager_id]
 
-
     return render(request, 'ask_librarian/administration/questions_list.html', {
-            'questions_page': questions_page,
-        })
+        'questions_page': questions_page,
+        'error': error,
+    })
 
 
 @login_required
@@ -78,6 +89,7 @@ def questions_to_process(request, id):
     question.take_to_process(manager)
     return redirect('ask_librarian:administration:questions_list')
 
+
 @login_required
 def question_detail(request, id):
     manager = QuestionManager.get_manager(request.user)
@@ -86,10 +98,14 @@ def question_detail(request, id):
 
     question = get_object_or_404(Question, id=id)
     recomendations = Recomendation.objects.filter(id=id)
+    statuses = StatusJournal.objects.filter(question=question)
+
     return render(request, 'ask_librarian/administration/question_detail.html', {
         'question': question,
-        'recomendations': recomendations
+        'recomendations': recomendations,
+        'statuses': statuses
     })
+
 
 @login_required
 def question_answer(request, id):
@@ -105,8 +121,8 @@ def question_answer(request, id):
         if form.is_valid():
             question = form.save(commit=False)
             if question.is_new():
-                question.take_to_process(manager, commit=False)
-            question.close_process()
+                question.take_to_process(manager)
+            question.close_process(manager)
             return redirect('ask_librarian:administration:question_detail', id=id)
     else:
         form = AnswerQuestionForm(instance=question)
@@ -116,17 +132,21 @@ def question_answer(request, id):
         'form': form
     })
 
+
 @login_required
 def question_edit(request, id):
+    manager = QuestionManager.get_manager(request.user)
+    if not manager:
+        return HttpResponse('Вы не являетесь менеджером вопросов', status=403)
     question = get_object_or_404(Question, id=id)
-    if (question.manager and not question.manager.user_id == request.user.id) and not request.user.is_superuser:
-        return HttpResponse('Вы не можете обрабатывать вопросы')
-
+    # if not request.user.is_superuser:
+    #     return HttpResponse('Вы не можете обрабатывать вопросы')
 
     if request.method == 'POST':
         form = AnswerQuestionForm(request.POST, instance=question)
         if form.is_valid():
             form.save()
+            question.edit_process(question.manager)
             return redirect('ask_librarian:administration:question_detail', id=id)
     else:
         form = AnswerQuestionForm(instance=question)
@@ -147,7 +167,7 @@ def question_delete(request, id):
 
     question = get_object_or_404(Question, id=id)
     question.delete()
-    return redirect(request.META.get('HTTP_REFERER', 'ask_librarian:administration:questions_list'))
+    return redirect('ask_librarian:administration:questions_list')
 
 
 @login_required
@@ -155,7 +175,7 @@ def categories_list(request):
     if not request.user.has_module_perms('ask_librarian'):
         return HttpResponseForbidden()
     nodes = list(Category.objects.all())
-    lang=get_language()[:2]
+    lang = get_language()[:2]
     category_titles = CategoryTitle.objects.filter(category__in=nodes, lang=lang)
     nd = {}
     for node in nodes:
@@ -166,7 +186,7 @@ def categories_list(request):
 
     return render(request, 'ask_librarian/administration/categories_list.html', {
         'nodes': nodes,
-#        'menu': menu
+        #        'menu': menu
     })
 
 
@@ -174,18 +194,17 @@ def categories_list(request):
 @permission_required_or_403('ask_librarian.add_category')
 @transaction.atomic
 def category_create(request, parent=None):
-
-    if  parent:
+    if parent:
         parent = get_object_or_404(Category, id=parent)
 
     if request.method == 'POST':
-        category_form = CategoryForm(request.POST,prefix='category_form')
+        category_form = CategoryForm(request.POST, prefix='category_form')
 
         category_title_forms = []
         for lang in settings.LANGUAGES:
             category_title_forms.append({
-                'form':CategoryTitleForm(request.POST,prefix='category_title_' + lang[0]),
-                'lang':lang[0]
+                'form': CategoryTitleForm(request.POST, prefix='category_title_' + lang[0]),
+                'lang': lang[0]
             })
 
         if category_form.is_valid():
@@ -211,8 +230,8 @@ def category_create(request, parent=None):
         category_title_forms = []
         for lang in settings.LANGUAGES:
             category_title_forms.append({
-                'form':CategoryTitleForm(prefix='category_title_' + lang[0]),
-                'lang':lang[0]
+                'form': CategoryTitleForm(prefix='category_title_' + lang[0]),
+                'lang': lang[0]
             })
 
     return render(request, 'ask_librarian/administration/create_category.html', {
@@ -221,12 +240,10 @@ def category_create(request, parent=None):
     })
 
 
-
 @login_required
 @permission_required_or_403('ask_librarian.change_category')
 @transaction.atomic
 def category_edit(request, id):
-
     category = get_object_or_404(Category, id=id)
     category_titles = CategoryTitle.objects.filter(category=category)
 
@@ -234,18 +251,17 @@ def category_edit(request, id):
     for lang in settings.LANGUAGES:
         category_titles_langs[lang] = None
 
-
     for category_title in category_titles:
         category_titles_langs[category_title.lang] = category_title
 
     if request.method == 'POST':
-        category_form = CategoryForm(request.POST,prefix='category_form', instance=category)
+        category_form = CategoryForm(request.POST, prefix='category_form', instance=category)
 
         category_title_forms = []
         for lang in settings.LANGUAGES:
             category_title_forms.append({
-                'form':CategoryTitleForm(request.POST,prefix='category_title_' + lang[0]),
-                'lang':lang[0]
+                'form': CategoryTitleForm(request.POST, prefix='category_title_' + lang[0]),
+                'lang': lang[0]
             })
 
         if category_form.is_valid():
@@ -272,22 +288,20 @@ def category_edit(request, id):
         category_title_forms = []
         for lang in settings.LANGUAGES:
             category_title_forms.append({
-                'form':CategoryTitleForm(prefix='category_title_' + lang[0]),
-                'lang':lang[0]
+                'form': CategoryTitleForm(prefix='category_title_' + lang[0]),
+                'lang': lang[0]
             })
 
     return render(request, 'ask_librarian/administration/create_category.html', {
         'category_form': category_form,
         'category_title_forms': category_title_forms,
-        })
-
-
+    })
 
 
 @login_required
 @permission_required_or_403('ask_librarian.change_category')
 @transaction.atomic
-def category_edit(request, id,):
+def category_edit(request, id, ):
     category = get_object_or_404(Category, id=id)
     category_titles = CategoryTitle.objects.filter(category=category)
 
@@ -295,11 +309,8 @@ def category_edit(request, id,):
     for lang in settings.LANGUAGES:
         category_titles_langs[lang] = None
 
-
     for category_title in category_titles:
         category_titles_langs[category_title.lang] = category_title
-
-
 
     if request.method == 'POST':
         category_form = CategoryForm(request.POST, prefix='category_form', instance=category)
@@ -309,13 +320,14 @@ def category_edit(request, id,):
                 lang = lang[0]
                 if lang in category_titles_langs:
                     category_title_forms.append({
-                        'form':CategoryTitleForm(request.POST,prefix='category_title_' + lang, instance=category_titles_langs[lang]),
-                        'lang':lang
+                        'form': CategoryTitleForm(request.POST, prefix='category_title_' + lang,
+                                                  instance=category_titles_langs[lang]),
+                        'lang': lang
                     })
                 else:
                     category_title_forms.append({
-                        'form':CategoryTitleForm(request.POST,prefix='category_title_' + lang),
-                        'lang':lang
+                        'form': CategoryTitleForm(request.POST, prefix='category_title_' + lang),
+                        'lang': lang
                     })
 
         valid = False
@@ -323,7 +335,6 @@ def category_edit(request, id,):
             valid = category_title_form['form'].is_valid()
             if not valid:
                 break
-
 
         if not category_form.is_valid():
             valid = False
@@ -351,13 +362,13 @@ def category_edit(request, id,):
             lang = lang[0]
             if lang in category_titles_langs:
                 category_title_forms.append({
-                    'form':CategoryTitleForm(prefix='category_title_' + lang, instance=category_titles_langs[lang]),
-                    'lang':lang
+                    'form': CategoryTitleForm(prefix='category_title_' + lang, instance=category_titles_langs[lang]),
+                    'lang': lang
                 })
             else:
                 category_title_forms.append({
-                    'form':CategoryTitleForm(prefix='category_title_' + lang),
-                    'lang':lang
+                    'form': CategoryTitleForm(prefix='category_title_' + lang),
+                    'lang': lang
                 })
 
     return render(request, 'ask_librarian/administration/edit_category.html', {
@@ -365,7 +376,6 @@ def category_edit(request, id,):
         'category_title_forms': category_title_forms,
         'category': category
     })
-
 
 
 #
@@ -382,9 +392,8 @@ def category_up(request, id):
     category.up()
     return redirect('ask_librarian:administration:categories_list')
 
+
 def category_down(request, id):
     category = get_object_or_404(Category, id=id)
     category.down()
     return redirect('ask_librarian:administration:categories_list')
-
-

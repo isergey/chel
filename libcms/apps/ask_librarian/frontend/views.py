@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from django.db import transaction
+from django.db import transaction, models
 from django.shortcuts import render, redirect, get_object_or_404, Http404
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 
-from ..models import Question, Category, Recomendation
+from ..models import Question, Category, Recomendation, StatusJournal
 from .forms import QuestionForm, RecomendationForm, DateFilterForm
 
 
 def index(request):
     id = request.GET.get('id', None)
+    q = request.GET.get('q', '')
     if id:
         try:
             id = int(id)
@@ -39,27 +40,43 @@ def index(request):
     else:
         categories = list(Category.objects.all())
 
-    filtered_by_date = False
+    q_criteria = models.Q(status=1)
+
+    if q:
+        terms = q.split()
+        terms_q = None
+        for term in terms:
+            if len(term) < 1:
+                continue
+            if not terms_q:
+                terms_q = models.Q(question__icontains=term) | models.Q(answer__icontains=term)
+            else:
+                terms_q |= (models.Q(question__icontains=term) | models.Q(answer__icontains=term))
+        if terms_q:
+            q_criteria &= terms_q
+
+    if id:
+        q_criteria &= models.Q(id=id)
+
+    if category and categories:
+        q_criteria &= models.Q(category__in=categories)
+
+    if category and categories:
+        q_criteria &= models.Q(category__in=categories)
 
     if request.method == 'POST':
         date_filter_form = DateFilterForm(request.POST)
         if date_filter_form.is_valid():
             date = date_filter_form.cleaned_data['date']
-            questions_page = get_page(request, Question.objects.filter(create_date__year=date.year,
-                                                                       create_date__month=date.month,
-                                                                       create_date__day=date.day, status=1).order_by(
-                '-id'), 10)
-            filtered_by_date = True
+            q_criteria &= models.Q(
+                create_date__year=date.year,
+                create_date__month=date.month,
+                create_date__day=date.day
+            )
     else:
         date_filter_form = DateFilterForm()
 
-    if not filtered_by_date:
-        # print categories
-        if category and categories:
-            questions_page = get_page(request, Question.objects.filter(category__in=categories, status=1).order_by(
-                '-create_date'), 10)
-        else:
-            questions_page = get_page(request, Question.objects.filter(status=1).order_by('-create_date'), 10)
+    questions_page = get_page(request, Question.objects.filter(q_criteria).order_by('-create_date'), 10)
     questions_page.object_list = list(questions_page.object_list)
     cd = {}
 
@@ -78,20 +95,20 @@ def index(request):
     })
 
 
+@transaction.atomic
 def detail(request, id):
     question = get_object_or_404(Question, id=id)
     if request.method == 'POST':
         recomendation_form = RecomendationForm(request.POST, prefix='recomendation_form')
         if recomendation_form.is_valid():
-            with transaction.atomic():
-                recomendation = recomendation_form.save(commit=False)
-                if request.user.is_authenticated:
-                    recomendation.user = request.user
-                recomendation.question = question
-                recomendation.save()
-                return render(request, 'ask_librarian/frontend/recomended_thanks.html', {
-                    'question': question,
-                })
+            recomendation = recomendation_form.save(commit=False)
+            if request.user.is_authenticated:
+                recomendation.user = request.user
+            recomendation.question = question
+            recomendation.save()
+            return render(request, 'ask_librarian/frontend/recomended_thanks.html', {
+                'question': question,
+            })
     else:
         recomendation_form = RecomendationForm(prefix='recomendation_form')
     recomendations = Recomendation.objects.filter(question=question, public=True).order_by('-create_date')
@@ -118,6 +135,10 @@ def ask(request):
             if request.user.is_authenticated:
                 question.user = request.user
             question.save()
+            StatusJournal.objects.bulk_create(
+                [StatusJournal(question=question, user=question.user, status=question.status)]
+            )
+
             return render(request, 'ask_librarian/frontend/thanks.html', {
                 'question': question,
             })

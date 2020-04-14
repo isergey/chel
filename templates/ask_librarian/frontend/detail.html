@@ -41,8 +41,15 @@
                     <b>Статус</b>: <span
                         class="question_status{{ question.status }}">{{ question.get_status_display }} </span>
                 </p>
+                <p>
+                    <b>Дата создания</b>: {{ question.create_date }}
+                </p>
+                <p>
+                    <b>Цель</b>: {{ question.question_target|default_if_none:'не указана' }}
+                </p>
                 <h2>Ответ:</h2>
                 {% if question.is_ready %}
+                    <p><b>Дата ответа</b>: {{ question.end_process_date }}</p>
                     {{ question.answer|safe }}
                 {% else %}
                     Ответа на вопрос еще нет.

@@ -54,6 +54,15 @@
             </form>
         </div>
         <div class="form-grid__col">
+            <form action="" method="GET">
+                <div class="form-group">
+                    <label class="control-label">Поиск по тексту вопроса:</label>
+                    <input class="form-control" name="q" value="{{ request.GET.q }}" type="text">
+                </div>
+{#                <button type="submit" class="btn btn_sm">Перейти</button>#}
+            </form>
+        </div>
+        <div class="form-grid__col">
             <form action="" method="POST">
                 {% csrf_token %}
                 {% for field in date_filter_form.visible_fields %}
@@ -97,7 +106,7 @@
                                 {% for ancestor in  question.category.get_t_ancestors %}
                                     {{ ancestor }}  →
                                 {% endfor %}
-                                {{ question.category }}
+                                {{ question.category|default_if_none:'категория не указана' }}
                             {% endcache %}
                         </p>
                         <ul class="card-nav">

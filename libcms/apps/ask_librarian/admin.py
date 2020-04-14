@@ -1,13 +1,24 @@
 from django.contrib import admin
-from mptt.admin import MPTTModelAdmin
 
-from .models import QuestionManager
+from .models import QuestionManager, QuestionTarget, Question
 
 
 class QuestionManagerAdmin(admin.ModelAdmin):
     list_display = ('user', 'available')
 
-admin.site.register(QuestionManager,QuestionManagerAdmin)
+
+admin.site.register(QuestionManager, QuestionManagerAdmin)
 
 
+class QuestionTargetAdmin(admin.ModelAdmin):
+    list_display = ('title',)
 
+
+admin.site.register(QuestionTarget, QuestionTargetAdmin)
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'category')
+
+
+admin.site.register(Question, QuestionAdmin)
