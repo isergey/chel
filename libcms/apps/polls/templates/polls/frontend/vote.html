@@ -16,7 +16,7 @@
     <div class="polls">
         <div class="content">
 
-            <form action="" method="POST">{% csrf_token %}
+            <form novalidate action="" method="POST">{% csrf_token %}
                 <ul>
                     {% if poll.poll_type == 'radio' %}
                         {% for choice in choices %}

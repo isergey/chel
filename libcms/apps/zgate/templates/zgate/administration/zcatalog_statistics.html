@@ -27,7 +27,7 @@
     </div>
     <hr/>
     <div class="">
-        <form action="" method="POST">{% csrf_token %}
+        <form novalidate action="" method="POST">{% csrf_token %}
             <fieldset>
                 {{ catalog_form }}
                 {{ period_form.as_div }}

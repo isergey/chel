@@ -33,7 +33,7 @@
     </h3>
     <div class="well">URL этой страницы: {% url 'participants_pages:frontend:show' library.code page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url }}</a></div>
 
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form novalidate class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Создание контента страницы:</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=content_form %}

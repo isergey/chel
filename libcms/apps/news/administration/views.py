@@ -275,6 +275,7 @@ def handle_uploaded_file(f, old_name=None):
     image_ratio = float(im.size[0]) / im.size[1]
     final_width = int((image_ratio * final_hight))
     im = im.resize((final_width, final_hight), Image.ANTIALIAS)
+    im = im.convert('RGB')
     im.save(path, "JPEG",  quality=95)
     return name
 

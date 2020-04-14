@@ -45,7 +45,7 @@
 
     <div class="row">
 
-        <form action="{% url 'ssearch:frontend:index' %}" method="GET">
+        <form novalidate action="{% url 'ssearch:frontend:index' %}" method="GET">
         <div class="span2">
             <select name="attr" style="width: 100%">
                 {% for attr in attrs %}
@@ -94,7 +94,7 @@
     <div class="row">
         <div class="span12">
             <div class="navbar-inner1" style="padding: 5px; height: auto; margin-bottom: 10px">
-            <form action="{{ request.path }}" method="GET" style="margin: 0">
+            <form novalidate action="{{ request.path }}" method="GET" style="margin: 0">
                 <div class="search-bar1 searchpage">
                     Сортировка по: <select class="input-medium" name="sort">
                     {% for sort_attr in sort_attrs %}

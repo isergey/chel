@@ -53,7 +53,7 @@
                     </button>
                     <h4 class="modal-title">Фильтрация</h4>
                 </div>
-                <form style="margin: 0" method="get">
+                <form novalidate style="margin: 0" method="get">
                     <div class="modal-body">
                         {% include 'administration/base_form_fields.html' with form=filter_form %}
                         <input type="hidden" name="filter" value="on">

@@ -7,7 +7,7 @@
     <div>
         <p>{% trans 'Select permissions for group' %}: <b>{{ group.name }}</b></p>
     </div>
-    <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+    <form novalidate method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
         <fieldset>
             {% include 'frontend/base_form_fields.html' with form=form %}
             <div class="form-actions">

@@ -18,7 +18,7 @@
                 {% endfor %}
             </ol>
         </div>
-        <form novalidate class="well" method="post"
+        <form novalidate novalidate class="well" method="post"
               enctype="multipart/form-data">{% csrf_token %}
             <legend>Загрузка файла</legend>
             <fieldset>

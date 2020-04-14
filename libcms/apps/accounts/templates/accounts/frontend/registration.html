@@ -12,7 +12,7 @@
 
     </ul>
     <h3 style="margin-left: 160px;">Регистрация</h3>
-    <form method="POST" class="form-horizontal">{% csrf_token %}
+    <form novalidate method="POST" class="form-horizontal">{% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <input type="submit" value="Регистрация" class="btn"/>

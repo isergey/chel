@@ -6,7 +6,7 @@
     <li class="active">Создание индексирования источника</li>
 {% endblock %}
 {% block content %}
-    <form method="post" novalidate>{% csrf_token %}
+    <form novalidate method="post" novalidate>{% csrf_token %}
         {% bootstrap_form form %}
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>

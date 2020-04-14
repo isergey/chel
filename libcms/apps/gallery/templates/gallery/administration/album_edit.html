@@ -11,7 +11,7 @@
             width: 99%;
         }
     </style>
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form novalidate class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование альбома</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=form %}

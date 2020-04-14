@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block action_content %}
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form novalidate class="form-horizontal" method="POST">{% csrf_token %}
             <legend>Создание типа библиотек</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=library_form %}

@@ -73,7 +73,7 @@
 
                 {% endif %}
                 {% if "can_add_articles" in topic_perms or "can_change_articles" in topic_perms %}
-                    <form method="POST" action="?page=last">{% csrf_token %}<a name="form">&nbsp;</a>
+                    <form novalidate method="POST" action="?page=last">{% csrf_token %}<a name="form">&nbsp;</a>
                         {% if not quote_article and not edit_article %}
                             <legend>{% trans 'Send a message' %}</legend>
                         {% endif %}

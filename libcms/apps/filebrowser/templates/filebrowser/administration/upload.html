@@ -15,7 +15,7 @@
                 {% endfor %}
             </ol>
         </div>
-        <form novalidate id="dummy" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <form novalidate novalidate id="dummy" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
             <fieldset>
                 <div class="last">
                     <label for="{{ form.file.auto_id }}">{{ form.file.label }}</label><br>

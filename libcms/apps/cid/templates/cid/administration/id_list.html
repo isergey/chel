@@ -50,7 +50,7 @@
     {% admin_pagination idates_page %}
     <div id="filterModal" class="modal hide " tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
          aria-hidden="true">
-        <form method="get" action="{% url 'cid:administration:id_list' %}" ; style="margin: 0">
+        <form novalidate method="get" action="{% url 'cid:administration:id_list' %}" ; style="margin: 0">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="filterModalLabel">Фильтр знаменательных дат</h3>

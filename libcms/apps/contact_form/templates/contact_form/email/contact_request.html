@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Запрос из контактной формы</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Дата запроса:</th>
+        <td>{{ contact_request.creation_date }}</td>
+    </tr>
+    <tr>
+        <th>Имя</th>
+        <td>{{ contact_request.name }}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{ contact_request.email }}</td>
+    </tr>
+    <tr>
+        <th>Телефон</th>
+        <td>{{ contact_request.phone }}</td>
+    </tr>
+    <tr>
+        <th>Сообщение</th>
+        <td>{{ contact_request.message }}</td>
+    </tr>
+</table>
+</body>
+</html>

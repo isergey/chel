@@ -91,8 +91,10 @@ def events_list(request):
 @transaction.atomic()
 def create_event(request):
     if request.method == 'POST':
-        event_form = EventForm(request.POST, prefix='event_form')
+        print(request.POST)
 
+        event_form = EventForm(request.POST, prefix='event_form')
+        print(event_form)
         event_content_forms = []
         for lang in settings.LANGUAGES:
             event_content_forms.append({
@@ -105,7 +107,6 @@ def create_event(request):
             valid = False
             for event_content_form in event_content_forms:
                 valid = event_content_form['form'].is_valid()
-                print(valid)
                 if not valid:
                     break
 

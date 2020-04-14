@@ -12,7 +12,7 @@
             width: 99%;
         }
     </style>
-    <form class="" method="POST">{% csrf_token %}
+    <form novalidate class="" method="POST">{% csrf_token %}
         <legend>Редактирование изображения</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=form %}

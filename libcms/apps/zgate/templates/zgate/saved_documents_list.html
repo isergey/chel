@@ -29,7 +29,7 @@
                 <a href="?format=full" class="blue awesome">Показать полные записи</a>
             {% endif %}
             <hr/>
-            <form  method="POST" action="{% url 'zgate_load_saved_documents' %}"> {% csrf_token %}
+            <form novalidate  method="POST" action="{% url 'zgate_load_saved_documents' %}"> {% csrf_token %}
                 <div class="news">
                     {% for saved_document in saved_documents %}
                         <div class="documnet">

@@ -14,8 +14,8 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EventForm, self).__init__(*args, **kwargs)
-        self.fields['start_date'].widget = widgets.AdminSplitDateTime()
-        self.fields['end_date'].widget = widgets.AdminSplitDateTime()
+        # self.fields['start_date'].widget = widgets.AdminSplitDateTime()
+        # self.fields['end_date'].widget = widgets.AdminSplitDateTime()
 
 
 class EventContentForm(forms.ModelForm):

@@ -28,7 +28,7 @@
         {% endif %}
 
     </h3>
-    <form class="form-horizontal" method="POST">{% csrf_token %}
+    <form novalidate class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование пункта меню</legend>
         <fieldset>
             {% for menu_item_title_form in menu_item_title_forms %}

@@ -2,7 +2,7 @@
 {% block content %}
     {% url 'ssearch:frontend:detail' as DETAIL_URL %}
     <h3>Популярные записи</h3>
-    <form method="get">
+    <form novalidate method="get">
         {{ range_form.as_p }}
         {{ action_form.as_p }}
         <button>Сформировать</button>

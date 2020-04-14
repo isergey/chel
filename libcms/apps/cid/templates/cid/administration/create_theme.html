@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block action_content %}
-    <form class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <form novalidate class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Создание темы для знаменательных дат</legend>
         <fieldset>
             {% include 'administration/base_form_fields.html' with form=form %}

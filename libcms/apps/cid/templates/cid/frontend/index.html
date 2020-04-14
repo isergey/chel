@@ -43,7 +43,7 @@
 
                 <div style="float: left; width: 420px;">
                     <b>Укажите интересующую дату (можно по отдельности)</b>:
-                    <form action="" method="GET">
+                    <form novalidate action="" method="GET">
                         Дата(дд.мм.гггг):
                         <input type="text" name="day" value="{{ request.GET.day|default_if_none:"" }}"
                                style="width: 50px"/>.
@@ -55,7 +55,7 @@
                         <div><input type="submit" value="Показать" class="btn"/></div>
                     </form>
                     <b>Поиск по событиям</b>:
-                    <form method="GET">
+                    <form novalidate method="GET">
                         <select name="attr" style="width: 120px">
                             <option value="all_t">Везде</option>
                             <option value="fio_t">Персоналия</option>
@@ -68,7 +68,7 @@
                         <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
                     </form>
                     <b>Юбилейные даты года</b>:
-                    <form method="GET">
+                    <form novalidate method="GET">
                         <input class="span1" id="appendedInputButton" type="text" value="{{ request.GET.y }}" name="y">
                         <button class="btn" type="submit" style="margin-bottom: 5px;"><i class="icon-search"></i></button>
                     </form>

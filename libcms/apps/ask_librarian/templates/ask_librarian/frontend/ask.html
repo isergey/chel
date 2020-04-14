@@ -13,7 +13,7 @@ form#ask_form textarea, input[type=text]{
     width: 99%;
 }
 </style>
-<form id="ask_form" class="" method="POST">{% csrf_token %}
+<form novalidate id="ask_form" class="" method="POST">{% csrf_token %}
     <legend>Задать вопрос</legend>
     <fieldset>
         {% include 'frontend/base_form_fields.html' with form=form %}

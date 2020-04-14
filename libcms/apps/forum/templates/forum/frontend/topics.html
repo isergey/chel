@@ -46,7 +46,7 @@
         {% if "can_create_topics" in  forum_perms %}
             <div class="row">
                 <hr/>
-                <form method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
+                <form novalidate method="POST">{% csrf_token %}<a name="form">&nbsp;</a>
                     <legend>Создание темы</legend>
                     <fieldset>
                         {% include 'frontend/base_form_fields.html' with form=topic_form %}
