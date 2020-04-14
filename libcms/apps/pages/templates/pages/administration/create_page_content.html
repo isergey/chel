@@ -2,7 +2,6 @@
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
-{% load localeurl_tags %}
 
 {% block breadcrumb %}
     {% breadcrumb "Страницы" pages:administration:pages_list %}
@@ -36,7 +35,7 @@
     {% endif %}
         {{ page }}
     </h3>
-    <div class="well">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url|rmlocale }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url|rmlocale }}</a></div>
+    <div class="well">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a id="content_url_link" href="{{ page_url }}">/<span id="content_lang">{{ content.lang }}</span>{{ page_url }}</a></div>
 
     <form class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Создание контента страницы:</legend>
