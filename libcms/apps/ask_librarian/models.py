@@ -119,7 +119,7 @@ class Question(models.Model):
     )
 
     question = models.TextField(max_length=2048, verbose_name='Вопрос')
-    answer = models.TextField(max_length=50000, verbose_name='Ответ')
+    answer = models.TextField(max_length=50000, verbose_name='Ответ', blank=True)
     status = models.IntegerField(choices=STATUSES, verbose_name='Статус', db_index=True, default=STATUS_NEW)
 
     create_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_index=True)
