@@ -68,6 +68,11 @@
 
                                 </div>
                             </form>
+                            {% if request.GET.type or request.GET.district %}
+                                <div>
+                                    <a href="{% url 'participants:frontend:index' %}">Сбросить фильтр</a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
