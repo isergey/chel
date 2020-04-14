@@ -13,9 +13,9 @@
 {% block action_content %}
     {% get_static_prefix as  STATIC_URL%}
     <style>
-    form input[type=text], textarea{
-        width: 99%;
-    }
+        form input[type=text], textarea {
+            width: 95%;
+        }
     </style>
     <form novalidate class="form-horizontal" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Создание новости</legend>

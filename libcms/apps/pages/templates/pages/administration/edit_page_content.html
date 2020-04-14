@@ -11,9 +11,12 @@
 {% endblock %}
 
 {% block action_content %}
-    <style type="text/css">
-        form input[type=text]{
-            width: 99%;
+    <style>
+        form input[type=text], textarea {
+            width: 95%;
+        }
+        form textarea {
+            width: 95%;
         }
     </style>
 
@@ -37,7 +40,7 @@
     </h3>
 {#    <div class="well">URL этой страницы: {% url participants_pages:frontend:show library.id page.url_path  as page_url %} <a href="/{{ content.lang }}{{ page_url|rmlocale }}">/{{ content.lang }}{{ page_url|rmlocale }}</a></div>#}
 
-    <div class="well well-sma">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a href="/{{ page_url }}">/{{ page_url }}</a></div>
+    <div class="well well-sma">URL этой страницы: {% url 'pages:frontend:show' page.url_path  as page_url %} <a href="{{ page_url }}">{{ page_url }}</a></div>
     <div class="alert alert-info">Для редактирования HTML кода страницы используйте <a href="?editor=monaco">Редактор HTML</a></div>
     <form novalidate id="page_form" class="form-horizontal" method="POST">{% csrf_token %}
         <legend>Редактирование контента для языка: <b>{{ content.lang }}</b></legend>
