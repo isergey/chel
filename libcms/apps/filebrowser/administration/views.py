@@ -199,7 +199,7 @@ def index(request):
 
     dir_map = sorted(dirs, key=lambda x: x['create_time'], reverse=True) +\
               sorted(files, key=lambda x: x['create_time'], reverse=True)
-    print(dir_map)
+
     breadcrumbs = _make_breadcrumbs(pathes)
 
     return render(request, 'filebrowser/administration/list.html', {
