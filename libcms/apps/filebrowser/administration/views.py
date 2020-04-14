@@ -197,9 +197,9 @@ def index(request):
             if file_model:
                 file_item['model'] = file_model
 
-    dir_map = sorted(dirs, key=lambda x: x['name']) +\
-              sorted(files, key=lambda x: x['name'])
-
+    dir_map = sorted(dirs, key=lambda x: x['create_time'], reverse=True) +\
+              sorted(files, key=lambda x: x['create_time'], reverse=True)
+    print(dir_map)
     breadcrumbs = _make_breadcrumbs(pathes)
 
     return render(request, 'filebrowser/administration/list.html', {
