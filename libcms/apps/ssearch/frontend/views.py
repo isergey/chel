@@ -247,7 +247,7 @@ class PivotNode(object):
 
         ul = ['<ul ', idName, ' class="', className, '" ', styleList, '>']
 
-        for child in self.pivot: #sorted(self.pivot, key=PivotNode.cmp):
+        for child in sorted(self.pivot, key=PivotNode.cmp):
             ul.append(child.to_li())
 
         ul.append('</ul>')
@@ -298,10 +298,11 @@ class PivotNode(object):
 
         }
         res = t.get(value, value)
-        try:
-            return float(res)
-        except ValueError:
-            pass
+
+        # try:
+        #     return float(res)
+        # except ValueError:
+        #     pass
         return res
 
 
