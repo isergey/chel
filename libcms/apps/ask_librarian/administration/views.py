@@ -93,7 +93,7 @@ def questions_to_process(request, id):
 @login_required
 def question_detail(request, id):
     manager = QuestionManager.get_manager(request.user)
-    if not manager and not request.user.is_superuser:
+    if not manager:
         return HttpResponse('Вы не можете обрабатывать вопросы')
 
     question = get_object_or_404(Question, id=id)
