@@ -26,6 +26,8 @@
     </div>
     <div>
         <hr/>
+        <b>№ вопроса</b>: {{ question.id }}<br/>
+
         <b>Статус</b>: <span class="question_status{{ question.status }}">{{ question.get_status_display }} </span><br/>
         <b>Дата создания</b>: {{ question.create_date }}<br/>
         <b>Дата последнего редактирования</b>: {{ question.update_date }}<br/>
