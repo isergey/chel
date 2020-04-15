@@ -55,7 +55,7 @@
     {% if record.ft_links %}
         <div class="search-results-item__tb">
             {% for ft_link in record.ft_links  %}
-                <a href="{{ ft_link.url }}&id={{ record.id }}" target="_blank">
+                <a href="{{ ft_link.url }}{% if '?' in ft_link.url %}&{% else %}?{% endif %}id={{ record.id }}" target="_blank">
                     {{ ft_link.title }}
                 </a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
