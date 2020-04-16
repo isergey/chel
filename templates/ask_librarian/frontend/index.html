@@ -22,11 +22,27 @@
             <div class="row row_sm-col-reverce">
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <div class="search-main__side-wrap">
-                        <ul class="search-main__side-detail-nav">
-                            <li class="search-main__side-detail-nav-item">
-                                <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
-                            </li>
-                        </ul>
+                        <div>
+                            <div class="card-body">
+                                <h2 class="card-title">Спроси библиотекаря</h2>
+                                <p class="card-detail">
+                                    Ищете информацию? Подбираете литературу? Есть вопросы о
+                                    работе
+                                    библиотеки? Виртуальная справочная служба ЧОУНБ поможет.
+                                    <a class="btn_link" href="{% url 'pages:frontend:show' 'ask_librarian_info' %}">Подробнее</a>.
+                                </p>
+                                <ul class="card-nav">
+                                    <li class="card-nav__item">
+                                        <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+{#                        <ul class="search-main__side-detail-nav">#}
+{#                            <li class="search-main__side-detail-nav-item">#}
+{#                                <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>#}
+{#                            </li>#}
+{#                        </ul>#}
                         {% cache 30 questions_category_menu %}
                             {% drow_categories_tree %}
                         {% endcache %}

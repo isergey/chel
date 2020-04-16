@@ -456,7 +456,7 @@ def log_search_request(params, user=None, total=0, in_results=False, session_id=
     if id_q:
         q &= models.Q(date_time__gte=now - timedelta(minutes=REPEAT_LOG_TIMEOUT_MINUTES))
         q &= id_q
-    print(q)
+
     if user or session_id:
         if SearchLog.objects.filter(q).exists():
             return

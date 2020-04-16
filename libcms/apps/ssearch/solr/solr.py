@@ -166,7 +166,8 @@ class FacetParams(object):
 
         if self.__pivot:
             params['facet.pivot'] = self.__pivot
-
+        params['stats'] = 'true'
+        params['stats.field'] = 'date_of_publication_l'
         if self.facet_sort:
             for facet_sort_item in self.facet_sort:
                 facet_sort_name = list(facet_sort_item.keys())[0]
@@ -233,6 +234,9 @@ class SearchResults(object):
 
     def get_pivot(self):
         return self.response_dict.get('facet_counts', {}).get('facet_pivot', {})
+
+    def get_stats(self):
+        return self.response_dict.get('stats', {}).get('stats_fields', {})
 
     def get_highlighting(self):
         return []

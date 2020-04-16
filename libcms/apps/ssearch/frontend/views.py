@@ -71,6 +71,14 @@ facet_attrs = [
     ('content_type_s', 'content_type_s'),
     # (u'fauthority_number', u'linked_authority_number_s'),
 ]
+facet_ordering = [
+    'collection2_s',
+    'collection_s',
+    'collection3_s',
+    'collection4_s',
+    'collection5_s',
+    'collection6_s',
+] + [item[0] for item in facet_attrs[1:]]
 
 FACET_SORT = [
     {'collection_s': 'index'},
@@ -374,11 +382,12 @@ def index(request, catalog='uc'):
 
     uc = init_solr_collection(catalog)
     faset_params = FacetParams()
-    faset_params.fields = get_facet_attrs()
+
     faset_params.facet_sort = FACET_SORT
     attrs, values = extract_request_query_attrs(request)
     search_breadcumbs = make_search_breadcumbs(attrs, values)
     attrs = reverse_search_attrs(attrs)
+    faset_params.fields = get_facet_attrs(attrs)
     sort = request.GET.get('sort', 'relevance')
     order = request.GET.get('order', 'asc')
     solr_sort = []
@@ -419,7 +428,6 @@ def index(request, catalog='uc'):
     if request.GET.get('attr', '') == 'full_text_tru':
         hl.append('full_text_tru')
     result = uc.search(query=query, fields=['id'], faset_params=faset_params, hl=hl, sort=solr_sort)
-
     paginator = Paginator(result, 15)
 
     page = request.GET.get('page')
@@ -470,13 +478,14 @@ def index(request, catalog='uc'):
         record['ft_links'] = ft_links
 
     facets = result.get_facets()
-
+    stats = result.get_stats()
     info = {
         # 'qtime': result.get_qtime() / 1000.0,
         'num_found': result.get_num_found(),
     }
 
     facets = replace_facet_values(facets)
+
     request_params = {
         'q': request.GET.getlist('q', None),
         'attr': request.GET.getlist('attr', None),
@@ -485,7 +494,6 @@ def index(request, catalog='uc'):
     }
 
     facets = get_orderd_facets(facets)
-
     attrs, values = extract_request_query_attrs(request)
     kv_dicts = get_pairs(attrs, values)
     # for kv_dict in kv_dicts:
@@ -512,7 +520,8 @@ def index(request, catalog='uc'):
         'search_breadcumbs': search_breadcumbs,
         'request_params': simplejson.dumps(request_params, ensure_ascii=False),
         'result_page': result_page,
-        'sort_attrs': sort_attrs
+        'sort_attrs': sort_attrs,
+        'stats': stats,
     })
     _set_session_id(session_id, request, response)
     return response
@@ -733,29 +742,39 @@ def reverse_facet_attr(attr):
     return attr
 
 
-def get_facet_attrs():
+def get_facet_attrs(searched_attrs):
     attrs = facet_attrs
     fattrs = []
     for attr in attrs:
         fattrs.append((attr[1]))
+    if 'collection2_s' in searched_attrs:
+        fattrs.append('collection_s')
+    if 'collection_s' in searched_attrs:
+        fattrs.append('collection3_s')
+    if 'collection3_s' in searched_attrs:
+        fattrs.append('collection4_s')
+    if 'collection4_s' in searched_attrs:
+        fattrs.append('collection5_s')
+    if 'collection5_s' in searched_attrs:
+        fattrs.append('collection6_s')
     return fattrs
 
 
 def get_orderd_facets(facets):
-    fattrs = facet_attrs
+    fattrs = facet_ordering
     orderd_facets = []
     for fattr in fattrs:
-        orderd_facets.append({
-            'code': fattr[0],
-            'title': facets[fattr[0]]['title'],
-            'values': facets[fattr[0]]['values'],
-        })
+        if fattr in facets:
+            orderd_facets.append({
+                'code': fattr,
+                'title': facets[fattr]['title'],
+                'values': facets[fattr]['values'],
+            })
     return orderd_facets
 
 
 def construct_query(attrs, values, optimize=True):
     sc = SearchCriteria("AND")
-
     for i, attr in enumerate(attrs):
         value = values[i].strip()
         if not value:
@@ -769,7 +788,14 @@ def construct_query(attrs, values, optimize=True):
             if attr != 'all_t':
                 if value != '*':
                     value = '"%s"' % value
-                sc.add_attr(attr, value)
+                if attr == 'date_of_publication_s':
+                    res = re.findall(r'\d+', value)
+                    if len(res) == 2:
+                        sc.add_attr('date_of_publication_l', '[{start} TO {stop}]'.format(start=res[0], stop=res[1]))
+                    else:
+                        sc.add_attr(attr, value)
+                else:
+                    sc.add_attr(attr, value)
             else:
                 term_relation_attr = ' AND '
                 terms = value.split()
@@ -796,8 +822,8 @@ def construct_query(attrs, values, optimize=True):
 
     if not sc.query:
         return ''
-    return sc.to_lucene_query()
-
+    q = sc.to_lucene_query()
+    return q
 
 def make_search_breadcumbs(attrs, values):
     attrs_values = get_pairs(attrs, values)

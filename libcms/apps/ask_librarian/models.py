@@ -75,6 +75,19 @@ class QuestionTarget(models.Model):
         verbose_name_plural = 'Цели вопросов'
         verbose_name = 'Цель вопроса'
 
+
+class Education(models.Model):
+    title = models.CharField(verbose_name='Название', max_length=512)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['title']
+        verbose_name_plural = 'Виды образования'
+        verbose_name = 'Образование'
+
+
 class QuestionManager(models.Model):
     user = models.OneToOneField(User, verbose_name='Пользователь', on_delete=models.CASCADE)
     available = models.BooleanField(verbose_name='Доступен?', default=False, db_index=True)
@@ -116,6 +129,14 @@ class Question(models.Model):
         null=True,
         blank=True,
         verbose_name='Цель запроса'
+    )
+
+    education = models.ForeignKey(
+        Education,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name='Образование',
     )
 
     question = models.TextField(max_length=2048, verbose_name='Вопрос')

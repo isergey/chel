@@ -41,6 +41,7 @@
         {% endif %}
         <br/>
         <b>Цель вопроса</b>: {{ question.question_target|default_if_none:'не указана' }}<br/>
+        <b>Образование</b>: {{ question.education|default_if_none:'не указано' }}<br/>
     </div>
 
     {% if question.is_processing or question.is_ready %}

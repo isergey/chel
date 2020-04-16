@@ -1,7 +1,9 @@
 {% extends 'themed_frontend_base.html' %}
 {% load add_get_tag %}
+{% load static %}
 {% load pagination_tag %}
 {% block index_content %}
+    {% get_static_prefix as STATIC_URL %}
     <main class="main">
         <div class="container">
             <nav class="crumb">
@@ -48,6 +50,7 @@
                                 {% endif %}
                             {% endfor %}
                         </ol>
+                        {% url 'ssearch:frontend:index' as search_url %}
                         {% for facet in facets %}
                             {% if  facet.values %}
                                 <div class="facets-item">
@@ -60,7 +63,7 @@
                                                 {% if value.2 != '' %}
                                                     <li class="facets-item__nav-item">
                                                         <a class="facets-item__nav-link"
-                                                           href="{% add_get_append q=value.0 attr=facet.code %}">
+                                                           href="{{ search_url }}?{{ request.GET.urlencode|safe }}&attr={{ facet.code|urlencode }}&q={{ value.0|urlencode }}">
                                                             <span class="facets-item__nav-item-name">{{ value.2 }}</span>
                                                             <span class="facets-item__nav-item-count">{{ value.1 }}</span>
                                                         </a>
@@ -82,6 +85,63 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                        <div class="facets-item">
+                            <div class="facets-item__title-wrap">
+                                <h4 class="facets-item__title">Диапазон дат</h4>
+                            </div>
+
+                            <div class="facets-item__panel">
+                                 {% if stats.date_of_publication_l.min != stats.date_of_publication_l.max  %}
+                                    <script src="{{ STATIC_URL }}nouislider/nouislider.min.js"></script>
+                                    <link rel="stylesheet" href="{{ STATIC_URL }}nouislider/nouislider.min.css" />
+                                    <div style="margin: 30px 20px 5px 20px" id="slider"></div>
+                                     <style>
+                                        .noUi-connect {
+                                            background: #B71C1C;
+                                        }
+                                     </style>
+                                    <script>
+                                        (function () {
+                                            'use strict';
+                                            var slider = document.getElementById('slider');
+                                            var min = {{ stats.date_of_publication_l.min|floatformat:0 }};
+                                            var max = {{ stats.date_of_publication_l.max|floatformat:0 }};
+                                            noUiSlider.create(slider, {
+                                                start: [min, max],
+                                                connect: true,
+                                                range: {
+                                                    min: min,
+                                                    max: max,
+
+                                                },
+                                                step: 1,
+                                                tooltips: true,
+                                                format: {
+                                                    from: function(value) {
+                                                        return value;
+                                                    },
+                                                    to: function (value) {
+                                                        return value;
+                                                    }
+                                                }
+                                            });
+                                            slider.noUiSlider.on('change', function () {
+                                                var range = slider.noUiSlider.get();
+                                                var url = new URL(window.location.href);
+                                                url.searchParams.append('attr', 'date_of_publication_s');
+                                                url.searchParams.append('q', range[0] + '-' + range[1])
+                                                window.location = url.toString();
+                                            });
+                                        })();
+                                    </script>
+                                {% elif not stats.date_of_publication_l %}
+                                     Отсутвует диапазон дат
+                                {% else %}
+                                     {{ stats.date_of_publication_l.min|floatformat:0 }} - {{ stats.date_of_publication_l.max|floatformat:0 }}
+                                {% endif %}
+{#                                        {{ stats.date_of_publication_l.min|floatformat:0 }} {{ stats.date_of_publication_l.max|floatformat:0 }}#}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-12">

@@ -2,88 +2,104 @@
 <div class="row">
     <div class="col-lg-6 col-md-6 col-sm-12">
         <div class="content">
+            <div style="margin-bottom: 10px">
+                <form action="/ru/ssearch/" method="GET">
+                    <div class="search-main__input-wrap">
+                        <input type="hidden" name="attr" value="all_t">
+                        <input class="search-main__input search-main__input_plh-blue" id="appendedInputButton"
+                               type="text"
+                               name="q"
+                               placeholder="Поиск по УЭБ"
+                        >
+
+                        <button class="search-main__btn" type="submit" title="Найти"></button>
+                    </div>
+
+                </form>
+            </div>
             <div>
                 {{ pivot_tree|safe }}
             </div>
             <h3><a href="{% url 'ssearch:statistics:popular' %}">Рейтинг ресурсов</a></h3>
             <h3><a href="{% url 'ssearch:statistics:index' %}">Статистика</a></h3>
-{#            <div>#}
-{#                <h3>Статистика</h3>#}
-{#                <ul id="f{{ facet.code }}">#}
-{#                    {% for coll in stat.coll_stat %}#}
-{#                        <li>#}
-{#                            <span href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</span><br/>#}
-{#                            <span>Документов: {{ coll.docs }}</span>#}
-{#                            <span >Просмотров: {{ coll.views }}</span>#}
-{#                        </li>#}
-{#                    {% empty %}#}
-{#                        <li>У найденных записей атрибут отсутвует</li>#}
-{#                    {% endfor %}#}
-{#                </ul>#}
-{#                <p>#}
-{#                    <span class="backlight">Всего документов в коллекциях: {{ stat.all_documents_count }}</span>#}
-{#                </p>#}
-{#            </div>#}
+            {#            <div>#}
+            {#                <h3>Статистика</h3>#}
+            {#                <ul id="f{{ facet.code }}">#}
+            {#                    {% for coll in stat.coll_stat %}#}
+            {#                        <li>#}
+            {#                            <span href="{% url 'ssearch:frontend:index' %}?q={{ coll.name|urlencode }}&attr=collection_s&in=on">{{ coll.name }}</span><br/>#}
+            {#                            <span>Документов: {{ coll.docs }}</span>#}
+            {#                            <span >Просмотров: {{ coll.views }}</span>#}
+            {#                        </li>#}
+            {#                    {% empty %}#}
+            {#                        <li>У найденных записей атрибут отсутвует</li>#}
+            {#                    {% endfor %}#}
+            {#                </ul>#}
+            {#                <p>#}
+            {#                    <span class="backlight">Всего документов в коллекциях: {{ stat.all_documents_count }}</span>#}
+            {#                </p>#}
+            {#            </div>#}
         </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
         <div class="content">
+
             {% render_page_content 'common/elib_description' %}
-{#            <h2>О проекте</h2>#}
-{#            <p>#}
-{#                Уральская электронная библиотека ведется с 2007 года с целью формирования репертуара электронных#}
-{#                документов об#}
-{#                Урале, обеспечения полноты коллекций за счет регионального подхода к их формированию,#}
-{#                представления в сети#}
-{#                Интернет достоверных источников краеведческой информации.#}
-{#            </p>#}
-{#            <p>#}
-{#                Содержит материалы о природе края, по истории, народному образованию, экономической, научной и#}
-{#                культурной жизни#}
-{#                Урала XIX – XXI вв., коллекции уральской периодической печати.#}
-{#            </p>#}
-{#            <p>#}
-{#                УЭБ состоит из тематических коллекций.#}
-{#            </p>#}
-{#            <p>#}
-{#                Пополнение ресурса осуществляется за счет оцифровки фондов Челябинской областной универсальной#}
-{#                научной#}
-{#                библиотеки и отдельных изданий, предоставленных библиотеками Уральского региона, поступлений#}
-{#                электронных#}
-{#                копий документов в дар от авторов/правообладателей.#}
-{#            </p>#}
-{#            <p>#}
-{#                Выражаем благодарность авторам и организациям, предоставившим материалы для Уральской#}
-{#                электронной библиотеки.#}
-{#            </p>#}
-{#            <ul>#}
-{#                <li><a href="/ru/pages/kray/resources/urelib/partners">Участники проекта</a></li>#}
-{#                <li><a href="/ru/pages/about/lib/div/kraeved/">Контакты</a></li>#}
-{#                <li><a href="/ru/pages/kray/resources/urelib/help/">Помощь</a></li>#}
-{#                <li><a href="/ru/pages/kray/resources/urelib/neweldoc/">Новые поступления</a></li>#}
-{#            </ul>#}
+            {#            <h2>О проекте</h2>#}
+            {#            <p>#}
+            {#                Уральская электронная библиотека ведется с 2007 года с целью формирования репертуара электронных#}
+            {#                документов об#}
+            {#                Урале, обеспечения полноты коллекций за счет регионального подхода к их формированию,#}
+            {#                представления в сети#}
+            {#                Интернет достоверных источников краеведческой информации.#}
+            {#            </p>#}
+            {#            <p>#}
+            {#                Содержит материалы о природе края, по истории, народному образованию, экономической, научной и#}
+            {#                культурной жизни#}
+            {#                Урала XIX – XXI вв., коллекции уральской периодической печати.#}
+            {#            </p>#}
+            {#            <p>#}
+            {#                УЭБ состоит из тематических коллекций.#}
+            {#            </p>#}
+            {#            <p>#}
+            {#                Пополнение ресурса осуществляется за счет оцифровки фондов Челябинской областной универсальной#}
+            {#                научной#}
+            {#                библиотеки и отдельных изданий, предоставленных библиотеками Уральского региона, поступлений#}
+            {#                электронных#}
+            {#                копий документов в дар от авторов/правообладателей.#}
+            {#            </p>#}
+            {#            <p>#}
+            {#                Выражаем благодарность авторам и организациям, предоставившим материалы для Уральской#}
+            {#                электронной библиотеки.#}
+            {#            </p>#}
+            {#            <ul>#}
+            {#                <li><a href="/ru/pages/kray/resources/urelib/partners">Участники проекта</a></li>#}
+            {#                <li><a href="/ru/pages/about/lib/div/kraeved/">Контакты</a></li>#}
+            {#                <li><a href="/ru/pages/kray/resources/urelib/help/">Помощь</a></li>#}
+            {#                <li><a href="/ru/pages/kray/resources/urelib/neweldoc/">Новые поступления</a></li>#}
+            {#            </ul>#}
 
         </div>
     </div>
 </div>
-    <div class="modal micromodal-slide" id="marcModal" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-                <header class="modal__header">
-                    <h2 class="modal__title" id="modal-1-title">
-                        Описание коллекции
-                    </h2>
-                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
-                </header>
-                <div class="modal__content" id="modal-1-content">
-                    <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
-                </div>
-                <footer class="modal__footer">
-                    <button class="btn" data-micromodal-close aria-label="Закрыть модальное окно">Закрыть</button>
-                </footer>
+<div class="modal micromodal-slide" id="marcModal" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+            <header class="modal__header">
+                <h2 class="modal__title" id="modal-1-title">
+                    Описание коллекции
+                </h2>
+                <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+            </header>
+            <div class="modal__content" id="modal-1-content">
+                <div class="tab-pane" id="marc">{{ record.marc_dump|safe }}</div>
             </div>
+            <footer class="modal__footer">
+                <button class="btn" data-micromodal-close aria-label="Закрыть модальное окно">Закрыть</button>
+            </footer>
         </div>
     </div>
+</div>
 <script>
     $(function () {
         $('.pivot__description').on('click', function () {
@@ -170,7 +186,7 @@
                     '#',
                 'Книжные памятники Челябинской области/Рукописные книги кириллической традиции':
                     '/ru/pages/ecollection/kp/rukopisnye_knigi_kirillicheskoy_tradicii/',
-                 'Книжные памятники Челябинской области/Книги гражданской печати 18 века':
+                'Книжные памятники Челябинской области/Книги гражданской печати 18 века':
                     '#',
                 'Книжные памятники Челябинской области/Книжные памятники регионального значения (собрания местной печати)':
                     '/ru/pages/ecollection/kp/knizhnye_pamyatniki_regionalnogo_znacheniya/',

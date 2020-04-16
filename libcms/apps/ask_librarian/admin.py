@@ -1,26 +1,25 @@
 from django.contrib import admin
 
-from .models import QuestionManager, QuestionTarget, Question
+from .models import QuestionManager, QuestionTarget, Question, Education
 
 
+@admin.register(QuestionManager)
 class QuestionManagerAdmin(admin.ModelAdmin):
     list_display = ('user', 'available')
 
 
-admin.site.register(QuestionManager, QuestionManagerAdmin)
-
-
+@admin.register(QuestionTarget)
 class QuestionTargetAdmin(admin.ModelAdmin):
     list_display = ('title',)
 
 
-admin.site.register(QuestionTarget, QuestionTargetAdmin)
+@admin.register(Education)
+class EducationAdmin(admin.ModelAdmin):
+    list_display = ('title',)
 
 
+@admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'category')
     list_filter = ['category']
     raw_id_fields = ['user']
-
-
-admin.site.register(Question, QuestionAdmin)

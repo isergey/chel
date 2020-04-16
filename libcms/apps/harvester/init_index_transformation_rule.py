@@ -15,6 +15,7 @@ FULL_TEXT_URL = 'http://localhost'
 GROUP_FIELDS_CACHE = {}
 EACH_FIELD_QUERY_CACHE = {}
 
+context['skip'] = not bool(rq.get_field('908').get_subfield('b').get_data())
 
 def _get_group_fields(prefix=''):
     value = GROUP_FIELDS_CACHE.get(prefix)
@@ -151,17 +152,6 @@ def code_language(rq):
             _add_to_values(values, sfq.get_data());
     return values;
 
-def content_text(eq):
-    values = []
-    # return []
-    full_text_prefix = FULL_TEXT_URL
-    for fq in rq.get_field('856').list():
-        sfy_data = fq.get_subfield('y').get_data()
-        sfz_data = fq.get_subfield('z').get_data()
-        if sfz_data == 'Содержание' and sfy_data.startswith('/text'):
-            content = get_full_text(full_text_prefix + sfy_data)
-            _add_to_values(values, content)
-    return values
 
 def content_type(rq):
     values = [];
@@ -269,20 +259,6 @@ def issn(rq):
     _add_to_values(values, rq.get_field('225').get_subfield('x').get_data())
     for fq in _get_each_filed_query(rq, '4'):
         _add_to_values(values, fq.get_field('011').get_subfield('a').get_data())
-    return values
-
-
-def full_text(rq):
-    values = []
-    # return []
-    full_text_prefix = FULL_TEXT_URL
-    
-    for fq in rq.get_field('856').list():
-        sfy_data = fq.get_subfield('y').get_data()
-        sfz_data = fq.get_subfield('z').get_data()
-        if sfz_data == 'Полный текст' and sfy_data.startswith('/text'):
-            content = get_full_text(full_text_prefix + sfy_data)
-            _add_to_values(values, content)
     return values
 
 
@@ -607,26 +583,6 @@ def attributes(rq):
     return values
 
 
-def catalog(rq):
-    values = []
-    for sfq in rq.get_field('966').get_subfield('a').list():
-        sf_d = sfq.get_data()
-        if sf_d == 'MAGR':
-            _add_to_values(values, 'MAG_R')
-        elif sf_d == 'MAGF':
-            _add_to_values(values, 'MAG_F')
-        else:
-            _add_to_values(values, sf_d)
-
-    return values
-
-
-def collection(rq):
-    values = []
-    _add_to_values(values, rq.get_field('908').get_subfield('a').get_data())
-    return values
-
-
 def date_time_added_to_db(rq):
     values = []
     _add_to_values(values, rq.get_field('100').get_subfield('a').get_data()[0:7])
@@ -639,52 +595,90 @@ def date_time_of_income(rq):
     return values
 
 
-def dfs_date_of_publication(rq):
-    values = []
-    if rq.get_field('966').get_subfield('a').get_data() == 'DFS':
-        _add_to_values(values, rq.get_field('200').get_subfield('e').get_data())
-    return values
-
-
-def dfs_document_type(rq):
-    values = []
-    if rq.get_field('966').get_subfield('a').get_data() == 'DFS':
-        _add_to_values(values, rq.get_field('200').get_subfield('d').get_data())
-    return values
-
-
-def dfs_organisation(rq):
-    values = []
-    if rq.get_field('966').get_subfield('a').get_data() == 'DFS':
-        _add_to_values(values, rq.get_field('200').get_subfield('f').get_data())
-    return values
-
-
-def e_version_type(rq):
-    values = []
-    for f856q in rq.get_field('856').list():
-        _add_to_values(values, f856q.get_subfield('z').get_data())
-    return values
-
-
 def linked_record_number(rq):
     values = []
     _add_to_values(values, rq.get_field('461').get_field('001').get_data())
     return values
 
 
-def sic_collection(rq):
+def collection(rq):
     values = []
-    for f910q in rq.get_field('910').list():
-        _add_to_values(values, f910q.get_subfield('q').get_data())
+    _add_to_values(values, rq.get_field('908').get_subfield('a').get_data())
     return values
 
 
-def shifr_izd(rq):
+def collection2(rq):
     values = []
-    for f850q in rq.get_field('850').list():
-        _add_to_values(values, f850q.get_subfield('c').get_data())
-    _add_to_values(values, rq.get_field('903').get_subfield('a').get_data())
+    _add_to_values(values, rq.get_field('908').get_subfield('b').get_data())
+    return values
+
+
+def collection3(rq):
+    values = []
+    _add_to_values(values, rq.get_field('908').get_subfield('c').get_data())
+    return values
+
+
+def collection4(rq):
+    values = []
+    _add_to_values(values, rq.get_field('908').get_subfield('d').get_data())
+    return values
+
+
+def collection5(rq):
+    values = []
+    _add_to_values(values, rq.get_field('908').get_subfield('e').get_data())
+    return values
+
+
+def collection6(rq):
+    values = []
+    _add_to_values(values, rq.get_field('908').get_subfield('f').get_data())
+    return values
+
+
+def subject_name_personal(rq):
+    values = []
+    for f600q in rq.get_field('600').list():
+        _add_to_values(values, _extract_700_field(f600q))
+
+    for f601q in rq.get_field('601').list():
+        _add_to_values(values, f601q.get_subfield('a').get_data())
+
+    for f604q in rq.get_field('604').list():
+        _add_to_values(values, _extract_700_field(f604q))
+
+    return values
+
+
+def subject_name_geographical(rq):
+    values = []
+    _add_to_values(values, rq.get_field('607').get_subfield('a').get_data())
+    return values
+
+
+def has_e_version(rq):
+    values = []
+    _add_to_values(values, bool(rq.get_field('856').get_subfield('u').get_data()))
+    return values
+
+
+def literary_incipit(rq):
+    values = []
+    _add_to_values(values, rq.get_field('036').get_subfield('t').get_data())
+    return values
+
+
+def host_item(rq):
+    values = []
+    for f200q in rq.get_field('461').get_field('200').list():
+        _add_to_values(values, f200q.get_subfield('a').get_data())
+    return values
+
+
+def autograph(rq):
+    values = []
+    _add_to_values(values, rq.get_field('316').get_subfield('a').get_data())
     return values
 
 
@@ -695,7 +689,6 @@ attrs = {
     'bbk': bbk(rq),
     'bib_level': bib_level(rq),
     'code_language': code_language(rq),
-    'content_text': content_text(rq),
     'content_type': content_type(rq),
     'content_notes': content_notes(rq),
     'date_of_publication': date_of_publication(rq),
@@ -703,7 +696,6 @@ attrs = {
     'grnti': grnti(rq),
     'isbn': isbn(rq),
     'issn': issn(rq),
-    'full_text': full_text(rq),
     'local_number': local_number(rq),
     'notes': notes(rq),
     'material_type': material_type(rq),
@@ -717,21 +709,26 @@ attrs = {
     'subject_keywords': subject_keywords(rq),
     'subject_subheading': subject_subheading(rq),
     'title': title(rq),
+    'title_series': title_series(rq),
     'title_source': title_source(rq),
     'udc': udc(rq),
     # local specific attrs
     'attributes': attributes(rq),
-    'catalog': catalog(rq),
-    'collection': collection(rq),
     'date_time_added_to_db': date_time_added_to_db(rq),
     'date_time_of_income': date_time_of_income(rq),
-    'dfs_date_of_publication': dfs_date_of_publication(rq),
-    'dfs_document_type': dfs_document_type(rq),
-    'dfs_organisation': dfs_organisation(rq),
-    'e_version_type': e_version_type(rq),
     'linked_record_number': linked_record_number(rq),
-    'shifr_izd': shifr_izd(rq),
-    'sic_collection': sic_collection(rq),
+    'collection': collection(rq),
+    'collection2': collection2(rq),
+    'collection3': collection3(rq),
+    'collection4': collection4(rq),
+    'collection5': collection5(rq),
+    'collection6': collection6(rq),
+    'subject_name_personal': subject_name_personal(rq),
+    'subject_name_geographical': subject_name_geographical(rq),
+    'has_e_version': has_e_version(rq),
+    'literary_incipit': literary_incipit(rq),
+    'host_item': host_item(rq),
+    'autograph': autograph(rq),
 }
 
 
@@ -744,7 +741,6 @@ index_document.add_field('bbk', attrs['bbk']).as_string()
 index_document.add_field('bib_level', attrs['bib_level']).as_string()
 index_document.add_field('code_language', attrs['code_language']).as_string()
 index_document.add_field('content_notes', attrs['content_notes']).as_text()
-index_document.add_field('content_text', attrs['content_text']).as_text('ru')
 index_document.add_field('date_of_publication', attrs['date_of_publication']).as_string()
 index_document.add_field('date_of_publication', attrs['date_of_publication']).as_datetime()
 index_document.add_field('date_of_publication', attrs['date_of_publication']).as_integer()
@@ -752,13 +748,13 @@ index_document.add_field('date_of_publication_of_original', attrs['date_of_publi
 index_document.add_field('grnti', attrs['grnti']).as_string()
 index_document.add_field('isbn', attrs['isbn']).as_string()
 index_document.add_field('issn', attrs['issn']).as_string()
-index_document.add_field('full_text', attrs['full_text']).as_text('ru')
 index_document.add_field('local_number', attrs['local_number']).as_string()
 index_document.add_field('notes', attrs['notes']).as_text()
 index_document.add_field('material_type', attrs['material_type']).as_string()
 index_document.add_field('owner', attrs['owner']).as_string()
 index_document.add_field('parent_record_number', attrs['parent_record_number']).as_string()
 index_document.add_field('place_publication', attrs['place_publication']).as_text()
+index_document.add_field('place_publication', attrs['place_publication']).as_string()
 index_document.add_field('previose_local_number', attrs['previose_local_number']).as_string()
 index_document.add_field('publisher', attrs['publisher']).as_text()
 index_document.add_field('record_type', attrs['record_type']).as_string()
@@ -767,32 +763,44 @@ index_document.add_field('subject_keywords', attrs['subject_keywords']).as_text(
 index_document.add_field('subject_subheading', attrs['subject_subheading']).as_text()
 index_document.add_field('title', attrs['title']).as_text()
 index_document.add_field('title', attrs['title']).as_string().sortable()
+index_document.add_field('title_series', attrs['title_series']).as_text()
+
 index_document.add_field('title_source', attrs['title_source']).as_text()
 index_document.add_field('udc', attrs['udc']).as_string()
 
 # local specific attrs
 index_document.add_field('attributes', attrs['attributes']).as_string()
-index_document.add_field('catalog', attrs['catalog']).as_string()
-index_document.add_field('collection', attrs['collection']).as_string()
 index_document.add_field('date_time_added_to_db', attrs['date_time_added_to_db']).as_datetime()
 index_document.add_field('date_time_added_to_db', attrs['date_time_added_to_db']).as_datetime().sortable()
 index_document.add_field('date_time_of_income', attrs['date_time_of_income']).as_string()
 index_document.add_field('date_time_of_income', attrs['date_time_of_income']).as_datetime()
 index_document.add_field('date_time_of_income', attrs['date_time_of_income']).as_datetime().sortable()
-index_document.add_field('dfs_date_of_publication', attrs['dfs_date_of_publication']).as_string()
-index_document.add_field('dfs_date_of_publication', attrs['dfs_date_of_publication']).as_integer()
-index_document.add_field('dfs_date_of_publication', attrs['dfs_date_of_publication']).as_datetime().sortable()
-index_document.add_field('dfs_document_type', attrs['dfs_document_type']).as_string()
-index_document.add_field('dfs_organisation', attrs['dfs_organisation']).as_string()
-index_document.add_field('e_version_type', attrs['e_version_type']).as_string()
 index_document.add_field('linked_record_number', attrs['linked_record_number']).as_string()
-index_document.add_field('shifr_izd', attrs['shifr_izd']).as_string()
-index_document.add_field('sic_collection', attrs['sic_collection']).as_string()
 index_document.add_field('subject_heading', attrs['subject_heading']).as_string()
 index_document.add_field('subject_keywords', attrs['subject_keywords']).as_string()
 
+index_document.add_field('collection', attrs['collection']).as_string()
+index_document.add_field('collection2', attrs['collection2']).as_string()
+index_document.add_field('collection3', attrs['collection3']).as_string()
+index_document.add_field('collection4', attrs['collection4']).as_string()
+index_document.add_field('collection5', attrs['collection5']).as_string()
+index_document.add_field('collection6', attrs['collection6']).as_string()
+
+index_document.add_field('subject_name_personal', attrs['subject_name_personal']).as_string()
+index_document.add_field('subject_name_personal', attrs['subject_name_personal']).as_text()
+
+index_document.add_field('subject_name_geographical', attrs['subject_name_geographical']).as_string()
+index_document.add_field('subject_name_geographical', attrs['subject_name_geographical']).as_text()
+
+index_document.add_field('has_e_version', attrs['has_e_version']).as_boolean()
+index_document.add_field('literary_incipit', attrs['literary_incipit']).as_text()
+index_document.add_field('host_item', attrs['host_item']).as_text()
+index_document.add_field('autograph', attrs['autograph']).as_text()
+
+
 all_t = [
     attrs['title'], 
+    attrs['title_series'], 
     attrs['title_source'],
     attrs['author'],
     attrs['subject_heading'],
@@ -800,7 +808,6 @@ all_t = [
     attrs['isbn'],
     attrs['issn'],
     attrs['date_of_publication'],
-    attrs['dfs_date_of_publication'],
 ]
 
 index_document.add_field('all', all_t).as_text()
