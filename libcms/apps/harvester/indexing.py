@@ -116,7 +116,6 @@ def index_source(id):
         print('Last index date', source.last_indexing_date)
         print('Records for indexing:', models.Record.objects.filter(q).exclude(deleted=True).count())
         for record in models.Record.objects.filter(q).exclude(deleted=True).iterator():
-            print(i)
             if i % 100 == 0:
                 print(i)
             i += 1
