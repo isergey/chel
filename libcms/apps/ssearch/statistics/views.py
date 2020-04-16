@@ -16,7 +16,7 @@ from harvester.models import RecordContent
 from ..models import SearchLog, DetailLog, DETAIL_ACTIONS_REFERENCE, get_records
 from ..frontend.titles import get_attr_title
 from . import forms
-
+from ..frontend.views import init_solr_collection
 
 def incomes_stat(request):
     report_file_path = get_income_report_file_path()
@@ -480,3 +480,5 @@ def _get_material_type(rq):
         value = 'encyclopedias'
 
     return value
+
+

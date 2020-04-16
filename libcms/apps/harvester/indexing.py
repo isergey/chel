@@ -116,14 +116,14 @@ def index_source(id):
         print('Last index date', source.last_indexing_date)
         print('Records for indexing:', models.Record.objects.filter(q).exclude(deleted=True).count())
         for record in models.Record.objects.filter(q).exclude(deleted=True).iterator():
+            if i % 100 == 0:
+                print(i)
+            i += 1
             try:
                 record_content = models.RecordContent.objects.get(record=record)
             except models.RecordContent.DoesNotExist:
                 continue
 
-            if i % 100 == 0:
-                print(i)
-            i += 1
             # if record_content.record.deleted:
             #     continue
             context = _record_to_index_document(

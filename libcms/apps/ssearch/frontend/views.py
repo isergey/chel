@@ -72,13 +72,13 @@ facet_attrs = [
     # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 facet_ordering = [
-    'collection2_s',
-    'collection_s',
-    'collection3_s',
-    'collection4_s',
-    'collection5_s',
-    'collection6_s',
-] + [item[0] for item in facet_attrs[1:]]
+                     'collection2_s',
+                     'collection_s',
+                     'collection3_s',
+                     'collection4_s',
+                     'collection5_s',
+                     'collection6_s',
+                 ] + [item[0] for item in facet_attrs[1:]]
 
 FACET_SORT = [
     {'collection_s': 'index'},
@@ -234,7 +234,7 @@ class PivotNode(object):
             '<a href="%s" class="pivot__title" data-field="pt_%s">%s</a>' % (href, self.field, self.value)
         )
         item_li.append('<div class="pivot__count pivot__description">Описание</div>')
-        item_li.append('<div class="pivot__count"><a href="%s">Поиск по коллекции</a></div>' % (href, ))
+        item_li.append('<div class="pivot__count"><a href="%s">Поиск по коллекции</a></div>' % (href,))
         item_li.append('<div class="pivot__count">Документы: %s</div>' % (self.count,))
         if self.views is not None:
             item_li.append('<div class="pivot__views">Просмотры: %s</div>' % (self.views,))
@@ -411,7 +411,7 @@ def index(request, catalog='uc'):
 
         now = datetime.date.today()
         past = now - datetime.timedelta(30)
-        #models.RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
+        # models.RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
         stat = {
             'all_documents_count': all_documents_count,
             'coll_stat': coll_stat
@@ -825,6 +825,7 @@ def construct_query(attrs, values, optimize=True):
     q = sc.to_lucene_query()
     return q
 
+
 def make_search_breadcumbs(attrs, values):
     attrs_values = get_pairs(attrs, values)
 
@@ -895,8 +896,6 @@ def terms_as_group(text_value, operator='OR'):
     for i in range(len(terms)):
         terms[i] = escape(terms[i]).strip()
     return '(%s)' % ((' ' + operator + ' ').join(terms))
-
-
 
 
 def get_library_card(content_tree):
@@ -1065,3 +1064,22 @@ def test_solr_luke_request(request):
     return HttpResponse('ok')
 
 
+from datetime import timedelta, datetime
+
+
+def incomes(request):
+    solr = init_solr_collection('uc')
+    now = datetime.now()
+    past = now - timedelta(days=300)
+    past = past.replace(hour=0, minute=0, second=0, microsecond=0)
+    now = now.replace(hour=23, minute=59, second=59, microsecond=0)
+    result = solr.search(
+        'date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'),
+        sort=['date_time_added_to_db_dts desc'],
+        start=0,
+        rows=10,
+        fields=['id']
+    )
+    print('date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'))
+    print(result.get_docs())
+    return HttpResponse('ok')
