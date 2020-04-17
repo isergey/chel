@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from django.contrib.auth.models import User
-from captcha.fields import CaptchaField
+from captcha.fields import ReCaptchaField
 
 class RegistrationForm(forms.ModelForm):
     class Meta:
@@ -19,7 +19,7 @@ class RegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="Имя")
     last_name = forms.CharField(max_length=50, label="Фамилия")
     agree = forms.BooleanField(label="Согласен на обработку персональных данных")
-    captcha = CaptchaField(label='Введите текст на картинке')
+    captcha = ReCaptchaField(label='Введите текст на картинке')
     def clean_username(self):
         import re
 
