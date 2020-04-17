@@ -7,7 +7,7 @@ from ..models import Feedback
 
 class FeedbackForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea, label='Текст отзыва')
-    captcha = ReCaptchaField(label='Защита от спама', widget=ReCaptchaV3(
+    captcha = ReCaptchaField(label='', widget=ReCaptchaV3(
         attrs={
             'required_score': 0.85,
         }
