@@ -48,9 +48,7 @@
                     {% if question.is_processing and question.manager.user_id == request.user.id %}
                         <a class="btn btn-success" href="{% url 'ask_librarian:administration:question_answer' question.id %}">Дать ответ</a>
                     {% endif %}
-                    {% if question.is_ready and question.manager.user_id == request.user.id or request.user.is_superuser %}
-                        <a class="btn" href="{% url 'ask_librarian:administration:question_edit' question.id %}">Редактировать</a>
-                    {% endif %}
+                    <a class="btn" href="{% url 'ask_librarian:administration:question_edit' question.id %}">Редактировать</a>
                     <a style="float: right;" class="btn btn-danger" href="{% url 'ask_librarian:administration:question_delete' question.id %}">Удалить</a>
 
                 </div>

@@ -103,7 +103,7 @@ def question_detail(request, id):
     return render(request, 'ask_librarian/administration/question_detail.html', {
         'question': question,
         'recomendations': recomendations,
-        'statuses': statuses
+        'statuses': statuses,
     })
 
 
