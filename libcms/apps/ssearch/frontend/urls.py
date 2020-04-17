@@ -10,4 +10,5 @@ urlpatterns = (
     re_path(r'^m_sf$', views.more_subfacet, name="more_subfacet"),
     re_path(r'^test_solr_request$', views.test_solr_request, name="test_solr_request"),
     re_path(r'^incomes$', views.incomes, name="incomes"),
+    re_path(r'^load_collections$', views.load_collections, name="load_collections"),
 )

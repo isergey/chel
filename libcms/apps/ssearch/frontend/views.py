@@ -343,10 +343,9 @@ def build_pivot_tree(pivot):
         root.add_pivot(PivotNode.from_dict(item, parent=root))
     return root
 
-from functools import lru_cache
-@lru_cache()
+
 def collections():
-    pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s,collection5_s,collection6_s,'
+    pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s,collection5_s'
     uc = init_solr_collection('uc')
     faset_params = FacetParams()
     faset_params.fields = ['collection_s']
@@ -527,6 +526,34 @@ def index(request, catalog='uc'):
     _set_session_id(session_id, request, response)
     return response
 
+
+def load_collections(request):
+    (colls, pivote_root) = collections()
+    coll_stat = []
+    all_documents_count = 0
+    for coll in colls:
+        coll_info = {
+            'name': coll[0],
+            'docs': coll[1],
+            # 'views': ViewLog.get_view_count(coll[0])
+        }
+        all_documents_count += int(coll[1])
+        coll_stat.append(coll_info)
+    #
+
+    # now = datetime.date.today()
+    # past = now - datetime.timedelta(30)
+    # models.RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
+    stat = {
+        'all_documents_count': all_documents_count,
+        'coll_stat': coll_stat
+    }
+    return render(request, 'ssearch/frontend/load_collections.html', {
+        'attrs': get_search_attrs(),
+        'pattr': request.GET.getlist('pattr', None),
+        'stat': stat,
+        'pivot_tree': pivote_root.to_html(),
+    })
 
 def _flat_kv_args(kv_dicts):
     flat = defaultdict(list)

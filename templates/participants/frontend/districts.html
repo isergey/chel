@@ -46,7 +46,7 @@
                                     <label>По типу:</label>
 
                                     <select onchange="this.form.submit();" name="type" id="id_type">
-                                        <option>Укажите тип библиотеки</option>
+                                        <option value="">Укажите тип библиотеки</option>
                                         {% for type in types %}
                                             <option value="{{ type.id }}" {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>
                                         {% endfor %}
@@ -58,7 +58,7 @@
 
                                     <select onchange="this.form.submit();" name="district"
                                             id="id_district">
-                                        <option>Укажите район</option>
+                                        <option value="">Укажите район</option>
                                         {% for district in districts %}
                                             <option value="{{ district.id }}" {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>
                                         {% endfor %}

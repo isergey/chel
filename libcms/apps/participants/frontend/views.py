@@ -42,45 +42,63 @@ def make_library_dict(library):
 def index(request):
     filter = False
     filter_title = ''
-    if request.GET.get('letter', None):
-        filter = True
-        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('name').exclude(parent=None)
-        filter_title = 'библиотеки на букву: ' + request.GET.get('letter')
-    if request.GET.get('district', None):
-        try:
-            int(request.GET.get('district'))
-        except ValueError:
-            pass
-        else:
-            filter = True
-            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('name').exclude(parent=None)
-            filter_title = 'библиотеки района: '
-            try:
-                district = District.objects.get(id=request.GET.get('district'))
-                district_title = str(district)
-            except District.DoesNotExist:
-                district_title = 'район не найден'
-            filter_title +=  district_title
+    letter = request.GET.get('letter')
+    district = request.GET.get('district')
+    ftype = request.GET.get('type')
 
-    if request.GET.get('type', None):
-        try:
-            int(request.GET.get('type'))
-        except ValueError:
-            pass
-        else:
-            filter = True
-            types = LibraryType.objects.filter(id=request.GET.get('type'))
-            cbs_list = Library.objects.filter(types__in=types).order_by('name').exclude(parent=None)
-            filter_title = 'библиотеки типа: '
-#            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
-            type_titles = []
-            for type in types:
-                type_titles.append(type.name)
-            filter_title +=  ', '.join(type_titles)
+    q = ()
+
+    if letter:
+        q &= Q(letter=letter)
+
+    if district:
+        q &=Q(district_id=district)
+
+    if ftype:
+        q &=Q(type_id=ftype)
+
+#     if request.GET.get('letter', None):
+#         filter = True
+#         cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('name').exclude(parent=None)
+#         filter_title = 'библиотеки на букву: ' + request.GET.get('letter')
+#     if request.GET.get('district', None):
+#         try:
+#             int(request.GET.get('district'))
+#         except ValueError:
+#             pass
+#         else:
+#             filter = True
+#             cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('name').exclude(parent=None)
+#             filter_title = 'библиотеки района: '
+#             try:
+#                 district = District.objects.get(id=request.GET.get('district'))
+#                 district_title = str(district)
+#             except District.DoesNotExist:
+#                 district_title = 'район не найден'
+#             filter_title +=  district_title
+#
+#     if request.GET.get('type', None):
+#         try:
+#             int(request.GET.get('type'))
+#         except ValueError:
+#             pass
+#         else:
+#             filter = True
+#             types = LibraryType.objects.filter(id=request.GET.get('type'))
+#             cbs_list = Library.objects.filter(types__in=types).order_by('name').exclude(parent=None)
+#             filter_title = 'библиотеки типа: '
+# #            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
+#             type_titles = []
+#             for type in types:
+#                 type_titles.append(type.name)
+#             filter_title +=  ', '.join(type_titles)
 
 
-    if not filter:
+    if not q:
         cbs_list = Library.objects.filter(parent=None).order_by('name')
+    else:
+        cbs_list = Library.objects.filter(q).order_by('name').exclude(parent=None)
+
     js_orgs = []
 
 
@@ -165,43 +183,25 @@ def get_branches_by_district(request):
 def districts(request):
     filter = False
     filter_title = ''
-    cbs_list = None
-    if request.GET.get('letter', None):
-        filter = True
-        cbs_list = Library.objects.filter(letter=request.GET.get('letter')).order_by('name').exclude(parent=None)
-        filter_title = 'библиотеки на букву: ' + request.GET.get('letter')
-    if request.GET.get('district', None):
-        try:
-            int(request.GET.get('district'))
-        except ValueError:
-            pass
-        else:
-            filter = True
-            cbs_list = Library.objects.filter(district_id=request.GET.get('district')).order_by('name').exclude(parent=None)
-            filter_title = 'библиотеки района: '
-            try:
-                district = District.objects.get(id=request.GET.get('district'))
-                district_title = str(district)
-            except District.DoesNotExist:
-                district_title = 'район не найден'
-            filter_title +=  district_title
+    letter = request.GET.get('letter')
+    district = request.GET.get('district')
+    ftype = request.GET.get('type')
 
-    if request.GET.get('type', None):
-        try:
-            int(request.GET.get('type'))
-        except ValueError:
-            pass
-        else:
-            filter = True
-            types = LibraryType.objects.filter(id=request.GET.get('type'))
-            cbs_list = Library.objects.filter(types__in=types).order_by('name').exclude(parent=None)
-            filter_title = 'библиотеки типа: '
-            #            types = LibraryType.objects.filter(id__in=request.GET.get('type'))
-            type_titles = []
-            for type in types:
-                type_titles.append(type.name)
-            filter_title +=  ', '.join(type_titles)
+    q = Q()
 
+    if letter:
+        q &= Q(letter=letter)
+
+    if district:
+        q &= Q(district_id=district)
+
+    if ftype:
+        q &= Q(types__in=[ftype])
+
+    if not q:
+        cbs_list = Library.objects.filter(parent=None).order_by('name')
+    else:
+        cbs_list = Library.objects.filter(q).order_by('name').exclude(parent=None)
 
 #    if not filter:
 #        cbs_list = Library.objects.filter(parent=None).order_by('weight')
