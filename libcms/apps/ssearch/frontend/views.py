@@ -1068,18 +1068,80 @@ from datetime import timedelta, datetime
 
 
 def incomes(request):
+    def get_title(rq):
+        f200 = rq.get_field('200').get_subfield('a').get_data()
+        f461 = rq.get_field('461').get_field('200').get_subfield('a').get_data()
+        f463 = rq.get_field('463').get_field('200').get_subfield('a').get_data()
+        title = []
+        if f461 and f463:
+            title += [f200, ' // ', f461, ' . - ', f463]
+        elif f461:
+            title += [f461, ' . - ', f200]
+        else:
+            title.append(f200)
+
+        return ''.join(title).strip()
+
+    def get_income_date(rq):
+        return rq.get_field('100').get_subfield('a').get_data()[0:8]
+
+    days_index = {
+        '7': 7,
+        '30': 60,
+    }
+
+    days = days_index.get(request.GET.get('days', '7'), 7)
+
     solr = init_solr_collection('uc')
     now = datetime.now()
-    past = now - timedelta(days=300)
+    past = now - timedelta(days=days)
     past = past.replace(hour=0, minute=0, second=0, microsecond=0)
     now = now.replace(hour=23, minute=59, second=59, microsecond=0)
+
+    page = request.GET.get('page')
+
+
+
     result = solr.search(
         'date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'),
         sort=['date_time_added_to_db_dts desc'],
         start=0,
-        rows=10,
+        rows=1000,
         fields=['id']
     )
-    print('date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'))
-    print(result.get_docs())
-    return HttpResponse('ok')
+    paginator = Paginator(result, 15)
+    try:
+        result_page = paginator.page(page)
+    except PageNotAnInteger:
+        result_page = paginator.page(1)
+    except EmptyPage:
+        result_page = paginator.page(paginator.num_pages)
+
+
+    # print('date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'))
+    ids_list = []
+    chunk = []
+    for i, doc in enumerate(result.get_docs()):
+        chunk.append(doc['id'])
+        if len(chunk) > 10:
+            ids_list.append(chunk)
+            chunk = []
+
+    if chunk:
+        ids_list.append(chunk)
+
+    income_records = []
+    for ids in ids_list:
+        records = models.get_records(ids)
+        for record in records:
+            rq = MarcQuery(record['jrecord'])
+            income_records.append({
+                'id': record['id'],
+                'title': get_title(rq),
+                'income_date': datetime.strptime(get_income_date(rq), '%Y%m%d'),
+            })
+    return render(request, 'ssearch/frontend/incomes.html', {
+        'income_records': income_records,
+        'total': len(income_records),
+        'days': days,
+    })

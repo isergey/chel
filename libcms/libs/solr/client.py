@@ -13,7 +13,6 @@ class Client:
             response.raise_for_status()
         except Exception as e:
             print(e)
-            print(docs)
 
     def delete_by_query(self, collection, query):
         response = requests.post('/'.join([self.__base_url, collection, 'update']), json={

@@ -585,7 +585,7 @@ def attributes(rq):
 
 def date_time_added_to_db(rq):
     values = []
-    _add_to_values(values, rq.get_field('100').get_subfield('a').get_data()[0:7])
+    _add_to_values(values, rq.get_field('100').get_subfield('a').get_data()[0:8])
     return values
 
 
