@@ -343,7 +343,8 @@ def build_pivot_tree(pivot):
         root.add_pivot(PivotNode.from_dict(item, parent=root))
     return root
 
-
+from functools import lru_cache
+@lru_cache()
 def collections():
     pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s,collection5_s,collection6_s,'
     uc = init_solr_collection('uc')
