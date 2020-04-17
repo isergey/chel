@@ -5,11 +5,7 @@ from captcha.widgets import ReCaptchaV3
 
 
 class ContactRequestForm(forms.ModelForm):
-    captcha = ReCaptchaField(label='', widget=ReCaptchaV3(
-        attrs={
-            'required_score': 0.85,
-        }
-    ))
+    captcha = ReCaptchaField(label='', widget=ReCaptchaV3)
 
     class Meta:
         model = models.ContactRequest
