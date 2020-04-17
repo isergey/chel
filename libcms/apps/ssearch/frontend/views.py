@@ -409,8 +409,8 @@ def index(request, catalog='uc'):
             coll_stat.append(coll_info)
         #
 
-        now = datetime.date.today()
-        past = now - datetime.timedelta(30)
+        # now = datetime.date.today()
+        # past = now - datetime.timedelta(30)
         # models.RecordContent.objects.filter(create_date_time__gte=past, create_date_time__lte=now)
         stat = {
             'all_documents_count': all_documents_count,
