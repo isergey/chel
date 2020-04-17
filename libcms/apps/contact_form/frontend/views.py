@@ -22,6 +22,7 @@ def index(request):
         now = timezone.now()
         past = now - timedelta(minutes=1)
         if form.is_valid():
+            print(form.cleaned_data)
             # if not _g_recapcha(request.POST['g-recaptcha-response']):
             #     return HttpResponse(status=400)
             ip_address = get_client_ip(request)
