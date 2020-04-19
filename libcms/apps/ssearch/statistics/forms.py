@@ -15,6 +15,12 @@ class DateRangeForm(forms.Form):
         widget=forms.DateInput(attrs={'type': 'date'})
     )
 
+    def clean(self):
+        start_date = self.cleaned_data.get('start_date')
+        end_date = self.cleaned_data.get('end_date')
+        if start_date and end_date:
+            if start_date > end_date:
+                forms.ValidationError('Дата начала должна быть меньше даты окончания периода')
 
 class ActionFrom(forms.Form):
     ACTION_CHOICES = [

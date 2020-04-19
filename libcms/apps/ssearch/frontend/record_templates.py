@@ -231,6 +231,45 @@ class RusmarcTemplate(object):
             'id': field.get_field('001').get_data(),
         }
 
+    def get_collections(self):
+        cols = []
+        f907q = self.rq.get_field('908')
+        data = f907q.get_subfield('b').get_data()
+        if data:
+            cols.append(data)
+        else:
+            return ' / '.join(cols)
+
+        data = f907q.get_subfield('a').get_data()
+        if data:
+            cols.append(data)
+        else:
+            return ' / '.join(cols)
+
+        data = f907q.get_subfield('c').get_data()
+        if data:
+            cols.append(data)
+        else:
+            return ' / '.join(cols)
+
+        data = f907q.get_subfield('d').get_data()
+        if data:
+            cols.append(data)
+        else:
+            return ' / '.join(cols)
+
+        data = f907q.get_subfield('e').get_data()
+        if data:
+            cols.append(data)
+        else:
+            return ' / '.join(cols)
+
+        data = f907q.get_subfield('f').get_data()
+        if data:
+            cols.append(data)
+
+        return ' / '.join(cols)
+
 
 def get_full_text_links(marq_query):
     ft_links = []
@@ -240,3 +279,5 @@ def get_full_text_links(marq_query):
             'title': fq.get_subfield('2').get_data() or 'полный текст',
         })
     return ft_links
+
+

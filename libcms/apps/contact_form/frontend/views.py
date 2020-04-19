@@ -14,6 +14,7 @@ from .. import models
 MAX_REQUESTS_FROM_IP_PER_MINUTE = 2
 MAX_REQUESTS_PER_MINUTE = 2
 
+
 @csrf_exempt
 @transaction.atomic()
 def index(request):
@@ -22,7 +23,6 @@ def index(request):
         now = timezone.now()
         past = now - timedelta(minutes=1)
         if form.is_valid():
-            print(form.cleaned_data)
             # if not _g_recapcha(request.POST['g-recaptcha-response']):
             #     return HttpResponse(status=400)
             ip_address = get_client_ip(request)

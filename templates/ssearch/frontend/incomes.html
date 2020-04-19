@@ -23,13 +23,24 @@
             </nav>
             <div class="row row_sm-col-reverce">
                 <div class="col-lg-12 col-md-9 col-sm-12">
-                    Поступления за: <a href="{% url 'ssearch:frontend:incomes' %}?days=7">7 дней</a> | <a href="{% url 'ssearch:frontend:incomes' %}?days=30">30 дней</a>
+                    <p>
+                        Поступления за: <a href="{% url 'ssearch:frontend:incomes' %}?days=7">7 дней</a> | <a href="{% url 'ssearch:frontend:incomes' %}?days=30">30 дней</a>
+                    </p>
 
                     <table class="table">
+                        <tr>
+                            <th style="width: 50px">#</th>
+                            <th>Название</th>
+                            <th>Коллекция</th>
+                            <th>Дата поступления</th>
+                        </tr>
                         {% for record in income_records %}
                             <tr>
-                                <td style="width: 150px"><a href="{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}">{{ forloop.counter }}</a></td>
-                                <td>{{ record.title }}</td>
+                                <td><a href="{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}">{{ forloop.counter }}</a></td>
+                                <td>
+                                    {{ record.title }}
+                                </td>
+                                <td>{{ record.collections }}</td>
                                 <td>{{ record.income_date|date:"d.m.Y" }}</td>
                             </tr>
                         {% endfor %}

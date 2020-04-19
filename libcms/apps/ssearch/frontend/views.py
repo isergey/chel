@@ -1113,6 +1113,7 @@ def incomes(request):
     def get_income_date(rq):
         return rq.get_field('100').get_subfield('a').get_data()[0:8]
 
+
     days_index = {
         '7': 7,
         '30': 60,
@@ -1163,9 +1164,11 @@ def incomes(request):
         records = models.get_records(ids)
         for record in records:
             rq = MarcQuery(record['jrecord'])
+            rusmarc_tpl = record_templates.RusmarcTemplate(rq)
             income_records.append({
                 'id': record['id'],
                 'title': get_title(rq),
+                'collections':  rusmarc_tpl.get_collections(),
                 'income_date': datetime.strptime(get_income_date(rq), '%Y%m%d'),
             })
     return render(request, 'ssearch/frontend/incomes.html', {

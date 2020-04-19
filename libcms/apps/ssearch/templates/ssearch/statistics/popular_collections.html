@@ -1,7 +1,7 @@
 {% extends 'ssearch/statistics/base.html' %}
 {% block content %}
     {% url 'ssearch:frontend:detail' as DETAIL_URL %}
-    <h3>Популярные записи</h3>
+    <h3>Популярные коллекции за период с {{ start_date|date:"j E Y" }} по {{ end_date|date:"j E Y" }}</h3>
     <form novalidate method="get">
         {{ range_form.as_p }}
         {{ action_form.as_p }}
@@ -10,18 +10,16 @@
     <table border="1">
         <tr>
             <th>Место</th>
-            <th>Название</th>
             <th>Коллекция</th>
             <th>Количество</th>
         </tr>
-        {% for row in report %}
+        {% for collection, amount in report.items %}
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>
-                    <a href="{{ DETAIL_URL }}?id={{ row.id|urlencode }}" target="_blank">{{ row.title }}</a>
+                    {{ collection }}
                 </td>
-                <td>{{ row.collections }}</td>
-                <td>{{ row.amount }}</td>
+                <td>{{ amount }}</td>
             </tr>
         {% endfor %}
     </table>

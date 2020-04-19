@@ -11,6 +11,7 @@ urlpatterns = (
     re_path(r'^materials/$', TemplateView.as_view(template_name='ssearch/statistics/materials.html'), name='materials'),
     re_path(r'^search/$', TemplateView.as_view(template_name='ssearch/statistics/search.html'), name='search'),
     re_path(r'^popular/$', views.popular_records_stat, name='popular'),
+    re_path(r'^popular_collections/$', views.popular_collections_stat, name='popular_collections'),
     re_path(r'^incomes_stat/$', views.incomes_stat, name='incomes_stat'),
     re_path(r'^actions_stat/$', views.actions_stat, name='actions_stat'),
     re_path(r'^users_stat/$', views.users_stat, name='users_stat'),

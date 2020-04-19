@@ -39,8 +39,8 @@
             }).dxChart("instance");
 
             var pivotGrid = $("#pivotgrid").dxPivotGrid({
+                {#allowSorting: true,#}
                 allowSortingBySummary: true,
-                allowSorting: true,
                 allowFiltering: true,
                 allowExpandAll: true,
                 height: 800,
@@ -78,7 +78,7 @@
                             width: 300,
                             area: "row",
                         },
-                        {area: "column", dataField: "date", dataType: "date", groupInterval: "year", caption: "Год"},
+                        {area: "column", dataField: "date", dataType: "date", groupInterval: "year", caption: "Год", sortOrder: 'desc'},
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "month", caption: "Месяц"},
                         {area: "column", dataField: "date", dataType: "date", groupInterval: "day", caption: "День"},
                         {
@@ -86,8 +86,9 @@
                             dataField: "action_0",
                             dataType: "number",
                             summaryType: "sum",
+                            sortOrder: 'desc',
                             {#format: "currency",#}
-                            area: "data"
+                            area: "data",
                         },
                         {
                             caption: "Просм. полн. текста",
@@ -95,7 +96,7 @@
                             dataType: "number",
                             summaryType: "sum",
                             {#format: "currency",#}
-                            area: "data"
+                            area: "data",
                         },
                         {
                             caption: "Соц сети",
@@ -103,7 +104,7 @@
                             dataType: "number",
                             summaryType: "sum",
                             {#format: "currency",#}
-                            area: "data"
+                            area: "data",
                         },
                     ],
                     store: store

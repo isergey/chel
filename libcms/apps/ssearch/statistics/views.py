@@ -15,8 +15,10 @@ from .settings import get_income_report_file_path, get_actions_report_file_path,
 from harvester.models import RecordContent
 from ..models import SearchLog, DetailLog, DETAIL_ACTIONS_REFERENCE, get_records
 from ..frontend.titles import get_attr_title
+from ..frontend import record_templates
 from . import forms
 from ..frontend.views import init_solr_collection
+
 
 def incomes_stat(request):
     report_file_path = get_income_report_file_path()
@@ -74,6 +76,55 @@ def popular_records_stat(request):
         'report': report,
         'range_form': range_form,
         'action_form': action_form,
+    })
+
+
+def popular_collections_stat(request):
+    range_form = forms.DateRangeForm(request.GET)
+    action_form = forms.ActionFrom(request.GET)
+    start_date = None
+    end_date = None
+    action = None
+    if range_form.is_valid() and action_form.is_valid():
+        start_date = range_form.cleaned_data.get('start_date')
+        end_date = range_form.cleaned_data.get('end_date')
+        action = action_form.cleaned_data['action']
+    now = datetime.now()
+    before = now - timedelta(days=30)
+    if not start_date:
+        start_date = before.date()
+    if not end_date:
+        end_date = now.date()
+
+    start_date = datetime(
+        year=start_date.year,
+        month=start_date.month,
+        day=start_date.day,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    end_date = datetime(
+        year=end_date.year,
+        month=end_date.month,
+        day=end_date.day,
+        hour=23,
+        minute=59,
+        second=59,
+        microsecond=999999
+    )
+    report = generate_popular_collections_report(start_date, end_date, action)
+    from collections import OrderedDict
+    report = OrderedDict(report.most_common())
+
+    return render(request, 'ssearch/statistics/popular_collections.html', {
+        'report': report,
+        'range_form': range_form,
+        'action_form': action_form,
+        'start_date': start_date,
+        'end_date': end_date,
     })
 
 
@@ -200,13 +251,30 @@ def generate_popular_records_report(start_date, end_date, action=DETAIL_ACTIONS_
         record_data = {
             'id': record_id,
             'title': record_id,
+            'collections': '',
             'amount': amount
         }
         if record_content is not None:
             rq = MarcQuery(record_content['jrecord'])
+            rusmarc_tpl = record_templates.RusmarcTemplate(rq)
             record_data['title'] = get_title(rq) or record_id
+            record_data['collections'] = rusmarc_tpl.get_collections()
         records.append(record_data)
     return records
+
+
+def generate_popular_collections_report(start_date, end_date, action=DETAIL_ACTIONS_REFERENCE['VIEW_DETAIL']['code']):
+    report = Counter()
+
+    for detail_log, record in _get_detail_log(start_date=start_date, end_date=end_date, action=action):
+        if record is None:
+            continue
+        rq = MarcQuery(record)
+        rusmarc_tpl = record_templates.RusmarcTemplate(rq)
+        collection = rusmarc_tpl.get_collections()
+        if not collection: continue
+        report[collection] += 1
+    return report
 
 
 # def generate_users_report():
@@ -313,11 +381,24 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
     level_4_data = _calculate_collection(level_3_data['children'], level_4, **params)
 
 
-def _get_detail_log():
-    record_ids = []
+def _get_detail_log(start_date=None, end_date=None, action=''):
+    q = Q()
+    # now = datetime.now()
+
+    if start_date:
+        # start_date = now.date()
+        q &= Q(date_time__gte=_get_begin_day_datetime(start_date))
+
+    if end_date:
+        # end_date = now.date()
+        q &= Q(date_time__lte=_get_end_day_datetime(end_date))
+
+    if action:
+        q &= Q(action=action)
+
     cache = {}
     print('start _get_detail_log')
-    for i, detail_log in enumerate(DetailLog.objects.all().iterator()):
+    for i, detail_log in enumerate(DetailLog.objects.filter(q).iterator()):
         if detail_log.record_id in cache:
             record = cache.get(detail_log.record_id)
             if record is None:
@@ -480,5 +561,3 @@ def _get_material_type(rq):
         value = 'encyclopedias'
 
     return value
-
-
