@@ -356,7 +356,7 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
     if not level_1:
         return
 
-    material_type = _get_material_type(rq)
+    material_types = _get_material_type(rq)
     params = dict(
         create_date=create_date,
         material_type=material_type,
@@ -478,6 +478,15 @@ MATERIAL_TITLES = {
 }
 
 
+def _add_to_values(values, data):
+    if data:
+        if type(data) in [list, set]:
+            values.extend(data)
+        else:
+            values.append(data)
+    return values
+
+
 def _get_material_type(rq):
     leader6 = rq.leader_data()[6:7]
     leader7 = rq.leader_data()[7:8]
@@ -489,75 +498,76 @@ def _get_material_type(rq):
     f105_a_pos_7 = f105_a[7:8]
     f105_a_pos_4_7 = [f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7]
 
-    value = ''
+    values = []
 
     if leader7 == 'm' and leader8 == '0':
-        value = 'monography'
+        _add_to_values(values, 'monography')
 
-    elif leader7 == 's' and leader8 == '1':
-        value = 'journal_paper'
+    if leader7 == 's' and leader8 == '1':
+        _add_to_values(values, 'journal_paper')
 
-    elif leader6 == 'a' and leader7 == 'm' and leader8 == '2':
-        value = 'issues'
+    if leader6 == 'a' and leader7 == 'm' and leader8 == '2':
+        _add_to_values(values, 'issues')
 
-    elif leader7 == 'a' or leader7 == 'b':
-        value = 'articles_reports'
+    if leader7 == 'a' or leader7 == 'b':
+        _add_to_values(values, 'articles_reports')
 
-    elif leader7 == 'c':
-        value = 'collections'
+    if leader7 == 'c':
+        _add_to_values(values, 'collections')
 
-    elif leader7 == 'i':
-        value = 'integrity'
+    if leader7 == 'i':
+        _add_to_values(values, 'integrity')
 
-    elif leader6 == 'c' or leader6 == 'd':
-        value = 'musical_scores'
+    if leader6 == 'c' or leader6 == 'd':
+        _add_to_values(values, 'musical_scores')
 
-    elif leader6 == 'e' or leader6 == 'f':
-        value = 'maps'
+    if leader6 == 'e' or leader6 == 'f':
+        _add_to_values(values, 'maps')
 
-    elif leader6 == 'g':
-        value = 'video'
+    if leader6 == 'g':
+        _add_to_values(values, 'video')
 
-    elif leader6 == 'i' or leader6 == 'j':
-        value = 'sound_records'
+    if leader6 == 'i' or leader6 == 'j':
+        _add_to_values(values, 'sound_records')
 
-    elif leader6 == 'k':
-        value = 'graphics'
+    if leader6 == 'k':
+        _add_to_values(values, 'graphics')
 
-    elif ((rq.get_field('106').is_exist() or rq.get_field('135').is_exist())
-          and (rq.get_field('856').get_subfield('u').is_exist()
-               or rq.get_field('330').get_subfield('u').is_exist())
+    if ((rq.get_field('106').is_exist() or rq.get_field('135').is_exist())
+            and (rq.get_field('856').get_subfield('u').is_exist()
+                 or rq.get_field('330').get_subfield('u').is_exist())
     ):
-        value = 'e_resources'
+        _add_to_values(values, 'e_resources')
 
-    elif 'm' in f105_a_pos_4_7:
-        value = 'dissertation_abstracts'
+    if 'm' in f105_a_pos_4_7:
+        _add_to_values(values, 'dissertation_abstracts')
 
-    elif 'd' in f105_a_pos_4_7:
-        value = 'referats'
+    if 'd' in f105_a_pos_4_7:
+        _add_to_values(values, 'referats')
 
-    elif 'j' in f105_a_pos_4_7:
-        value = 'textbook'
+    if 'j' in f105_a_pos_4_7:
+        _add_to_values(values, 'textbook')
 
-    elif leader7 == 'm' and 'k' in f105_a_pos_4_7:
-        value = 'patents'
+    if leader7 == 'm' and 'k' in f105_a_pos_4_7:
+        _add_to_values(values, 'patents')
 
-    elif leader7 == 'm' and 'l' in f105_a_pos_4_7:
-        value = 'standarts'
+    if leader7 == 'm' and 'l' in f105_a_pos_4_7:
+        _add_to_values(values, 'standarts')
 
-    elif leader7 == 's' and 'l' in f105_a_pos_4_7:
-        value = 'legislative_acts'
+    if leader7 == 's' and 'l' in f105_a_pos_4_7:
+        _add_to_values(values, 'legislative_acts')
 
-    elif leader7 == 'm' and 'p' in f105_a_pos_4_7:
-        value = 'technical_reports'
+    if leader7 == 'm' and 'p' in f105_a_pos_4_7:
+        _add_to_values(values, 'technical_reports')
 
-    elif 'g' in f105_a_pos_4_7:
-        value = 'references'
+    if 'g' in f105_a_pos_4_7:
+        _add_to_values(values, 'references')
 
-    elif 'e' in f105_a_pos_4_7:
-        value = 'dictionaries'
+    if 'e' in f105_a_pos_4_7:
+        _add_to_values(values, 'dictionaries')
 
-    elif 'f' in f105_a_pos_4_7:
-        value = 'encyclopedias'
+    if 'f' in f105_a_pos_4_7:
+        _add_to_values(values, 'encyclopedias')
 
-    return value
+    return values
+
