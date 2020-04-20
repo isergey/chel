@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from django.db import transaction, models
 from django.shortcuts import render, redirect, get_object_or_404, Http404
 from django.contrib.auth.decorators import login_required
@@ -71,11 +72,20 @@ def index(request):
         date_filter_form = DateFilterForm(request.POST)
         if date_filter_form.is_valid():
             date = date_filter_form.cleaned_data['date']
-            q_criteria &= models.Q(
-                create_date__year=date.year,
-                create_date__month=date.month,
-                create_date__day=date.day
+            bdate = datetime.now().replace(
+                year=date.year,
+                month=date.month,
+                day=date.day,
+                hour=0,
+                minute=0,
+                second=0,
+                microsecond=0
             )
+
+            edate = bdate.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+
+            q_criteria &= models.Q(create_date__gte=bdate, create_date__lte=edate)
     else:
         date_filter_form = DateFilterForm()
 
