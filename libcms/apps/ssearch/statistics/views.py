@@ -474,6 +474,7 @@ MATERIAL_TITLES = {
     'standarts': 'стандарт',
     'legislative_acts': 'законодательные акты',
     'references': 'справочник',
+    'references': 'справочник',
     'dictionaries': 'словарь',
     'encyclopedias': 'энциклопедиа',
 }

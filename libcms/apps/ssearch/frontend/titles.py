@@ -329,6 +329,9 @@ attr_value_title = {
             'references': {
                 'ru': 'Справочники',
             },
+            'referats': {
+                'ru': 'Справочники',
+            },
             'dictionaries': {
                 'ru': 'Словари',
             },
