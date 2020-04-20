@@ -142,7 +142,7 @@ def generate_incomes_report():
         if not create_date:
             continue
 
-        edoc = rq.get_field('856').exists()
+        edoc = rq.get_field('856').is_exist()
         if not edoc:
             continue
 
