@@ -115,7 +115,7 @@ def update_doc(sender, **kwargs):
         raise e
 
 
-# post_save.connect(update_doc, sender=ImportantDate)
+post_save.connect(update_doc, sender=ImportantDate)
 
 
 def delete_doc(sender, **kwargs):

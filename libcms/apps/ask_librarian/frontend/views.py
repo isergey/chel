@@ -44,17 +44,20 @@ def index(request):
 
     if q:
         terms = q.split()
-        terms_q = None
+        question_terms_q = None
+        answer_terms_q = None
         for term in terms:
             if len(term) < 1:
                 continue
-            if not terms_q:
-                terms_q = models.Q(question__icontains=term) | models.Q(answer__icontains=term)
+            if not question_terms_q:
+                question_terms_q = models.Q(question__icontains=term)
+                answer_terms_q = models.Q(answer__icontains=term)
             else:
-                terms_q |= (models.Q(question__icontains=term) | models.Q(answer__icontains=term))
-        if terms_q:
-            q_criteria &= terms_q
+                question_terms_q &= models.Q(question__icontains=term)
+                answer_terms_q &= models.Q(answer__icontains=term)
 
+        if question_terms_q:
+            q_criteria &= models.Q(question_terms_q | answer_terms_q)
     if id:
         q_criteria &= models.Q(id=id)
 
