@@ -478,6 +478,7 @@ MATERIAL_TITLES = {
     'encyclopedias': 'энциклопедиа',
     'text': 'текст',
     '3d': '3D объекты',
+    'electronic': 'электронные',
 }
 
 
