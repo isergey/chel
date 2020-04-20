@@ -474,9 +474,10 @@ MATERIAL_TITLES = {
     'standarts': 'стандарт',
     'legislative_acts': 'законодательные акты',
     'references': 'справочник',
-    'references': 'справочник',
     'dictionaries': 'словарь',
     'encyclopedias': 'энциклопедиа',
+    'text': 'текст',
+    '3d': '3D объекты',
 }
 
 
@@ -520,6 +521,9 @@ def _get_material_type(rq):
     if leader7 == 'i':
         _add_to_values(values, 'integrity')
 
+    if leader6 == 'a' or leader6 == 'b':
+        _add_to_values(values, 'text')
+
     if leader6 == 'c' or leader6 == 'd':
         _add_to_values(values, 'musical_scores')
 
@@ -534,6 +538,12 @@ def _get_material_type(rq):
 
     if leader6 == 'k':
         _add_to_values(values, 'graphics')
+
+    if leader6 == 'l':
+        _add_to_values(values, 'electronic')
+
+    if leader6 == 'r':
+        _add_to_values(values, '3d')
 
     if ((rq.get_field('106').is_exist() or rq.get_field('135').is_exist())
             and (rq.get_field('856').get_subfield('u').is_exist()
