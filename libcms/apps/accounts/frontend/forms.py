@@ -2,11 +2,12 @@
 from django import forms
 from django.contrib.auth.models import User
 from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV3
 
-class RegistrationForm(forms.ModelForm):
-    class Meta:
-        exclude = []
-        model = User
+# class RegistrationForm(forms.ModelForm):
+#     class Meta:
+#         exclude = []
+#         model = User
 
 
 class RegistrationForm(forms.Form):
@@ -19,7 +20,7 @@ class RegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="Имя")
     last_name = forms.CharField(max_length=50, label="Фамилия")
     agree = forms.BooleanField(label="Согласен на обработку персональных данных")
-    captcha = ReCaptchaField(label='Введите текст на картинке')
+    captcha = ReCaptchaField(label='', widget=ReCaptchaV3)
     def clean_username(self):
         import re
 
