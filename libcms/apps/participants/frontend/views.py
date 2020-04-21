@@ -197,14 +197,14 @@ def districts(request):
 
     if ftype:
         q &= Q(types__in=[ftype])
+    cbs_list = None
+    if q:
+        cbs_list = Library.objects.filter(q).order_by('weight', 'name')
+    # else:
+    #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
 
-    if not q:
-        cbs_list = Library.objects.filter(parent=None).order_by('name')
-    else:
-        cbs_list = Library.objects.filter(q).order_by('name').exclude(parent=None)
-
-#    if not filter:
-#        cbs_list = Library.objects.filter(parent=None).order_by('weight')
+   # if not filter:
+   #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
     js_orgs = []
 
     cbs_page = None
@@ -226,7 +226,7 @@ def districts(request):
     types = LibraryType.objects.all()
 
     main_branches = []
-    if not cbs_list:
+    if cbs_list is None:
         main_branches = Library.objects.filter(main=True).order_by('name').exclude(parent=None)
 
     return render(request, 'participants/frontend/districts.html', {

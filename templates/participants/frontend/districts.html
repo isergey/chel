@@ -82,14 +82,14 @@
                                 <ul class="participants">
                                     {% for cbs in  main_branches %}
                                         {% if cbs.parent_id %}
-                                            <li>
+                                            <li data-action="1">
                                                 <h3 class="participants__title">
                                                     <a href="#"
                                                        onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}</a>
                                                 </h3>
                                             </li>
                                         {% else %}
-                                            <li>
+                                            <li data-action="2">
                                                 <h3 class="participants__title">
                                                     <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
                                                 </h3>
@@ -104,7 +104,7 @@
                                 <ul class="participants">
                                     {% for cbs in  cbs_list %}
                                         {% if cbs.parent_id %}
-                                            <li>
+                                            <li data-action="3">
                                                 <h3 class="participants__title">
                                                     <a href="#"
                                                        onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}</a>
@@ -117,7 +117,7 @@
                                                 </p>
                                             </li>
                                         {% else %}
-                                            <li>
+                                            <li data-action="4">
                                                 <h3 class="participants__title">
                                                     <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>
                                                 </h3>
@@ -127,7 +127,7 @@
                                                        target="_blank">открыть</a>
                                                 {% else %}не указан {% endif %}
                                                 </p>
-                                            <li>
+                                            </li>
                                         {% endif %}
                                     {% empty %}
                                         Список пуст
@@ -140,7 +140,7 @@
                                     <div class="col-lg-4 col-md-4 col-sm-12">
                                         <ul class="participants">
                                             {% for district in  districts %}
-                                                <li>
+                                                <li data-action="5">
                                                     <h3 class="participants__title">
                                                         <a href="./?district={{ district.id }}">{{ district.name }}</a>
                                                     </h3>
@@ -281,196 +281,6 @@
         </div>
     </main>
 
-
-    {#    <style>#}
-    {#        ul.participants li {#}
-    {#            margin-bottom: 10px;#}
-    {#        }#}
-    {#    </style>#}
-    {#    <ul class="breadcrumb">#}
-    {#        <li><a href="{% url 'index:frontend:index' %}">Начало</a> <span class="divider">/</span></li>#}
-    {#        {% if filter %}#}
-    {#            <li><a href="./">Библиотеки</a><span class="divider">/</span></li>#}
-    {#            <li class="active">{{ filter_title }}</li>#}
-    {#        {% else %}#}
-    {#            <li class="active">Библиотеки</li>#}
-    {#        {% endif %}#}
-    {##}
-    {#    </ul>#}
-    {#    <div class="letters" align="center">#}
-    {#        <b>Библиотеки на букву</b>:#}
-    {#        {% for letter in letters %}#}
-    {#            <a href="?letter={{ letter }}">{{ letter }}</a>#}
-    {#        {% endfor %}#}
-    {#    </div>#}
-    {#    <hr/>#}
-    {#    <div class="types" style="float:left; margin-left: 50px;">#}
-    {#        <h4>По типу:</h4>#}
-    {#        <form method="GET" >#}
-    {#            <select onchange="this.form.submit();" name="type" id="id_type">#}
-    {#                <option>Укажите тип библиотеки</option>#}
-    {#                {% for type in types %}#}
-    {#                    <option value="{{ type.id }}"#}
-    {#                            {% if request.GET.type == type.id|lower %}selected="selected" {% endif %}>{{ type }}</option>#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {#        </form>#}
-    {#    </div>#}
-    {#    <div class="districts" style="float: right; ; margin-right: 50px;">#}
-    {#        <h4>По районам:</h4>#}
-    {#        <form method="GET" >#}
-    {#            <select onchange="this.form.submit();" name="district" id="id_district">#}
-    {#                <option>Укажите район</option>#}
-    {#                {% for district in districts %}#}
-    {#                    <option value="{{ district.id }}"#}
-    {#                            {% if request.GET.district == district.id|lower %}selected="selected" {% endif %}>{{ district }}</option>#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {#        </form>#}
-    {#    </div>#}
-    {#    <div style="clear: both"></div>#}
-    {#    {% if main_branches %}#}
-    {#        <hr/>#}
-    {#        <ul class="participants" style="list-style: none; margin: 0">#}
-    {#            {% for cbs in  main_branches %}#}
-    {#                {% if cbs.parent_id %}#}
-    {#                    <li >#}
-    {#                        <a href="#"#}
-    {#                           onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}</a>#}
-    {#                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
-    {#                    {% else %} не указан {% endif %}#}
-    {#                    </li>#}
-    {#                {% else %}#}
-    {#                    <li >#}
-    {#                        <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}</a>#}
-    {#                        Сайт: {% if cbs.http_service  %}<a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
-    {#                    {% else %} не указан {% endif %}#}
-    {#                    <li>#}
-    {#                {% endif %}#}
-    {#            {% empty %}#}
-    {#                Список пуст#}
-    {#            {% endfor %}#}
-    {#        </ul>#}
-    {#    {% endif %}#}
-    {#    <hr/>#}
-
-
-    {#    {% if cbs_list %}#}
-    {#        <ul class="participants" style="list-style: none; margin: 0">#}
-    {#            {% for cbs in  cbs_list %}#}
-    {#                {% if cbs.parent_id %}#}
-    {#                    <li >#}
-    {#                        <a href="#"#}
-    {#                           onclick="modalWin('{% url 'participants:frontend:detail' cbs.code %}'); return false;">{{ cbs.name }}<br/></a>#}
-    {#                        Сайт: {% if cbs.http_service %}#}
-    {#                        <a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
-    {#                    {% else %} не указан {% endif %}#}
-    {#                    </li>#}
-    {#                {% else %}#}
-    {#                    <li >#}
-    {#                        <a href="{% url 'participants:frontend:branches' cbs.code %}">{{ cbs.name }}<br/></a>#}
-    {#                        Сайт: {% if cbs.http_service %}#}
-    {#                        <a href="{{ cbs.http_service }}" target="_blank"> {{ cbs.http_service }}</a>#}
-    {#                    {% else %} не указан {% endif %}#}
-    {#                    <li>#}
-    {#                {% endif %}#}
-    {#            {% empty %}#}
-    {#                Список пуст#}
-    {#            {% endfor %}#}
-    {#        </ul>#}
-    {#        {% admin_pagination cbs_page %}#}
-    {#    {% else %}#}
-    {#        <div>#}
-    {#            <div style="width: 150px; float: left">#}
-    {#                <ul class="participants" style="list-style: none; margin: 0">#}
-    {#                    {% for district in  districts %}#}
-    {#                        <li ><a href="./?district={{ district.id }}">{{ district.name }}</a>#}
-    {#                    {% empty %}#}
-    {#                        Список еще не сформирован#}
-    {#                    {% endfor %}#}
-    {#                </ul>#}
-    {#            </div>#}
-    {#            <div style="width: auto; float: left">#}
-    {#                <img src="{{ STATIC_URL }}images/theme/map_1-4.png" width="448" height="525" border="0" usemap="#Map">#}
-    {#                <map name="Map" id="Map">#}
-    {#                    <area shape="poly" coords="292,122,300,120,306,127,303,134,290,133,289,126" href="?district=40"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="119,415,131,403,140,408,156,405,164,397,179,396,189,393,197,410,194,420,200,425,203,430,202,436,197,449,190,456,173,452,163,461,156,469,151,491,137,473,121,469"#}
-    {#                          href="?district=15"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="160,467,174,454,189,457,200,447,205,431,229,440,244,434,256,442,267,458,283,481,258,503,230,519,206,521,219,492,218,476,195,467,173,472"#}
-    {#                          href="?district=7"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="141,4,143,23,152,28,142,69,162,90,185,88,196,96,203,75,185,70,188,40,196,16,157,5"#}
-    {#                          href="?district=20"/>#}
-    {#                    <area shape="poly" coords="197,16,185,70,206,74,215,68,211,48,233,48,232,14" href="?district=47"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="216,63,212,49,234,49,233,16,261,21,272,16,267,5,304,5,313,15,311,43,269,41"#}
-    {#                          href="?district=37"/>#}
-    {#                    <area shape="poly" coords="231,60,263,83,267,43" href="?district=13"/>#}
-    {#                    <area shape="poly" coords="206,76,229,60,248,73,230,90,212,87" href="?district=33"/>#}
-    {#                    <area shape="poly" coords="231,91,249,73,258,81,254,89,233,94" href="?district=36"/>#}
-    {#                    <area shape="poly" coords="177,92,143,110,151,134,167,137,177,125,199,111,188,92"#}
-    {#                          href="?district=18"/>#}
-    {#                    <area shape="poly" coords="198,96,206,113,220,114,230,96,211,90,204,78" href="?district=2"/>#}
-    {#                    <area shape="poly" coords="29,191,41,169,64,158,71,137,37,126,23,121,1,147,7,181"#}
-    {#                          href="?district=6"/>#}
-    {#                    <area shape="poly" coords="74,176,109,168,79,139,71,162" href="?district=39"/>#}
-    {#                    <area shape="poly" coords="32,193,45,169,59,165,73,178,89,197,94,215,65,232,44,215"#}
-    {#                          href="?district=14"/>#}
-    {#                    <area shape="poly" coords="78,182,109,169,112,183,126,191,118,206,114,221,96,215"#}
-    {#                          href="?district=38"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="106,140,116,138,116,127,140,124,150,141,146,148,156,176,136,206,120,206,127,189,112,180"#}
-    {#                          href="?district=23"/>#}
-    {#                    <area shape="poly" coords="143,203,158,175,148,148,151,136,169,139,201,112,200,129,155,205"#}
-    {#                          href="?district=31"/>#}
-    {#                    <area shape="poly" coords="204,116,217,117,218,173,210,176,207,168,190,162,197,177,179,170"#}
-    {#                          href="?district=35"/>#}
-    {#                    <area shape="poly" coords="266,78,269,43,311,46,314,16,368,71,368,106,305,106,291,86"#}
-    {#                          href="?district=17"/>#}
-    {#                    <area shape="poly" coords="220,137,231,97,254,91,267,80,282,85,273,108,247,150" href="?district=5"/>#}
-    {#                    <area shape="poly" coords="251,150,277,179,292,180,289,134,289,122,304,121,286,87" href="#"/>#}
-    {#                    <area shape="poly" coords="301,108,363,108,342,129,355,150,335,165,319,163,316,129,315,128"#}
-    {#                          href=""/>#}
-    {#                    <area shape="poly" coords="305,156,316,162,315,130,307,122" href="?district=32"/>#}
-    {#                    <area shape="poly" coords="198,207,197,170,209,180,221,175,222,141,267,173,258,188,260,214,231,203"#}
-    {#                          href="?district=45"/>#}
-    {#                    <area shape="poly" coords="226,173,230,168,223,165,221,171" href="?district=28"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="291,139,304,136,305,159,338,171,344,192,353,204,345,219,333,210,329,217,296,203,305,171"#}
-    {#                          href="?district=11"/>#}
-    {#                    <area shape="poly" coords="293,170,302,168,303,174,294,181" href="?district=16"/>#}
-    {#                    <area shape="poly" coords="295,183,299,190,294,197,289,192" href="?district=10"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="354,206,379,198,379,208,417,200,429,220,422,224,420,246,436,254,388,275,386,293,371,279,363,243"#}
-    {#                          href="?district=21"/>#}
-    {#                    <area shape="poly" coords="305,275,315,267,323,267,322,286,313,284" href="?district=44"/>#}
-    {#                    <area shape="poly" coords="305,278,309,273,314,275,312,280,308,281" href="?district=25"/>#}
-    {#                    <area shape="poly" coords="294,229,300,234,305,227,298,223" href="?district=26"/>#}
-    {#                    <area shape="poly" coords="288,250,297,249,304,245,298,237,297,235,284,218,275,226,282,233"#}
-    {#                          href="?district=41"/>#}
-    {#                    <area shape="poly" coords="252,264,277,232,257,219,240,221,235,214,228,258" href="?district=22"/>#}
-    {#                    <area shape="poly" coords="189,271,183,223,234,208,225,266" href="?district=27"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="127,328,136,289,164,263,187,273,213,273,226,299,192,298,173,293,161,307,160,338"#}
-    {#                          href="?district=43"/>#}
-    {#                    <area shape="poly" coords="210,306,245,297,270,298,284,317,259,319,249,332,245,358,225,350,216,333"#}
-    {#                          href="?district=29"/>#}
-    {#                    <area shape="poly" coords="128,366,145,365,151,346,139,341,126,347" href="?district=34"/>#}
-    {#                    <area shape="poly"#}
-    {#                          coords="126,403,137,401,142,405,160,398,184,393,186,371,171,361,161,345,146,371,124,371"#}
-    {#                          href="?district=3"/>#}
-    {#                    <area shape="poly" coords="247,365,261,324,311,335,311,348,294,347,289,365,356,392,319,404,278,402"#}
-    {#                          href="?district=8"/>#}
-    {#                    <area shape="poly" coords="189,389,227,353,276,405,277,420,256,439,225,433,204,427"#}
-    {#                          href="?district=46"/>#}
-    {#                </map>#}
-    {#            </div>#}
-    {#            <div style="clear: both"></div>#}
-    {#        </div>#}
-    {##}
-    {#    {% endif %}#}
     <script type="text/javascript">
         function modalWin(url) {
             if (window.showModalDialog) {
