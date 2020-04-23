@@ -126,10 +126,9 @@ def edit(request, id):
         library_form = LibraryForm(request.POST, prefix='library_form', instance=library)
 
         if library_form.is_valid():
-            library_form.save()
-            library_form.save_m2m()
-            # library.types = library_form.cleaned_data['types']
-            # library_form.save()
+            library = library_form.save(commit=False)
+            library.types.set(library_form.cleaned_data['types'])
+            library.save()
 
             if parent:
                 return redirect('participants:administration:list', parent=parent.id)
