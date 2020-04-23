@@ -481,6 +481,22 @@ MATERIAL_TITLES = {
     'electronic': 'электронные',
 }
 
+MATERIAL_TITLES = {
+    'text_non_handwritten': 'текстовые материалы, кроме рукописных',
+    'text': 'текстовые материалы, рукописные',
+    'musical_scores_non_handwritten': 'музыкальные партитуры, кроме рукописных',
+    'musical_scores': 'музыкальные партитуры, рукописные',
+    'maps_non_handwritten': 'картографические материалы, кроме рукописных',
+    'maps': 'картографические материалы, рукописные',
+    'video': 'проекционные и видеоматериалы',
+    'sound_records_non_musical': 'звукозаписи, немузыкальные',
+    'sound_records': 'звукозаписи, музыкальные',
+    'graphics': 'двухмерная графика',
+    'electronic': 'электронный ресурс',
+    'other': 'разнородные материалы',
+    '3d': 'трехмерные искусственные и естественные объекты',
+}
+
 
 def _add_to_values(values, data):
     if data:
@@ -522,19 +538,31 @@ def _get_material_type(rq):
     # if leader7 == 'i':
     #     _add_to_values(values, 'integrity')
 
-    if leader6 == 'a' or leader6 == 'b':
+    if leader6 == 'a':
+        _add_to_values(values, 'text_non_handwritten')
+
+    if leader6 == 'b':
         _add_to_values(values, 'text')
 
-    if leader6 == 'c' or leader6 == 'd':
+    if leader6 == 'c':
+        _add_to_values(values, 'musical_scores_non_handwritten')
+
+    if leader6 == 'd':
         _add_to_values(values, 'musical_scores')
 
-    if leader6 == 'e' or leader6 == 'f':
+    if leader6 == 'e':
+        _add_to_values(values, 'maps_non_handwritten')
+
+    if leader6 == 'f':
         _add_to_values(values, 'maps')
 
     if leader6 == 'g':
         _add_to_values(values, 'video')
 
-    if leader6 == 'i' or leader6 == 'j':
+    if leader6 == 'i':
+        _add_to_values(values, 'sound_records_non_musical')
+
+    if leader6 == 'j':
         _add_to_values(values, 'sound_records')
 
     if leader6 == 'k':
@@ -542,6 +570,9 @@ def _get_material_type(rq):
 
     if leader6 == 'l':
         _add_to_values(values, 'electronic')
+
+    if leader6 == 'm':
+        _add_to_values(values, 'other')
 
     if leader6 == 'r':
         _add_to_values(values, '3d')
@@ -583,4 +614,3 @@ def _get_material_type(rq):
     #     _add_to_values(values, 'encyclopedias')
 
     return values
-
