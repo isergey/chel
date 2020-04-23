@@ -495,32 +495,32 @@ def _get_material_type(rq):
     leader6 = rq.leader_data()[6:7]
     leader7 = rq.leader_data()[7:8]
     leader8 = rq.leader_data()[8:9]
-    f105_a = rq.get_field('105').get_subfield('a').get_data() or ' ' * 9
-    f105_a_pos_4 = f105_a[4:5]
-    f105_a_pos_5 = f105_a[5:6]
-    f105_a_pos_6 = f105_a[6:7]
-    f105_a_pos_7 = f105_a[7:8]
-    f105_a_pos_4_7 = [f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7]
+    # f105_a = rq.get_field('105').get_subfield('a').get_data() or ' ' * 9
+    # f105_a_pos_4 = f105_a[4:5]
+    # f105_a_pos_5 = f105_a[5:6]
+    # f105_a_pos_6 = f105_a[6:7]
+    # f105_a_pos_7 = f105_a[7:8]
+    # f105_a_pos_4_7 = [f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7]
 
     values = []
 
-    if leader7 == 'm' and leader8 == '0':
-        _add_to_values(values, 'monography')
-
-    if leader7 == 's' and leader8 == '1':
-        _add_to_values(values, 'journal_paper')
-
-    if leader6 == 'a' and leader7 == 'm' and leader8 == '2':
-        _add_to_values(values, 'issues')
-
-    if leader7 == 'a' or leader7 == 'b':
-        _add_to_values(values, 'articles_reports')
-
-    if leader7 == 'c':
-        _add_to_values(values, 'collections')
-
-    if leader7 == 'i':
-        _add_to_values(values, 'integrity')
+    # if leader7 == 'm' and leader8 == '0':
+    #     _add_to_values(values, 'monography')
+    #
+    # if leader7 == 's' and leader8 == '1':
+    #     _add_to_values(values, 'journal_paper')
+    #
+    # if leader6 == 'a' and leader7 == 'm' and leader8 == '2':
+    #     _add_to_values(values, 'issues')
+    #
+    # if leader7 == 'a' or leader7 == 'b':
+    #     _add_to_values(values, 'articles_reports')
+    #
+    # if leader7 == 'c':
+    #     _add_to_values(values, 'collections')
+    #
+    # if leader7 == 'i':
+    #     _add_to_values(values, 'integrity')
 
     if leader6 == 'a' or leader6 == 'b':
         _add_to_values(values, 'text')
@@ -546,41 +546,41 @@ def _get_material_type(rq):
     if leader6 == 'r':
         _add_to_values(values, '3d')
 
-    if ((rq.get_field('106').is_exist() or rq.get_field('135').is_exist())
-            and (rq.get_field('856').get_subfield('u').is_exist()
-                 or rq.get_field('330').get_subfield('u').is_exist())
-    ):
-        _add_to_values(values, 'e_resources')
+    # if ((rq.get_field('106').is_exist() or rq.get_field('135').is_exist())
+    #         and (rq.get_field('856').get_subfield('u').is_exist()
+    #              or rq.get_field('330').get_subfield('u').is_exist())
+    # ):
+    #     _add_to_values(values, 'e_resources')
 
-    if 'm' in f105_a_pos_4_7:
-        _add_to_values(values, 'dissertation_abstracts')
+    # if 'm' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'dissertation_abstracts')
+    #
+    # if 'd' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'referats')
+    #
+    # if 'j' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'textbook')
 
-    if 'd' in f105_a_pos_4_7:
-        _add_to_values(values, 'referats')
-
-    if 'j' in f105_a_pos_4_7:
-        _add_to_values(values, 'textbook')
-
-    if leader7 == 'm' and 'k' in f105_a_pos_4_7:
-        _add_to_values(values, 'patents')
-
-    if leader7 == 'm' and 'l' in f105_a_pos_4_7:
-        _add_to_values(values, 'standarts')
-
-    if leader7 == 's' and 'l' in f105_a_pos_4_7:
-        _add_to_values(values, 'legislative_acts')
-
-    if leader7 == 'm' and 'p' in f105_a_pos_4_7:
-        _add_to_values(values, 'technical_reports')
-
-    if 'g' in f105_a_pos_4_7:
-        _add_to_values(values, 'references')
-
-    if 'e' in f105_a_pos_4_7:
-        _add_to_values(values, 'dictionaries')
-
-    if 'f' in f105_a_pos_4_7:
-        _add_to_values(values, 'encyclopedias')
+    # if leader7 == 'm' and 'k' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'patents')
+    #
+    # if leader7 == 'm' and 'l' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'standarts')
+    #
+    # if leader7 == 's' and 'l' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'legislative_acts')
+    #
+    # if leader7 == 'm' and 'p' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'technical_reports')
+    #
+    # if 'g' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'references')
+    #
+    # if 'e' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'dictionaries')
+    #
+    # if 'f' in f105_a_pos_4_7:
+    #     _add_to_values(values, 'encyclopedias')
 
     return values
 

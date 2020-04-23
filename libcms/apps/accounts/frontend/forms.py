@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import re
 from django import forms
 from django.contrib.auth.models import User
 from captcha.fields import ReCaptchaField
@@ -22,7 +23,7 @@ class RegistrationForm(forms.Form):
     agree = forms.BooleanField(label="Согласен на обработку персональных данных")
     captcha = ReCaptchaField(label='', widget=ReCaptchaV3)
     def clean_username(self):
-        import re
+
 
         format = re.compile(r"^[a-zA-z0-9]+$")
         if re.match(format, self.cleaned_data["username"]) == None:
