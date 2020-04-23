@@ -90,7 +90,7 @@ def create(request, parent=None):
                 library.parent = parent
 
             library.save()
-            library.types = library_form.cleaned_data['types']
+            library.types.set(library_form.cleaned_data['types'])
             if parent:
                 return redirect('participants:administration:list', parent=parent.id)
             else:
@@ -126,9 +126,11 @@ def edit(request, id):
         library_form = LibraryForm(request.POST, prefix='library_form', instance=library)
 
         if library_form.is_valid():
-            library = library_form.save(commit=False)
-            library.types = library_form.cleaned_data['types']
-            library.save()
+            library_form.save()
+            library_form.save_m2m()
+            # library.types = library_form.cleaned_data['types']
+            # library_form.save()
+
             if parent:
                 return redirect('participants:administration:list', parent=parent.id)
             else:
