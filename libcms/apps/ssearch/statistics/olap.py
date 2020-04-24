@@ -241,3 +241,60 @@ def _collections_to_doc_types_olap(collections):
                     })
 
     return rows
+
+def _collections_to_content_types_olap(collections):
+    rows = []
+
+    for level_1, collection_data in list(collections.items()):
+        children = collection_data.get('children')
+        if children:
+            for level_2, collection_data in list(children.items()):
+                children = collection_data.get('children')
+                if children:
+                    for level_3, collection_data in list(children.items()):
+                        children = collection_data.get('children')
+                        if children:
+                            for level_4, collection_data in list(children.items()):
+                                for date, date_data in list(collection_data['content_types_by_date'].items()):
+                                    for content_type, amount in list(date_data.items()):
+                                        rows.append({
+                                            'level_1': level_1,
+                                            'level_2': level_2,
+                                            'level_3': level_3,
+                                            'level_4': level_4,
+                                            'date': date,
+                                            'content_type': content_type,
+                                            'amount': amount,
+                                        })
+                        else:
+                            for date, date_data in list(collection_data['content_types_by_date'].items()):
+                                for content_type, amount in list(date_data.items()):
+                                    rows.append({
+                                        'level_1': level_1,
+                                        'level_2': level_2,
+                                        'level_3': level_3,
+                                        'date': date,
+                                        'content_type': content_type,
+                                        'amount': amount,
+                                    })
+                else:
+                    for date, date_data in list(collection_data['content_types_by_date'].items()):
+                        for content_type, amount in list(date_data.items()):
+                            rows.append({
+                                'level_1': level_1,
+                                'level_2': level_2,
+                                'date': date,
+                                'content_type': content_type,
+                                'amount': amount,
+                            })
+        else:
+            for date, date_data in list(collection_data['content_types_by_date'].items()):
+                for content_type, amount in list(date_data.items()):
+                    rows.append({
+                        'level_1': level_1,
+                        'date': date,
+                        'content_type': content_type,
+                        'amount': amount,
+                    })
+
+    return rows

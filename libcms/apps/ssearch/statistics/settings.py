@@ -27,5 +27,9 @@ def get_doc_types_report_file_path():
     return _create_report_file('doc_types_report.json')
 
 
+def get_content_types_report_file_path():
+    return _create_report_file('content_types_report.json')
+
+
 def get_search_requests_report_file_path():
     return _create_report_file('search_requests_report.json')

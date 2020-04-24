@@ -11,7 +11,7 @@ from junimarc.marc_query import MarcQuery
 from junimarc.json.junimarc import record_from_json
 from . import olap
 from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
-    get_doc_types_report_file_path, get_search_requests_report_file_path
+    get_doc_types_report_file_path, get_search_requests_report_file_path, get_content_types_report_file_path
 from harvester.models import RecordContent
 from ..models import SearchLog, DetailLog, DETAIL_ACTIONS_REFERENCE, get_records
 from ..frontend.titles import get_attr_title
@@ -46,6 +46,14 @@ def users_stat(request):
 
 def doc_types_stat(request):
     report_file_path = get_doc_types_report_file_path()
+    if os.path.exists(report_file_path):
+        with open(report_file_path, 'rb') as report_file:
+            return HttpResponse(report_file.read(), content_type='application/json')
+    return HttpResponse('Отчет ещё не подготовлен')
+
+
+def content_types_stat(request):
+    report_file_path = get_content_types_report_file_path()
     if os.path.exists(report_file_path):
         with open(report_file_path, 'rb') as report_file:
             return HttpResponse(report_file.read(), content_type='application/json')
@@ -160,6 +168,10 @@ def generate_incomes_report():
         report_file.write(data.encode('utf-8'))
 
     data = json.dumps(olap._collections_to_doc_types_olap(collections))
+    with open(get_doc_types_report_file_path(), 'wb') as report_file:
+        report_file.write(data.encode('utf-8'))
+
+    data = json.dumps(olap._collections_to_content_types_olap(collections))
     with open(get_doc_types_report_file_path(), 'wb') as report_file:
         report_file.write(data.encode('utf-8'))
 
@@ -317,7 +329,8 @@ def _generate_date_range(start_date, end_date):
     return list(dates.keys())
 
 
-def _calculate_collection(collections, collection_name, create_date, doc_type='', action=None, session_id=''):
+def _calculate_collection(collections, collection_name, create_date, doc_type='', content_type='', action=None,
+                          session_id=''):
     collection_data = _get_or_create_data(collections, collection_name, {
         'count': 0,
         'create_dates': Counter(),
@@ -331,10 +344,16 @@ def _calculate_collection(collections, collection_name, create_date, doc_type=''
 
     collection_data['count'] += 1
     collection_data['create_dates'][create_date] += 1
+
     if doc_type:
-        doc_type_title = MATERIAL_TITLES.get(doc_type) or doc_type
+        doc_type_title = DOC_TYPE_TITLES.get(doc_type) or doc_type
         collection_data['doc_types'][doc_type_title] += 1
         collection_data['doc_types_by_date'][create_date][doc_type_title] += 1
+
+    if content_type:
+        content_type_title = CONTENT_TYPE_TITLES.get(content_type) or content_type
+        collection_data['content_types'][content_type_title] += 1
+        collection_data['content_types_by_date'][create_date][content_type_title] += 1
 
     if action is not None:
         collection_data['actions'][action] += 1
@@ -361,6 +380,32 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
         params = dict(
             create_date=create_date,
             doc_type=doc_type,
+            content_type=doc_type,
+            action=action,
+            session_id=session_id
+        )
+        level_1_data = _calculate_collection(collections, level_1, **params)
+
+        if not level_2:
+            return
+
+        level_2_data = _calculate_collection(level_1_data['children'], level_2, **params)
+
+        if not level_3:
+            return
+
+        level_3_data = _calculate_collection(level_2_data['children'], level_3, **params)
+
+        if not level_4:
+            return
+
+        level_4_data = _calculate_collection(level_3_data['children'], level_4, **params)
+
+    content_types = _get_content_type(rq)
+    for content_type in content_types:
+        params = dict(
+            create_date=create_date,
+            content_type=content_type,
             action=action,
             session_id=session_id
         )
@@ -454,33 +499,6 @@ def _get_end_day_datetime(date):
     )
 
 
-MATERIAL_TITLES = {
-    'monography': 'монографии',
-    'journal_paper': 'статья',
-    'issues': 'выпуск',
-    'articles_reports': 'статьи отчеты',
-    'collections': 'коллекции',
-    'integrity': 'интегрируемый ресурс',
-    'musical_scores': 'музыкальные партитуры',
-    'maps': 'карты',
-    'video': 'видео',
-    'sound_records': 'звукозапись',
-    'graphics': 'графика',
-    'e_resources': 'электронный ресурс',
-    'dissertation_abstracts': 'диссертация',
-    'referats': 'реферат',
-    'textbook': 'учебное издание',
-    'patents': 'патент',
-    'standarts': 'стандарт',
-    'legislative_acts': 'законодательные акты',
-    'references': 'справочник',
-    'dictionaries': 'словарь',
-    'encyclopedias': 'энциклопедиа',
-    'text': 'текст',
-    '3d': '3D объекты',
-    'electronic': 'электронные',
-}
-
 DOC_TYPE_TITLES = {
     'books': 'книги',
     'journal_paper': 'статьи',
@@ -555,7 +573,7 @@ def _get_doc_type(rq):
     if leader6 in ['i', 'j']:
         _add_to_values(values, 'sound_records')
 
-    if leader6 == 'k': 
+    if leader6 == 'k':
         _add_to_values(values, 'graphics')
 
     if leader6 == 'l':
@@ -567,4 +585,47 @@ def _get_doc_type(rq):
     if leader6 == 'r':
         _add_to_values(values, '3d')
 
+    return values
+
+
+CONTENT_TYPE_TITLES = {
+    '7': 'академический труд',
+    'a': 'библиографическое издание',
+    'b': 'каталог',
+    'c': 'указатель',
+    'd': 'реферат или резюме',
+    'e': 'словарь',
+    'f': 'энциклопедия',
+    'g': 'справочное издание',
+    'h': 'описание проекта',
+    'i': 'статистические данные',
+    'j': 'учебное издание',
+    'k': 'патентный документ',
+    'l': 'стандарт',
+    'm': 'диссертация (оригинал)',
+    'n': 'законы и законодательные акты',
+    'o': 'цифровые таблицы',
+    'p': 'технический отчет',
+    'q': 'экзаменационный лист',
+    'r': 'литературный обзор/рецензия',
+    's': 'договоры',
+    't': 'карикатуры или комиксы',
+    'v': 'диссертация (переработанная)',
+    'w': 'религиозные тексты',
+    'z': 'другой тип содержания',
+}
+
+
+def _get_content_type(rq):
+    f105_a = rq.get_field('105').get_subfield('a').get_data() or ' ' * 9
+    f105_a_pos_4 = f105_a[4:5]
+    f105_a_pos_5 = f105_a[5:6]
+    f105_a_pos_6 = f105_a[6:7]
+    f105_a_pos_7 = f105_a[7:8]
+    f105_a_pos_4_7 = [f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7]
+
+    values = []
+
+    for pos in f105_a_pos_4_7:
+        _add_to_values(values, pos)
     return values
