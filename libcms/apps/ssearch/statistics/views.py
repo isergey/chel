@@ -629,4 +629,7 @@ def _get_content_type(rq):
 
     for pos in f105_a_pos_4_7:
         _add_to_values(values, pos)
+
+    if not values:
+        _add_to_values(values, 'z')
     return values

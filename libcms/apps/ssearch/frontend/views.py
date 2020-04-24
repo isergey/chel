@@ -69,7 +69,8 @@ facet_attrs = [
     ('place_publication_s', 'place_publication_s'),
     ('code_language_s', 'code_language_s'),
     ('content_type_s', 'content_type_s'),
-    ('material_type_s', 'material_type_s'),
+    ('doc_type_s', 'doc_type_s'),
+    ('content_type_s', 'content_type_s'),
     # (u'fauthority_number', u'linked_authority_number_s'),
 ]
 facet_ordering = [
