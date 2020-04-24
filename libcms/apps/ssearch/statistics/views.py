@@ -172,7 +172,7 @@ def generate_incomes_report():
         report_file.write(data.encode('utf-8'))
 
     data = json.dumps(olap._collections_to_content_types_olap(collections))
-    with open(get_doc_types_report_file_path(), 'wb') as report_file:
+    with open(get_content_types_report_file_path(), 'wb') as report_file:
         report_file.write(data.encode('utf-8'))
 
 
