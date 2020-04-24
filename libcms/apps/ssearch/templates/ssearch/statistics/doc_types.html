@@ -1,6 +1,6 @@
 {% extends 'ssearch/statistics/base.html' %}
 {% block content %}
-    <h3>Тип материалов ЭБ</h3>
+    <h3>Тип Тип, вид документов в ЭБ</h3>
     <div id="pivotgrid-chart"></div>
     <div id="pivotgrid"></div>
     <script>
@@ -8,7 +8,7 @@
             var store = new DevExpress.data.CustomStore({
                 loadMode: "raw",
                 load: function () {
-                    return $.getJSON('{% url 'ssearch:statistics:material_types_stat' %}');
+                    return $.getJSON('{% url 'ssearch:statistics:doc_types_stat' %}');
                 }
             });
 
@@ -50,14 +50,14 @@
                 },
                 export: {
                     enabled: true,
-                    fileName: "material_types"
+                    fileName: "doc_types"
                 },
                 dataSource: {
                     fields: [
                         {
-                            caption: "Тип материала",
+                            caption: "Тип, вид документов",
                             width: 150,
-                            dataField: "material_type",
+                            dataField: "doc_type",
                             area: "row"
                         },
                         {

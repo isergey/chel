@@ -185,7 +185,7 @@ def _collections_to_users_olap(collections):
     return rows
 
 
-def _collections_to_material_types_olap(collections):
+def _collections_to_doc_types_olap(collections):
     rows = []
 
     for level_1, collection_data in list(collections.items()):
@@ -198,45 +198,45 @@ def _collections_to_material_types_olap(collections):
                         children = collection_data.get('children')
                         if children:
                             for level_4, collection_data in list(children.items()):
-                                for date, date_data in list(collection_data['material_types_by_date'].items()):
-                                    for material_type, amount in list(date_data.items()):
+                                for date, date_data in list(collection_data['doc_types_by_date'].items()):
+                                    for doc_type, amount in list(date_data.items()):
                                         rows.append({
                                             'level_1': level_1,
                                             'level_2': level_2,
                                             'level_3': level_3,
                                             'level_4': level_4,
                                             'date': date,
-                                            'material_type': material_type,
+                                            'doc_type': doc_type,
                                             'amount': amount,
                                         })
                         else:
-                            for date, date_data in list(collection_data['material_types_by_date'].items()):
-                                for material_type, amount in list(date_data.items()):
+                            for date, date_data in list(collection_data['doc_types_by_date'].items()):
+                                for doc_type, amount in list(date_data.items()):
                                     rows.append({
                                         'level_1': level_1,
                                         'level_2': level_2,
                                         'level_3': level_3,
                                         'date': date,
-                                        'material_type': material_type,
+                                        'doc_type': doc_type,
                                         'amount': amount,
                                     })
                 else:
-                    for date, date_data in list(collection_data['material_types_by_date'].items()):
-                        for material_type, amount in list(date_data.items()):
+                    for date, date_data in list(collection_data['doc_types_by_date'].items()):
+                        for doc_type, amount in list(date_data.items()):
                             rows.append({
                                 'level_1': level_1,
                                 'level_2': level_2,
                                 'date': date,
-                                'material_type': material_type,
+                                'doc_type': doc_type,
                                 'amount': amount,
                             })
         else:
-            for date, date_data in list(collection_data['material_types_by_date'].items()):
-                for material_type, amount in list(date_data.items()):
+            for date, date_data in list(collection_data['doc_types_by_date'].items()):
+                for doc_type, amount in list(date_data.items()):
                     rows.append({
                         'level_1': level_1,
                         'date': date,
-                        'material_type': material_type,
+                        'doc_type': doc_type,
                         'amount': amount,
                     })
 

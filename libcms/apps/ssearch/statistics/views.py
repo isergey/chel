@@ -11,7 +11,7 @@ from junimarc.marc_query import MarcQuery
 from junimarc.json.junimarc import record_from_json
 from . import olap
 from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
-    get_material_types_report_file_path, get_search_requests_report_file_path
+    get_doc_types_report_file_path, get_search_requests_report_file_path
 from harvester.models import RecordContent
 from ..models import SearchLog, DetailLog, DETAIL_ACTIONS_REFERENCE, get_records
 from ..frontend.titles import get_attr_title
@@ -44,8 +44,8 @@ def users_stat(request):
     return HttpResponse('Отчет ещё не подготовлен')
 
 
-def material_types_stat(request):
-    report_file_path = get_material_types_report_file_path()
+def doc_types_stat(request):
+    report_file_path = get_doc_types_report_file_path()
     if os.path.exists(report_file_path):
         with open(report_file_path, 'rb') as report_file:
             return HttpResponse(report_file.read(), content_type='application/json')
@@ -159,8 +159,8 @@ def generate_incomes_report():
     with open(get_income_report_file_path(), 'wb') as report_file:
         report_file.write(data.encode('utf-8'))
 
-    data = json.dumps(olap._collections_to_material_types_olap(collections))
-    with open(get_material_types_report_file_path(), 'wb') as report_file:
+    data = json.dumps(olap._collections_to_doc_types_olap(collections))
+    with open(get_doc_types_report_file_path(), 'wb') as report_file:
         report_file.write(data.encode('utf-8'))
 
 
@@ -317,12 +317,12 @@ def _generate_date_range(start_date, end_date):
     return list(dates.keys())
 
 
-def _calculate_collection(collections, collection_name, create_date, material_type='', action=None, session_id=''):
+def _calculate_collection(collections, collection_name, create_date, doc_type='', action=None, session_id=''):
     collection_data = _get_or_create_data(collections, collection_name, {
         'count': 0,
         'create_dates': Counter(),
-        'material_types': Counter(),
-        'material_types_by_date': defaultdict(Counter),
+        'doc_types': Counter(),
+        'doc_types_by_date': defaultdict(Counter),
         'actions': Counter(),
         'actions_by_date': defaultdict(Counter),
         'sessions_by_date': defaultdict(Counter),
@@ -331,10 +331,10 @@ def _calculate_collection(collections, collection_name, create_date, material_ty
 
     collection_data['count'] += 1
     collection_data['create_dates'][create_date] += 1
-    if material_type:
-        material_type_title = MATERIAL_TITLES.get(material_type) or material_type
-        collection_data['material_types'][material_type_title] += 1
-        collection_data['material_types_by_date'][create_date][material_type_title] += 1
+    if doc_type:
+        doc_type_title = MATERIAL_TITLES.get(doc_type) or doc_type
+        collection_data['doc_types'][doc_type_title] += 1
+        collection_data['doc_types_by_date'][create_date][doc_type_title] += 1
 
     if action is not None:
         collection_data['actions'][action] += 1
@@ -356,11 +356,11 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
     if not level_1:
         return
 
-    material_types = _get_material_type(rq)
-    for material_type in material_types:
+    doc_types = _get_doc_type(rq)
+    for doc_type in doc_types:
         params = dict(
             create_date=create_date,
-            material_type=material_type,
+            doc_type=doc_type,
             action=action,
             session_id=session_id
         )
@@ -481,20 +481,16 @@ MATERIAL_TITLES = {
     'electronic': 'электронные',
 }
 
-MATERIAL_TITLES = {
-    'text_non_handwritten': 'текстовые материалы, кроме рукописных',
-    'text': 'текстовые материалы, рукописные',
-    'musical_scores_non_handwritten': 'музыкальные партитуры, кроме рукописных',
-    'musical_scores': 'музыкальные партитуры, рукописные',
-    'maps_non_handwritten': 'картографические материалы, кроме рукописных',
-    'maps': 'картографические материалы, рукописные',
-    'video': 'проекционные и видеоматериалы',
-    'sound_records_non_musical': 'звукозаписи, немузыкальные',
-    'sound_records': 'звукозаписи, музыкальные',
-    'graphics': 'двухмерная графика',
-    'electronic': 'электронный ресурс',
+DOC_TYPE_TITLES = {
+    'text': 'тексты',
+    'musical_scores': 'ноты',
+    'maps': 'карты',
+    'video': 'видео',
+    'sound_records': 'звукозаписи',
+    'graphics': 'графика',
+    'electronic': 'электронные',
     'other': 'разнородные материалы',
-    '3d': 'трехмерные искусственные и естественные объекты',
+    '3d': 'трехмерные объекты',
 }
 
 
@@ -507,7 +503,7 @@ def _add_to_values(values, data):
     return values
 
 
-def _get_material_type(rq):
+def _get_doc_type(rq):
     leader6 = rq.leader_data()[6:7]
     leader7 = rq.leader_data()[7:8]
     leader8 = rq.leader_data()[8:9]
@@ -538,34 +534,22 @@ def _get_material_type(rq):
     # if leader7 == 'i':
     #     _add_to_values(values, 'integrity')
 
-    if leader6 == 'a':
-        _add_to_values(values, 'text_non_handwritten')
-
-    if leader6 == 'b':
+    if leader6 in ['a', 'b']:
         _add_to_values(values, 'text')
 
-    if leader6 == 'c':
+    if leader6 in ['c', 'd']:
         _add_to_values(values, 'musical_scores_non_handwritten')
 
-    if leader6 == 'd':
-        _add_to_values(values, 'musical_scores')
-
-    if leader6 == 'e':
-        _add_to_values(values, 'maps_non_handwritten')
-
-    if leader6 == 'f':
+    if leader6 in ['e', 'f']:
         _add_to_values(values, 'maps')
 
     if leader6 == 'g':
         _add_to_values(values, 'video')
 
-    if leader6 == 'i':
-        _add_to_values(values, 'sound_records_non_musical')
-
-    if leader6 == 'j':
+    if leader6 in ['i', 'j']:
         _add_to_values(values, 'sound_records')
 
-    if leader6 == 'k':
+    if leader6 == 'k': 
         _add_to_values(values, 'graphics')
 
     if leader6 == 'l':
