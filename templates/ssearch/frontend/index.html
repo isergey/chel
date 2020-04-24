@@ -406,8 +406,11 @@
             }
 
             function drow_facet(content, facet_id) {
+                console.log(content);
+                console.log(facet_id);
                 var prepand_href = window.location.search;
                 var values = content['values'];
+
                 var lines = [];
                 for (var i in values) {
                     var value = values[i];
@@ -415,6 +418,7 @@
                         lines.push('<li class="facets-item__nav-item"><a class="facets-item__nav-link" href="' + prepand_href + '&q=<%=content.values[value][0]%>&attr=<%=facet_id%>"><span class="facets-item__nav-item-name"><%=content.values[value][0]%></span> <span class="facets-item__nav-item-count"><%=content.values[value][1]%></span></a></li>');
                     }
                 }
+
             }
         })();
     </script>
@@ -425,14 +429,14 @@
         <% for ( var value in content.values ) { %>
         <% if ( content.values[value].length == 3 ) { %>
         <li class="facets-item__nav-item">
-            <a class="facets-item__nav-link" href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>">
+            <a class="facets-item__nav-link" href="<%=prepand_href%>&q=<%=encodeURIComponent(content.values[value][0])%>&attr=<%=facet_id%>">
                 <span class="facets-item__nav-item-name"><%=content.values[value][2]%></span>
                 <span class="ffacets-item__nav-item-count"><%=content.values[value][1]%></span>
             </a>
         </li>
         <% }else{ %>
         <li class="facets-item__nav-item">
-            <a href="<%=prepand_href%>&q=<%=content.values[value][0]%>&attr=<%=facet_id%>">
+            <a href="<%=prepand_href%>&q=<%=encodeURIComponent(content.values[value][0])%>&attr=<%=facet_id%>">
                 <span class="facets-item__nav-item-name"><%=content.values[value][0]%></span>
                 <span class="ffacets-item__nav-item-count"><%=content.values[value][1]%></span>
             </a>

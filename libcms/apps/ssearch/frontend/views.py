@@ -737,7 +737,7 @@ def extract_request_query_attrs(request):
     if request.GET.get('in', None):
         values = request.GET.getlist('pq', []) + values
         attrs = request.GET.getlist('pattr', []) + attrs
-
+    print(values, attrs)
     return (attrs, values)
 
 
@@ -884,8 +884,8 @@ def make_search_breadcumbs(attrs, values):
 
 def get_pairs(attrs, values):
     pairs = []
-    # if len(attrs) != len(values):
-    #     raise ValueError('Параметры не соответвуют значениям')
+    if len(attrs) != len(values):
+        raise ValueError('Параметры не соответвуют значениям')
 
     for i, attr in enumerate(attrs):
         pairs.append((attr, values[i]))
