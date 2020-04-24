@@ -336,6 +336,8 @@ def _calculate_collection(collections, collection_name, create_date, doc_type=''
         'create_dates': Counter(),
         'doc_types': Counter(),
         'doc_types_by_date': defaultdict(Counter),
+        'content_types': Counter(),
+        'content_types_by_date': defaultdict(Counter),
         'actions': Counter(),
         'actions_by_date': defaultdict(Counter),
         'sessions_by_date': defaultdict(Counter),
@@ -380,7 +382,6 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
         params = dict(
             create_date=create_date,
             doc_type=doc_type,
-            content_type=doc_type,
             action=action,
             session_id=session_id
         )
