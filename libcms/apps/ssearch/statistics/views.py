@@ -482,6 +482,12 @@ MATERIAL_TITLES = {
 }
 
 DOC_TYPE_TITLES = {
+    'books': 'книги',
+    'journal_paper': 'статьи',
+    'issues': 'выпуск',
+    'collections': 'коллекции',
+    'integrity': 'интегрируемый ресурс',
+    'periodicals': 'периодика',
     'text': 'тексты',
     'musical_scores': 'ноты',
     'maps': 'карты',
@@ -516,23 +522,23 @@ def _get_doc_type(rq):
 
     values = []
 
-    # if leader7 == 'm' and leader8 == '0':
-    #     _add_to_values(values, 'monography')
-    #
-    # if leader7 == 's' and leader8 == '1':
-    #     _add_to_values(values, 'journal_paper')
-    #
-    # if leader6 == 'a' and leader7 == 'm' and leader8 == '2':
-    #     _add_to_values(values, 'issues')
-    #
-    # if leader7 == 'a' or leader7 == 'b':
-    #     _add_to_values(values, 'articles_reports')
-    #
-    # if leader7 == 'c':
-    #     _add_to_values(values, 'collections')
-    #
-    # if leader7 == 'i':
-    #     _add_to_values(values, 'integrity')
+    if leader7 == 'm' and leader8 == '0':
+        _add_to_values(values, 'books')
+
+    if leader7 == 'a' and leader8 == '0':
+        _add_to_values(values, 'journal_paper')
+
+    if leader6 == 'a' and leader7 == 'm' and leader8 == '2':
+        _add_to_values(values, 'issues')
+
+    if leader7 == 'c':
+        _add_to_values(values, 'collections')
+
+    if leader7 == 'i':
+        _add_to_values(values, 'integrity')
+
+    if leader7 == 's' and leader8 == '1':
+        _add_to_values(values, 'periodicals')
 
     if leader6 in ['a', 'b']:
         _add_to_values(values, 'text')
@@ -560,41 +566,5 @@ def _get_doc_type(rq):
 
     if leader6 == 'r':
         _add_to_values(values, '3d')
-
-    # if ((rq.get_field('106').is_exist() or rq.get_field('135').is_exist())
-    #         and (rq.get_field('856').get_subfield('u').is_exist()
-    #              or rq.get_field('330').get_subfield('u').is_exist())
-    # ):
-    #     _add_to_values(values, 'e_resources')
-
-    # if 'm' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'dissertation_abstracts')
-    #
-    # if 'd' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'referats')
-    #
-    # if 'j' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'textbook')
-
-    # if leader7 == 'm' and 'k' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'patents')
-    #
-    # if leader7 == 'm' and 'l' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'standarts')
-    #
-    # if leader7 == 's' and 'l' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'legislative_acts')
-    #
-    # if leader7 == 'm' and 'p' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'technical_reports')
-    #
-    # if 'g' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'references')
-    #
-    # if 'e' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'dictionaries')
-    #
-    # if 'f' in f105_a_pos_4_7:
-    #     _add_to_values(values, 'encyclopedias')
 
     return values
