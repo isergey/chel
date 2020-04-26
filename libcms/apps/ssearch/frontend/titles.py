@@ -145,7 +145,7 @@ attr_value_title = {
     },
     'content_type': {
         'title': {
-            'ru': 'Тип содержания'
+            'ru': 'Форма содержания'
         },
         'values': {
             'a': {
