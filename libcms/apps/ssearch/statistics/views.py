@@ -623,7 +623,12 @@ def _get_content_type(rq):
     f105_a_pos_5 = f105_a[5:6]
     f105_a_pos_6 = f105_a[6:7]
     f105_a_pos_7 = f105_a[7:8]
-    f105_a_pos_4_7 = ''.join([f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7]).replace('#', '').replace(' ', '').replace('|', '').lower().replace('а', 'a')
+    f105_a_pos_4_7 = ''.join([f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7])\
+        .lower() \
+        .replace('#', '') \
+        .replace(' ', '') \
+        .replace('|', '') \
+        .replace('-', '')
 
     values = []
 
