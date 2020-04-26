@@ -563,7 +563,7 @@ def _get_doc_type(rq):
         _add_to_values(values, 'text')
 
     if leader6 in ['c', 'd']:
-        _add_to_values(values, 'musical_scores_non_handwritten')
+        _add_to_values(values, 'musical_scores')
 
     if leader6 in ['e', 'f']:
         _add_to_values(values, 'maps')
