@@ -617,7 +617,7 @@ def detail(request):
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
     record['marc_dump'] = get_marc_dump(content_tree)
-
+    print(record['dict'])
     user = 0
     if request.user.is_authenticated:
         user = request.user.id
@@ -656,7 +656,7 @@ def detail(request):
     _add_to_attributes(attributes, 'Репродуцировано в', record_template.reproduction())
     _add_to_attributes(attributes, 'Предмет', record_template.subject_heading())
     _add_to_attributes(attributes, 'Ключевые слова', record_template.subject_keywords())
-    _add_to_attributes(attributes, 'Год публикации', record['dict'].get('date_of_publication_of_original', []))
+    _add_to_attributes(attributes, 'Год изготовления копии', record['dict'].get('date_of_publication', []))
     _add_to_attributes(attributes, 'Год издания оригинала', record['dict'].get('date_of_publication_of_original', []))
     _add_to_attributes(attributes, 'Издатель', record['dict'].get('publisher', []))
     _add_to_attributes(attributes, 'Коллекция', record['dict'].get('catalog', []))
@@ -817,10 +817,10 @@ def construct_query(attrs, values, optimize=True):
             if attr != 'all_t':
                 if value != '*':
                     value = '"%s"' % value
-                if attr == 'date_of_publication_s':
+                if attr == 'date_of_publication_of_original_s':
                     res = re.findall(r'\d+', value)
                     if len(res) == 2:
-                        sc.add_attr('date_of_publication_l', '[{start} TO {stop}]'.format(start=res[0], stop=res[1]))
+                        sc.add_attr('date_of_publication_of_original_l', '[{start} TO {stop}]'.format(start=res[0], stop=res[1]))
                     else:
                         sc.add_attr(attr, value)
                 else:

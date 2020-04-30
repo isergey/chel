@@ -87,7 +87,7 @@
                         {% endfor %}
                         <div class="facets-item">
                             <div class="facets-item__title-wrap">
-                                <h4 class="facets-item__title">Диапазон дат</h4>
+                                <h4 class="facets-item__title">Диапазон дат издания оригинала</h4>
                             </div>
 
                             <div class="facets-item__panel">
@@ -134,10 +134,10 @@
                                             });
                                         })();
                                     </script>
-                                {% elif not stats.date_of_publication_l %}
-                                     Отсутвует диапазон дат
+                                {% elif not stats.date_of_publication_of_original_l %}
+                                     Отсутствует диапазон дат
                                 {% else %}
-                                     {{ stats.date_of_publication_l.min|floatformat:0 }} - {{ stats.date_of_publication_l.max|floatformat:0 }}
+                                     {{ stats.date_of_publication_of_original_l.min|floatformat:0 }} - {{ stats.date_of_publication_of_original_l.max|floatformat:0 }}
                                 {% endif %}
 {#                                        {{ stats.date_of_publication_l.min|floatformat:0 }} {{ stats.date_of_publication_l.max|floatformat:0 }}#}
                             </div>
