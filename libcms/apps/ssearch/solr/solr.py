@@ -167,7 +167,7 @@ class FacetParams(object):
         if self.__pivot:
             params['facet.pivot'] = self.__pivot
         params['stats'] = 'true'
-        params['stats.field'] = 'date_of_publication_l'
+        params['stats.field'] = 'date_of_publication_of_original_l'
         if self.facet_sort:
             for facet_sort_item in self.facet_sort:
                 facet_sort_name = list(facet_sort_item.keys())[0]
