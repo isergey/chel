@@ -104,8 +104,8 @@
                                         (function () {
                                             'use strict';
                                             var slider = document.getElementById('slider');
-                                            var min = {{ stats.date_of_publication_l.min|floatformat:0 }};
-                                            var max = {{ stats.date_of_publication_l.max|floatformat:0 }};
+                                            var min = {{ stats.date_of_publication_of_original_l.min|floatformat:0 }};
+                                            var max = {{ stats.date_of_publication_of_original_l.max|floatformat:0 }};
                                             noUiSlider.create(slider, {
                                                 start: [min, max],
                                                 connect: true,
@@ -128,8 +128,8 @@
                                             slider.noUiSlider.on('change', function () {
                                                 var range = slider.noUiSlider.get();
                                                 var url = new URL(window.location.href);
-                                                url.searchParams.append('attr', 'date_of_publication_s');
-                                                url.searchParams.append('q', range[0] + '-' + range[1])
+                                                url.searchParams.append('attr', 'date_of_publication_of_original_s');
+                                                url.searchParams.append('q', range[0] + '-' + range[1]);
                                                 window.location = url.toString();
                                             });
                                         })();
