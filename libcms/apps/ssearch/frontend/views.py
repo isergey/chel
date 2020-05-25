@@ -617,7 +617,6 @@ def detail(request):
     record['library_cadr'] = get_library_card(content_tree)
     record['dict'] = get_content_dict(content_tree)
     record['marc_dump'] = get_marc_dump(content_tree)
-    print(record['dict'])
     user = 0
     if request.user.is_authenticated:
         user = request.user.id

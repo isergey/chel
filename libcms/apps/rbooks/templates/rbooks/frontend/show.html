@@ -30,7 +30,7 @@
 <script>
     $(function () {
         $.post('{% url 'ssearch:frontend:log' %}', {
-            id: '{{ request.GET.id }}',
+            id: '{{ id }}',
             action: 'VIEW_FULL_TEXT'
         }).done(function () {
         }).fail(function () {

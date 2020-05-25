@@ -69,6 +69,7 @@ def show(request):
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': code,
         'locale_chain': locale_chain,
+        'id': id,
     })
 
 
