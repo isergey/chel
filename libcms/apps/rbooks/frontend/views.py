@@ -31,12 +31,11 @@ def show(request):
     id = request.GET.get('id', None)
     if not id:
         referer = request.META.get('HTTP_REFERER')
-        print('referer', referer)
         if referer:
             ref_url = urlparse.urlparse(referer)
             q = parse_qs(ref_url.query)
             id = q.get('id', [''])[0]
-    print('idididid', id)
+
     try:
         book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
@@ -66,7 +65,7 @@ def show(request):
         view_log = ViewLog(doc_id=id, collection=collection)
         if request.user.is_authenticated:
             view_log.user_id = request.user.id
-        view_log.save()
+        ViewLog.objects.bulk_create([view_log])
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': code,
         'locale_chain': locale_chain,
