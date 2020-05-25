@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import io
+import urllib.parse as urlparse
+from urllib.parse import parse_qs
 from zipfile import ZipFile
 from django.conf import settings
 from django.shortcuts import render
@@ -27,6 +29,12 @@ class AccessDenied(Exception): pass
 def show(request):
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
+    if not id:
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            ref_url = urlparse.urlparse(referer)
+            q = parse_qs(ref_url.query)
+            id = q.get('id', [''])[0]
 
     try:
         book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
@@ -46,7 +54,7 @@ def show(request):
     }
 
     locale_chain = locale_titles.get(cur_language, 'en_US')
-    id = request.GET.get('id', '')
+
     if id:
         collection = ''
         records = get_records([id])
