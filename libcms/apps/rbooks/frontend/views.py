@@ -31,11 +31,12 @@ def show(request):
     id = request.GET.get('id', None)
     if not id:
         referer = request.META.get('HTTP_REFERER')
+        print('referer', referer)
         if referer:
             ref_url = urlparse.urlparse(referer)
             q = parse_qs(ref_url.query)
             id = q.get('id', [''])[0]
-
+    print('idididid', id)
     try:
         book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
