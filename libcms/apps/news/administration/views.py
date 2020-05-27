@@ -280,6 +280,8 @@ def handle_uploaded_file(f, old_name=None):
     return name
 
 def delete_avatar(name):
+    if not name:
+        return 
     upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
     if os.path.isfile(upload_dir + name):
         os.remove(upload_dir + name)
