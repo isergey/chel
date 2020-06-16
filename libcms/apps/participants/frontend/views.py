@@ -29,7 +29,6 @@ def make_library_dict(library):
     if not lib_dict['plans']:
         lib_dict['plans'] = 'не указано'
 
-
     if not lib_dict['latitude']:
         lib_dict['latitude'] = 0
 
@@ -177,7 +176,6 @@ def get_branches_by_district(request):
         js_orgs.append(make_library_dict(library))
 
     return  HttpResponse(simplejson.dumps(js_orgs, ensure_ascii=False))
-
 
 
 def districts(request):
