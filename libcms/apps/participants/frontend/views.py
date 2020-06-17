@@ -227,7 +227,7 @@ def districts(request):
     types = LibraryType.objects.all()
 
     main_branches = []
-    if cbs_list is None:
+    if not filter:
         main_branches = Library.objects.filter(main=True).order_by('name').exclude(parent=None)
 
     return render(request, 'participants/frontend/districts.html', {
