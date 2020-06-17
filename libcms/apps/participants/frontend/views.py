@@ -9,7 +9,7 @@ from ..models import Library, District, LibraryType
 
 def make_library_dict(library):
 
-    lib_dict =  {
+    lib_dict = {
         'id': library.id,
         'code': library.code,
         'name': library.name,
