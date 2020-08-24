@@ -28,7 +28,7 @@ def index(request):
     })
 
 
-def filer_by_date(request, day='', month='', year=''):
+def filer_by_date(request, year='', month='',  day=''):
     # start_date = datetime.datetime(year=int(year), month=int(month), day=int(day), hour=0, minute=0, second=0)
     # events_page = get_page(request, Event.objects.filter(active=True, start_date__lte=start_date, end_date__gte=start_date).order_by('-create_date'))
 
