@@ -150,9 +150,9 @@ def generate_incomes_report():
         if not create_date:
             continue
 
-        # edoc = rq.get_field('856').is_exist()
-        # if not edoc:
-        #     continue
+        edoc = rq.get_field('856').is_exist()
+        if not edoc:
+            continue
 
         try:
             create_date = datetime.strptime(create_date, '%Y%m%d').date()
