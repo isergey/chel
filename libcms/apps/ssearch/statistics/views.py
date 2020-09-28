@@ -150,8 +150,8 @@ def generate_incomes_report():
         if not create_date:
             continue
 
-        edoc = rq.get_field('856').is_exist()
-        if not edoc:
+        edoc = rq.get_field('856').get_subfield('u').get_data()
+        if '/dl/' not in edoc:
             continue
 
         try:
