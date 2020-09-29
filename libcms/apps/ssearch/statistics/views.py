@@ -378,10 +378,12 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
         return
 
     doc_types = _get_doc_type(rq)
+    content_types = _get_content_type(rq)
     # for doc_type in doc_types:
     params = dict(
         create_date=create_date,
         doc_type=doc_types[0] if len(doc_types) else '',
+        content_type=content_types[0] if len(content_types) else '',
         action=action,
         session_id=session_id
     )
