@@ -402,30 +402,30 @@ def _fill_collection(collections, rq, create_date, action='', session_id=''):
 
         level_4_data = _calculate_collection(level_3_data['children'], level_4, **params)
 
-    content_types = _get_content_type(rq)
-    for content_type in content_types:
-        params = dict(
-            create_date=create_date,
-            content_type=content_type,
-            action=action,
-            session_id=session_id
-        )
-        level_1_data = _calculate_collection(collections, level_1, **params)
-
-        if not level_2:
-            return
-
-        level_2_data = _calculate_collection(level_1_data['children'], level_2, **params)
-
-        if not level_3:
-            return
-
-        level_3_data = _calculate_collection(level_2_data['children'], level_3, **params)
-
-        if not level_4:
-            return
-
-        level_4_data = _calculate_collection(level_3_data['children'], level_4, **params)
+    # content_types = _get_content_type(rq)
+    # for content_type in content_types:
+    #     params = dict(
+    #         create_date=create_date,
+    #         content_type=content_type,
+    #         action=action,
+    #         session_id=session_id
+    #     )
+    #     level_1_data = _calculate_collection(collections, level_1, **params)
+    #
+    #     if not level_2:
+    #         return
+    #
+    #     level_2_data = _calculate_collection(level_1_data['children'], level_2, **params)
+    #
+    #     if not level_3:
+    #         return
+    #
+    #     level_3_data = _calculate_collection(level_2_data['children'], level_3, **params)
+    #
+    #     if not level_4:
+    #         return
+    #
+    #     level_4_data = _calculate_collection(level_3_data['children'], level_4, **params)
 
 
 def _get_detail_log(start_date=None, end_date=None, action=''):
