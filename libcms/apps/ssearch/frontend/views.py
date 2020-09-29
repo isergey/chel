@@ -736,7 +736,6 @@ def extract_request_query_attrs(request):
     if request.GET.get('in', None):
         values = request.GET.getlist('pq', []) + values
         attrs = request.GET.getlist('pattr', []) + attrs
-    print(values, attrs)
     return (attrs, values)
 
 
