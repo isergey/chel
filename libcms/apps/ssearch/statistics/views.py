@@ -150,11 +150,6 @@ def generate_incomes_report():
         if not create_date:
             continue
 
-        el = rq.get_field('908').get_subfield('b').get_data()
-        if el.strip() != 'Уральская электронная библиотека':
-            continue
-
-
         edoc = rq.get_field('856').get_subfield('u').get_data()
         if '/dl/' not in edoc:
             continue
