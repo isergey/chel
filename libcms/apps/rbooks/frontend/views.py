@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import io
+import requests
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from zipfile import ZipFile
@@ -130,3 +131,34 @@ def get_book_path(book, remote_adrr):
 
 def stats(request):
     pass
+
+
+def rbooks2(request):
+    code = request.GET.get('code')
+    if not code:
+        raise Http404('Book not found')
+
+    resp = requests.post('http://127.0.0.1:9000/session', params={
+        'code': code,
+        'key': '123456',
+        'p': '1',
+        't': '1'
+    })
+
+    session = resp.text
+    rbooks_server = 'http://127.0.0.1:9000'
+    file = '{rbooks_server}/edoc2?session={session}'.format(
+        rbooks_server=rbooks_server,
+        session=session,
+
+    )
+
+    settings = '{rbooks_server}/rbooks2/rbooks2-settings.zip'.format(
+        rbooks_server=rbooks_server,
+    )
+
+    return render(request, 'rbooks/frontend/rbooks2.html', {
+        'file': file,
+        'rbooks_server': rbooks_server,
+        'settings': settings
+    })

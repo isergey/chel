@@ -89,9 +89,11 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div facet="{{ facet.code }}">
-                        <button class="load_more_facet btn btn-mini">Показать еще</button>
-                    </div>
+                    {% if facet.values|length > 29 %}
+                        <div facet="{{ facet.code }}">
+                            <button class="load_more_facet btn btn-mini">Показать еще</button>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}

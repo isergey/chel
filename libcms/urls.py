@@ -30,6 +30,7 @@ urlpatterns += i18n_patterns(
     re_path(r'^participants/', include(('participants.urls', 'participants'))),
     re_path(r'^forum/', include(('forum.urls', 'forum'))),
     re_path(r'^orders/', include(('orders.urls', 'orders'))),
+    re_path(r'^rbooks/', include(('rbooks.urls', 'rbooks'))),
     #re_path(r'^zgate/', include(('zgate.urls'))),
     re_path(r'^ask_librarian/', include(('ask_librarian.urls', 'ask_librarian'))),
     re_path(r'^gallery/', include(('gallery.urls', 'gallery'))),
