@@ -6,7 +6,7 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from zipfile import ZipFile
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
@@ -42,7 +42,8 @@ def show(request):
     except AccessDenied as e:
         return HttpResponse(str(e) + ' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
     if not book_path:
-        raise Http404('Книга не найдена')
+        return redirect(reverse('rbooks:frontend:rbooks2') + '?code=' + code)
+        # raise Http404('Книга не найдена')
 
     # if not os.path.isfile(book_path):
     #     return  HttpResponse(u'Не найден edoc контейнер')
