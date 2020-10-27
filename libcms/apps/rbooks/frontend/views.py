@@ -138,19 +138,18 @@ def rbooks2(request):
     if not code:
         raise Http404('Book not found')
 
-    rbooks_server = 'http://chelreglib.ru/rbooks2'
-    resp = requests.post(rbooks_server + '/session', params={
+
+    resp = requests.post('http://127.0.0.1:9000/rbooks2/session', params={
         'code': code,
         'key': '123456',
         'p': '1',
         't': '1'
     })
 
-    session = resp.text
-
+    rbooks_server = 'http://chelreglib.ru/rbooks2'
     file = '{rbooks_server}/edoc2?session={session}'.format(
         rbooks_server=rbooks_server,
-        session=session,
+        session=resp.text,
 
     )
 
