@@ -38,12 +38,12 @@ def show(request):
             id = q.get('id', [''])[0]
 
     try:
+        edoc2_path = get_edoc2_path(code)
         book_path = get_book_path(code, request.META.get('REMOTE_ADDR', '0.0.0.0'))
     except AccessDenied as e:
         return HttpResponse(str(e) + ' Ваш ip адрес: ' + request.META.get('REMOTE_ADDR', '0.0.0.0'))
-    if not book_path:
-        return redirect(reverse('rbooks:frontend:rbooks2') + '?code=' + code)
-        # raise Http404('Книга не найдена')
+    if not book_path and not edoc2_path:
+        raise Http404('Книга не найдена')
 
     # if not os.path.isfile(book_path):
     #     return  HttpResponse(u'Не найден edoc контейнер')
@@ -68,6 +68,10 @@ def show(request):
         if request.user.is_authenticated:
             view_log.user_id = request.user.id
         ViewLog.objects.bulk_create([view_log])
+
+    if edoc2_path and os.path.isfile(edoc2_path):
+        return rbooks2(request)
+
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': code,
         'locale_chain': locale_chain,
@@ -128,6 +132,9 @@ def draw(request, book):
 
 def get_book_path(book, remote_adrr):
     return settings.RBOOKS['documents_directory'] + '/' + book + '.edoc'
+
+def get_edoc2_path(book):
+    return settings.RBOOKS['edoc2_directory'] + '/' + book + '.edoc2'
 
 
 def stats(request):
