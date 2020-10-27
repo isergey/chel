@@ -45,29 +45,6 @@
     </table>
 </div>
 
-{#<div class="acc-container facets-container">#}
-{#    <ul style="padding: 0; margin: 0">#}
-{#    {% for pivot_facet in pivot_facets %}#}
-{#        <li style="margin: 0 0 10px 0">#}
-{#            {{ pivot_facet.value }} {{ pivot_facet.count }}#}
-{#            <a style="font-weight: bold" href="{% add_get_append attr=pivot_facet.field value=pivot_facet.value %}">#}
-{#                {{ pivot_facet.title }}#}
-{#            </a> {{ pivot_facet.count }}#}
-{#            {% if pivot_facet.pivot  %}#}
-{#                <ul style="padding-left: 20px; margin: 0">#}
-{#                {% for pivot_facet in pivot_facet.pivot %}#}
-{#                    <li style="list-style-type: square;">#}
-{#                        <a href="{% add_get_append attr=pivot_facet.field value=pivot_facet.value %}">#}
-{#                            {{ pivot_facet.title }}#}
-{#                        </a> {{ pivot_facet.count }}#}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#                </ul>#}
-{#            {% endif %}#}
-{#        </li>#}
-{#    {% endfor %}#}
-{#    </ul>#}
-{#</div>#}
 <div class="acc-container facets-containe">
     {% for facet in facets %}
         {% if facet.values %}
@@ -89,42 +66,14 @@
                             </div>
                         {% endfor %}
                     </div>
-                    {% if facet.values|length > 29 %}
-                        <div facet="{{ facet.code }}">
-                            <button class="load_more_facet btn btn-mini">Показать еще</button>
-                        </div>
-                    {% endif %}
+                    <div facet="{{ facet.code }}">
+                        <button class="load_more_facet btn btn-mini">Показать еще</button>
+                    </div>
                 </div>
             </div>
         {% endif %}
     {% endfor %}
 </div>
-
-{#{% for facet in facets %}    #}
-{#    {% if facet.values %}#}
-{#        <div facet="{{ facet.code }}" class="facets-container">#}
-{##}
-{#            <div class="facets-title">{{ facet.title }}</div>#}
-{##}
-{#            <ul class="facets">#}
-{#                {% for value in facet.values %}#}
-{#                    <li>#}
-{#                        <a href="{% add_get_append attr=facet.code value=value.value %}">#}
-{#                            <span title="{{ value.count }}" class="badge pull-right">{{ value.count }}</span>#}
-{#                            {{ value.title }}#}
-{#                        </a>#}
-{##}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
-{#            <div style="text-align: center">#}
-{#                <button class="load_more_facet btn btn-facets">Показать еще</button>#}
-{#            </div>#}
-{#        </div>#}
-{#        {% if not forloop.last %}#}
-{#            <hr/>{% endif %}#}
-{#    {% endif %}#}
-{#{% endfor %}#}
 
 <div class="facet_modal modal" style="display: none">
     <div class="modal-dialog" style="width: 100%; max-width: 900px">
