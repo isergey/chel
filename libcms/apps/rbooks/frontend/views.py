@@ -11,7 +11,7 @@ from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
 from ..models import ViewLog
-from ssearch.frontend.views import get_content_dict
+from ssearch.frontend.views import get_content_dict, init_solr_collection
 from ssearch.models import get_records
 
 
@@ -30,6 +30,16 @@ class AccessDenied(Exception): pass
 def show(request):
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
+
+    if not id:
+        uc = init_solr_collection('uc')
+        url = request.build_absolute_uri()
+        result = uc.search(query='elink_s:"{url}"'.format(url=url.replace('\'', '\\\\')), rows=1)
+        docs = result.get_docs()
+
+        if docs:
+            id = docs[0]['id']
+
     if not id:
         referer = request.META.get('HTTP_REFERER')
         if referer:
