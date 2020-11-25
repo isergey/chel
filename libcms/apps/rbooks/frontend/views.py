@@ -80,7 +80,7 @@ def show(request):
         ViewLog.objects.bulk_create([view_log])
 
     if edoc2_path and os.path.isfile(edoc2_path):
-        return rbooks2(request)
+        return rbooks2(request, id)
 
     return render(request, 'rbooks/frontend/show.html', {
         'file_name': code,
@@ -143,6 +143,7 @@ def draw(request, book):
 def get_book_path(book, remote_adrr):
     return settings.RBOOKS['documents_directory'] + '/' + book + '.edoc'
 
+
 def get_edoc2_path(book):
     return settings.RBOOKS['edoc2_directory'] + '/' + book + '.edoc2'
 
@@ -151,7 +152,7 @@ def stats(request):
     pass
 
 
-def rbooks2(request):
+def rbooks2(request, id=None):
     code = request.GET.get('code')
     if not code:
         raise Http404('Book not found')
@@ -165,7 +166,6 @@ def rbooks2(request):
         't': '1'
     })
 
-
     file = '{rbooks_server}/edoc2?session={session}'.format(
         rbooks_server=rbooks_server,
         session=resp.text,
@@ -178,6 +178,7 @@ def rbooks2(request):
 
     return render(request, 'rbooks/frontend/rbooks2.html', {
         'file': file,
+        'id': id,
         'rbooks_server': rbooks_server,
         'settings': settings
     })
