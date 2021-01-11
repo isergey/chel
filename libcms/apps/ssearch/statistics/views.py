@@ -252,7 +252,7 @@ def generate_actions_report():
 
 def generate_search_requests_report():
     report = defaultdict(Counter)
-    for search_log in iterator(RecordContent.objects.all()):
+    for search_log in iterator(SearchLog.objects.all()):
         str_date_time = search_log.date_time.strftime('%Y%m%d')
         for param in list(search_log.get_params().keys()):
             report[str_date_time][param] += 1
