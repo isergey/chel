@@ -136,10 +136,57 @@ def popular_collections_stat(request):
     })
 
 
+def batch_iterator(qs, batch_size=1000,
+                   order_by='pk', start_with=None, limit=None):
+    qs = qs.order_by(order_by)
+
+    cond = order_by + '__gt'
+    if order_by.startswith('-'):
+        order_by = order_by[1:]
+        cond = order_by + '__lt'
+
+    while True:
+        if limit is not None and batch_size > limit:
+            batch_size = limit
+
+        local_qs = qs
+        if start_with is not None:
+            local_qs = qs.filter(**{cond: start_with})
+        # Make query explicitly
+        items = list(local_qs[:batch_size])
+        returned = len(items)
+
+        if limit is not None:
+            limit -= returned
+        if returned:
+            last_item = items[-1]
+            try:
+                start_with = getattr(last_item, order_by)
+            except AttributeError:
+                try:
+                    start_with = last_item[order_by]
+                except (KeyError, TypeError):
+                    raise ValueError(
+                        '`{0}` field should be in returned objects. '
+                        'Please add it to `.values()` or `.values_list()` or '
+                        'use different field as `order_by`.'.format(order_by))
+
+            yield items
+
+        # If the number of returned items is less than requested
+        if returned < batch_size or limit == 0:
+            break
+
+
+def iterator(qs, batch_size=1000, order_by='pk', start_with=None, limit=None):
+    for batch in batch_iterator(qs, batch_size, order_by, start_with, limit):
+        for item in batch:
+            yield item
+
 def generate_incomes_report():
     collections = {}
     for i, record_content in enumerate(
-            RecordContent.objects.all().iterator()):
+            iterator(RecordContent.objects.all())):
         if i % 10000 == 0:
             print(i)
         # print record_content.unpack_content()
@@ -205,7 +252,7 @@ def generate_actions_report():
 
 def generate_search_requests_report():
     report = defaultdict(Counter)
-    for search_log in SearchLog.objects.all().iterator():
+    for search_log in iterator(RecordContent.objects.all()):
         str_date_time = search_log.date_time.strftime('%Y%m%d')
         for param in list(search_log.get_params().keys()):
             report[str_date_time][param] += 1
@@ -239,7 +286,7 @@ def generate_popular_records_report(start_date, end_date, action=DETAIL_ACTIONS_
 
     if action:
         q &= Q(action=action)
-    for detail_log in DetailLog.objects.filter(q).iterator():
+    for detail_log in iterator(DetailLog.objects.filter(q)):
         report[detail_log.record_id] += 1
 
     records = []
@@ -447,7 +494,7 @@ def _get_detail_log(start_date=None, end_date=None, action=''):
 
     cache = {}
     print('start _get_detail_log')
-    for i, detail_log in enumerate(DetailLog.objects.filter(q).iterator()):
+    for i, detail_log in enumerate(iterator(DetailLog.objects.filter(q))):
         if detail_log.record_id in cache:
             record = cache.get(detail_log.record_id)
             if record is None:
