@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import datetime
 import json as simplejson
 from lxml import etree
@@ -33,7 +34,7 @@ class MBAOrderException(Exception):
     pass
 
 
-xslt_bib_draw = etree.parse('libcms/xsl/full_document.xsl')
+xslt_bib_draw = etree.parse(os.path.join(settings.BASE_DIR, 'libcms/xsl/full_document.xsl'))
 xslt_bib_draw_transformer = etree.XSLT(xslt_bib_draw)
 
 
