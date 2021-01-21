@@ -100,8 +100,8 @@ def book(request, book):
     token1 = request.GET.get('token1')
     xml = """\
 <Document Version="1.0">\
-<Source File="source.xml" URL="http://%s/dl/%s/draw/?part=Part0.zip&amp;book=%s&amp;version=1285566137"/>\
-<FileURL>http://%s/dl/%s/draw/?part={part}&amp;book=%s</FileURL>\
+<Source File="source.xml" URL="https://%s/dl/%s/draw/?part=Part0.zip&amp;book=%s&amp;version=1285566137"/>\
+<FileURL>https://%s/dl/%s/draw/?part={part}&amp;book=%s</FileURL>\
 <Token1>%s</Token1>\
 <Permissions><AllowCopyToClipboard>true</AllowCopyToClipboard><AllowPrint>true</AllowPrint></Permissions>\
 </Document>""" % (request.META['HTTP_HOST'], book, book, request.META['HTTP_HOST'], book, book, token1)
@@ -157,7 +157,7 @@ def rbooks2(request, id=None):
     if not code:
         raise Http404('Book not found')
 
-    rbooks_server = 'http://chelreglib.ru/rbooks2'
+    rbooks_server = 'https://chelreglib.ru/rbooks2'
 
     resp = requests.post(rbooks_server + '/session', params={
         'code': code,
