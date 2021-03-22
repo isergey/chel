@@ -9,4 +9,6 @@ urlpatterns = (
     re_path(r'^favorits/(?P<id>\d+)/$', views.favorite_show , name="favorite_show"),
     re_path(r'^(?P<id>\d+)/add_to_favorite/$', views.add_to_favorits , name="add_to_favorits"),
     re_path(r'^(?P<id>\d+)/delete_from_favorite/$', views.delete_from_favorite , name="delete_from_favorite"),
+    re_path(r'^(?P<id>\d+)/participant/$', views.participant , name="participant"),
+    re_path(r'^(?P<id>\d+)/participant/delete/$', views.delete_participant, name="delete_participant"),
 )

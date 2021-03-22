@@ -17,11 +17,11 @@
                             <a href="{% url 'events:frontend:index' %}">Афиша мероприятий</a>
                         </li>
                     {% endif %}
-{#                    <li>#}
-{#                        <span class="crumb__current">#}
-{#                        {{ content.title }}#}
-{#                        </span>#}
-{#                    </li>#}
+                    {#                    <li>#}
+                    {#                        <span class="crumb__current">#}
+                    {#                        {{ content.title }}#}
+                    {#                        </span>#}
+                    {#                    </li>#}
                 </ol>
             </div>
             <h1 class="content-title">{{ content.title }}</h1>
@@ -40,6 +40,48 @@
                     </div>
                 </div>
             </div>
+            {% if participant %}
+                <div class="row">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="card-title">Вы учавствуете в этом событии!</h2>
+                                <p class="card-detail"></p>
+                                <ul class="card-nav">
+                                    <li class="card-nav__item">
+                                        <a href="{% url 'events:frontend:delete_participant' event.id %}" class="btn">
+                                            отменить участие
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="card-title">Принять участие</h2>
+                                <p class="card-detail">
+                                    {% if not request.user.is_authenticated %}
+                                        Для этого необходимо зарегистрировать или войти на портал.
+                                    {% endif %}
+                                </p>
+                                <ul class="card-nav">
+                                    <li class="card-nav__item">
+                                        <a href="{% url 'events:frontend:participant' event.id %}" class="btn">
+                                            принять участие
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
         </div>
     </main>
 {% endblock %}

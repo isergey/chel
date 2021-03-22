@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
 
 from common.pagination import get_page
-from ..models import Event, EventContent
+from ..models import Event, EventContent, EventParticipant
 from .forms import EventForm, EventContentForm, EventFilterForm
 
 
@@ -91,10 +91,7 @@ def events_list(request):
 @transaction.atomic()
 def create_event(request):
     if request.method == 'POST':
-        print(request.POST)
-
         event_form = EventForm(request.POST, prefix='event_form')
-        print(event_form)
         event_content_forms = []
         for lang in settings.LANGUAGES:
             event_content_forms.append({
@@ -103,16 +100,15 @@ def create_event(request):
             })
 
         if event_form.is_valid():
-
             valid = False
             for event_content_form in event_content_forms:
                 valid = event_content_form['form'].is_valid()
                 if not valid:
                     break
-
             if valid:
                 event = event_form.save(commit=False)
                 event.save()
+                event_form.save_m2m()
                 for event_content_form in event_content_forms:
                     event_content = event_content_form['form'].save(commit=False)
                     event_content.lang = event_content_form['lang']
@@ -199,9 +195,12 @@ def edit_event(request, id):
                     'lang': lang
                 })
 
+    participants_count = EventParticipant.objects.filter(event=event).count()
     return render(request, 'events/administration/edit_event.html', {
+        'event': event,
         'event_form': event_form,
         'event_content_forms': event_content_forms,
+        'participants_count': participants_count,
     })
 
 
@@ -212,3 +211,16 @@ def delete_event(request, id):
     event = get_object_or_404(Event, id=id)
     event.delete()
     return redirect('events:administration:events_list')
+
+
+@login_required
+@permission_required_or_403('events.add_event')
+def participants(request, id):
+    event = get_object_or_404(Event, id=id)
+    content = EventContent.objects.filter(event=event).first()
+    event_participants = EventParticipant.objects.filter(event=event)
+    return render(request, 'events/administration/participants.html', {
+        'event': event,
+        'content': content,
+        'participants': event_participants,
+    })

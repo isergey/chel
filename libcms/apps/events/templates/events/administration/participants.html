@@ -1,0 +1,48 @@
+{% extends 'events/administration/index.html' %}
+{% load static %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block breadcrumb %}
+    <li>
+        <a href="{% url 'events:administration:events_list' %}">События</a>
+        <span class="divider"></span>
+    </li>
+    <li>
+        <a href="{% url 'events:administration:edit_event' event.id %}">{{ content.title }}</a>
+        <span class="divider"></span>
+    </li>
+    <li>
+       Участники
+    </li>
+{% endblock %}
+
+{% block action_content %}
+{% get_static_prefix as  STATIC_URL%}
+    <table class="table">
+        <tr>
+            <th>
+                ФИО
+            </th>
+            <th>
+                № чит. билета
+            </th>
+            <th>
+                Email
+            </th>
+        </tr>
+        {% for participant in participants %}
+            <tr>
+                <td>
+                    {{ participant.last_name }} {{ participant.first_name }}
+                </td>
+                <td>
+                    {{ participant.reader_id }}
+                </td>
+                <td>
+                    {{ participant.email }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

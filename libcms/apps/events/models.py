@@ -1,60 +1,311 @@
 # -*- encoding: utf-8 -*-
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from django.contrib.auth.models import User
+from mptt.models import MPTTModel, TreeForeignKey
+
+
+class Category(MPTTModel):
+    code = models.SlugField(
+        max_length=128,
+        primary_key=True,
+        verbose_name='Код категории',
+        help_text='Разрешены латинские буквы, знаки _ и -'
+    )
+
+    parent = TreeForeignKey(
+        'self',
+        on_delete=models.PROTECT,
+        verbose_name='Родительская категория',
+        null=True,
+        blank=True
+    )
+
+    title = models.CharField(
+        verbose_name='Название',
+        max_length=1024,
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+    def clean(self):
+        self.code = self.code.strip().lower()
+
+
+class AgeCategory(models.Model):
+    age = models.IntegerField(
+        primary_key=True,
+        verbose_name='Возраст (лет)',
+        help_text='Укажите возраст, начиная с которого, можно посещать события.'
+    )
+
+    def __str__(self):
+        return '{age}+'.format(age=str(self.age))
+
+    class Meta:
+        verbose_name = 'Возрастная категория'
+        verbose_name_plural = 'Возрастные категории'
+        ordering = ['age']
 
 
 class Event(models.Model):
-    start_date = models.DateTimeField(verbose_name="Дата начала",
-                                      null=False, blank=False, db_index=True)
-    end_date = models.DateTimeField(verbose_name="Дата окончания",
-                                    null=False, blank=False, db_index=True)
-    address = models.CharField(verbose_name="Место проведения",
-                               max_length=512, blank=True)
-    active = models.BooleanField(verbose_name="Активно",
-                                 default=True, db_index=True)
-    create_date = models.DateTimeField(auto_now=True, verbose_name="Дата создания", db_index=True)
+    start_date = models.DateTimeField(
+        verbose_name='Дата начала',
+        null=False,
+        blank=False,
+        db_index=True
+    )
+
+    end_date = models.DateTimeField(
+        verbose_name='Дата окончания',
+        null=False,
+        blank=False,
+        db_index=True
+    )
+
+    address = models.CharField(
+        verbose_name='Место проведения',
+        max_length=512,
+        blank=True
+    )
+
+    active = models.BooleanField(
+        verbose_name='Активно',
+        default=True,
+        db_index=True
+    )
+
+    category = models.ManyToManyField(
+        Category,
+        verbose_name='Категории',
+        blank=True,
+    )
+
+    age_category = models.ForeignKey(
+        AgeCategory,
+        verbose_name='Возрастная категория',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True
+    )
+
+    keywords = models.CharField(
+        verbose_name='Ключевые слова',
+        max_length=1024,
+        blank=True,
+        help_text='Через запятую'
+    )
+
+    create_date = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата создания',
+        db_index=True
+    )
 
     class Meta:
-        verbose_name = "мероприятие"
-        verbose_name_plural = "мероприятия"
+        verbose_name = 'мероприятие'
+        verbose_name_plural = 'мероприятия'
 
 
 class EventContent(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    lang = models.CharField(verbose_name="Язык", db_index=True, max_length=2, choices=settings.LANGUAGES)
-    title = models.CharField(verbose_name='Заглавие', max_length=512)
-    teaser = models.CharField(verbose_name='Тизер', max_length=512)
-    content = models.TextField(verbose_name='Описание события')
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE
+    )
+
+    lang = models.CharField(
+        verbose_name='Язык',
+        db_index=True,
+        max_length=2,
+        choices=settings.LANGUAGES
+    )
+
+    title = models.CharField(
+        verbose_name='Заглавие',
+        max_length=512
+    )
+
+    teaser = models.CharField(
+        verbose_name='Тизер',
+        max_length=512
+    )
+
+    content = models.TextField(
+        verbose_name='Описание события'
+    )
 
     class Meta:
         unique_together = (('event', 'lang'),)
 
 
-class FavoriteEvent(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, verbose_name="Мероприятие", on_delete=models.CASCADE)
+class EventParticipant(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE
+    )
+
+    event = models.ForeignKey(
+        Event,
+        verbose_name='Мероприятие',
+        on_delete=models.CASCADE
+    )
+
+    last_name = models.CharField(
+        verbose_name='Фамилия',
+        max_length=256
+    )
+
+    first_name = models.CharField(
+        verbose_name='Имя Отчество',
+        max_length=256
+    )
+
+    reader_id = models.CharField(
+        verbose_name='№ читательского билета',
+        max_length=256
+    )
+
+    email = models.EmailField(
+        verbose_name='Email',
+        max_length=256
+    )
+
+    create_date = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата создания',
+        db_index=True
+    )
 
     class Meta:
-        verbose_name = "отмеченное мероприятие"
-        verbose_name_plural = "отмеченные мероприятия"
+        verbose_name = 'Участник мероприятия'
+        verbose_name_plural = 'Участники мероприятий'
+        unique_together = [['user', 'event']]
+
+
+class EventParticipationReminder(models.Model):
+    TYPE_EMAIL = 'email'
+    TYPE_SMS = 'sms'
+
+    TYPES = (
+        (TYPE_EMAIL, 'по электронной почте'),
+        (TYPE_SMS, 'sms')
+    )
+
+    event_participant = models.ForeignKey(
+        EventParticipant,
+        on_delete=models.CASCADE,
+        verbose_name='Участник'
+    )
+
+    remind_date = models.DateTimeField(
+        verbose_name='Время напоминания',
+        db_index=True
+    )
+
+    type = models.CharField(
+        verbose_name='Тип напоминияния',
+        choices=TYPES,
+        default=TYPE_EMAIL,
+        max_length=64
+    )
+
+    is_sent = models.BooleanField(
+        verbose_name='Отправлено',
+        default=False,
+        db_index=True
+    )
+
+    created = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата создания',
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = 'Напоминания об участии'
+        verbose_name_plural = 'Напоминания об участии'
+
+    def clean(self):
+        if EventParticipant.objects.filter(id=self.event_participant).count() > 3:
+            raise ValidationError('Превышен лимит допустимых напоминаний на одно событие')
+
+        if self.remind_date > self.event_participant.event.start_date:
+            raise ValidationError('Время напоминания не может быть позде времени начала события')
+
+
+class FavoriteEvent(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE
+    )
+
+    event = models.ForeignKey(
+        Event,
+        verbose_name='Мероприятие',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = 'отмеченное мероприятие'
+        verbose_name_plural = 'отмеченные мероприятия'
+        unique_together = [['user', 'event']]
 
 
 class EventRemember(models.Model):
-    favorite_event = models.ForeignKey(FavoriteEvent, verbose_name="Избранное событие", on_delete=models.CASCADE)
-    remember_date = models.DateField(verbose_name="Дата напоминания", blank=True, null=True)
-    remember_system = models.IntegerField(verbose_name="Система напоминания (0-email, 1-sms)", default=0)
+    favorite_event = models.ForeignKey(
+        FavoriteEvent,
+        verbose_name='Избранное событие',
+        on_delete=models.CASCADE
+    )
+
+    remember_date = models.DateField(
+        verbose_name='Дата напоминания',
+        blank=True,
+        null=True
+    )
+
+    remember_system = models.IntegerField(
+        verbose_name='Система напоминания (0-email, 1-sms)',
+        default=0
+    )
 
 
 class EventComment(models.Model):
-    event = models.ForeignKey(Event, verbose_name="Мероприятие", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
-    text = models.CharField(verbose_name="Текст комментария (макс. 1024 символа)",
-                            max_length=1024, null=False, blank=False)
-    post_date = models.DateTimeField(verbose_name="Дата отправления",
-                                     auto_now_add=True)
+    event = models.ForeignKey(
+        Event,
+        verbose_name='Мероприятие',
+        on_delete=models.CASCADE
+    )
+
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE
+    )
+
+    text = models.CharField(
+        verbose_name='Текст комментария (макс. 1024 символа)',
+        max_length=1024,
+        null=False,
+        blank=False
+    )
+
+    post_date = models.DateTimeField(
+        verbose_name='Дата отправления',
+        auto_now_add=True
+    )
 
     class Meta:
-        verbose_name = "комментарий"
-        verbose_name_plural = "комментарии"
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'комментарии'

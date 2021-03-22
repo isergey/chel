@@ -1,0 +1,40 @@
+{% extends 'index/frontend/index.html' %}
+{% load bootstrap3 %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <main class="main main_bg-white">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    {% if request.GEckT.ba %}
+                        <li>
+                            <a href="{{ request.GET.back }}">Афиша мероприятий</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'events:frontend:index' %}">Афиша мероприятий</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <span class="crumb__current">
+                        {{ content.title }}
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">Заполните форму для участия в событии</h1>
+
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <form method="post">{% csrf_token %}
+                        {% bootstrap_form form %}
+                        <button type="submit" class="btn">Принять участие</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

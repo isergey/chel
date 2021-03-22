@@ -19,6 +19,9 @@
             <h1 class="content-title">
                 Афиша мероприятий
             </h1>
+            <div>
+                <button class="btn" id="show-event-filter">Фильтр</button>
+            </div>
             <div class="card-list card-list_4">
                 {% for event in events_list %}
                     <div class="card-list__item">
@@ -35,8 +38,14 @@
                                 <p class="card-detail">{{ event.event_content.teaser }}</p>
                                 <ul class="card-nav">
                                     <li class="card-nav__item">
+                                        <a class="btn btn_sm" style="margin-bottom: 5px"
+                                           href="{% url 'events:frontend:participant' event.id %}">
+                                            Принять участие
+                                        </a>
+                                        <br/>
                                         <a class="btn btn_sm"
-                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">Добавить в
+                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">
+                                            Добавить в
                                             избранное</a>
                                     </li>
                                 </ul>
@@ -48,4 +57,37 @@
             {% pagination events_page %}
         </div>
     </main>
+    <div class="modal micromodal-slide" id="filter-modal" aria-hidden="true">
+
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <form method="get" novalidate>
+
+                    <header class="modal__header">
+                        <h2 class="modal__title" id="modal-1-title">
+                            Фильтр событий
+                        </h2>
+                        <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                    </header>
+                    <div class="modal__content" id="modal-1-content">
+                        <div class="tab-pane" id="marc">
+
+                            {{ filter_form }}
+
+                        </div>
+                    </div>
+                    <footer class="modal__footer">
+                        <button class="btn" type="submit">Фильтровать</button>
+                        <button class="btn" data-micromodal-close aria-label="Закрыть модальное окно">Закрыть</button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        $('#show-event-filter').on('click', function () {
+            MicroModal.show('filter-modal');
+        });
+    </script>
 {% endblock %}

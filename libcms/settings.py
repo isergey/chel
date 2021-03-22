@@ -173,4 +173,12 @@ LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = "mailer.backend.DbBackend"
 
+from django.conf.global_settings import DATETIME_INPUT_FORMATS
+
+DATETIME_INPUT_FORMATS += ('%Y-%m-%dT%H:%M',)
+FIRST_DAY_OF_WEEK = 1
+
+BOOTSTRAP3 = {
+    'set_placeholder': False,
+}
 from .local_settings import *
