@@ -105,6 +105,12 @@ class Event(models.Model):
         help_text='Через запятую'
     )
 
+    translation_html = models.TextField(
+        verbose_name='HTML код плеера для трансляций или воспроизведения',
+        blank=True,
+        max_length=10 * 1024
+    )
+
     create_date = models.DateTimeField(
         auto_now=True,
         verbose_name='Дата создания',

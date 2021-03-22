@@ -54,11 +54,17 @@
                             <p>
                                 <b>Ключевые слова</b>:
                                 {% for keyword in event.splited_keywords %}
-                                    <a href="{{ EVENTS_INDEX_URL }}?keywords={{ keyword|urlencode }}">{{ keyword }}</a>{% if not forloop.last %}, {% endif %}
+                                    <a href="{{ EVENTS_INDEX_URL }}?keywords={{ keyword|urlencode }}">{{ keyword }}</a>
+                                    {% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </p>
                         {% endif %}
                         {{ content.content|safe }}
+                        {% if event.translation_html %}
+                            <div>
+                                {{ event.translation_html|safe }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
