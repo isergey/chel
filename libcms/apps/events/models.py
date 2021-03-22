@@ -115,6 +115,13 @@ class Event(models.Model):
         verbose_name = 'мероприятие'
         verbose_name_plural = 'мероприятия'
 
+    def splited_keywords(self):
+        keywords = []
+
+        for keyword in self.keywords.split(','):
+            keywords.append(keyword.strip())
+        return keywords
+
 
 class EventContent(models.Model):
     event = models.ForeignKey(

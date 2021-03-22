@@ -49,6 +49,15 @@
                                 </p>
                             {% endif %}
                         {% endwith %}
+                        {% if event.splited_keywords %}
+                            {% url 'events:frontend:index' as EVENTS_INDEX_URL %}
+                            <p>
+                                <b>Ключевые слова</b>:
+                                {% for keyword in event.splited_keywords %}
+                                    <a href="{{ EVENTS_INDEX_URL }}?keywords={{ keyword|urlencode }}">{{ keyword }}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
                         {{ content.content|safe }}
                     </div>
                 </div>
