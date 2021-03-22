@@ -20,6 +20,9 @@
     form input[type=text], textarea{
         width: 95%;
     }
+    form textarea#id_event_form-translation_html {
+        height: 70px;
+    }
     </style>
     <form novalidate class="form" method="POST">{% csrf_token %}
         <legend>Редактирование события</legend>
