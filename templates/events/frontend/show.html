@@ -36,6 +36,19 @@
                         <p><b>Место проведения</b>: {{ event.address }}<br/></p>
                         <p><b>Начало</b>: {{ event.start_date }}</p>
                         <p><b>Окончание</b>: {{ event.end_date }}</p>
+                        {% if event.age_category_id %}
+                            <p><b>Возрастная категория</b>: {{ event.age_category }}</p>
+                        {% endif %}
+                        {% with event.category.all as categories %}
+                            {% if categories %}
+                                <p>
+                                    <b>Категория:</b>
+                                    {% for category in categories %}
+                                        {{ category }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        {% endwith %}
                         {{ content.content|safe }}
                     </div>
                 </div>
@@ -66,7 +79,7 @@
                                 <h2 class="card-title">Принять участие</h2>
                                 <p class="card-detail">
                                     {% if not request.user.is_authenticated %}
-                                        Для этого необходимо зарегистрировать или войти на портал.
+                                        Для этого необходимо зарегистрироваться или войти на портал.
                                     {% endif %}
                                 </p>
                                 <ul class="card-nav">
