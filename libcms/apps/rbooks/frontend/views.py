@@ -131,6 +131,7 @@ def draw(request, book):
 
     if not book_path or not os.path.isfile(book_path):
         raise Http404('Книга не найдена')
+
     zf = ZipFile(book_path)
 
     response = HttpResponse(content_type="application/zip")
