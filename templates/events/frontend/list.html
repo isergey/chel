@@ -38,15 +38,16 @@
                                 <p class="card-detail">{{ event.event_content.teaser }}</p>
                                 <ul class="card-nav">
                                     <li class="card-nav__item">
-                                        <a class="btn btn_sm" style="margin-bottom: 5px"
+                                        <a class="btn btn_sm"
+{#                                           style="margin-bottom: 5px"#}
                                            href="{% url 'events:frontend:participant' event.id %}">
                                             Принять участие
                                         </a>
-                                        <br/>
-                                        <a class="btn btn_sm"
-                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">
-                                            Добавить в
-                                            избранное</a>
+{#                                        <br/>#}
+{#                                        <a class="btn btn_sm"#}
+{#                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">#}
+{#                                            Добавить в#}
+{#                                            избранное</a>#}
                                     </li>
                                 </ul>
                             </div>
