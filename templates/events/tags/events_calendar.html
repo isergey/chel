@@ -40,7 +40,7 @@
             {% endif %}
 
             {% if  day.events %}
-                <a class='evnt' href="{% url 'events:frontend:index' %}?start_date={{ year }}-{{ month }}-{{ day }}&end_date={{ year }}-{{ month }}-{{ day }}"
+                <a class='evnt' href="{% url 'events:frontend:events_by_date' year month day.day %}"
                    title="Показать события дня"> {{ day.day }}</a>
 
             {% else %}
