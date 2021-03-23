@@ -29,10 +29,16 @@ class Category(MPTTModel):
         db_index=True
     )
 
+    order = models.IntegerField(
+        verbose_name='Порядок вывода',
+        default=0,
+        db_index=True
+    )
+
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ['title']
+        ordering = ['-order', 'title']
 
     def __str__(self):
         return self.title

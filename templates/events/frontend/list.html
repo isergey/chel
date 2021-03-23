@@ -59,7 +59,7 @@
             {% pagination events_page %}
         </div>
     </main>
-    <div class="modal micromodal-slide" id="filter-modal" aria-hidden="true">
+    <div class="modal micromodal-slide" id="filter-modal" aria-hidden="true" >
 
         <div class="modal__overlay" tabindex="-1" data-micromodal-close>
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
@@ -72,10 +72,8 @@
                         <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                     </header>
                     <div class="modal__content" id="modal-1-content">
-                        <div class="tab-pane" id="marc">
-
+                        <div class="tab-pane">
                             {% bootstrap_form filter_form %}
-
                         </div>
                     </div>
                     <footer class="modal__footer">

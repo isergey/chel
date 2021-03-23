@@ -5,7 +5,7 @@ from . import models
 
 
 class CategoryAdmin(MPTTModelAdmin):
-    pass
+    list_display = ['title', 'parent', 'order']
 
 
 admin.site.register(models.Category, CategoryAdmin)
