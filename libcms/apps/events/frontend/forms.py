@@ -9,6 +9,7 @@ class EventsFilterForm(forms.Form):
     #     empty_label=u'выберите из списка',
     #     label=u'Укажите библиотеку',
     #     queryset=Library.objects.filter(parent=None), required=False, widget=forms.Select)
+
     keywords = forms.CharField(
         required=False,
         label='Ключевые слова',
@@ -53,6 +54,12 @@ class EventsFilterForm(forms.Form):
         widget=forms.Select(attrs={
             'class': 'form-control'
         })
+    )
+
+    address = forms.ModelMultipleChoiceField(
+        label=u'Место проведения',
+        queryset=models.Address.objects.all(),
+        required=False,
     )
 
 

@@ -53,6 +53,10 @@ def index(request):
         if age_category:
             q = Q(age_category__gte=age_category)
 
+        address = filter_form.cleaned_data['address']
+        if address:
+            q = Q(address=address)
+
     events_page = get_page(request, models.Event.objects.filter(q).order_by('-create_date'))
 
     event_contents = list(

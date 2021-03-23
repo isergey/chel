@@ -57,6 +57,42 @@ class AgeCategory(models.Model):
         ordering = ['age']
 
 
+class Address(models.Model):
+    title = models.CharField(
+        verbose_name='Название места',
+        max_length=512,
+        db_index=True
+    )
+
+    address = models.CharField(
+        verbose_name='Адрес',
+        max_length=512
+    )
+
+    contacts = models.TextField(
+        verbose_name='Контакты',
+        max_length=1024
+    )
+
+    geo_latitude = models.FloatField(
+        verbose_name='Гео широта',
+        default=0
+    )
+
+    geo_longitude = models.FloatField(
+        verbose_name='Гео долгота',
+        default=0
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Адрес'
+        verbose_name_plural = 'Адреса'
+        ordering = ['title']
+
+
 class Event(models.Model):
     start_date = models.DateTimeField(
         verbose_name='Дата начала',
@@ -76,6 +112,14 @@ class Event(models.Model):
         verbose_name='Место проведения',
         max_length=512,
         blank=True
+    )
+
+    address_reference = models.ForeignKey(
+        Address,
+        on_delete=models.PROTECT,
+        verbose_name='Место проведения из справочника',
+        blank=True,
+        null=True
     )
 
     active = models.BooleanField(

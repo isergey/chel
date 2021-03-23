@@ -18,6 +18,13 @@ class AgeCategoryAdmin(admin.ModelAdmin):
 admin.site.register(models.AgeCategory, AgeCategoryAdmin)
 
 
+class AddressAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(models.Address, AddressAdmin)
+
+
 class EventParticipantInline(admin.TabularInline):
     model = models.EventParticipant
 
