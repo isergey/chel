@@ -77,10 +77,10 @@ def index(request):
 
 
 def filer_by_date(request, year='', month='', day=''):
-    return resolve_url('events:fronted:index') + '?start_date={start_date}&end_date={end_date}'.format(
+    return redirect(resolve_url('events:fronted:index') + '?start_date={start_date}&end_date={end_date}'.format(
         start_date='{year}-{month}-{day}'.format(year=year, month=month, day=day),
         end_date='{year}-{month}-{day}'.format(year=year, month=month, day=day),
-    )
+    ))
 
     # start_date = datetime.datetime(year=int(year), month=int(month), day=int(day), hour=0, minute=0, second=0)
     # events_page = get_page(request, Event.objects.filter(active=True, start_date__lte=start_date, end_date__gte=start_date).order_by('-create_date'))
