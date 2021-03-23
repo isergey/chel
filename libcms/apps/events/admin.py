@@ -4,7 +4,7 @@ from mptt.admin import MPTTModelAdmin
 from . import models
 
 
-class CategoryAdmin(MPTTModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ['title', 'parent', 'order']
 
 
