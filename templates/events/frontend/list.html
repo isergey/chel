@@ -1,5 +1,6 @@
 {% extends 'index/frontend/index.html' %}
 {% load pagination_tag %}
+{% load bootstrap3 %}
 {% block title %}{{ content.title }}{% endblock %}
 {% block content %}
     <main class="main">
@@ -73,7 +74,7 @@
                     <div class="modal__content" id="modal-1-content">
                         <div class="tab-pane" id="marc">
 
-                            {{ filter_form }}
+                            {% bootstrap_form filter_form %}
 
                         </div>
                     </div>
