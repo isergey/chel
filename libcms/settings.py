@@ -180,5 +180,6 @@ FIRST_DAY_OF_WEEK = 1
 
 BOOTSTRAP3 = {
     'set_placeholder': False,
+    'success_css_class': '',
 }
 from .local_settings import *
