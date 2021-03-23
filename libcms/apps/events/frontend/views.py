@@ -77,6 +77,12 @@ def index(request):
 
 
 def filer_by_date(request, year='', month='', day=''):
+    if int(month) < 10:
+        day = '0' + month
+
+    if int(day) < 10:
+        day = '0' + day
+
     return redirect(resolve_url('events:frontend:index') + '?start_date={start_date}&end_date={end_date}'.format(
         start_date='{year}-{month}-{day}'.format(year=year, month=month, day=day),
         end_date='{year}-{month}-{day}'.format(year=year, month=month, day=day),
