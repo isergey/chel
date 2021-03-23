@@ -56,7 +56,7 @@ class EventsFilterForm(forms.Form):
         })
     )
 
-    address = forms.ModelMultipleChoiceField(
+    address = forms.ModelChoiceField(
         label=u'Место проведения',
         queryset=models.Address.objects.all(),
         required=False,
