@@ -78,7 +78,7 @@ def index(request):
 
 def filer_by_date(request, year='', month='', day=''):
     if int(month) < 10:
-        day = '0' + month
+        month = '0' + month
 
     if int(day) < 10:
         day = '0' + day
