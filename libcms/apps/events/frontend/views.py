@@ -77,7 +77,7 @@ def index(request):
 
 
 def filer_by_date(request, year='', month='', day=''):
-    return redirect(resolve_url('events:fronted:index') + '?start_date={start_date}&end_date={end_date}'.format(
+    return redirect(resolve_url('events:frontend:index') + '?start_date={start_date}&end_date={end_date}'.format(
         start_date='{year}-{month}-{day}'.format(year=year, month=month, day=day),
         end_date='{year}-{month}-{day}'.format(year=year, month=month, day=day),
     ))
