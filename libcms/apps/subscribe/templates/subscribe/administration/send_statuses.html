@@ -1,0 +1,74 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Статусы отправки" %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-sm">
+        <a class="btn btn-sm btn-danger delete" href="{% url 'subscribe:administration:delete_all_send_statuses' %}">Удалить все статусы</a>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Email</th>
+            <th>Пользователь</th>
+            <th>Письмо</th>
+            <th>Отправлено</th>
+            <th>Ошибка</th>
+            <th>Сообщение ошибки</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+        </tr>
+    {% for send_status in send_statuses_page.object_list %}
+        <tr>
+            <td>
+                {% if send_status.subscriber.email %}
+                    {{ send_status.subscriber.email }}
+                {% else %}
+                    {{ send_status.subscriber.user.email }}
+                {% endif %}
+            </td>
+            <td>
+                {{ send_status.subscriber.user }}
+            </td>
+            <td>
+                {{ send_status.letter.subject }} ({{ send_status.letter.subscribe }})
+            </td>
+            <td>
+                {% if not send_status.is_sent %}
+                    <span class="label label-danger">нет</span>
+                {% else %}
+                    <span class="label label-success">да</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if send_status.has_error %}
+                    <span class="label label-danger">да</span>
+                {% else %}
+                    <span class="label label-success">нет</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ send_status.error_message }}
+            </td>
+            <td>{{ subscriber.create_date }}</td>
+            <td>
+                <a href="{% url 'subscribe:administration:delete_send_status' send_status.id %}" class="btn btn-sm btn-danger delete">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% bootstrap_pagination send_statuses_page %}
+
+{% endblock %}
+
+

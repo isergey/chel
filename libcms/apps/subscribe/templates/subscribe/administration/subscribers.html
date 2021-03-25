@@ -1,0 +1,73 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Подписчики" %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-sm">
+        <a href="{% url 'subscribe:administration:create_subscriber' %}" class="btn btn-sm btn-success">
+            <span  class="glyphicon glyphicon-plus"></span> Добавить подписчика
+        </a>
+
+    </div>
+
+    <form class="form-search" method="get">
+          <input type="text" class="input-large search-query" type="text" name="name" maxlength="255" value="{{ request.GET.name }}"  />
+          <button type="submit" class=" ">Найти</button>
+            {% if filtered %}
+                <a class="btn btn-warning" href="?">Очистить фильтр</a>
+        {% endif %}
+    </form>
+    <table class="table">
+        <tr>
+            <th>Email</th>
+            <th>Пользователь</th>
+            <th>Рассылка</th>
+            <th>Активный</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+        </tr>
+    {% for subscriber in subscribers_page.object_list %}
+        <tr>
+            <td>
+                <a href="{% url 'subscribe:administration:change_subscriber' subscriber.id %}">{{ subscriber.email }}</a>
+            </td>
+            <td>
+                {{ subscriber.user }}
+            </td>
+            <td>
+                {% for subscribe in subscriber.subscribe.all  %}
+                    <div>{{ subscribe }}</div>
+                {% endfor %}
+            </td>
+            <td>
+                {% if not subscriber.is_active %}
+                    <span class="label label-danger">нет</span>
+                {% else %}
+                    <span class="label label-success">да</span>
+                {% endif %}
+            </td>
+            <td>{{ subscriber.create_date }}</td>
+            <td>
+                <a href="{% url 'subscribe:administration:change_subscriber' subscriber.id %}" class="btn btn-sm btn-default">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </a>
+                <a href="{% url 'subscribe:administration:delete_subscriber' subscriber.id %}" class="btn btn-sm btn-danger delete">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% bootstrap_pagination subscribers_page %}
+
+{% endblock %}
+
+

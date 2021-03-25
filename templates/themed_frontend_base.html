@@ -159,7 +159,9 @@
         <ul class="header-md-menu hide-sm">
             {% if request.user.is_authenticated %}
                 <li class="header-md-menu__item">
-                    <button class="btn" href="/ru/accounts/logout/">Вы вошли как: {{ request.user.username }}</button>
+                    <button class="btn" href="/ru/accounts/logout/">
+                        Вы вошли как: {{ request.user.first_name }}{% if request.user.last_name %} {{ request.user.last_name|first }}.{% else %}.{% endif %}
+                    </button>
                     <ul class="header-dropdown">
                         <li class="header-dropdown__item">
                             <a class="header-dropdown__link" href="{% url 'orders:frontend:index' %}">Заказы</a>

@@ -1,0 +1,27 @@
+{% load active_link %}
+<ul class="nav nav-list">
+    <li class="nav-header">Отправка</li>
+    <li class="{% active 'subscribe:administration:commands'  %}">
+        <a href="{% url 'subscribe:administration:commands' %}">Команды</a>
+    </li>
+    <li class="nav-header">Подписки</li>
+    <li class="{% active 'subscribe:administration:letters'  %}">
+        <a href="{% url 'subscribe:administration:letters' %}">Письма</a>
+    </li>
+    <li class="{% active 'subscribe:administration:subscribes'  %}">
+        <a href="{% url 'subscribe:administration:subscribes' %}">Рассылки</a>
+    </li>
+    <li class="{% active 'subscribe:administration:groups'  %}">
+        <a href="{% url 'subscribe:administration:groups' %}">Группы</a>
+    </li>
+    <li class="{% active 'subscribe:administration:subscribers'  %}">
+        <a href="{% url 'subscribe:administration:subscribers' %}">Подписчики</a>
+    </li>
+    <li class="{% active_path 'subscribe:administration:send_statuses' %}">
+        <a href="{% url 'subscribe:administration:send_statuses' %}">Статусы отправки</a>
+    </li>
+    <li class="nav-header">Статистика</li>
+    <li class="{% active_path 'subscribe:administration:statistics' %}">
+        <a href="{% url 'subscribe:administration:statistics' %}">Статистика</a>
+    </li>
+</ul>

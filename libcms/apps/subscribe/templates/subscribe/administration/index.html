@@ -1,0 +1,18 @@
+{% extends 'administration/base.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% block module_title %}Подписки{% endblock %}
+{% block module_menu %}
+    {% include 'subscribe/administration/module_menu.html' %}
+{% endblock %}
+{% block module_content %}
+    <ul class="breadcrumb">
+    {% block breadcrumb %}
+        {% breadcrumb "Подписки"  %}
+    {% endblock %}
+    </ul>
+    {% block action_content %}
+        Summary
+    {% endblock %}
+{% endblock %}

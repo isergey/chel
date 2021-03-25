@@ -1,0 +1,32 @@
+{% extends 'index/frontend/index.html' %}
+{% load bootstrap3 %}
+{% block title %}Подписки{% endblock %}
+{% block breadcrumb %}
+    <section>
+        <div id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></li>
+                <li class="active">Подписки</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block index_content %}
+    <style>
+        form.subscribe_form label {
+            margin: 0;
+        }
+    </style>
+    <form novalidate method="POST" class="subscribe_form">{% csrf_token %}
+        <fieldset>
+            {% for group in forms %}
+                <h3 style="margin: 0">{{ group.group.name }}</h3>
+                {% bootstrap_form group.form %}
+            {% endfor %}
+            {% bootstrap_form email_form %}
+            <div class="form-actions">
+                <input type="submit" value="Сохранить изменения" class="btn btn-default"/>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

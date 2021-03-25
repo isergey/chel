@@ -23,3 +23,6 @@ python-docx==0.8.10
 redis==3.4.1
 requests==2.23.0
 rfc3986==1.4.0
+
+pytz~=2020.5
+pydantic~=1.8.1

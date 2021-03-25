@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.utils.functional import cached_property
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -177,6 +178,10 @@ class Event(models.Model):
         for keyword in self.keywords.split(','):
             keywords.append(keyword.strip())
         return keywords
+
+    @cached_property
+    def content(self):
+        return EventContent.objects.filter(event=self).first()
 
 
 class EventContent(models.Model):

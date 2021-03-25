@@ -1,0 +1,26 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Рассылки" subscribe:administration:subscribes %}
+    {% if not subscribe %}
+        {% breadcrumb "Создание рассылки" %}
+    {% else %}
+        {% breadcrumb "Изменение рассылки" %}
+    {% endif %}
+{% endblock %}
+
+{% block action_content %}
+    <form novalidate method="POST">{% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+
+{% endblock %}
+
+

@@ -1,0 +1,59 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Рассылки" %}
+{% endblock %}
+
+{% block action_content %}
+    <ul class="nav nav-tabs">
+        {% for group in groups %}
+            <li {% if group.id|safe == group_id %}class="active" {% endif %}>
+                <a href="{% url 'subscribe:administration:subscribes' group.id %}">{{ group.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="well well-sm">
+        <a href="{% url 'subscribe:administration:create_subscribe' %}" class="btn btn-sm btn-success">
+            <span  class="glyphicon glyphicon-plus"></span> Добавить рассылку
+        </a>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Название</th>
+            <th>Порядок</th>
+            <th>Скрыта для пользователей</th>
+            <th>Действия</th>
+        </tr>
+    {% for subscribe in subscribes_page.object_list %}
+        <tr>
+            <td>
+                <a href="{% url 'subscribe:administration:change_subscribe' subscribe.id %}">{{ subscribe.name }}</a>
+            </td>
+            <td>{{ subscribe.order }}</td>
+            <td>
+                {% if subscribe.hidden %}
+                    <span class="label label-danger">да</span>
+                {% else %}
+                    <span class="label label-success">нет</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'subscribe:administration:delete_subscribe' subscribe.id %}" class="btn btn-sm btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% bootstrap_pagination subscribes_page %}
+
+{% endblock %}
+
+

@@ -1,0 +1,17 @@
+{% extends 'index/frontend/index.html' %}
+{% block title %}Подписки{% endblock %}
+{% block breadcrumb %}
+<section>
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index:frontend:index' %}">Главная</a> <span class="divider">/</span></li>
+            <li class="active">Подписки</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
+{% block index_content %}
+    <div class="alert alert-success">Изменения сохранены.
+        <a href="{% url 'subscribe:frontend:index' %}">Перейти к списку рассылок</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Письма" %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-sm">
+        <a href="{% url 'subscribe:administration:create_letter' %}" class="btn btn-sm btn-success">
+            <span  class="glyphicon glyphicon-plus"></span> Добавить письмо
+        </a>
+        <a href="{% url 'subscribe:administration:send_letters' %}" class="btn btn-sm btn-primary">
+            Отправить письма
+        </a>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Тема</th>
+            <th>Рассылка</th>
+            <th>Получатели</th>
+            <th>Доставлено всем</th>
+            <th>Время отправки</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+        </tr>
+    {% for letter in letters_page.object_list %}
+        <tr>
+            <td>
+                <a href="{% url 'subscribe:administration:change_letter' letter.id %}">{{ letter.subject }}</a>
+            </td>
+            <td>
+                <a href="{% url 'subscribe:administration:change_subscribe' letter.subscribe.id %}">{{ letter.subscribe.name }}</a>
+            </td>
+            <td>{{ letter.get_broadcast_display }}</td>
+            <td>
+                {% if not letter.send_completed %}
+                    <span class="label label-danger">нет</span>
+                {% else %}
+                    <span class="label label-success">да</span>
+                {% endif %}
+            </td>
+            <td>{{ letter.must_send_at }}</td>
+            <td>{{ letter.create_date }}</td>
+            <td>
+                <a href="{% url 'subscribe:administration:delete_letter' letter.id %}" class="btn btn-sm btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% bootstrap_pagination letters_page %}
+
+{% endblock %}
+
+

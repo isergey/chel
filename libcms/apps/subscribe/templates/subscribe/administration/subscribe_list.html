@@ -1,0 +1,16 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Список" %}
+{% endblock %}
+
+{% block action_content %}
+
+{% endblock %}
+
+

@@ -1,0 +1,29 @@
+{% extends 'index/frontend/index.html' %}
+{% load bootstrap3 %}
+{% block title %}Подписки{% endblock %}
+{% block content %}
+    <main class="main main_bg-white">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        Рассылки
+                    </li>
+                </ol>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <p>
+                        Изменения сохранены.
+                    </p>
+                    <p>
+                        <a class="btn" href="{% url 'subscribe:frontend:index' %}">Перейти к списку рассылок</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

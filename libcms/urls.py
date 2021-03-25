@@ -46,6 +46,7 @@ urlpatterns += i18n_patterns(
     # url(r'^sauth/', include('social_auth.urls')),
     # re_path(r'^captcha/', include('captcha.urls')),
     re_path(r'^contact_form/', include(('contact_form.urls', 'contact_form'))),
+    re_path(r'^subscribe/', include(('subscribe.urls', 'subscribe'))),
     # url(r'^sql/', include('explorer.urls')),
 )
 

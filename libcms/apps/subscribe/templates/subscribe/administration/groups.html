@@ -1,0 +1,51 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Группы" %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-sm">
+        <a href="{% url 'subscribe:administration:create_group' %}" class="btn btn-sm btn-success">
+            <span  class="glyphicon glyphicon-plus"></span> Добавить группу
+        </a>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Название</th>
+            <th>Порядок</th>
+            <th>Скрыта для пользователей</th>
+            <th>Действия</th>
+        </tr>
+    {% for group in group_list %}
+        <tr>
+            <td>
+                <a href="{% url 'subscribe:administration:change_group' group.id %}">{{ group.name }}</a>
+            </td>
+            <td>{{ group.order }}</td>
+            <td>
+                {% if group.hidden %}
+                    <span class="label label-danger">да</span>
+                {% else %}
+                    <span class="label label-success">нет</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'subscribe:administration:delete_group' group.id %}" class="btn btn-sm btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endblock %}
+
+

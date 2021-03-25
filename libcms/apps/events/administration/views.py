@@ -3,8 +3,9 @@ from django.utils import timezone
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import get_language
@@ -12,6 +13,7 @@ from django.utils.translation import get_language
 from common.pagination import get_page
 from ..models import Event, EventContent, EventParticipant
 from .forms import EventForm, EventContentForm, EventFilterForm
+from .. import subcribing
 
 
 @login_required
@@ -224,3 +226,11 @@ def participants(request, id):
         'content': content,
         'participants': event_participants,
     })
+
+
+@login_required
+@permission_required_or_403('events.add_event')
+def subscribes(request):
+    q = Q()
+    subcribing.generate_events_letter(q, start_date=now().date())
+    return HttpResponse('Ok')

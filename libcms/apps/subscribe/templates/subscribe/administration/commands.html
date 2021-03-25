@@ -1,0 +1,32 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Команды" %}
+{% endblock %}
+
+{% block action_content %}
+    <table class="table">
+        <tr>
+            <th>Название</th>
+            <th>Действие</th>
+        </tr>
+    {% for command in commands %}
+        <tr>
+            <td>
+                {{ command.title }}
+            </td>
+            <td>
+                <a href="{% url 'subscribe:administration:run_command' forloop.counter0 %}">Запустить</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+
+

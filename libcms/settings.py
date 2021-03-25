@@ -78,6 +78,9 @@ INSTALLED_APPS = [
     'robots_txt',
     'harvester',
     'contact_form',
+    'subscribe',
+    'sso',
+    'sso_opac',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +146,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'sso.backend.SSOBackend',
+    'sso_opac.backend.OpacGlobalAuthBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 
@@ -173,13 +178,10 @@ LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = "mailer.backend.DbBackend"
 
-from django.conf.global_settings import DATETIME_INPUT_FORMATS
-
-DATETIME_INPUT_FORMATS += ('%Y-%m-%dT%H:%M',)
-FIRST_DAY_OF_WEEK = 1
 
 BOOTSTRAP3 = {
     'set_placeholder': False,
     'success_css_class': '',
 }
+
 from .local_settings import *

@@ -1,0 +1,107 @@
+{% extends 'subscribe/administration/index.html' %}
+{% load bootstrap3 %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Подписки" subscribe:administration:index %}
+    {% breadcrumb "Статистика" %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-sm">
+        <form novalidate class="form-inline" method="get">
+            {% bootstrap_form range_form %}
+            <input type="hidden" name="filter" value="on"/>
+            <button class="btn btn-warning">Сформировать</button>
+        </form>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Общие показатели за всё время работы</h3>
+        </div>
+        <table class="table table-hover" style="margin: 0">
+            <tr>
+                <th>Показатель</th>
+                <th>Значение</th>
+            </tr>
+            {% for summary_parameter in summary_parameters %}
+                <tr>
+                    <td>{{ summary_parameter.title }}</td>
+                    <td>{{ summary_parameter.value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Популярность подписок</h3>
+        </div>
+        <table class="table table-hover">
+            <tr>
+                <th style="width: 50px"></th>
+                <th>Подписка</th>
+                <th>Количество подписчиков</th>
+            </tr>
+            {% for subscribe in subscribes_popularity %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ subscribe.title }}</td>
+                    <td>{{ subscribe.value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Действия за период c {{ start_date|date:'d.m.Y' }}
+                по {{ end_date|date:'d.m.Y' }}</h3>
+        </div>
+        <table class="table table-hover">
+            <tr>
+                <th>Действие</th>
+                <th>Количество</th>
+            </tr>
+            {% for total_user_by_action_row in total_user_by_action %}
+                <tr>
+                    <td>{{ total_user_by_action_row.title }}</td>
+                    <td>{{ total_user_by_action_row.value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Действия по подпискам за период c {{ start_date|date:'d.m.Y' }}
+                по {{ end_date|date:'d.m.Y' }}</h3>
+        </div>
+        <table class="table table-hover">
+            <tr>
+                <th>Подписка</th>
+                <th>Действия</th>
+            </tr>
+            {% for group_by_subscribes_row in group_by_subscribes %}
+                <tr>
+                    <td>{{ group_by_subscribes_row.title }}</td>
+                    <td>
+                        <table>
+                            {% for action in group_by_subscribes_row.actions %}
+                                <tr>
+                                    <th style="text-align: right">{{ action.title }}:</th><td style="padding-left: 10px">{{ action.value }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
+
+
