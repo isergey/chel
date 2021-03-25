@@ -1,15 +1,14 @@
 # encoding: utf-8
 import hashlib
 import logging
-import json
-from django.conf import settings
-from django.db import transaction
-from django.contrib.auth.models import User
-from opac_global_client.client import Client, Config
-from opac_global_client.exceptions import Error
-from opac_global_client.entities import Reader, ReaderResponse
-from opac_global_client.cache import DjangoTokenCache
 
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import transaction
+
+from opac_global_client.cache import DjangoTokenCache
+from opac_global_client.client import Client, Config
+from opac_global_client.entities import ReaderResponse
 # from libs.ruslan import connection_pool, humanize, grs, client
 # from .models import RuslanUser
 # from apps.sso import models as sso_models
@@ -54,7 +53,7 @@ class OpacGlobalAuthBackend:
         readers = self.__opac_client.readers()
         try:
             reader_response = readers.find_by_login(username)
-        except Error as e:
+        except Exception as e:
             logger.exception(str(e), exc_info=True)
 
         if reader_response is None:

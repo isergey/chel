@@ -102,7 +102,8 @@ class Client:
             params=params,
             data=data,
             headers=request_headers,
-            auth=auth
+            auth=auth,
+            timeout=10
         )
 
         if 200 >= response.status_code < 400:
