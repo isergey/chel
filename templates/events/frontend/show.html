@@ -33,7 +33,9 @@
                         {{ content.teaser }}
                     </p>
                     <div class="content">
-                        <p><b>Место проведения</b>: {{ event.address }}<br/></p>
+                        {% if event.address %}
+                            <p><b>Место проведения</b>: {{ event.address }}<br/></p>
+                        {% endif %}
                         {% if event.address_reference %}
                             <p>
                                 <b>Место проведения</b>:
