@@ -1,5 +1,5 @@
 from django.contrib import admin
-from mptt.admin import MPTTModelAdmin
+from mptt.admin import DraggableMPTTAdmin
 
 from . import models
 
@@ -18,11 +18,7 @@ class AgeCategoryAdmin(admin.ModelAdmin):
 admin.site.register(models.AgeCategory, AgeCategoryAdmin)
 
 
-class AddressAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(models.Address, AddressAdmin)
+admin.site.register(models.Address, DraggableMPTTAdmin)
 
 
 class EventParticipantInline(admin.TabularInline):

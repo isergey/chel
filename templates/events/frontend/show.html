@@ -34,6 +34,18 @@
                     </p>
                     <div class="content">
                         <p><b>Место проведения</b>: {{ event.address }}<br/></p>
+                        {% if event.address_reference %}
+                            <p>
+                                <b>Место проведения</b>:
+                                {% for ancestor in event.address_reference.get_ancestors %}
+                                    {{ ancestor.title }}
+                                    {% if ancestor.address %}({{ ancestor.address }}){% endif %}
+                                    {% if forloop.last %} / {% endif %}
+                                {% endfor %}
+                                {{ event.address_reference.title }}
+                                <br/>
+                            </p>
+                        {% endif %}
                         <p><b>Начало</b>: {{ event.start_date }}</p>
                         <p><b>Окончание</b>: {{ event.end_date }}</p>
                         {% if event.age_category_id %}

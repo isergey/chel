@@ -64,7 +64,14 @@ class AgeCategory(models.Model):
         ordering = ['age']
 
 
-class Address(models.Model):
+class Address(MPTTModel):
+    parent = TreeForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='address_parent'
+    )
     title = models.CharField(
         verbose_name='Название места',
         max_length=512,
@@ -73,12 +80,14 @@ class Address(models.Model):
 
     address = models.CharField(
         verbose_name='Адрес',
-        max_length=512
+        max_length=512,
+        blank=True
     )
 
     contacts = models.TextField(
         verbose_name='Контакты',
-        max_length=1024
+        max_length=1024,
+        blank=True
     )
 
     geo_latitude = models.FloatField(
@@ -121,7 +130,7 @@ class Event(models.Model):
         blank=True
     )
 
-    address_reference = models.ForeignKey(
+    address_reference = TreeForeignKey(
         Address,
         on_delete=models.PROTECT,
         verbose_name='Место проведения из справочника',

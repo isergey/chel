@@ -2,7 +2,7 @@
 from django import forms
 from datetime import date
 from .. import models
-
+from mptt.forms import TreeNodeChoiceField
 
 class EventsFilterForm(forms.Form):
     # library = forms.ModelChoiceField(
@@ -56,7 +56,7 @@ class EventsFilterForm(forms.Form):
         })
     )
 
-    address = forms.ModelChoiceField(
+    address = TreeNodeChoiceField(
         label=u'Место проведения',
         queryset=models.Address.objects.all(),
         required=False,
