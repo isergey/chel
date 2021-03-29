@@ -133,7 +133,7 @@ def show(request, id):
 @login_required
 @atomic
 def favorit_events(request):
-    fav_events_page = get_page(request, models.FavoriteEvent.objects.filter(user=request.user))
+    fav_events_page = get_page(request, models.EventParticipant.objects.filter(user=request.user))
     events = []
     for fav_event in fav_events_page.object_list:
         events.append(fav_event.event_id)

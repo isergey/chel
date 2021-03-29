@@ -34,10 +34,8 @@
                                 <p class="card-detail">{{ event.event_content.teaser }}</p>
                                 <ul class="card-nav">
                                     <li class="card-nav__item">
-                                        <a href="{% url 'events:frontend:delete_from_favorite' event.id %}"
-                                           class="btn btn_sm"
-                                        >
-                                            Удалить из избранного
+                                        <a href="{% url 'events:frontend:delete_participant' event.id %}" class="btn btn-sm">
+                                            Отменить участие
                                         </a>
                                     </li>
                                 </ul>

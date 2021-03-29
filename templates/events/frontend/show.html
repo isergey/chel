@@ -28,51 +28,52 @@
             <div class="ya-share2"
                  data-services="vkontakte,facebook,gplus,twitter,viber,whatsapp,telegram"></div>
             <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-12">
+
+                <div class="col-lg-8 col-md-8 col-sm-8">
                     <p class="content-teaser">
                         {{ content.teaser }}
                     </p>
                     <div class="content">
-                        {% if event.address %}
-                            <p><b>Место проведения</b>: {{ event.address }}<br/></p>
-                        {% endif %}
-                        {% if event.address_reference %}
-                            <p>
-                                <b>Место проведения</b>:
-                                {% for ancestor in event.address_reference.get_ancestors %}
-                                    {{ ancestor.title }}
-                                    {% if ancestor.address %}({{ ancestor.address }}){% endif %}
-                                    {% if forloop.last %} / {% endif %}
-                                {% endfor %}
-                                {{ event.address_reference.title }}
-                                <br/>
-                            </p>
-                        {% endif %}
-                        <p><b>Начало</b>: {{ event.start_date }}</p>
-                        <p><b>Окончание</b>: {{ event.end_date }}</p>
-                        {% if event.age_category_id %}
-                            <p><b>Возрастная категория</b>: {{ event.age_category }}</p>
-                        {% endif %}
-                        {% with event.category.all as categories %}
-                            {% if categories %}
-                                <p>
-                                    <b>Категория:</b>
-                                    {% for category in categories %}
-                                        {{ category }}{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                        {% endwith %}
-                        {% if event.keywords %}
-                            {% url 'events:frontend:index' as EVENTS_INDEX_URL %}
-                            <p>
-                                <b>Ключевые слова</b>:
-                                {% for keyword in event.splited_keywords %}
-                                    <a href="{{ EVENTS_INDEX_URL }}?keywords={{ keyword|urlencode }}">{{ keyword }}</a>
-                                    {% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
+                        {#                        {% if event.address %}#}
+                        {#                            <p><b>Место проведения</b>: {{ event.address }}<br/></p>#}
+                        {#                        {% endif %}#}
+                        {#                        {% if event.address_reference %}#}
+                        {#                            <p>#}
+                        {#                                <b>Место проведения</b>:#}
+                        {#                                {% for ancestor in event.address_reference.get_ancestors %}#}
+                        {#                                    {{ ancestor.title }}#}
+                        {#                                    {% if ancestor.address %}({{ ancestor.address }}){% endif %}#}
+                        {#                                    {% if forloop.last %} / {% endif %}#}
+                        {#                                {% endfor %}#}
+                        {#                                {{ event.address_reference.title }}#}
+                        {#                                <br/>#}
+                        {#                            </p>#}
+                        {#                        {% endif %}#}
+                        {#                        <p><b>Начало</b>: {{ event.start_date }}</p>#}
+                        {#                        <p><b>Окончание</b>: {{ event.end_date }}</p>#}
+                        {#                        {% if event.age_category_id %}#}
+                        {#                            <p><b>Возрастная категория</b>: {{ event.age_category }}</p>#}
+                        {#                        {% endif %}#}
+                        {#                        {% with event.category.all as categories %}#}
+                        {#                            {% if categories %}#}
+                        {#                                <p>#}
+                        {#                                    <b>Категория:</b>#}
+                        {#                                    {% for category in categories %}#}
+                        {#                                        {{ category }}{% if not forloop.last %}, {% endif %}#}
+                        {#                                    {% endfor %}#}
+                        {#                                </p>#}
+                        {#                            {% endif %}#}
+                        {#                        {% endwith %}#}
+                        {#                        {% if event.keywords %}#}
+                        {#                            {% url 'events:frontend:index' as EVENTS_INDEX_URL %}#}
+                        {#                            <p>#}
+                        {#                                <b>Ключевые слова</b>:#}
+                        {#                                {% for keyword in event.splited_keywords %}#}
+                        {#                                    <a href="{{ EVENTS_INDEX_URL }}?keywords={{ keyword|urlencode }}">{{ keyword }}</a>#}
+                        {#                                    {% if not forloop.last %}, {% endif %}#}
+                        {#                                {% endfor %}#}
+                        {#                            </p>#}
+                        {#                        {% endif %}#}
                         {{ content.content|safe }}
                         {% if event.translation_html %}
                             <div>
@@ -81,48 +82,66 @@
                         {% endif %}
                     </div>
                 </div>
-            </div>
-            {% if participant %}
-                <div class="row">
-                    <div class="col-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h2 class="card-title">Вы учавствуете в этом событии!</h2>
-                                <p class="card-detail"></p>
-                                <ul class="card-nav">
-                                    <li class="card-nav__item">
-                                        <a href="{% url 'events:frontend:delete_participant' event.id %}" class="btn">
-                                            отменить участие
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="row">
-                    <div class="col-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h2 class="card-title">Принять участие</h2>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body card_h">
+                            <h2 class="card-title card-title_td-lc">
+                                Начало: {{ event.start_date }} | {{ event.age_category }}
+                            </h2>
+                            <p class="card-detail">
+                                {% if event.address %}
+                                    <b>Место проведения</b>: {{ event.address }}<br/>
+                                {% endif %}
+                                {% if event.address_reference %}
+
+                                    <b>Место проведения</b>:
+                                    {% for ancestor in event.address_reference.get_ancestors %}
+                                        {{ ancestor.title }}
+                                        {% if ancestor.address %}({{ ancestor.address }}){% endif %}
+                                        {% if forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                    {{ event.address_reference.title }}
+                                    <br/>
+
+                                {% endif %}
+
+                            </p>
+                            {% with event.category.all as categories %}
+                                {% if categories %}
+                                    <p class="card-detail">
+                                        <b>Категория:</b>
+                                        {% for category in categories %}
+                                            {{ category }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+                            {% endwith %}
+                            {% if event.keywords %}
+                                {% url 'events:frontend:index' as EVENTS_INDEX_URL %}
                                 <p class="card-detail">
-                                    {% if not request.user.is_authenticated %}
-                                        Для этого необходимо зарегистрироваться или войти на портал.
-                                    {% endif %}
+                                    <b>Ключевые слова</b>:
+                                    {% for keyword in event.splited_keywords %}
+                                        <a href="{{ EVENTS_INDEX_URL }}?keywords={{ keyword|urlencode }}">{{ keyword }}</a>
+                                        {% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
                                 </p>
-                                <ul class="card-nav">
-                                    <li class="card-nav__item">
-                                        <a href="{% url 'events:frontend:participant' event.id %}" class="btn">
-                                            принять участие
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            {% endif %}
+                            <p class="card-detail">
+                                {% if not participant %}
+                                    <a href="{% url 'events:frontend:participant' event.id %}" class="btn">
+                                        Принять участие
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'events:frontend:delete_participant' event.id %}" class="btn">
+                                        Отменить участие
+                                    </a>
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
+
 
         </div>
     </main>
