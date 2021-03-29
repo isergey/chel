@@ -86,7 +86,7 @@
                     <div class="card">
                         <div class="card-body card_h">
                             <h2 class="card-title card-title_td-lc">
-                                Начало: {{ event.start_date }} | {{ event.age_category }}
+                                Начало: {{ event.start_date }} {% if event.age_category %} | {{ event.age_category }} {% endif %}
                             </h2>
                             <p class="card-detail">
                                 {% if event.address %}
