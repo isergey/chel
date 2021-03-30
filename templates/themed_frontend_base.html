@@ -184,7 +184,7 @@
             {% else %}
                 <li class="header-md-menu__item">
                     <a class="header-md-menu__link"
-                       href="{% url 'accounts:frontend:registration' %}">Зарегистрироваться</a>
+                       href="http://opac.chelreglib.ru/wl/reg.php">Зарегистрироваться</a>
                 </li>
                 <li class="header-md-menu__link">
                     <a class="btn" href="{% url 'login' %}">Войти</a>
@@ -203,7 +203,7 @@
                     <a class="menu-nav-user__link" href="{% url 'accounts:frontend:logout' %}">Выйти</a>
                 {% else %}
                     <a class="btn" href="{% url 'login' %}">Войти</a>
-                    <a class="btn btn_gray" href="{% url 'accounts:frontend:registration' %}">Зарегистрироваться</a>
+                    <a class="btn btn_gray" href="http://opac.chelreglib.ru/wl/reg.php">Зарегистрироваться</a>
                 {% endif %}
             </div>
             <ul class="menu">
