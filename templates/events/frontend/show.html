@@ -105,7 +105,9 @@
                                     <br/>
 
                                 {% endif %}
-
+                                {% if event.address_reference.contacts %}
+                                    <b>Контакты</b>: {{ event.address_reference.contacts }}<br/>
+                                {% endif %}
                             </p>
                             {% with event.category.all as categories %}
                                 {% if categories %}
