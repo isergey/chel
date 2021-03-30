@@ -101,7 +101,7 @@
                                         {% if forloop.last %} / {% endif %}
                                     {% endfor %}
                                     {{ event.address_reference.title }}
-                                    {% if event.address %}({{ event.address }}){% endif %}
+                                    {% if event.address_reference.address %}({{ event.address_reference.address }}){% endif %}
                                     <br/>
 
                                 {% endif %}
