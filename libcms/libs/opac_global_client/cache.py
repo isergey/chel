@@ -23,7 +23,7 @@ class DjangoTokenCache(TokenCache):
 
     def set(self, username, token: Token):
         super().set(username, token)
-        cache.set(self.get_prefix(username), token.json().encode('utf-8'), token.expires_in)
+        cache.set(self.get_prefix(username), token.json().encode('utf-8'), 600)
 
     def get(self, username):
         token = super().get(username)
