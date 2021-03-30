@@ -86,14 +86,14 @@
                     <div class="card">
                         <div class="card-body card_h">
                             <h2 class="card-title card-title_td-lc">
-                                Начало: {{ event.start_date }} {% if event.age_category %} | {{ event.age_category }} {% endif %}
+                                Начало: {{ event.start_date }} {% if event.age_category %} |
+                                {{ event.age_category }} {% endif %}
                             </h2>
                             <p class="card-detail">
                                 {% if event.address %}
                                     <b>Место проведения</b>: {{ event.address }}<br/>
                                 {% endif %}
                                 {% if event.address_reference %}
-
                                     <b>Место проведения</b>:
                                     {% for ancestor in event.address_reference.get_ancestors %}
                                         {{ ancestor.title }}
@@ -101,12 +101,13 @@
                                         {% if forloop.last %} / {% endif %}
                                     {% endfor %}
                                     {{ event.address_reference.title }}
-                                    {% if event.address_reference.address %}({{ event.address_reference.address }}){% endif %}
-                                    <br/>
-
+                                    {% if event.address_reference.address %}({{ event.address_reference.address }})
+                                    {% endif %}
                                 {% endif %}
                                 {% if event.address_reference.contacts %}
-                                    <b>Контакты</b>: {{ event.address_reference.contacts }}<br/>
+                                    <p class="card-detail">
+                                        <b>Контакты</b>: {{ event.address_reference.contacts }}
+                                    </p>
                                 {% endif %}
                             </p>
                             {% with event.category.all as categories %}
