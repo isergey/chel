@@ -22,6 +22,9 @@
             </h1>
             <div>
                 <button class="btn" id="show-event-filter">Фильтр</button>
+                {% if request.GET.filter %}
+                    <a class="btn btn_link" href="{% url 'events:frontend:index' %}">Очистить фильтр</a>
+                {% endif %}
             </div>
             <div class="card-list card-list_4">
                 {% for event in events_list %}
@@ -74,6 +77,7 @@
                     <div class="modal__content" id="modal-1-content">
                         <div class="tab-pane">
                             {% bootstrap_form filter_form %}
+                            <input type="hidden" name="filter" value="1">
                         </div>
                     </div>
                     <footer class="modal__footer">
