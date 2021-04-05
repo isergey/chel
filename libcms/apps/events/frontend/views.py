@@ -11,6 +11,7 @@ from common.pagination import get_page
 
 from . import forms
 from .. import models
+from ..models import Address
 
 
 def index(request):
@@ -53,9 +54,9 @@ def index(request):
         if age_category:
             q = Q(age_category__gte=age_category)
 
-        address = filter_form.cleaned_data['address']
+        address: Address = filter_form.cleaned_data['address']
         if address:
-            q = Q(address=address)
+            q = Q(address_reference__in=address.get_descendants(include_self=True))
 
     events_page = get_page(request, models.Event.objects.filter(q).order_by('-create_date'))
 
