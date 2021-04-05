@@ -58,7 +58,7 @@ def index(request):
         if address:
             q = Q(address_reference__in=address.get_descendants(include_self=True))
 
-    events_page = get_page(request, models.Event.objects.filter(q).order_by('-create_date'))
+    events_page = get_page(request, models.Event.objects.filter(q).order_by('start_date'))
 
     event_contents = list(
         models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
