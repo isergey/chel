@@ -18,6 +18,8 @@ def index(request):
     q = Q(active=True)
 
     filter_form = forms.EventsFilterForm(request.GET)
+    start_date = None
+    end_date = None
     if filter_form.is_valid():
         keywords = filter_form.cleaned_data['keywords']
         if keywords:
@@ -58,7 +60,12 @@ def index(request):
         if address:
             q = Q(address_reference__in=address.get_descendants(include_self=True))
 
-    events_page = get_page(request, models.Event.objects.filter(q).exclude(end_date__lte=datetime.datetime.now()).order_by('start_date'))
+    events_qs = models.Event.objects.filter(q).order_by('start_date')
+
+    if not start_date and not end_date:
+        events_qs = events_qs.exclude(end_date__lte=datetime.datetime.now())
+
+    events_page = get_page(request, events_qs)
 
     event_contents = list(
         models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
