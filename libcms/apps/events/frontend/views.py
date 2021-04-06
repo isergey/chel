@@ -27,7 +27,7 @@ def index(request):
 
         start_date = filter_form.cleaned_data['start_date']
         if start_date is not None:
-            q &= Q(start_date__lte=datetime.datetime(
+            q &= Q(start_date__gte=datetime.datetime(
                 year=start_date.year,
                 month=start_date.month,
                 day=start_date.day,
@@ -39,7 +39,7 @@ def index(request):
         end_date = filter_form.cleaned_data['end_date']
 
         if end_date is not None:
-            q &= Q(end_date__gte=datetime.datetime(
+            q &= Q(end_date__lte=datetime.datetime(
                 year=end_date.year,
                 month=end_date.month,
                 day=end_date.day,
