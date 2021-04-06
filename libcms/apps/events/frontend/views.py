@@ -50,15 +50,15 @@ def index(request):
 
         category = filter_form.cleaned_data['category']
         if category:
-            q = Q(category__in=category)
+            q &= Q(category__in=category)
 
         age_category = filter_form.cleaned_data['age_category']
         if age_category:
-            q = Q(age_category__gte=age_category)
+            q &= Q(age_category__gte=age_category)
 
         address: Address = filter_form.cleaned_data['address']
         if address:
-            q = Q(address_reference__in=address.get_descendants(include_self=True))
+            q &= Q(address_reference__in=address.get_descendants(include_self=True))
 
     events_qs = models.Event.objects.filter(q).order_by('start_date')
 
@@ -68,7 +68,8 @@ def index(request):
     events_page = get_page(request, events_qs)
 
     event_contents = list(
-        models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
+        models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2])
+    )
 
     t_dict = {}
     for event in events_page.object_list:
