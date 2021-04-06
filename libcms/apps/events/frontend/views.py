@@ -52,6 +52,7 @@ def index(request):
                 second=0
             )))
 
+            q &= start_date_q
 
         end_date = filter_form.cleaned_data['end_date']
 
