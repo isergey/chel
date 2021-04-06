@@ -66,14 +66,14 @@ def index(request):
                 second=59
             ))
 
-            end_date_q |= Q(Q(start_date__gte=datetime.datetime(
+            end_date_q |= Q(Q(start_date__lte=datetime.datetime(
                 year=start_date.year,
                 month=start_date.month,
                 day=start_date.day,
-                hour=23,
-                minute=59,
-                second=59
-            )) & Q(end_date__lte=datetime.datetime(
+                hour=0,
+                minute=0,
+                second=0
+            )) & Q(end_date__gte=datetime.datetime(
                 year=start_date.year,
                 month=start_date.month,
                 day=start_date.day,
