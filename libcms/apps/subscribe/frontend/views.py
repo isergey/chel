@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from common.pagination import get_page
 from .. import models
+
 from .forms import get_subscriber_form, EmailForm
 
 
@@ -109,28 +110,35 @@ def subscription_detail(request, id):
 
 
 @transaction.atomic()
-def subscribe(request, id):
-    subscribe = get_object_or_404(models.Subscribe, id=id, is_active=True)
+def subscribe(request, code):
+    subscribe = get_object_or_404(models.Subscribe, code=code, is_active=True)
     email = ''
-
+    user = None
     if request.user.is_authenticated:
         user = request.user
         email = user.email
 
     if request.method == 'POST':
-        form = models.SubscribeForm(request.POST)
+        form = EmailForm(request.POST)
         if form.is_valid():
-            subscriber = models.Subscriber(email__iexact=form.cleaned_data['email'], subscribe=subscribe)
-            subscriber.save()
+            subscriber = models.Subscriber.objects.filter(email__iexact=form.cleaned_data['email']).first()
+            if subscriber is None:
+                subscriber = models.Subscriber(
+                    user=user,
+                    email=form.cleaned_data['email'].lower()
+                )
+                subscriber.save()
+            if not subscriber.subscribe.filter(id=subscribe.id).exists():
+                subscriber.subscribe.add(subscribe)
+            # subscriber.save()
             return render(request, 'subscribe/frontend/to_subscribe_success.html', {
                 'subscribe': subscribe,
                 'email': subscriber.email
             })
 
     else:
-        form = models.SubscribeForm(initial={
+        form = EmailForm(initial={
             'email': email,
-            'subscribe': subscribe.id
         })
     return render(request, 'subscribe/frontend/to_subscribe.html', {
         'subscribe': subscribe,

@@ -11,7 +11,7 @@
 {% if key %}
     <hr/>
     Если вы хотите отписаться от этой рассылки нажмите
-    <a href="http://{{ SITE_DOMAIN }}{% url 'subscribe:frontend:unsubscribe' subscribe_id %}?email={{ email|urlencode }}&key={{ key }}">здесь</a>
+    <a href="https://{{ SITE_DOMAIN }}{% url 'subscribe:frontend:unsubscribe' subscribe_id %}?email={{ email|urlencode }}&key={{ key }}">здесь</a>
 {% endif %}
 </body>
 </html>
