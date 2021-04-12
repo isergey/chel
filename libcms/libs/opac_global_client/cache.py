@@ -22,13 +22,13 @@ class DjangoTokenCache(TokenCache):
     prefix = 'opac_tokens'
 
     def set(self, username, token: Token):
-        super().set(username, token)
-        cache.set(self.get_prefix(username), token.json().encode('utf-8'), 30)
+        # super().set(username, token)
+        cache.set(self.get_prefix(username), token.json().encode('utf-8'), 120)
 
     def get(self, username):
-        token = super().get(username)
-        if token is not None:
-            return token
+        # token = super().get(username)
+        # if token is not None:
+        #     return token
 
         token_json = cache.get(self.get_prefix(username))
         if not token_json:
