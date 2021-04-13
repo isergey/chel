@@ -106,7 +106,7 @@
                                 {% endif %}
                                 {% if event.address_reference.contacts %}
                                     <p class="card-detail">
-                                        <b>Контакты</b>: {{ event.address_reference.contacts }}
+                                        <b>Контакты</b>: {{ event.address_reference.contacts|urlize }}
                                     </p>
                                 {% endif %}
                             </p>
@@ -130,17 +130,19 @@
                                     {% endfor %}
                                 </p>
                             {% endif %}
-                            <p class="card-detail">
-                                {% if not participant %}
-                                    <a href="{% url 'events:frontend:participant' event.id %}" class="btn">
-                                        Принять участие
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'events:frontend:delete_participant' event.id %}" class="btn">
-                                        Отменить участие
-                                    </a>
-                                {% endif %}
-                            </p>
+                            {% if event.need_registration %}
+                                <p class="card-detail">
+                                    {% if not participant %}
+                                        <a href="{% url 'events:frontend:participant' event.id %}" class="btn">
+                                            Принять участие
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'events:frontend:delete_participant' event.id %}" class="btn">
+                                            Отменить участие
+                                        </a>
+                                    {% endif %}
+                                </p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

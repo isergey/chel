@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
+
+from django.db.models import Q
+
 try:
     import Image
 except ImportError:
     from PIL import Image
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from common.pagination import get_page
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -14,7 +17,7 @@ from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.utils.translation import get_language
 from guardian.decorators import permission_required_or_403
 
-from .forms import NewsForm, NewsContentForm
+from .forms import NewsForm, NewsContentForm, SubscriptionFilterForm
 from ..models import News, NewsContent
 
 
@@ -35,14 +38,7 @@ def news_list(request):
     else:
         news_page = get_page(request, News.objects.filter(type=2).order_by('-create_date'))
 
-    news_contents = list(NewsContent.objects.filter(news__in=list(news_page.object_list), lang=get_language()[:2]))
-
-    t_dict = {}
-    for news in news_page.object_list:
-        t_dict[news.id] = {'news': news}
-
-    for news_content in news_contents:
-        t_dict[news_content.news_id]['news'].news_content = news_content
+    _join_content(news_page.object_list)
 
     return render(request, 'news/administration/news_list.html', {
         'news_list': news_page.object_list,
@@ -191,7 +187,57 @@ def delete_news(request, id):
     return redirect('news:administration:news_list')
 
 
+@login_required
+@permission_required_or_403('news.create_news')
+@transaction.atomic
+def subscriptions(request):
+    now = datetime.now()
+    past = now - timedelta(days=7)
 
+    start_date = past.date()
+    end_date = now.date()
+
+    if request.GET.get('filter'):
+        filter_form = SubscriptionFilterForm(request.GET)
+        if filter_form.is_valid():
+            start_date = filter_form.cleaned_data['start_date']
+            end_date = filter_form.cleaned_data['end_date']
+
+    else:
+        filter_form = SubscriptionFilterForm(initial={
+            'start_date': start_date,
+            'end_date': end_date
+        })
+
+
+    q = Q(create_date__gte=datetime(
+        year=start_date.year,
+        month=start_date.month,
+        day=start_date.day,
+        hour=0,
+        minute=0,
+        second=0
+    ))
+
+    q &= Q(create_date__lte=datetime(
+        year=end_date.year,
+        month=end_date.month,
+        day=end_date.day,
+        hour=23,
+        minute=59,
+        second=59
+    ))
+
+    news_list = News.objects.filter(q).order_by('-create_date')
+    _join_content(news_list)
+
+    if request.GET.get('create_letter'):
+        pass
+
+    return render(request, 'news/administration/subscriptions.html', {
+        'news_list': news_list,
+        'filter_form': filter_form,
+    })
 
 #def handle_uploaded_file(f, old_name=None):
 #    upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
@@ -279,9 +325,20 @@ def handle_uploaded_file(f, old_name=None):
     im.save(path, "JPEG",  quality=95)
     return name
 
+
 def delete_avatar(name):
     if not name:
         return
     upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
     if os.path.isfile(upload_dir + name):
         os.remove(upload_dir + name)
+
+
+def _join_content(news_list):
+    news_contents = NewsContent.objects.filter(news__in=list(news_list), lang=get_language()[:2])
+    t_dict = {}
+    for news in news_list:
+        t_dict[news.id] = {'news': news}
+
+    for news_content in news_contents:
+        t_dict[news_content.news_id]['news'].news_content = news_content

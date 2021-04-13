@@ -64,10 +64,7 @@ def get_external_users(user, auth_source=None):
     q = models.Q(user=user)
     if auth_source:
         q = q & models.Q(auth_source=auth_source)
-    try:
-        return ExternalUser.objects.filter(q)
-    except ExternalUser.DoesNotExist:
-        return []
+    return ExternalUser.objects.filter(q)
 
 
 def find_external_user(external_username, auth_source) -> User:

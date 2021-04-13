@@ -37,23 +37,26 @@
                                         {{ event.event_content.title }}
                                     </a>
                                 </h2>
-                                <time class="card-time">Начало: {{ event.start_date }}</time>
-                                <time class="card-time">Окончание: {{ event.end_date }}</time>
                                 <p class="card-detail">{{ event.event_content.teaser }}</p>
-                                <ul class="card-nav">
-                                    <li class="card-nav__item">
-                                        <a class="btn btn_sm"
-{#                                           style="margin-bottom: 5px"#}
-                                           href="{% url 'events:frontend:participant' event.id %}">
-                                            Принять участие
-                                        </a>
-{#                                        <br/>#}
-{#                                        <a class="btn btn_sm"#}
-{#                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">#}
-{#                                            Добавить в#}
-{#                                            избранное</a>#}
-                                    </li>
-                                </ul>
+                                <time class="card-time">Начало: {{ event.start_date|date:"d.m.Y H:i" }}</time>
+                                <time class="card-time">Окончание: {{ event.end_date }}</time>
+
+                                {% if event.need_registration %}
+                                    <ul class="card-nav">
+                                        <li class="card-nav__item">
+                                            <a class="btn btn_sm"
+    {#                                           style="margin-bottom: 5px"#}
+                                               href="{% url 'events:frontend:participant' event.id %}">
+                                                Принять участие
+                                            </a>
+    {#                                        <br/>#}
+    {#                                        <a class="btn btn_sm"#}
+    {#                                           href="{% url 'events:frontend:add_to_favorits' event.id %}">#}
+    {#                                            Добавить в#}
+    {#                                            избранное</a>#}
+                                        </li>
+                                    </ul>
+                                {% endif %}
                             </div>
                         </article>
                     </div>

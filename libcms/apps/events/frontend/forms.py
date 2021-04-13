@@ -47,14 +47,14 @@ class EventsFilterForm(forms.Form):
         widget=forms.CheckboxSelectMultiple
     )
 
-    age_category = forms.ModelChoiceField(
-        label=u'Возрастная категория',
-        queryset=models.AgeCategory.objects.all(),
-        required=False,
-        widget=forms.Select(attrs={
-            'class': 'form-control'
-        })
-    )
+    # age_category = forms.ModelChoiceField(
+    #     label=u'Возрастная категория',
+    #     queryset=models.AgeCategory.objects.all(),
+    #     required=False,
+    #     widget=forms.Select(attrs={
+    #         'class': 'form-control'
+    #     })
+    # )
 
     address = TreeNodeChoiceField(
         label=u'Место проведения',

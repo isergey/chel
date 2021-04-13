@@ -2,41 +2,21 @@
 import hashlib
 import logging
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import transaction
 
-from opac_global_client.cache import DjangoTokenCache
-from opac_global_client.client import Client, Config
 from opac_global_client.entities import ReaderResponse
-# from libs.ruslan import connection_pool, humanize, grs, client
-# from .models import RuslanUser
-# from apps.sso import models as sso_models
 from sso.models import create_or_update_external_user, find_external_user
+from .settings import opac_client, AUTH_SOURCE
 
-OPAC_GLOBAL = getattr(settings, 'OPAC_GLOBAL', {})
-USERNAME = OPAC_GLOBAL.get('username')
-PASSWORD = OPAC_GLOBAL.get('password')
-BASE_URL = OPAC_GLOBAL.get('base_url')
-CLIENT_ID = OPAC_GLOBAL.get('client_id')
-CLIENT_SECRET = OPAC_GLOBAL.get('client_secret')
 
-AUTH_SOURCE = 'opac'
 
 logger = logging.getLogger('django.request')
-
-token_cache = DjangoTokenCache()
 
 
 class OpacGlobalAuthBackend:
     def __init__(self):
-        self.__opac_client = Client(config=Config(
-            username=USERNAME,
-            password=PASSWORD,
-            base_url=BASE_URL,
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET
-        ), token_cache=token_cache)
+        self.__opac_client = opac_client
 
     def authenticate(self, request, username, password):
         if username:
@@ -69,7 +49,6 @@ class OpacGlobalAuthBackend:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
-
 
     @transaction.atomic()
     def get_or_create_user(self, username, password, reader: ReaderResponse):

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+</head>
+<body>
+{% for news in news_list %}
+<div>
+    <a href="{% url 'news:administration:edit_news' news.id %}">{{ news.news_content.title }}</a>
+    {{ news.create_date }}
+</div>
+
+{% endfor %}
+</body>
+</html>

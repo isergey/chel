@@ -47,6 +47,7 @@ urlpatterns += i18n_patterns(
     # re_path(r'^captcha/', include('captcha.urls')),
     re_path(r'^contact_form/', include(('contact_form.urls', 'contact_form'))),
     re_path(r'^subscribe/', include(('subscribe.urls', 'subscribe'))),
+    re_path(r'^opac/', include(('sso_opac.urls', 'sso_opac'))),
     # url(r'^sql/', include('explorer.urls')),
 )
 

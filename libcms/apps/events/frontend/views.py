@@ -89,9 +89,9 @@ def index(request):
         if category:
             q &= Q(category__in=category)
 
-        age_category = filter_form.cleaned_data['age_category']
-        if age_category:
-            q &= Q(age_category__gte=age_category)
+        # age_category = filter_form.cleaned_data['age_category']
+        # if age_category:
+        #     q &= Q(age_category__gte=age_category)
 
         address: Address = filter_form.cleaned_data['address']
         if address:

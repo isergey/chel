@@ -9,4 +9,5 @@ urlpatterns = (
     re_path(r'^news/create/$', views.create_news , name="create_news"),
     re_path(r'^news/edit/(?P<id>\d+)/$', views.edit_news, name="edit_news"),
     re_path(r'^news/delete/(?P<id>\d+)/$', views.delete_news, name="delete_news"),
+    re_path(r'^subscriptions/$', views.subscriptions, name="subscriptions"),
 )

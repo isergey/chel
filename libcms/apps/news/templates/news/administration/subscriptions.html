@@ -1,0 +1,65 @@
+{% extends 'news/administration/index.html' %}
+{% load active_link %}
+{% load pagination_tag %}
+{% load breadcrumbs %}
+{% load mptt_tags %}
+{% load add_get_tag %}
+{% block breadcrumb %}
+    {% breadcrumb "Новости" news:administration:index %}
+    {% breadcrumb "Рассылки" %}
+{% endblock %}
+
+{% block action_content %}
+    <div class="well well-small">
+        <form class="form-inline">
+            <div class="form-group">
+                <input class="form-control" type="date" name="start_date" value="{{ filter_form.cleaned_data.start_date|default:filter_form.start_date.value|date:'Y-m-d' }}">
+
+                <input class="form-control" type="date" name="end_date" value="{{ filter_form.cleaned_data.end_date|default:filter_form.end_date.value|date:'Y-m-d' }}">
+                <input type="hidden" name="filter" value="1">
+                <button class="btn btn-default">Фильтровать</button>
+            </div>
+        </form>
+    </div>
+    <h1>Новости</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>
+                <input id="check_all" type="checkbox" checked />
+            </th>
+            <th>Новость</th>
+            <th class="span2">Дата создания</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for news in news_list %}
+
+            <tr>
+                <td><input class="news-checkbox" type="checkbox" checked /></td>
+                <td><a href="{% url 'news:administration:edit_news' news.id %}">{{ news.news_content.title }}</a></td>
+                <td>{{ news.create_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        $(function () {
+            $('#check_all').on('change', function () {
+                const selected = $(this).prop('checked');
+                const newsCheckboxes = $('.news-checkbox');
+                if (selected) {
+                    newsCheckboxes.each(function (index, el) {
+                        $(el).prop('checked', true);
+                    });
+                } else {
+                    newsCheckboxes.each(function (index, el) {
+                        $(el).prop('checked', false);
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}
+

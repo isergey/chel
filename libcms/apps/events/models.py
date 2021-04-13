@@ -144,6 +144,11 @@ class Event(models.Model):
         db_index=True
     )
 
+    need_registration = models.BooleanField(
+        verbose_name='Требуется регистрация',
+        default=False,
+    )
+
     category = models.ManyToManyField(
         Category,
         verbose_name='Категории',

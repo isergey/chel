@@ -1,6 +1,6 @@
 import json
 from typing import List, Optional
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -9,7 +9,8 @@ from . import exceptions
 from .cache import TokenCache
 from .utils import join_url
 
-from .entities import ReaderResponse, ReaderSearchResponse, Reader, Token
+from .entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
+    CirculationOperationsResponse
 
 
 class Config:
@@ -65,13 +66,47 @@ class Readers:
         raise exceptions.NotFoundError()
 
 
+class Circulation:
+    def __init__(self, client: 'Client'):
+        self.__client = client
+
+    def get_reader_checkouts(self, reader_id: str) -> CirculationOperationsResponse:
+        data = self.__client.get_json(
+            method='get',
+            path='/users/{id}/checkouts'.format(id=quote(reader_id))
+        )
+        return CirculationOperationsResponse(**data)
+
+
+class Databases:
+    def __init__(self, client: 'Client'):
+        self.__client = client
+
+    def get_record(self, db_id: str, record_id: str):
+        data = self.__client.make_request(
+            method='get',
+            path='/databases/{db_id}/records/{record_id}'.format(
+                db_id=quote(db_id),
+                record_id=quote(record_id, safe=''),
+            )
+        )
+
+        return data.text
+
+
 class Client:
     def __init__(self, config: Config, token_cache: TokenCache = TokenCache()):
         self.__config = config
         self.__token_cache = token_cache
 
-    def readers(self):
+    def readers(self) -> Readers:
         return Readers(client=self)
+
+    def circulation(self) -> Circulation:
+        return Circulation(client=self)
+
+    def databases(self) -> Databases:
+        return Databases(client=self)
 
     def get_json(self, method, path, params=None, data=None, headers=None, auth: HTTPBasicAuth = None):
         request_headers = headers or {}
@@ -105,7 +140,8 @@ class Client:
             auth=auth,
             timeout=10
         )
-
+        print(response.request.url)
+        print(response.content.decode('utf-8'))
         if 200 >= response.status_code < 400:
             return response
 
