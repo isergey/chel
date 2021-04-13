@@ -38,8 +38,8 @@
                                     </a>
                                 </h2>
                                 <p class="card-detail">{{ event.event_content.teaser }}</p>
-                                <time class="card-time">Начало: {{ event.start_date|date:"d.m.Y в H:i" }}</time>
-                                <time class="card-time">Окончание: {{ event.end_date|date:"d.m.Y в H:i" }}</time>
+                                <time class="card-time">Начало: {{ event.start_date|date:"d.m.Y H:i" }}</time>
+                                <time class="card-time">Окончание: {{ event.end_date|date:"d.m.Y H:i" }}</time>
 
                                 {% if event.need_registration %}
                                     <ul class="card-nav">
