@@ -82,16 +82,19 @@ class Databases:
     def __init__(self, client: 'Client'):
         self.__client = client
 
-    def get_record(self, db_id: str, record_id: str):
-        data = self.__client.make_request(
+    def get_record(self, db_id: str, record_id: str, view='SHOTFORM'):
+        data = self.__client.get_json(
             method='get',
             path='/databases/{db_id}/records/{record_id}'.format(
                 db_id=quote(db_id),
-                record_id=quote(record_id, safe=''),
-            )
+                record_id=quote(quote(record_id, safe='')),
+            ),
+            params={
+                'options[views]': view,
+            }
         )
 
-        return data.text
+        return data
 
 
 class Client:
@@ -140,8 +143,7 @@ class Client:
             auth=auth,
             timeout=10
         )
-        print(response.request.url)
-        print(response.content.decode('utf-8'))
+
         if 200 >= response.status_code < 400:
             return response
 
@@ -205,5 +207,3 @@ if __name__ == '__main__':
 
     response = client.readers().find_by_login('dostovalov@gmail.com')
 
-    for object_response in response.data:
-        print(object_response)

@@ -1,0 +1,58 @@
+{% extends 'themed_frontend_base.html' %}
+{% load ask_librarian_tags %}
+{% load cache %}
+{% block title %}Спроси библиотекаря{% endblock %}
+{% block index_content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                {% block breadcrumb %}
+                    <ol class="crumb__list">
+                        <li>
+                            <a href="{% url 'index:frontend:index' %}">Главная</a>
+                        </li>
+                        <li>
+                            <span class="crumb__current">
+                                Книги на руках
+                            </span>
+                        </li>
+                    </ol>
+                {% endblock %}
+            </div>
+            <div class="row row_sm-col-reverce">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h1>Книги на руках</h1>
+                    <table class="table">
+                        <tr>
+                            <th>Документ</th>
+                            <th>Код документа</th>
+                            <th>Место выдачи</th>
+                            <th>Дата выдачи</th>
+                            <th>Дата возврата</th>
+                        </tr>
+                        {% for checkout in checkouts %}
+                            <tr>
+                                <td>
+                                    {{ checkout.libcard|linebreaksbr }}
+                                </td>
+                                <td>
+                                    {{ checkout.operation.item_code }}
+                                </td>
+                                <td>
+                                    {{ checkout.operation.place_name }}
+                                </td>
+                                <td>
+                                    {{ checkout.operation.operation_time }}
+                                </td>
+                                <td>
+                                    {{ checkout.operation.next_operation_time }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+

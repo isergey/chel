@@ -164,15 +164,12 @@
                     </button>
                     <ul class="header-dropdown">
                         <li class="header-dropdown__item">
-                            <a class="header-dropdown__link" href="{% url 'orders:frontend:index' %}">Заказы</a>
+                            <a class="header-dropdown__link" href="{% url 'sso_opac:on_hand' %}">Выданные книги</a>
                         </li>
                         <li class="header-dropdown__item">
                             <a class="header-dropdown__link"
                                href="{% url 'events:frontend:favorit_events' %}">События</a>
                         </li>
-                        {#                        <li class="header-dropdown__item">#}
-                        {#                            <a class="header-dropdown__link" href="{% url 'zgate_saved_document_list' %}">Документы</a>#}
-                        {#                        </li>#}
                         <li class="header-dropdown__item">
                             <a class="header-dropdown__link" href="{% url 'ask_librarian:frontend:my_questions' %}">Вопросы</a>
                         </li>

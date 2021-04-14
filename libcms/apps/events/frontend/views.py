@@ -104,9 +104,10 @@ def index(request):
 
     events_page = get_page(request, events_qs)
 
-    event_contents = list(
-        models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2])
-    )
+    event_contents = list(models.EventContent.objects.filter(
+        event__in=list(events_page.object_list),
+        lang=get_language()[:2]
+    ))
 
     t_dict = {}
     for event in events_page.object_list:

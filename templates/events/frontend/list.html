@@ -34,7 +34,7 @@
                                 <h2 class="card-title card-title_td-lc">
                                     <a class="card-title__link"
                                        href="{% url 'events:frontend:show' event.id %}?back={{ request.get_full_path }}">
-                                        {{ event.event_content.title }}
+                                        {{ event.event_content.title|truncatechars:100 }}
                                     </a>
                                 </h2>
                                 <p class="card-detail">{{ event.event_content.teaser }}</p>
@@ -42,7 +42,7 @@
                                 <time class="card-time">Окончание: {{ event.end_date|date:"d.m.Y H:i" }}</time>
 
                                 {% if event.need_registration %}
-                                    <ul class="card-nav">
+                                    <ul class="card-nav" style="margin-top: 20px">
                                         <li class="card-nav__item">
                                             <a class="btn btn_sm"
     {#                                           style="margin-bottom: 5px"#}

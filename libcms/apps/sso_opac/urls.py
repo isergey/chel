@@ -4,7 +4,8 @@ from . import views
 
 urlpatterns = (
 #    (r'^admin/', include('rbooks.administration.urls', namespace='administration')),
-    re_path(r'^', views.index, name='index'),
+    re_path(r'^$', views.index, name='index'),
+    re_path(r'^on_hand$', views.on_hand, name='on_hand'),
 
 )
 
