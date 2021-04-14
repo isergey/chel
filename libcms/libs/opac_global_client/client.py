@@ -10,7 +10,7 @@ from .cache import TokenCache
 from .utils import join_url
 
 from .entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
-    CirculationOperationsResponse
+    CirculationOperationsResponse, CirculationOrdersResponse
 
 
 class Config:
@@ -73,9 +73,17 @@ class Circulation:
     def get_reader_checkouts(self, reader_id: str) -> CirculationOperationsResponse:
         data = self.__client.get_json(
             method='get',
-            path='/users/{id}/checkouts'.format(id=quote(reader_id))
+            path='/readers/{id}/checkouts'.format(id=quote(reader_id))
         )
         return CirculationOperationsResponse(**data)
+
+    def get_reader_orders(self, reader_id: str) -> CirculationOrdersResponse:
+        data = self.__client.get_json(
+            method='get',
+            path='/readers/{id}/orders'.format(id=quote(reader_id))
+        )
+
+        return CirculationOrdersResponse(**data)
 
 
 class Databases:
@@ -206,4 +214,3 @@ if __name__ == '__main__':
     client = Client(config, token_cache=TokenCache())
 
     response = client.readers().find_by_login('dostovalov@gmail.com')
-

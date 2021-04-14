@@ -21,7 +21,31 @@
             </div>
             <div class="row row_sm-col-reverce">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <h1>Выданные книги</h1>
+                    {% if orders %}
+                        <h2>Заказы</h2>
+                        <table class="table">
+                            <tr>
+                                <th>№ заказа</th>
+                                <th>Дата заказа</th>
+                                <th>Документ</th>
+                                <th>Дата выдачи</th>
+                                <th>Кафедра выдачи</th>
+                                <th>Статус</th>
+                            </tr>
+                            {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.order.circulation_record_id }}</td>
+                                    <td>{{ order.order.operation_time }}</td>
+                                    <td>{{ order.libcard|linebreaksbr }}</td>
+                                    <td>{{ order.order.next_operation_time }}</td>
+                                    <td>{{ order.order.place_name }}</td>
+                                    <td>{{ order.order.order_status }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
+
+                    <h2>Выданные книги</h2>
                     <table class="table">
                         <tr>
                             <th>Документ</th>

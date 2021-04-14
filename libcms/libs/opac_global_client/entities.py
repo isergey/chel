@@ -89,7 +89,6 @@ class CirculationOperation(BaseModel):
         return datetime.strptime(v, '%d.%m.%Y').date()
 
 
-
 class CirculationOperationInfo(BaseModel):
     type: str
     id: str
@@ -99,6 +98,46 @@ class CirculationOperationInfo(BaseModel):
 class CirculationOperationsResponse(BaseModel):
     meta: Meta
     data: List[CirculationOperationInfo] = []
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel
+
+
+class CirculationOrder(BaseModel):
+    circulation_record_id: str
+    db_id: str
+    method: str
+    next_operation_time: datetime
+    operation: str
+    operation_time: datetime
+    order_status: str
+    place_name: str
+    reader_id: str
+    record_id: str
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel
+
+    @validator('operation_time', pre=True)
+    def operation_time_validate(cls, v):
+        return datetime.strptime(v, '%d.%m.%Y %H:%M:%S')
+
+    @validator('next_operation_time', pre=True)
+    def next_operation_time_validate(cls, v):
+        return datetime.strptime(v, '%d.%m.%Y %H:%M:%S')
+
+
+class CirculationOrderInfo(BaseModel):
+    type: str
+    id: str
+    attributes: CirculationOrder
+
+
+class CirculationOrdersResponse(BaseModel):
+    meta: Meta
+    data: List[CirculationOrderInfo] = []
 
     class Config:
         extra = 'ignore'
