@@ -375,11 +375,7 @@ def run_command(request, index):
     if not commands:
         raise Http404('Command not found')
     command = commands[0]['command']
-    print(settings.MANAGE_PY_PATH)
-    print(settings.PYTHON_PATH)
-    print(command)
     cmd = '""%s" "%s" %s"' % (settings.PYTHON_PATH, settings.MANAGE_PY_PATH, command, )
-    print(cmd)
     os.system(cmd)
     """try:
         out = subprocess.check_output([settings.PYTHON_PATH, settings.MANAGE_PY_PATH] + command.split())

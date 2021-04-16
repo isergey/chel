@@ -407,7 +407,7 @@ def send_to_email():
         message = EmailMessage(
             subject=send_status.letter.subject,
             body=email_body,
-            from_email=SUBSCRIBE_FROM_EMAIL,
+            # from_email=SUBSCRIBE_FROM_EMAIL,
             to=[email],
             # connection=get_connection(EMAIL_BACKEND)
         )
