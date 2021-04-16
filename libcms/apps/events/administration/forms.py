@@ -55,3 +55,8 @@ class EventFilterForm(forms.Form):
     ended = forms.BooleanField(label='Звершенные', required=False, initial=False)
     start_date = forms.DateField(label='C даты начала (дд.мм.гггг)', required=False)
     end_date = forms.DateField(label='По дате окончания (дд.мм.гггг)', required=False)
+
+
+class SubscriptionFilterForm(forms.Form):
+    start_date = forms.DateField(input_formats=['%Y-%m-%d'])
+    end_date = forms.DateField(input_formats=['%Y-%m-%d'])

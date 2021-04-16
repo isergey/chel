@@ -3,6 +3,7 @@
     <li class="nav-header">События</li>
     <li class="{% active 'events:administration:events_list' %}"><a href="{% url 'events:administration:events_list' %}">Список</a></li>
     <li class="{% active_path 'events:administration:create_event' %}"><a href="{% url 'events:administration:create_event' %}">Создать событие</a></li>
+        <li class="{% active_path 'events:administration:subscriptions' %}"><a href="{% url 'events:administration:subscriptions' %}">Рассылка</a></li>
     <li>
         <a href="/ru/radmin/events/address/">Справочник адресов</a>
     </li>

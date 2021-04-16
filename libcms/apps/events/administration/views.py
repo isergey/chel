@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta
+
+from django.contrib import messages
 from django.utils import timezone
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.utils.timezone import now
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
@@ -12,8 +15,8 @@ from django.utils.translation import get_language
 
 from common.pagination import get_page
 from ..models import Event, EventContent, EventParticipant
-from .forms import EventForm, EventContentForm, EventFilterForm
-from .. import subcribing
+from .forms import EventForm, EventContentForm, EventFilterForm, SubscriptionFilterForm
+from .. import subcribing, subscription
 
 
 @login_required
@@ -229,8 +232,113 @@ def participants(request, id):
 
 
 @login_required
-@permission_required_or_403('events.add_event')
-def subscribes(request):
-    q = Q()
-    subcribing.generate_events_letter(q, start_date=now().date())
-    return HttpResponse('Ok')
+@permission_required_or_403('news.create_news')
+@transaction.atomic
+def subscriptions(request):
+    now = datetime.now()
+    past = now - timedelta(days=7)
+
+    start_date = past.date()
+    end_date = now.date()
+
+    if request.GET.get('filter'):
+        filter_form = SubscriptionFilterForm(request.GET)
+        if filter_form.is_valid():
+            start_date = filter_form.cleaned_data['start_date']
+            end_date = filter_form.cleaned_data['end_date']
+
+    else:
+        filter_form = SubscriptionFilterForm(initial={
+            'start_date': start_date,
+            'end_date': end_date
+        })
+
+    q = Q(active=True)
+
+    if start_date is not None:
+        start_date_q = Q(start_date__gte=datetime(
+            year=start_date.year,
+            month=start_date.month,
+            day=start_date.day,
+            hour=0,
+            minute=0,
+            second=0
+        ))
+
+        start_date_q |= Q(Q(start_date__lte=datetime(
+            year=start_date.year,
+            month=start_date.month,
+            day=start_date.day,
+            hour=0,
+            minute=0,
+            second=0
+        )) & Q(end_date__gte=datetime(
+            year=start_date.year,
+            month=start_date.month,
+            day=start_date.day,
+            hour=0,
+            minute=0,
+            second=0
+        )))
+
+        q &= start_date_q
+
+    # end_date = filter_form.cleaned_data['end_date']
+
+    if end_date is not None:
+        end_date_q = Q(end_date__lte=datetime(
+            year=end_date.year,
+            month=end_date.month,
+            day=end_date.day,
+            hour=23,
+            minute=59,
+            second=59
+        ))
+
+        end_date_q |= Q(Q(start_date__lte=datetime(
+            year=end_date.year,
+            month=end_date.month,
+            day=end_date.day,
+            hour=0,
+            minute=0,
+            second=0
+        )) & Q(end_date__gte=datetime(
+            year=end_date.year,
+            month=end_date.month,
+            day=end_date.day,
+            hour=23,
+            minute=59,
+            second=59
+        )))
+
+        q &= end_date_q
+
+
+    events = list(Event.objects.filter(q).order_by('start_date'))
+
+
+    event_contents = list(EventContent.objects.filter(
+        event__in=events,
+        lang=get_language()[:2]
+    ))
+
+    t_dict = {}
+    for event in events:
+        t_dict[event.id] = {'event': event}
+
+    for event_content in event_contents:
+        t_dict[event_content.event_id]['event'].event_content = event_content
+
+    if request.GET.get('subscription') == 'create_letter':
+        letter = subscription.create_subscription_letter(events)
+        if letter is not None:
+            messages.success(request, 'Письмо создано - <a href="{url}">Перейти к письму</a>'.format(
+                url=resolve_url('subscribe:administration:change_letter', id=letter.id)
+            ))
+        else:
+            messages.warning(request, 'Письмо рассылки не было создано')
+
+    return render(request, 'events/administration/subscriptions.html', {
+        'events': events,
+        'filter_form': filter_form,
+    })

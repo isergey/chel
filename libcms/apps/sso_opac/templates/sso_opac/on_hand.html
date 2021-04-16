@@ -53,6 +53,7 @@
                             <th>Место выдачи</th>
                             <th>Дата выдачи</th>
                             <th>Дата возврата</th>
+                            <th></th>
                         </tr>
                         {% for checkout in checkouts %}
                             <tr>
@@ -70,6 +71,14 @@
                                 </td>
                                 <td>
                                     {{ checkout.operation.next_operation_time }}
+                                </td>
+                                <td>
+                                    <form method="post" action="{% url 'sso_opac:renewal' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="place" value="{{ checkout.operation.place }}" />
+                                        <input type="hidden" name="item_code" value="{{ checkout.operation.item_code }}" />
+                                        <button type="submit" class="btn">Продлить</button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}

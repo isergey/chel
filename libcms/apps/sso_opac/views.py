@@ -4,7 +4,7 @@ from typing import List
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from opac_global_client.client import Client
 from opac_global_client.entities import ReaderResponse, CirculationOperation, CirculationOrder
@@ -53,6 +53,20 @@ def on_hand(request):
         'orders': orders
     })
 
+
+@login_required
+def renewal(request):
+    external_user = models.get_external_users(request.user, AUTH_SOURCE).first()
+    if not external_user:
+        return HttpResponse('Вы не являетесь читателем')
+
+    reader_response = ReaderResponse(**external_user.get_attributes())
+    place = request.POST.get('place')
+    item_code = request.POST.get('item_code')
+    response = opac_client.circulation().renewal(place=place, item_codes=[item_code])
+    print(response)
+    # ye
+    return redirect('sso_opac:on_hand')
 
 def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List[CirculationOperationInfo]:
     databases = opac_client.databases()

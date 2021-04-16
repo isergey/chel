@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+from django.contrib import messages
 from django.db.models import Q
 
 try:
@@ -13,13 +14,13 @@ from common.pagination import get_page
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, resolve_url
 from django.utils.translation import get_language
 from guardian.decorators import permission_required_or_403
 
 from .forms import NewsForm, NewsContentForm, SubscriptionFilterForm
 from ..models import News, NewsContent
-
+from .. import subscription
 
 @login_required
 @permission_required_or_403('news.add_news')
@@ -231,8 +232,14 @@ def subscriptions(request):
     news_list = News.objects.filter(q).order_by('-create_date')
     _join_content(news_list)
 
-    if request.GET.get('create_letter'):
-        pass
+    if request.GET.get('subscription') == 'create_letter':
+        letter = subscription.create_subscription_letter(news_list)
+        if letter is not None:
+            messages.success(request, 'Письмо создано - <a href="{url}">Перейти к письму</a>'.format(
+                url=resolve_url('subscribe:administration:change_letter', id=letter.id)
+            ))
+        else:
+            messages.warning(request, 'Письмо рассылки не было создано')
 
     return render(request, 'news/administration/subscriptions.html', {
         'news_list': news_list,

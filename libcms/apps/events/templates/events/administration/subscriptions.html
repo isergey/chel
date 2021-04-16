@@ -5,7 +5,7 @@
 {% load mptt_tags %}
 {% load add_get_tag %}
 {% block breadcrumb %}
-    {% breadcrumb "Новости" news:administration:index %}
+    {% breadcrumb "События" events:administration:index %}
     {% breadcrumb "Рассылки" %}
 {% endblock %}
 
@@ -25,25 +25,25 @@
             </div>
         </form>
     </div>
-    <h1>Новости</h1>
+    <h1>События</h1>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>
                 <input id="check_all" type="checkbox" checked />
             </th>
-            <th>Новость</th>
+            <th>Событие</th>
             <th class="span2">Дата создания</th>
 
         </tr>
         </thead>
         <tbody>
-        {% for news in news_list %}
+        {% for event in events %}
 
             <tr>
                 <td><input class="news-checkbox" type="checkbox" checked /></td>
-                <td><a href="{% url 'news:administration:edit_news' news.id %}">{{ news.news_content.title }}</a></td>
-                <td>{{ news.create_date }}</td>
+                <td><a href="{% url 'news:administration:edit_news' event.id %}">{{ event.event_content.title }}</a></td>
+                <td>{{ event.create_date }}</td>
             </tr>
         {% endfor %}
         </tbody>

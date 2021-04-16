@@ -85,6 +85,27 @@ class Circulation:
 
         return CirculationOrdersResponse(**data)
 
+    def renewal(self, place: str, item_codes: List[str]):
+        data = self.__client.make_request(
+            method='post',
+            path='/circulation/renewal',
+            data=json.dumps({
+                "data": {
+                    "type": "circulationOperationsTemplate",
+                    "attributes": {
+                        "place": place,
+                        "itemCodes": item_codes
+                    }
+                }
+            }, ensure_ascii=False),
+            headers={
+                'Content-Type': 'application/vnd.api+json'
+
+            }
+        )
+        print(data)
+        return data
+
 
 class Databases:
     def __init__(self, client: 'Client'):
@@ -119,7 +140,7 @@ class Client:
     def databases(self) -> Databases:
         return Databases(client=self)
 
-    def get_json(self, method, path, params=None, data=None, headers=None, auth: HTTPBasicAuth = None):
+    def get_json(self, method, path, params=None, data=None, json_dict=None, headers=None, auth: HTTPBasicAuth = None):
         request_headers = headers or {}
         request_headers['Accept'] = 'application/json'
 
@@ -128,6 +149,7 @@ class Client:
             path=path,
             params=params,
             data=data,
+            json_dict=json_dict,
             headers=request_headers,
             auth=auth,
         )
@@ -137,7 +159,7 @@ class Client:
         except json.JSONDecodeError as e:
             raise exceptions.Error(str(e))
 
-    def make_request(self, method, path, params=None, data=None, headers=None, auth: HTTPBasicAuth = None):
+    def make_request(self, method, path, params=None, data=None, json_dict=None, headers=None, auth: HTTPBasicAuth = None):
         request_headers = headers or {}
         if self.__config.username and auth is None:
             request_headers['Authorization'] = 'Bearer ' + self.__get_token().access_token
@@ -147,11 +169,14 @@ class Client:
             url=join_url(self.__config.base_url, path),
             params=params,
             data=data,
+            json=json_dict,
             headers=request_headers,
             auth=auth,
-            timeout=10
+            timeout=10,
         )
-
+        print(response.request.url)
+        print(response.request.body)
+        print(response.content)
         if 200 >= response.status_code < 400:
             return response
 
