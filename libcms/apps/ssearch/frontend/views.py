@@ -496,7 +496,10 @@ def index(request, catalog='uc'):
 
     facets = get_orderd_facets(facets)
     attrs, values = extract_request_query_attrs(request)
-    kv_dicts = get_pairs(attrs, values)
+    try:
+        kv_dicts = get_pairs(attrs, values)
+    except ValueError:
+        return HttpResponse('')
     # for kv_dict in kv_dicts:
     #     if kv_dict.get('attr', '') not in available_attrs:
     #         make_logging = False
@@ -854,7 +857,10 @@ def construct_query(attrs, values, optimize=True):
 
 
 def make_search_breadcumbs(attrs, values):
-    attrs_values = get_pairs(attrs, values)
+    try:
+        attrs_values = get_pairs(attrs, values)
+    except ValueError:
+        return []
 
     search_breadcumbs = []
     search_url = reverse('ssearch:frontend:index')
