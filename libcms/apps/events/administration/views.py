@@ -16,7 +16,7 @@ from django.utils.translation import get_language
 from common.pagination import get_page
 from ..models import Event, EventContent, EventParticipant
 from .forms import EventForm, EventContentForm, EventFilterForm, SubscriptionFilterForm
-from .. import subcribing, subscription
+from .. import subscription
 
 
 @login_required
