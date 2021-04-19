@@ -318,8 +318,8 @@ class EventParticipationReminder(models.Model):
         verbose_name_plural = 'Напоминания об участии'
 
     def clean(self):
-        if EventParticipant.objects.filter(id=self.event_participant).count() > 3:
-            raise ValidationError('Превышен лимит допустимых напоминаний на одно событие')
+        # if EventParticipationReminder.objects.filter(event_participant=self.event_participant).count() > 3:
+        #     raise ValidationError('Превышен лимит допустимых напоминаний на одно событие')
 
         if self.remind_date > self.event_participant.event.start_date:
             raise ValidationError('Время напоминания не может быть позде времени начала события')
