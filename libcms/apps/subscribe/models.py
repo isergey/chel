@@ -416,6 +416,11 @@ def send_to_email():
                 subscribe_id=str(send_status.letter.subscribe_id)
             )
 
+        for img in soup.find_all('img'):
+            src = img['src']
+            if src.startswith('/static/') or src.startswith('/media/'):
+                img['src'] = 'https://' + SITE_DOMAIN + img['src']
+
         email_body = str(soup.prettify(formatter=None))
         message = EmailMessage(
             subject=send_status.letter.subject,
