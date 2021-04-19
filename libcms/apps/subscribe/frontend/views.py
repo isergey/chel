@@ -71,9 +71,8 @@ def index(request):
         for group in groups:
             initial_subscribes = []
             if email:
-                subscribers = models.Subscriber.objects.filter(email__iexact=email)
-                if subscribers:
-                    subscriber = subscribers[0]
+                subscriber = models.Subscriber.objects.filter(email__iexact=email).first()
+                if subscriber is not None:
                     initial_subscribes = subscriber.subscribe.all()
             SubscriberForm = get_subscriber_form(
                 models.Subscribe.objects.filter(group=group, is_active=True, hidden=False))
