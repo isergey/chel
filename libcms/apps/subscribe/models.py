@@ -1,13 +1,15 @@
 # encoding: utf-8
 import hashlib
-from django.core.exceptions import ValidationError
-from django.db.models.signals import pre_save, pre_delete
-from django.dispatch import receiver
+from urllib.parse import quote
+
+import bs4
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.mail import EmailMessage, get_connection
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
 from django.db import models
 from django.db import transaction
+from django.shortcuts import resolve_url
 from django.template import Context, Template
 from django.template.loader import get_template
 from django.utils import timezone
@@ -404,6 +406,17 @@ def send_to_email():
             'subscribe_id': send_status.letter.subscribe_id,
             'SITE_DOMAIN': SITE_DOMAIN
         })
+
+        soup = bs4.BeautifulSoup(email_body, features='lxml')
+        journal_redirect = 'https://' + SITE_DOMAIN + resolve_url('journal:redirect_to_url')
+
+        for link in soup.find_all('a'):
+            link['href'] = journal_redirect + '?u={href}&a=subscribe_click&attr_subscribe={subscribe_id}'.format(
+                href=quote(link['href']),
+                subscribe_id=str(send_status.letter.subscribe_id)
+            )
+
+        email_body = str(soup.prettify(formatter=None))
         message = EmailMessage(
             subject=send_status.letter.subject,
             body=email_body,

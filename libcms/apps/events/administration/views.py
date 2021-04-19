@@ -313,9 +313,7 @@ def subscriptions(request):
 
         q &= end_date_q
 
-
     events = list(Event.objects.filter(q).order_by('start_date'))
-
 
     event_contents = list(EventContent.objects.filter(
         event__in=events,

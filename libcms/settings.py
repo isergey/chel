@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'subscribe',
     'sso',
     'sso_opac',
+    'journal',
 ]
 
 MIDDLEWARE = [

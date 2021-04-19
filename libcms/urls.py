@@ -48,6 +48,8 @@ urlpatterns += i18n_patterns(
     re_path(r'^contact_form/', include(('contact_form.urls', 'contact_form'))),
     re_path(r'^subscribe/', include(('subscribe.urls', 'subscribe'))),
     re_path(r'^opac/', include(('sso_opac.urls', 'sso_opac'))),
+    re_path(r'^journal/', include(('journal.urls', 'journal'))),
+
     # url(r'^sql/', include('explorer.urls')),
 )
 

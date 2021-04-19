@@ -1,8 +1,10 @@
 <h1>{{ subscribe.name }}</h1>
 {% for news in news_list %}
     <div>
-        <p><a href="http://{{ SITE_DOMAIN }}{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a>
+        <p><a href="https://{{ SITE_DOMAIN }}{% url 'news:frontend:show' news.id %}">{{ news.news_content.title }}</a>
         </p>
         <p>{{ news.news_content.teaser }}</p>
+        {% if not forloop.last %}
+            <hr/>{% endif %}
     </div>
 {% endfor %}

@@ -1,8 +1,9 @@
 <h1>{{ subscribe.name }}</h1>
 {% for event in event_list %}
     <div>
-        <p><a href="http://{{ SITE_DOMAIN }}{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a>
+        <p><a href="https://{{ SITE_DOMAIN }}{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a>
         </p>
         <p>{{ event.event_content.teaser }}</p>
+        {% if not forloop.last %}<hr/>{% endif %}
     </div>
 {% endfor %}
