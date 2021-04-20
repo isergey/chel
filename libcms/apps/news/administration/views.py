@@ -236,7 +236,7 @@ def subscriptions(request):
         letter_news = list(News.objects.filter(id__in=letter_news_id).order_by('-create_date'))
         _join_content(letter_news)
 
-        letter = subscription.create_subscription_letter(news_list)
+        letter = subscription.create_subscription_letter(letter_news)
         if letter is not None:
             messages.success(request, 'Письмо создано - <a href="{url}">Перейти к письму</a>'.format(
                 url=resolve_url('subscribe:administration:change_letter', id=letter.id)
