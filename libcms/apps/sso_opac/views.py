@@ -68,6 +68,14 @@ def renewal(request):
     # ye
     return redirect('sso_opac:on_hand')
 
+
+def incomes(request):
+    resoponse = opac_client.databases().get_records(db_id='18')
+    for item in resoponse.get('data', []):
+        print(''.join(item.get('attributes', {}).get('SHOTFORM', {}).get('content', [])))
+        print('--------------------')
+    return HttpResponse('')
+
 def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List[CirculationOperationInfo]:
     databases = opac_client.databases()
     checkouts: List[CirculationOperationInfo] = []

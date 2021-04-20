@@ -39,7 +39,6 @@
         </thead>
         <tbody>
         {% for event in events %}
-
             <tr>
                 <td><input class="news-checkbox" type="checkbox" checked /></td>
                 <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a></td>

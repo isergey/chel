@@ -372,16 +372,7 @@
                                     <div style="color:#1d1d1b;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;letter-spacing:1px;line-height:1.8;padding-top:0px;padding-right:20px;padding-bottom:0px;padding-left:20px;">
                                         <div class="txtTinyMce-wrapper"
                                              style="line-height: 1.8; font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #1d1d1b; letter-spacing: 1px; mso-line-height-alt: 22px;">
-                                            <h1>{{ subscribe.name }}</h1>
-                                            {% for event in event_list %}
-                                                <div>
-                                                    <p><a href="{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a>
-                                                    </p>
-                                                    <p>{{ event.event_content.teaser }}</p>
-                                                    {% if not forloop.last %}<hr/>{% endif %}
-                                                </div>
-                                            {% endfor %}
-
+                                            {{ content|safe }}
                                         </div>
                                     </div>
                                     <!--[if mso]></td></tr></table><![endif]-->
@@ -587,7 +578,7 @@
                                             </p>
                                             <p style="font-size: 12px; line-height: 1.5; word-break: break-word; text-align: center; mso-line-height-alt: 18px; letter-spacing: -1px; margin: 0;">
                                                 <span style="font-size: 12px;">Отписаться от рассылки можно <a
-                                                        href="{% url 'subscribe:frontend:unsubscribe' subscribe_id %}?email={{ email|urlencode }}&key={{ key }}" rel="noopener"
+                                                        href="https://{{ SITE_DOMAIN }}{% url 'subscribe:frontend:unsubscribe' subscribe_id %}?email={{ email|urlencode }}&key={{ key }}" rel="noopener"
                                                         style="text-decoration: none; color: #ad2423;" target="_blank">здесь</a></span>
                                             </p>
                                         </div>

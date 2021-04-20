@@ -103,7 +103,6 @@ class Circulation:
 
             }
         )
-        print(data)
         return data
 
 
@@ -120,6 +119,25 @@ class Databases:
             ),
             params={
                 'options[views]': view,
+            }
+        )
+
+        return data
+
+    def get_records(self, db_id, position=0):
+        """
+        filter[query]=SCB '2021/10'&filter[levels]=Full&position=0
+        """
+        data = self.__client.get_json(
+            method='get',
+            path='/databases/{db_id}/records'.format(
+                db_id=quote(db_id)
+            ),
+            params={
+                'filter[query]': "SCB '2021/10'",
+                'filter[levels]': 'Full',
+                'options[views]': 'SHOTFORM',
+                'position': position
             }
         )
 
@@ -159,7 +177,8 @@ class Client:
         except json.JSONDecodeError as e:
             raise exceptions.Error(str(e))
 
-    def make_request(self, method, path, params=None, data=None, json_dict=None, headers=None, auth: HTTPBasicAuth = None):
+    def make_request(self, method, path, params=None, data=None, json_dict=None, headers=None,
+                     auth: HTTPBasicAuth = None):
         request_headers = headers or {}
         if self.__config.username and auth is None:
             request_headers['Authorization'] = 'Bearer ' + self.__get_token().access_token
@@ -174,9 +193,7 @@ class Client:
             auth=auth,
             timeout=10,
         )
-        print(response.request.url)
-        print(response.request.body)
-        print(response.content)
+
         if 200 >= response.status_code < 400:
             return response
 
