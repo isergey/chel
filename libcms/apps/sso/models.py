@@ -60,7 +60,7 @@ def on_external_user_delete(sender, **kwargs):
     User.objects.filter(id=kwargs['instance'].user_id).delete()
 
 
-def get_external_users(user, auth_source=None) -> ExternalUser:
+def get_external_users(user, auth_source=None):
     q = models.Q(user=user)
     if auth_source:
         q = q & models.Q(auth_source=auth_source)
