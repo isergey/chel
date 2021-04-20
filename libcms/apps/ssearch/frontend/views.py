@@ -806,7 +806,7 @@ def get_orderd_facets(facets):
 def construct_query(attrs, values, optimize=True):
     sc = SearchCriteria("AND")
     for i, attr in enumerate(attrs):
-        value = values[i].strip()
+        value = (values[i:i+1] or ['']).strip()
         if not value:
             continue
 
