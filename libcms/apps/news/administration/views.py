@@ -231,8 +231,11 @@ def subscriptions(request):
 
     news_list = News.objects.filter(q).order_by('-create_date')
     _join_content(news_list)
+    if request.method == 'POST':
+        letter_news_id = request.POST.getlist('news')
+        letter_news = list(News.objects.filter(id__in=letter_news_id).order_by('-create_date'))
+        _join_content(letter_news)
 
-    if request.GET.get('subscription') == 'create_letter':
         letter = subscription.create_subscription_letter(news_list)
         if letter is not None:
             messages.success(request, 'Письмо создано - <a href="{url}">Перейти к письму</a>'.format(

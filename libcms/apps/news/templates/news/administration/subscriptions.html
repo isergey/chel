@@ -21,11 +21,12 @@
                 <input class="form-control" type="date" name="end_date" value="{{ filter_form.cleaned_data.end_date|default:filter_form.end_date.value|date:'Y-m-d' }}">
                 <input type="hidden" name="filter" value="1">
                 <button class="btn btn-default">Фильтровать</button>
-                <button class="btn btn-default" name="subscription" value="create_letter">Сформировать письмо</button>
+
             </div>
         </form>
     </div>
     <h1>Новости</h1>
+    <form method="post">{% csrf_token %}
     <table class="table table-striped">
         <thead>
         <tr>
@@ -48,6 +49,8 @@
         {% endfor %}
         </tbody>
     </table>
+    <button class="btn btn-default"  type="submit">Сформировать письмо</button>
+    </form>
     <script>
         $(function () {
             $('#check_all').on('change', function () {

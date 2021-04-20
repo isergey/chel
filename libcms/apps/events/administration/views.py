@@ -75,14 +75,7 @@ def events_list(request):
 
     events_page = get_page(request, Event.objects.filter(q).order_by(order + sorting), 10)
 
-    event_contents = list(EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
-
-    t_dict = {}
-    for event in events_page.object_list:
-        t_dict[event.id] = {'event': event}
-
-    for event_content in event_contents:
-        t_dict[event_content.event_id]['event'].event_content = event_content
+    _join_content(events_page.object_list)
 
     return render(request, 'events/administration/events_list.html', {
         'events_list': events_page.object_list,
@@ -333,7 +326,6 @@ def subscriptions(request):
         'events': events,
         'filter_form': filter_form,
     })
-
 
 
 def _join_content(events):
