@@ -42,7 +42,7 @@
         {% for news in news_list %}
 
             <tr>
-                <td><input class="news-checkbox" type="checkbox" checked /></td>
+                <td><input class="news-checkbox" type="checkbox" checked name="news" value="{{ news.id }}"/></td>
                 <td><a href="{% url 'news:administration:edit_news' news.id %}">{{ news.news_content.title }}</a></td>
                 <td>{{ news.create_date }}</td>
             </tr>
