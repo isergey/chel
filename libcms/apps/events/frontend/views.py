@@ -13,7 +13,7 @@ from opac_global_client.entities import ReaderResponse
 from . import forms
 from .. import models
 from ..models import Address
-from sso import models
+from sso import models as sso_models
 from sso_opac.settings import AUTH_SOURCE as OPAC_AUTH_SOURCE
 
 
@@ -265,7 +265,7 @@ def participant(request, id):
             return redirect('events:frontend:show', id=id)
 
     else:
-        external_user = models.get_external_users(request.user, auth_source=OPAC_AUTH_SOURCE)
+        external_user = sso_models.get_external_users(request.user, auth_source=OPAC_AUTH_SOURCE)
         reader_id = ''
         if external_user:
             response = ReaderResponse(**external_user.get_attributes())
