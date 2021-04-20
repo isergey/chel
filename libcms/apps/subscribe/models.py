@@ -411,6 +411,10 @@ def send_to_email():
         journal_redirect = 'https://' + SITE_DOMAIN + resolve_url('journal:redirect_to_url')
 
         for link in soup.find_all('a'):
+            href = link['href']
+            if href.startswith('mailto:') or href.startswith('tel:'):
+                continue
+
             link['href'] = journal_redirect + '?u={href}&a=subscribe_click&attr_subscribe={subscribe_id}'.format(
                 href=quote(link['href']),
                 subscribe_id=str(send_status.letter.subscribe_id)
