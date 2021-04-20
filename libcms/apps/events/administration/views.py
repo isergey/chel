@@ -75,7 +75,7 @@ def events_list(request):
 
     events_page = get_page(request, Event.objects.filter(q).order_by(order + sorting), 10)
 
-    _join_content(events_page.object_list)
+    _join_content(list(events_page.object_list))
 
     return render(request, 'events/administration/events_list.html', {
         'events_list': events_page.object_list,
