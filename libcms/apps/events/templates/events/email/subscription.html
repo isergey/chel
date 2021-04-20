@@ -258,7 +258,8 @@
 {#                                                    </p>#}
                                                     {% for event in event_list %}
                                                         <div>
-                                                            <p><a href="{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a>
+                                                            <p>
+                                                                <a href="{% url 'events:frontend:show' event.id %}">{{ event.event_content.title }}</a>
                                                             </p>
                                                             <p>{{ event.event_content.teaser }}</p>
                                                             {% if not forloop.last %}<hr/>{% endif %}

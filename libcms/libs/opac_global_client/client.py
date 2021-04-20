@@ -136,7 +136,7 @@ class Databases:
             params={
                 'filter[query]': "SCB '2021/10'",
                 'filter[levels]': 'Full',
-                'options[views]': 'SHOTFORM',
+                # 'options[views]': 'SHOTFORM',
                 'position': position
             }
         )

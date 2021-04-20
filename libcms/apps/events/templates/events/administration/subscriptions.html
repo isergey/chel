@@ -21,32 +21,36 @@
                 <input class="form-control" type="date" name="end_date" value="{{ filter_form.cleaned_data.end_date|default:filter_form.end_date.value|date:'Y-m-d' }}">
                 <input type="hidden" name="filter" value="1">
                 <button class="btn btn-default">Фильтровать</button>
-                <button class="btn btn-default" name="subscription" value="create_letter">Сформировать письмо</button>
+
             </div>
         </form>
     </div>
     <h1>События</h1>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>
-                <input id="check_all" type="checkbox" checked />
-            </th>
-            <th>Событие</th>
-            <th class="span2">Дата создания</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        {% for event in events %}
+    <form method="post">
+        {% csrf_token %}
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <td><input class="news-checkbox" type="checkbox" checked /></td>
-                <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a></td>
-                <td>{{ event.create_date }}</td>
+                <th>
+                    <input id="check_all" type="checkbox" checked />
+                </th>
+                <th>Событие</th>
+                <th class="span2">Дата создания</th>
+
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for event in events %}
+                <tr>
+                    <td><input class="news-checkbox" type="checkbox" checked name="event" value="{{ event.id }}" /></td>
+                    <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a></td>
+                    <td>{{ event.create_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-default" type="submit">Сформировать письмо</button>
+    </form>
     <script>
         $(function () {
             $('#check_all').on('change', function () {

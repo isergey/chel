@@ -315,20 +315,13 @@ def subscriptions(request):
 
     events = list(Event.objects.filter(q).order_by('start_date'))
 
-    event_contents = list(EventContent.objects.filter(
-        event__in=events,
-        lang=get_language()[:2]
-    ))
+    _join_content(events)
 
-    t_dict = {}
-    for event in events:
-        t_dict[event.id] = {'event': event}
-
-    for event_content in event_contents:
-        t_dict[event_content.event_id]['event'].event_content = event_content
-
-    if request.GET.get('subscription') == 'create_letter':
-        letter = subscription.create_subscription_letter(events)
+    if request.method == 'POST':
+        letter_events_id = request.POST.getlist('event')
+        letter_events = list(Event.objects.filter(id__in=letter_events_id).order_by('start_date'))
+        _join_content(letter_events)
+        letter = subscription.create_subscription_letter(letter_events)
         if letter is not None:
             messages.success(request, 'Письмо создано - <a href="{url}">Перейти к письму</a>'.format(
                 url=resolve_url('subscribe:administration:change_letter', id=letter.id)
@@ -340,3 +333,18 @@ def subscriptions(request):
         'events': events,
         'filter_form': filter_form,
     })
+
+
+
+def _join_content(events):
+    event_contents = list(EventContent.objects.filter(
+        event__in=events,
+        lang=get_language()[:2]
+    ))
+
+    t_dict = {}
+    for event in events:
+        t_dict[event.id] = {'event': event}
+
+    for event_content in event_contents:
+        t_dict[event_content.event_id]['event'].event_content = event_content

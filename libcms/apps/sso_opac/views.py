@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
+from junimarc.json.opac import record_from_json
 from opac_global_client.client import Client
 from opac_global_client.entities import ReaderResponse, CirculationOperation, CirculationOrder
 from .settings import opac_client, AUTH_SOURCE
@@ -72,8 +73,10 @@ def renewal(request):
 def incomes(request):
     resoponse = opac_client.databases().get_records(db_id='18')
     for item in resoponse.get('data', []):
-        print(''.join(item.get('attributes', {}).get('SHOTFORM', {}).get('content', [])))
-        print('--------------------')
+        record = record_from_json(item.get('attributes', {}))
+        print(record)
+        # print(''.join(item.get('attributes', {}).get('SHOTFORM', {}).get('content', [])))
+        # print('--------------------')
     return HttpResponse('')
 
 def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List[CirculationOperationInfo]:
