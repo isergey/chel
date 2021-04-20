@@ -232,7 +232,7 @@ def participants(request, id):
 
 
 @login_required
-@permission_required_or_403('news.create_news')
+@permission_required_or_403('events.add_event')
 @transaction.atomic
 def subscriptions(request):
     now = datetime.now()

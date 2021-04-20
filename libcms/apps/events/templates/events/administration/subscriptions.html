@@ -1,4 +1,4 @@
-{% extends 'news/administration/index.html' %}
+{% extends 'events/administration/index.html' %}
 {% load active_link %}
 {% load pagination_tag %}
 {% load breadcrumbs %}
@@ -42,7 +42,7 @@
 
             <tr>
                 <td><input class="news-checkbox" type="checkbox" checked /></td>
-                <td><a href="{% url 'news:administration:edit_news' event.id %}">{{ event.event_content.title }}</a></td>
+                <td><a href="{% url 'events:administration:edit_event' event.id %}">{{ event.event_content.title }}</a></td>
                 <td>{{ event.create_date }}</td>
             </tr>
         {% endfor %}
