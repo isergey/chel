@@ -8,10 +8,13 @@ from django.utils import translation
 from django.utils.translation import get_language
 
 from common.pagination import get_page
+from opac_global_client.entities import ReaderResponse
 
 from . import forms
 from .. import models
 from ..models import Address
+from sso import models
+from sso_opac.settings import AUTH_SOURCE as OPAC_AUTH_SOURCE
 
 
 def index(request):
@@ -262,10 +265,17 @@ def participant(request, id):
             return redirect('events:frontend:show', id=id)
 
     else:
+        external_user = models.get_external_users(request.user, auth_source=OPAC_AUTH_SOURCE)
+        reader_id = ''
+        if external_user:
+            response = ReaderResponse(**external_user.get_attributes())
+            reader_id = response.attributes.barcode or ''
+
         form = forms.ParticipantForm(initial={
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,
             'email': request.user.email,
+            'reader_id': reader_id,
         })
 
     return render(request, 'events/frontend/participant.html', {
@@ -283,3 +293,6 @@ def delete_participant(request, id):
     if participant is not None:
         participant.delete()
     return redirect('events:frontend:show', id=id)
+
+
+

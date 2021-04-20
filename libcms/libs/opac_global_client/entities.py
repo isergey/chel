@@ -33,6 +33,7 @@ class Reader(BaseModel):
     password: str = Field('', alias='pass')
     fio: str
     email: str
+    barcode: str
 
     class Config:
         extra = 'ignore'
