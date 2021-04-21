@@ -62,6 +62,13 @@ class OpacGlobalAuthBackend:
         first_name = ''
 
         fio_parts_length = len(fio_parts)
+        cleaned_fio_parts = []
+
+        for fio_part in fio_parts:
+            cleaned_fio_parts.append(fio_part.lower().title())
+
+        fio_parts = cleaned_fio_parts
+
         if fio_parts_length > 1:
             last_name = fio_parts[0].lower().title()
             first_name = ' '.join(fio_parts[1:])
