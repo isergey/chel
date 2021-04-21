@@ -64,7 +64,7 @@ class OpacGlobalAuthBackend:
         fio_parts_length = len(fio_parts)
         if fio_parts_length > 1:
             last_name = fio_parts[0].lower().title()
-            first_name = fio_parts[1].title()
+            first_name = ' '.join(fio_parts[1:])
         elif fio_parts_length > 0:
             last_name = fio_parts[0].lower().title()
 
