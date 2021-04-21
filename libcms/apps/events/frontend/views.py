@@ -250,7 +250,7 @@ def participant(request, id):
     event = get_object_or_404(models.Event, id=id)
     cur_language = translation.get_language()
     content = models.EventContent.objects.filter(event=event, lang=cur_language[:2]).first()
-
+    event.event_content = content
     if request.method == 'POST':
         form = forms.ParticipantForm(request.POST)
         if form.is_valid():
