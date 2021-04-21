@@ -1,7 +1,6 @@
-{% load static %}
-{% get_static_prefix as STATIC_URL %}
-{{ events }}
 {% if events %}
+    {% load static %}
+    {% get_static_prefix as STATIC_URL %}
     <section class="section container">
         <div class="section-header">
             <h3 class="section__title">Предстоящие трансляции</h3>
