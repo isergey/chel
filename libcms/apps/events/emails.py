@@ -8,7 +8,7 @@ SITE_DOMAIN = settings.SITE_DOMAIN
 DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 
-def send_to_user_particinat_notification(event, participant: EventParticipant):
+def send_to_user_participant_notification(event, participant: EventParticipant):
     if not participant.email:
         return
 
