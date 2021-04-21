@@ -255,7 +255,7 @@ def participant(request, id):
     if request.method == 'POST':
         form = forms.ParticipantForm(request.POST)
         if form.is_valid():
-            participant = models.EventParticipant.objects.filter(email=form.cleaned_data['email']).first()
+            participant = models.EventParticipant.objects.filter(event=event, user=request.user).first()
             if participant is None:
                 participant = models.EventParticipant(
                     user=request.user,
