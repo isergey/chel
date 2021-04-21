@@ -12,6 +12,7 @@ from opac_global_client.entities import ReaderResponse
 
 from . import forms
 from .. import models
+from ..emails import send_to_user_particinat_notification
 from ..models import Address
 from sso import models as sso_models
 from sso_opac.settings import AUTH_SOURCE as OPAC_AUTH_SOURCE
@@ -262,6 +263,7 @@ def participant(request, id):
                 email=form.cleaned_data['email'],
             )
             participant.save()
+            send_to_user_particinat_notification(event, request.user)
             return redirect('events:frontend:show', id=id)
 
     else:
