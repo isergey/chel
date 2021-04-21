@@ -263,7 +263,7 @@ def participant(request, id):
                 email=form.cleaned_data['email'],
             )
             participant.save()
-            send_to_user_particinat_notification(event, request.user)
+            send_to_user_particinat_notification(event, participant)
             return redirect('events:frontend:show', id=id)
 
     else:

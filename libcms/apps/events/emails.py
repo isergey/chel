@@ -2,14 +2,14 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import resolve_url
 
-from events.models import Event
+from events.models import Event, EventParticipant
 
 SITE_DOMAIN = settings.SITE_DOMAIN
 DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 
-def send_to_user_particinat_notification(event, user):
-    if not user.email:
+def send_to_user_particinat_notification(event, participant: EventParticipant):
+    if not participant.email:
         return
 
     subject = 'Регистрация на мероприятие'
@@ -26,7 +26,7 @@ def send_to_user_particinat_notification(event, user):
         subject=subject,
         message='\n'.join(message),
         from_email=DEFAULT_FROM_EMAIL,
-        recipient_list=[user.email]
+        recipient_list=[participant.email]
     )
 
 
