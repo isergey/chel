@@ -1,0 +1,53 @@
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+{{ events }}
+{% if events %}
+    <section class="section container">
+        <div class="section-header">
+            <h3 class="section__title">Предстоящие трансляции</h3>
+            <ul class="section-nav section-nav_left">
+                {#            <li class="section-nav__item">#}
+                {#                <a class="section-nav__link section-nav__link_rss"#}
+                {#                   href="{% url 'news:frontend:rss' %}">RSS</a>#}
+                {#            </li>#}
+                <li class="section-nav__item">
+                    <a class="section-nav__link" href="{% url 'events:frontend:index' %}?category=podcast">Остальные
+                        трансляции</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-list card-list_4">
+            {% for event in events %}
+                <div class="card-list__item">
+                    <article class="card card_of card_h">
+                        <div class="card-img-box">
+                            <a href="{% url 'events:frontend:show' event.id %}">
+                                {#                        {% if news.avatar_img_name %}#}
+                                {#                        <img class="card-img-box__img"#}
+                                {#                             src="{{ MEDIA_URL }}uploads/newsavatars/{{ news.avatar_img_name }}"#}
+                                {#                             alt="{{ news.news_content.title }}">#}
+                                {#                        {% endif %}#}
+                                {{ event.translation_html|safe }}
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="card-title card-title_td-lc">
+                                <a class="card-title__link" href="{% url 'events:frontend:show' event.id %}">
+                                    {{ event.event_content.title }}
+                                </a>
+                            </h2>
+                            {% if event.start_date < now and event.end_date > now %}
+                                <div>
+                                    <img style="vertical-align: middle" src="{{ STATIC_URL }}images/icons/live.png">
+                                    <span style="vertical-align: middle">Эфир начался</span>
+                                </div>
+                            {% else %}
+                                <time class="card-time">{{ event.start_date }}</time>
+                            {% endif %}
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}

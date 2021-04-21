@@ -7,7 +7,7 @@ from django import template
 from django.core.cache import cache
 from ..models import Event
 from ..frontend.forms import CalendarFilterForm, get_current_month_choice, get_current_year_choice
-
+from ..frontend.views import _join_content
 register = template.Library()
 
 
@@ -55,7 +55,8 @@ def events_calendar(context, y=0, m=0):
                 if day == 0: continue
                 date_for_day_start = timezone.datetime(year, month, day, 0, 0, 0)
                 date_for_day_end = timezone.datetime(year, month, day, 23, 59, 59)
-                if ( event['start_date'] <= date_for_day_start or event['start_date'] <= date_for_day_end ) and event['end_date'] >= date_for_day_start:
+                if (event['start_date'] <= date_for_day_start or event['start_date'] <= date_for_day_end) and event[
+                    'end_date'] >= date_for_day_start:
                     day_events['events'].append({
                         'id': event['id'],
                         #                        'title': event.title,
@@ -68,4 +69,17 @@ def events_calendar(context, y=0, m=0):
         'month': month,
         'year': year,
         'form': form
+    }
+
+
+@register.inclusion_tag('events/tags/broadcasts.html', takes_context=True)
+def events_broadcasts(context):
+    now = timezone.now()
+    q = Q(category__code='broadcast')
+    q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
+    events = Event.objects.filter(q).order_by('start_date')[:4]
+    _join_content(events)
+    return {
+        'events': events,
+        'now': now
     }

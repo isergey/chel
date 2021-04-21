@@ -102,6 +102,7 @@
                     {% news_feed 4 0 %}
                 </div>
             </section>
+            {% events_broadcasts %}
             <div class="main__row container">
                 <div class="main__col">
                     <section class="section">
@@ -134,7 +135,7 @@
                                         <a class="card-header-nav__link" href="{% url 'events:frontend:index' %}">Все мероприятия</a>
                                     </li>
                                     <li class="card-header-nav__item">
-                                        <a class="card-header-nav__link" href="{% url 'events:frontend:index' %}?filter=1&address=14">Трансляции</a>
+                                        <a class="card-header-nav__link" href="{% url 'events:frontend:index' %}?filter=1&category=broadcast">Трансляции</a>
                                     </li>
                                 </ul>
                             </div>

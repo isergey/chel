@@ -88,7 +88,6 @@ def index(request):
 
             q &= end_date_q
 
-
         category = filter_form.cleaned_data['category']
         if category:
             q &= Q(category__in=category)
@@ -107,19 +106,7 @@ def index(request):
         events_qs = events_qs.exclude(end_date__lte=datetime.datetime.now())
 
     events_page = get_page(request, events_qs)
-
-    event_contents = list(models.EventContent.objects.filter(
-        event__in=list(events_page.object_list),
-        lang=get_language()[:2]
-    ))
-
-    t_dict = {}
-    for event in events_page.object_list:
-        t_dict[event.id] = {'event': event}
-
-    for event_content in event_contents:
-        t_dict[event_content.event_id]['event'].event_content = event_content
-
+    _join_content(events_page.object_list)
     return render(request, 'events/frontend/list.html', {
         'events_list': events_page.object_list,
         'events_page': events_page,
@@ -146,15 +133,8 @@ def filer_by_date(request, year='', month='', day=''):
     end_day_datetime = datetime.datetime(int(year), int(month), int(day), 23, 59, 59)
     q = Q(active=True) & Q(start_date__lte=end_day_datetime) & Q(end_date__gte=day_datetime)
     events_page = get_page(request, models.Event.objects.filter(q).order_by('-start_date'))
-    event_contents = list(
-        models.EventContent.objects.filter(event__in=list(events_page.object_list), lang=get_language()[:2]))
+    _join_content(events_page.object_list)
 
-    t_dict = {}
-    for event in events_page.object_list:
-        t_dict[event.id] = {'event': event}
-
-    for event_content in event_contents:
-        t_dict[event_content.event_id]['event'].event_content = event_content
     return render(request, 'events/frontend/list.html', {
         'events_list': events_page.object_list,
         'events_page': events_page,
@@ -190,14 +170,7 @@ def favorit_events(request):
         events.append(fav_event.event_id)
 
     events = models.Event.objects.filter(id__in=events)
-    event_contents = list(models.EventContent.objects.filter(event__in=list(events), lang=get_language()[:2]))
-
-    t_dict = {}
-    for event in events:
-        t_dict[event.id] = {'event': event}
-
-    for event_content in event_contents:
-        t_dict[event_content.event_id]['event'].event_content = event_content
+    _join_content(events)
 
     return render(request, 'events/frontend/favorites_list.html', {
         'events_list': events,
@@ -300,4 +273,14 @@ def delete_participant(request, id):
     return redirect('events:frontend:show', id=id)
 
 
+def _join_content(events):
+    event_contents = list(models.EventContent.objects.filter(
+        event__in=list(events),
+        lang=get_language()[:2]
+    ))
+    t_dict = {}
+    for event in events:
+        t_dict[event.id] = {'event': event}
 
+    for event_content in event_contents:
+        t_dict[event_content.event_id]['event'].event_content = event_content
