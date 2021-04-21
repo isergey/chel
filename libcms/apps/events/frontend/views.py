@@ -251,18 +251,21 @@ def participant(request, id):
     cur_language = translation.get_language()
     content = models.EventContent.objects.filter(event=event, lang=cur_language[:2]).first()
     event.event_content = content
+
     if request.method == 'POST':
         form = forms.ParticipantForm(request.POST)
         if form.is_valid():
-            participant = models.EventParticipant(
-                user=request.user,
-                event=event,
-                last_name=form.cleaned_data['last_name'],
-                first_name=form.cleaned_data['first_name'],
-                reader_id=form.cleaned_data['reader_id'],
-                email=form.cleaned_data['email'],
-            )
-            participant.save()
+            participant = models.EventParticipant.objects.filter(email=form.cleaned_data['email']).first()
+            if participant is None:
+                participant = models.EventParticipant(
+                    user=request.user,
+                    event=event,
+                    last_name=form.cleaned_data['last_name'],
+                    first_name=form.cleaned_data['first_name'],
+                    reader_id=form.cleaned_data['reader_id'],
+                    email=form.cleaned_data['email'],
+                )
+                participant.save()
             send_to_user_participant_notification(event, participant)
             return redirect('events:frontend:show', id=id)
 
