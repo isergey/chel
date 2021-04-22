@@ -355,7 +355,7 @@ def broadcasts(request):
     events_page = get_page(request, events_qs)
     _join_content(events_page.object_list)
 
-    future_q = Q(address_reference='broadcast')
+    future_q = Q(address_reference='12')
     future_q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
     future_events = models.Event.objects.filter(future_q).order_by('start_date')[:4]
     _join_content(future_events)
