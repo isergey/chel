@@ -54,7 +54,7 @@
             <div>
                 <button class="btn" id="show-event-filter">Фильтр</button>
                 {% if request.GET.filter %}
-                    <a class="btn btn_link" href="{% url 'events:frontend:index' %}">Очистить фильтр</a>
+                    <a class="btn btn_link" href="{% url 'events:frontend:broadcasts' %}">Очистить фильтр</a>
                 {% endif %}
             </div>
             <div class="card-list card-list_4">
