@@ -284,64 +284,64 @@ def broadcasts(request):
         if keywords:
             q &= Q(keywords__icontains=keywords)
 
-        start_date = filter_form.cleaned_data['start_date']
-        if start_date is not None:
-            start_date_q = Q(start_date__gte=datetime.datetime(
-                year=start_date.year,
-                month=start_date.month,
-                day=start_date.day,
-                hour=0,
-                minute=0,
-                second=0
-            ))
-
-            start_date_q |= Q(Q(start_date__lte=datetime.datetime(
-                year=start_date.year,
-                month=start_date.month,
-                day=start_date.day,
-                hour=0,
-                minute=0,
-                second=0
-            )) & Q(end_date__gte=datetime.datetime(
-                year=start_date.year,
-                month=start_date.month,
-                day=start_date.day,
-                hour=0,
-                minute=0,
-                second=0
-            )))
-
-            q &= start_date_q
-
-        end_date = filter_form.cleaned_data['end_date']
-
-        if end_date is not None:
-            end_date_q = Q(end_date__lte=datetime.datetime(
-                year=end_date.year,
-                month=end_date.month,
-                day=end_date.day,
-                hour=23,
-                minute=59,
-                second=59
-            ))
-
-            end_date_q |= Q(Q(start_date__lte=datetime.datetime(
-                year=end_date.year,
-                month=end_date.month,
-                day=end_date.day,
-                hour=0,
-                minute=0,
-                second=0
-            )) & Q(end_date__gte=datetime.datetime(
-                year=end_date.year,
-                month=end_date.month,
-                day=end_date.day,
-                hour=23,
-                minute=59,
-                second=59
-            )))
-
-            q &= end_date_q
+        # start_date = filter_form.cleaned_data['start_date']
+        # if start_date is not None:
+        #     start_date_q = Q(start_date__gte=datetime.datetime(
+        #         year=start_date.year,
+        #         month=start_date.month,
+        #         day=start_date.day,
+        #         hour=0,
+        #         minute=0,
+        #         second=0
+        #     ))
+        #
+        #     start_date_q |= Q(Q(start_date__lte=datetime.datetime(
+        #         year=start_date.year,
+        #         month=start_date.month,
+        #         day=start_date.day,
+        #         hour=0,
+        #         minute=0,
+        #         second=0
+        #     )) & Q(end_date__gte=datetime.datetime(
+        #         year=start_date.year,
+        #         month=start_date.month,
+        #         day=start_date.day,
+        #         hour=0,
+        #         minute=0,
+        #         second=0
+        #     )))
+        #
+        #     q &= start_date_q
+        #
+        # end_date = filter_form.cleaned_data['end_date']
+        #
+        # if end_date is not None:
+        #     end_date_q = Q(end_date__lte=datetime.datetime(
+        #         year=end_date.year,
+        #         month=end_date.month,
+        #         day=end_date.day,
+        #         hour=23,
+        #         minute=59,
+        #         second=59
+        #     ))
+        #
+        #     end_date_q |= Q(Q(start_date__lte=datetime.datetime(
+        #         year=end_date.year,
+        #         month=end_date.month,
+        #         day=end_date.day,
+        #         hour=0,
+        #         minute=0,
+        #         second=0
+        #     )) & Q(end_date__gte=datetime.datetime(
+        #         year=end_date.year,
+        #         month=end_date.month,
+        #         day=end_date.day,
+        #         hour=23,
+        #         minute=59,
+        #         second=59
+        #     )))
+        #
+        #     q &= end_date_q
 
         category = filter_form.cleaned_data['category']
         if category:
