@@ -276,7 +276,7 @@ def delete_participant(request, id):
 def broadcasts(request):
     now = timezone.now()
     q = Q(category='broadcast', active=True)
-    filter_form = forms.get_broadcast_filter_form()(request.GET)
+    filter_form = forms.BroadcastsFilterForm(request.GET)
     start_date = None
     end_date = None
     if filter_form.is_valid():

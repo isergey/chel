@@ -64,46 +64,44 @@ class EventsFilterForm(forms.Form):
     )
 
 
-def get_broadcast_filter_form():
-    class BroadcastsFilterForm(forms.Form):
+class BroadcastsFilterForm(forms.Form):
+    keywords = forms.CharField(
+        required=False,
+        label='Ключевые слова',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control'
+        })
+    )
 
-        keywords = forms.CharField(
-            required=False,
-            label='Ключевые слова',
-            widget=forms.TextInput(attrs={
-                'class': 'form-control'
-            })
+    start_date = forms.DateField(
+        label='Дата начала',
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }
         )
+    )
 
-        start_date = forms.DateField(
-            label='Дата начала',
-            required=False,
-            widget=forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date'
-                }
-            )
+    end_date = forms.DateField(
+        label='Дата окончания',
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }
         )
+    )
 
-        end_date = forms.DateField(
-            label='Дата окончания',
-            required=False,
-            widget=forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date'
-                }
-            )
-        )
+    category = forms.ModelMultipleChoiceField(
+        label=u'Категория события',
+        queryset=models.Category.objects.all().exclude(code='broadcast'),
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
 
-        category = forms.ModelMultipleChoiceField(
-            label=u'Категория события',
-            queryset=models.Category.objects.filter(event__category='broadcast').exclude(code='broadcast'),
-            required=False,
-            widget=forms.CheckboxSelectMultiple
-        )
-    return BroadcastsFilterForm
 
 class ParticipantForm(forms.Form):
     last_name = forms.CharField(
