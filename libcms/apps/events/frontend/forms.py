@@ -4,6 +4,7 @@ from datetime import date
 from .. import models
 from mptt.forms import TreeNodeChoiceField
 
+
 class EventsFilterForm(forms.Form):
     # library = forms.ModelChoiceField(
     #     empty_label=u'выберите из списка',
@@ -62,6 +63,47 @@ class EventsFilterForm(forms.Form):
         required=False,
     )
 
+
+def get_broadcast_filter_form():
+    class BroadcastsFilterForm(forms.Form):
+
+        keywords = forms.CharField(
+            required=False,
+            label='Ключевые слова',
+            widget=forms.TextInput(attrs={
+                'class': 'form-control'
+            })
+        )
+
+        start_date = forms.DateField(
+            label='Дата начала',
+            required=False,
+            widget=forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date'
+                }
+            )
+        )
+
+        end_date = forms.DateField(
+            label='Дата окончания',
+            required=False,
+            widget=forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date'
+                }
+            )
+        )
+
+        category = forms.ModelMultipleChoiceField(
+            label=u'Категория события',
+            queryset=models.Category.objects.filter(event__category='broadcast').exclude(code='broadcast'),
+            required=False,
+            widget=forms.CheckboxSelectMultiple
+        )
+    return BroadcastsFilterForm
 
 class ParticipantForm(forms.Form):
     last_name = forms.CharField(

@@ -21,11 +21,6 @@
                     <article class="card card_of card_h">
                         <div class="card-img-box">
                             <a href="{% url 'events:frontend:show' event.id %}">
-                                {#                        {% if news.avatar_img_name %}#}
-                                {#                        <img class="card-img-box__img"#}
-                                {#                             src="{{ MEDIA_URL }}uploads/newsavatars/{{ news.avatar_img_name }}"#}
-                                {#                             alt="{{ news.news_content.title }}">#}
-                                {#                        {% endif %}#}
                                 {{ event.translation_html|safe }}
                             </a>
                         </div>

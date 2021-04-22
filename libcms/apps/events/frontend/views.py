@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.db.transaction import atomic
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
-from django.utils import translation
+from django.utils import translation, timezone
 from django.utils.translation import get_language
 
 from common.pagination import get_page
@@ -271,6 +271,102 @@ def delete_participant(request, id):
     if participant is not None:
         participant.delete()
     return redirect('events:frontend:show', id=id)
+
+
+def broadcasts(request):
+    now = timezone.now()
+    q = Q(category='broadcast', active=True)
+    filter_form = forms.get_broadcast_filter_form()(request.GET)
+    start_date = None
+    end_date = None
+    if filter_form.is_valid():
+        keywords = filter_form.cleaned_data['keywords']
+        if keywords:
+            q &= Q(keywords__icontains=keywords)
+
+        start_date = filter_form.cleaned_data['start_date']
+        if start_date is not None:
+            start_date_q = Q(start_date__gte=datetime.datetime(
+                year=start_date.year,
+                month=start_date.month,
+                day=start_date.day,
+                hour=0,
+                minute=0,
+                second=0
+            ))
+
+            start_date_q |= Q(Q(start_date__lte=datetime.datetime(
+                year=start_date.year,
+                month=start_date.month,
+                day=start_date.day,
+                hour=0,
+                minute=0,
+                second=0
+            )) & Q(end_date__gte=datetime.datetime(
+                year=start_date.year,
+                month=start_date.month,
+                day=start_date.day,
+                hour=0,
+                minute=0,
+                second=0
+            )))
+
+            q &= start_date_q
+
+        end_date = filter_form.cleaned_data['end_date']
+
+        if end_date is not None:
+            end_date_q = Q(end_date__lte=datetime.datetime(
+                year=end_date.year,
+                month=end_date.month,
+                day=end_date.day,
+                hour=23,
+                minute=59,
+                second=59
+            ))
+
+            end_date_q |= Q(Q(start_date__lte=datetime.datetime(
+                year=end_date.year,
+                month=end_date.month,
+                day=end_date.day,
+                hour=0,
+                minute=0,
+                second=0
+            )) & Q(end_date__gte=datetime.datetime(
+                year=end_date.year,
+                month=end_date.month,
+                day=end_date.day,
+                hour=23,
+                minute=59,
+                second=59
+            )))
+
+            q &= end_date_q
+
+        category = filter_form.cleaned_data['category']
+        if category:
+            q &= Q(category__in=category)
+
+    if not start_date and not end_date:
+        q &= Q(end_date__lte=now)
+
+    events_qs = models.Event.objects.filter(q).order_by('-start_date')
+
+    events_page = get_page(request, events_qs)
+    _join_content(events_page.object_list)
+
+    future_q = Q(category__code='broadcast')
+    future_q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
+    future_events = models.Event.objects.filter(future_q).order_by('start_date')[:4]
+    _join_content(future_events)
+
+    return render(request, 'events/frontend/broadcasts.html', {
+        'future_events': future_events,
+        # 'events_list': events_page.object_list,
+        'events_page': events_page,
+        'filter_form': filter_form
+
+    })
 
 
 def _join_content(events):

@@ -10,21 +10,24 @@ def make_data_subfield(code, subfield_dict):
     )
 
 
-def make_control_field(tag, field_dict):
+def make_control_field(tag, data=''):
     return record.ControlField(
         tag=tag,
-        data=field_dict.get('data', '')
+        data=data
     )
 
 
-def make_extended_subfield(code, subfield_dict):
+def make_extended_subfield(code, data):
     fields = []
 
-    for field_dict in subfield_dict.get('cf', []):
-        fields.append(make_control_field(field_dict))
-
-    for field_dict in subfield_dict.get('df', []):
-        fields.append(make_data_field(field_dict))
+    for field_dict in data:
+        tag = field_dict.get('tag', '')
+        if not tag:
+            continue
+        if tag.startswith('00'):
+            fields.append(make_control_field(tag, field_dict))
+        else:
+            fields.append(make_data_field(tag, field_dict))
 
     return record.ExtendedSubfield(
         code=code,
@@ -40,10 +43,11 @@ def make_data_field(tag, field_dict):
         if not code:
             continue
 
-        if code != '1':
-            subfields.append(make_data_subfield(code, subfield_dict))
+        data = subfield_dict.get('data')
+        if type(data) == list:
+            make_extended_subfield(code, data)
         else:
-            subfields.append(make_extended_subfield(code, subfield_dict))
+            subfields.append(make_data_subfield(code, data))
 
     ind1 = field_dict.get('ind1', ' ')
     if ind1 == '#':
@@ -85,74 +89,68 @@ def record_from_json(json_record):
 
 
 def extended_subfield_to_json(subfield):
-    cf = []
-    df = []
+    data = []
 
     for field in subfield.get_fields():
         if isinstance(field, record.DataField):
-            df.append(data_field_to_json(field))
+            data.append(data_field_to_json(field))
         else:
-            cf.append(control_field_to_json(field))
+            data.append(control_field_to_json(field))
     return {
-        'id': subfield.get_code(),
-        'cf': cf,
-        'df': df,
+        'code': subfield.get_code(),
+        'data': data,
     }
 
 
 def data_subfield_to_json(subfield):
     return {
-        'id': subfield.get_code(),
-        'd': subfield.get_data(),
+        'code': subfield.get_code(),
+        'data': subfield.get_data(),
     }
 
 
 def data_field_to_json(field):
-    sf = []
-    esf = []
+    subfields = []
 
     for subfield in field.get_subfields():
         if isinstance(subfield, record.DataSubfield):
-            sf.append(data_subfield_to_json(subfield))
+            subfields.append(data_subfield_to_json(subfield))
         else:
-            esf.append(extended_subfield_to_json(subfield))
+            subfields.append(extended_subfield_to_json(subfield))
 
     return {
         'tag': field.get_tag(),
-        'i1': field.get_ind1(),
-        'i2': field.get_ind2(),
-        'sf': sf,
-        'esf': esf,
+        'ind1': field.get_ind1(),
+        'ind2': field.get_ind2(),
+        'subfields': subfields,
     }
 
 
 def control_field_to_json(field):
     return {
         'tag': field.get_tag(),
-        'd': field.get_data(),
+        'data': field.get_data(),
     }
 
 
 def field_to_json(field):
     if isinstance(field, record.DataField):
-        return data_field_to_json()
+        return data_field_to_json(field)
     return
 
 
 def record_to_json(jrecord, dump=False):
-    cf = []
-    df = []
+    fields = []
 
     for field in jrecord.get_fields():
         if isinstance(field, record.DataField):
-            df.append(data_field_to_json(field))
+            fields.append(data_field_to_json(field))
         else:
-            cf.append(control_field_to_json(field))
+            fields.append(control_field_to_json(field))
 
     record_json = {
-        'l': jrecord.get_leader(),
-        'cf': cf,
-        'df': df,
+        'leader': jrecord.get_leader(),
+        'fields': fields,
     }
 
     if dump:

@@ -1,0 +1,115 @@
+{% extends 'index/frontend/index.html' %}
+{% load pagination_tag %}
+{% load bootstrap3 %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block content %}
+    <main class="main">
+        <div class="container">
+            <div class="crumb">
+                <ol class="crumb__list">
+                    <li>
+                        <a href="{% url 'index:frontend:index' %}">Главная</a>
+                    </li>
+                    <li>
+                        <span class="crumb__current">
+                           Онлайн-трансляции
+                        </span>
+                    </li>
+                </ol>
+            </div>
+            <h1 class="content-title">
+                Предстоящие онлайн-трансляции
+            </h1>
+            <div class="card-list card-list_4">
+                {% for event in future_events %}
+                    <div class="card-list__item">
+                        <article class="card card_of card_h">
+                        <div class="card-img-box">
+                            <a href="{% url 'events:frontend:show' event.id %}">
+                                {{ event.translation_html|safe }}
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="card-title card-title_td-lc">
+                                <a class="card-title__link" href="{% url 'events:frontend:show' event.id %}">
+                                    {{ event.event_content.title }}
+                                </a>
+                            </h2>
+                            {% if event.start_date < now and event.end_date > now %}
+                                <div>
+                                    <img style="vertical-align: middle" src="{{ STATIC_URL }}images/icons/live.png">
+                                    <span style="vertical-align: middle">Эфир начался</span>
+                                </div>
+                            {% else %}
+                                <time class="card-time">{{ event.start_date }}</time>
+                            {% endif %}
+                        </div>
+                    </article>
+                    </div>
+                {% endfor %}
+            </div>
+            <h1 class="content-title">
+                Прошедшие трансляции
+            </h1>
+            <div>
+                <button class="btn" id="show-event-filter">Фильтр</button>
+                {% if request.GET.filter %}
+                    <a class="btn btn_link" href="{% url 'events:frontend:index' %}">Очистить фильтр</a>
+                {% endif %}
+            </div>
+            <div class="card-list card-list_4">
+                {% for event in events_page.object_list %}
+                    <div class="card-list__item">
+                        <article class="card card_of card_h">
+                        <div class="card-img-box">
+                            <a href="{% url 'events:frontend:show' event.id %}">
+                                {{ event.translation_html|safe }}
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="card-title card-title_td-lc">
+                                <a class="card-title__link" href="{% url 'events:frontend:show' event.id %}">
+                                    {{ event.event_content.title }}
+                                </a>
+                            </h2>
+                            <time class="card-time">{{ event.start_date }}</time>
+                        </div>
+                    </article>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+    <div class="modal micromodal-slide" id="filter-modal" aria-hidden="true" >
+
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <form method="get" novalidate>
+
+                    <header class="modal__header">
+                        <h2 class="modal__title" id="modal-1-title">
+                            Фильтр
+                        </h2>
+                        <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                    </header>
+                    <div class="modal__content" id="modal-1-content">
+                        <div class="tab-pane">
+                            {% bootstrap_form filter_form %}
+                            <input type="hidden" name="filter" value="1">
+                        </div>
+                    </div>
+                    <footer class="modal__footer">
+                        <button class="btn" type="submit">Применить</button>
+                        <button class="btn" data-micromodal-close aria-label="Закрыть модальное окно">Закрыть</button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        $('#show-event-filter').on('click', function () {
+            MicroModal.show('filter-modal');
+        });
+    </script>
+{% endblock %}
