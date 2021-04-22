@@ -345,7 +345,7 @@ def broadcasts(request):
 
         category = filter_form.cleaned_data['category']
         if category:
-            q &= Q(category__in=[*category, 'broadcast'])
+            q &= Q(category__in=category)
 
     if not start_date and not end_date:
         q &= Q(end_date__lte=now)
