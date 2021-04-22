@@ -350,7 +350,7 @@ def broadcasts(request):
 
     if not start_date and not end_date:
         q &= Q(end_date__lte=now)
-
+    print(q)
     events_qs = models.Event.objects.filter(q).order_by('-start_date')
 
     events_page = get_page(request, events_qs)
