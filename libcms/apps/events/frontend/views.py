@@ -12,6 +12,7 @@ from opac_global_client.entities import ReaderResponse
 
 from . import forms
 from .. import models
+from ..constants import ONLINE_ADDRESS_REFERENCE_ID
 from ..emails import send_to_user_participant_notification
 from ..models import Address
 from sso import models as sso_models
@@ -275,7 +276,7 @@ def delete_participant(request, id):
 
 def broadcasts(request):
     now = timezone.now()
-    q = Q(address_reference='12', active=True)
+    q = Q(address_reference=ONLINE_ADDRESS_REFERENCE_ID, active=True)
     filter_form = forms.BroadcastsFilterForm(request.GET)
     start_date = None
     end_date = None
@@ -355,7 +356,7 @@ def broadcasts(request):
     events_page = get_page(request, events_qs)
     _join_content(events_page.object_list)
 
-    future_q = Q(address_reference='12')
+    future_q = Q(address_reference=ONLINE_ADDRESS_REFERENCE_ID)
     future_q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
     future_events = models.Event.objects.filter(future_q).order_by('start_date')[:4]
     _join_content(future_events)

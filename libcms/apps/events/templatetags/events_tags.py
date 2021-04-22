@@ -5,6 +5,8 @@ import calendar
 from django.db.models import Q
 from django import template
 from django.core.cache import cache
+
+from ..constants import ONLINE_ADDRESS_REFERENCE_ID
 from ..models import Event
 from ..frontend.forms import CalendarFilterForm, get_current_month_choice, get_current_year_choice
 from ..frontend.views import _join_content
@@ -75,7 +77,7 @@ def events_calendar(context, y=0, m=0):
 @register.inclusion_tag('events/tags/broadcasts.html', takes_context=True)
 def events_broadcasts(context):
     now = timezone.now()
-    q = Q(address_reference='12')
+    q = Q(address_reference=ONLINE_ADDRESS_REFERENCE_ID)
     q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
     events = Event.objects.filter(q).order_by('start_date')[:4]
     _join_content(events)
