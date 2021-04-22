@@ -75,7 +75,7 @@ def events_calendar(context, y=0, m=0):
 @register.inclusion_tag('events/tags/broadcasts.html', takes_context=True)
 def events_broadcasts(context):
     now = timezone.now()
-    q = Q(category__code='broadcast')
+    q = Q(address_reference='12')
     q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
     events = Event.objects.filter(q).order_by('start_date')[:4]
     _join_content(events)
