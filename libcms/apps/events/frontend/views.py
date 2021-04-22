@@ -275,7 +275,7 @@ def delete_participant(request, id):
 
 def broadcasts(request):
     now = timezone.now()
-    q = Q(category='broadcast', active=True)
+    q = Q(address_reference='12', active=True)
     filter_form = forms.BroadcastsFilterForm(request.GET)
     start_date = None
     end_date = None
@@ -345,21 +345,17 @@ def broadcasts(request):
 
         category = filter_form.cleaned_data['category']
         if category:
-            q_category = Q()
-            for cat in category:
-                q_category |= Q(category=cat)
-            q &= q_category
+            q &= Q(category__in=category)
 
     if not start_date and not end_date:
         q &= Q(end_date__lte=now)
 
-    print(q)
     events_qs = models.Event.objects.filter(q).order_by('-start_date')
 
     events_page = get_page(request, events_qs)
     _join_content(events_page.object_list)
 
-    future_q = Q(category='broadcast')
+    future_q = Q(address_reference='broadcast')
     future_q &= Q(start_date__gte=now) | Q(start_date__lte=now, end_date__gte=now)
     future_events = models.Event.objects.filter(future_q).order_by('start_date')[:4]
     _join_content(future_events)
