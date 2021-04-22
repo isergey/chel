@@ -345,7 +345,10 @@ def broadcasts(request):
 
         category = filter_form.cleaned_data['category']
         if category:
-            q &= Q(category__in=category)
+            q_category = Q()
+            for cat in category:
+                q_category |= Q(category=cat)
+            q &= q_category
 
     if not start_date and not end_date:
         q &= Q(end_date__lte=now)
