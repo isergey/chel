@@ -37,6 +37,23 @@ def index(request):
 
 
 @login_required
+def orders(request):
+    external_user = models.get_external_users(request.user, AUTH_SOURCE).first()
+    if not external_user:
+        return HttpResponse('Вы не являетесь читателем')
+
+    reader_response = ReaderResponse(**external_user.get_attributes())
+    orders = _get_orders(
+        opac_client=opac_client,
+        reader_response=reader_response
+    )
+    orders.reverse()
+    return render(request, 'sso_opac/orders.html', {
+        'orders': orders,
+    })
+
+
+@login_required
 def on_hand(request):
     external_user = models.get_external_users(request.user, AUTH_SOURCE).first()
     if not external_user:
@@ -44,14 +61,13 @@ def on_hand(request):
 
     reader_response = ReaderResponse(**external_user.get_attributes())
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        orders_future = executor.submit(_get_orders, opac_client, reader_response)
-        checkouts_future = executor.submit(_get_checkouts, opac_client, reader_response)
-        orders = orders_future.result()
-        checkouts = checkouts_future.result()
+    checkouts = _get_checkouts(
+        opac_client=opac_client,
+        reader_response=reader_response
+    )
+    checkouts.reverse()
     return render(request, 'sso_opac/on_hand.html', {
         'checkouts': checkouts,
-        'orders': orders
     })
 
 
@@ -78,6 +94,7 @@ def incomes(request):
         # print(''.join(item.get('attributes', {}).get('SHOTFORM', {}).get('content', [])))
         # print('--------------------')
     return HttpResponse('')
+
 
 def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List[CirculationOperationInfo]:
     databases = opac_client.databases()
