@@ -135,7 +135,7 @@ class Databases:
             ),
             params={
                 'filter[query]': query,
-                'filter[levels]': 'Full',
+                # 'filter[levels]': '',
                 # 'options[views]': 'SHOTFORM',
                 'position': position
             }
