@@ -36,11 +36,12 @@ class RecordAndQuery:
 
 def create_subscription_letter(records):
     records = load_records()
-
+    print('records', len(records))
     # records = load_records_from_file()
     record_and_queries: List[RecordAndQuery] = []
 
     for record in records:
+        print(record)
         mq = MarcQuery(record)
         record_and_queries.append(RecordAndQuery(
             id=mq.get_field('001').get_data().replace('\\', '\\\\'),
@@ -124,7 +125,7 @@ def filter_records_by_bbk(record_and_queries: List[RecordAndQuery], bbk_prefixes
         if not bbk_data:
             continue
         # print(bbk_data)
-        for bbk_prefix in bbk_prefixes.split(' '):
+        for bbk_prefix in bbk_prefixes.replace('\n', ' ').split(' '):
             if bbk_data == bbk_prefix:
                 filtered_records.append(record_and_query)
                 break
