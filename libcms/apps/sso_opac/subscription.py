@@ -50,12 +50,12 @@ def create_subscription_letter(records):
         ))
 
     main_subscribe: Subscribe = Subscribe.objects.filter(code=SUBSCRIPTION_CODE).first()
-
+    print('send', main_subscribe)
     if not main_subscribe:
         return
 
     subscribes = main_subscribe.get_descendants()
-
+    print('subscribes', subscribes)
     subscribe_records: Dict[Subscribe, List[RecordAndQuery]] = {}
 
     for subscribe in subscribes:
