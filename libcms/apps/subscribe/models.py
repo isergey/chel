@@ -14,6 +14,7 @@ from django.shortcuts import resolve_url
 from django.template import Context, Template
 from django.template.loader import get_template
 from django.utils import timezone
+from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -40,7 +41,7 @@ class Group(models.Model):
 
 
 class Subscribe(MPTTModel):
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     group = models.ForeignKey(Group, verbose_name='Группа рассылок', null=True, blank=True, on_delete=models.SET_NULL)
     name = models.CharField(verbose_name='Название рассылки', max_length=255)
     code = models.SlugField(verbose_name='Код рассылки', unique=True, max_length=32, db_index=True)
