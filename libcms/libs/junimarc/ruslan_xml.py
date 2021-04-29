@@ -66,7 +66,7 @@ def build_df_elem(field):
     return data_field
 
 
-def record_to_xml(record_obj, syntax='1.2.840.10003.5.28', namespace=False):
+def record_to_xml(record_obj, syntax='1.2.840.10003.5.28', namespace=False) -> etree.Element:
     """
     default syntax rusmarc
     """

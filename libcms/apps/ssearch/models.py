@@ -198,6 +198,7 @@ def get_records(record_ids):
 #     return result_records
 
 from junimarc import ruslan_xml
+
 def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=False):
     return ruslan_xml.record_to_xml(map_record, syntax, namespace)
     """

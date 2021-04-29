@@ -17,17 +17,14 @@ def make_control_field(tag, data=''):
     )
 
 
-def make_extended_subfield(code, data):
+def make_extended_subfield(code, field_dict: dict):
     fields = []
+    tag = field_dict.get('tag', '')
 
-    for field_dict in data:
-        tag = field_dict.get('tag', '')
-        if not tag:
-            continue
-        if tag.startswith('00'):
-            fields.append(make_control_field(tag, field_dict.get('data', '')))
-        else:
-            fields.append(make_data_field(tag, field_dict))
+    if tag.startswith('00'):
+        fields.append(make_control_field(tag, field_dict.get('data', '')))
+    else:
+        fields.append(make_data_field(tag, field_dict))
 
     return record.ExtendedSubfield(
         code=code,
@@ -35,7 +32,7 @@ def make_extended_subfield(code, data):
     )
 
 
-def make_data_field(tag, field_dict):
+def make_data_field(tag: str, field_dict):
     subfields = []
 
     for subfield_dict in field_dict.get('subfields', []):
@@ -44,7 +41,8 @@ def make_data_field(tag, field_dict):
             continue
 
         data = subfield_dict.get('data')
-        if type(data) == list:
+
+        if type(data) == dict:
             make_extended_subfield(code, data)
         else:
             subfields.append(make_data_subfield(code, data))

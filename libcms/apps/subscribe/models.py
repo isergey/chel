@@ -79,31 +79,6 @@ BROADCAST_STATUS = (
     (True, 'всем пользователям с email'),
 )
 
-
-class Letter(models.Model):
-    subscribe = models.ForeignKey(Subscribe, verbose_name='Рассылка', on_delete=models.CASCADE)
-    broadcast = models.BooleanField(
-        verbose_name='Отправить',
-        default=False,
-        choices=BROADCAST_STATUS,
-        help_text=''
-    )
-    subject = models.CharField(verbose_name='Тема', max_length=255)
-    content_format = models.CharField(verbose_name='Формат письма', max_length=16, choices=CONTENT_FORMAT_CHOICES)
-    content = models.TextField(verbose_name='Содержимое')
-    send_completed = models.BooleanField(verbose_name='Доставлено всем получателям', db_index=True, default=False)
-    must_send_at = models.DateTimeField(verbose_name='Время отправки', db_index=True, default=timezone.now)
-    create_date = models.DateTimeField(verbose_name='Дата создания', db_index=True, auto_now_add=True)
-
-    def __str__(self):
-        return '%s: %s' % (str(self.subscribe), self.subject)
-
-    class Meta:
-        verbose_name = 'Письмо'
-        verbose_name_plural = 'Письма'
-        ordering = ['-create_date']
-
-
 class Subscriber(models.Model):
     subscribe = models.ManyToManyField(Subscribe, verbose_name='Подписки')
     user = models.ForeignKey(
@@ -134,6 +109,38 @@ class Subscriber(models.Model):
     class Meta:
         verbose_name = 'Подписчик'
         verbose_name_plural = 'Подписчики'
+
+
+class Letter(models.Model):
+    subscribe = models.ForeignKey(Subscribe, verbose_name='Рассылка', on_delete=models.CASCADE)
+    to_subscriber = models.ForeignKey(
+        Subscriber,
+        on_delete=models.CASCADE,
+        verbose_name='Подписчику',
+        null=True,
+        blank=True,
+        help_text='Если указан, письмо будет направлено персонально подписчику'
+    )
+    broadcast = models.BooleanField(
+        verbose_name='Отправить',
+        default=False,
+        choices=BROADCAST_STATUS,
+        help_text=''
+    )
+    subject = models.CharField(verbose_name='Тема', max_length=255)
+    content_format = models.CharField(verbose_name='Формат письма', max_length=16, choices=CONTENT_FORMAT_CHOICES)
+    content = models.TextField(verbose_name='Содержимое')
+    send_completed = models.BooleanField(verbose_name='Доставлено всем получателям', db_index=True, default=False)
+    must_send_at = models.DateTimeField(verbose_name='Время отправки', db_index=True, default=timezone.now)
+    create_date = models.DateTimeField(verbose_name='Дата создания', db_index=True, auto_now_add=True)
+
+    def __str__(self):
+        return '%s: %s' % (str(self.subscribe), self.subject)
+
+    class Meta:
+        verbose_name = 'Письмо'
+        verbose_name_plural = 'Письма'
+        ordering = ['-create_date']
 
 
 class SendStatus(models.Model):
@@ -323,7 +330,10 @@ def get_actions_title():
 
 
 def _send_letter(letter):
-    if not letter.broadcast:
+    if letter.to_subscriber is not None:
+        if not SendStatus.objects.filter(letter=letter).exists():
+            SendStatus.objects.bulk_create([SendStatus(subscriber=letter.to_subscriber, letter=letter)])
+    elif not letter.broadcast:
         subscribers = Subscriber.objects.select_related('user').filter(
             subscribe=letter.subscribe_id,
             is_active=True

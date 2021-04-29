@@ -124,7 +124,7 @@ class Databases:
 
         return data
 
-    def get_records(self, db_id, position=0) -> RecordsResponse:
+    def get_records(self, db_id, query, position=0) -> RecordsResponse:
         """
         filter[query]=SCB '2021/10'&filter[levels]=Full&position=0
         """
@@ -134,7 +134,7 @@ class Databases:
                 db_id=quote(db_id)
             ),
             params={
-                'filter[query]': "SCB '2021/10'",
+                'filter[query]': query,
                 'filter[levels]': 'Full',
                 # 'options[views]': 'SHOTFORM',
                 'position': position

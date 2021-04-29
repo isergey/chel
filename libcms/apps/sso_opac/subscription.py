@@ -1,3 +1,4 @@
+import datetime
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import List, Dict
@@ -8,6 +9,8 @@ from junimarc.json.opac import record_from_json
 from junimarc.iso2709.reader import Reader
 from junimarc.marc_query import MarcQuery
 from junimarc.record import Record
+from junimarc.ruslan_xml import record_to_xml
+from ssearch.frontend.views import get_library_card
 from sso_opac.settings import opac_client
 from subscribe.models import Subscribe, Letter, Subscriber
 
@@ -18,8 +21,11 @@ SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'localhost:8000')
 
 @dataclass
 class RecordAndQuery:
+    id: str
     record: Record
     mq: MarcQuery
+    libcard: str
+    db_id: str = '18'
 
     def __str__(self):
         return self.mq.get_field('200').get_subfield('a').get_data()
@@ -29,13 +35,19 @@ class RecordAndQuery:
 
 
 def create_subscription_letter(records):
-    # records = load_records()
+    records = load_records()
 
-    records = load_records_from_file()
+    # records = load_records_from_file()
     record_and_queries: List[RecordAndQuery] = []
 
     for record in records:
-        record_and_queries.append(RecordAndQuery(record=record, mq=MarcQuery(record)))
+        mq = MarcQuery(record)
+        record_and_queries.append(RecordAndQuery(
+            id=mq.get_field('001').get_data().replace('\\', '\\\\'),
+            record=record,
+            mq=mq,
+            libcard=get_lib_card(record)
+        ))
 
     main_subscribe: Subscribe = Subscribe.objects.filter(code=SUBSCRIPTION_CODE).first()
 
@@ -68,24 +80,26 @@ def create_subscription_letter(records):
         #     print(subscribe, records)
         content = render_to_string('sso_opac/email/subscription.html', {
             'subscribes': dict(subscribes),
+            'main_subscribe': main_subscribe,
         })
-        print(content)
-        # letter = Letter(
-        #     subscribe=main_subscribe,
-        #     subject=main_subscribe.name,
-        #     content_format='html',
-        #     content=content,
-        # )
-        #
-        # letter.save()
+
+        letter = Letter(
+            subscribe=main_subscribe,
+            subject=main_subscribe.name,
+            to_subscriber=subscriber,
+            content_format='html',
+            content=content,
+        )
+
+        letter.save()
 
 
 def load_records():
-    response = opac_client.databases().get_records(db_id='18')
-    count = response.meta.count
+    now = datetime.datetime.now()
+    past = now - datetime.timedelta(days=5)
     records = []
-
-    while response := opac_client.databases().get_records(db_id='18', position=len(records)):
+    query = f'TIMELOAD GE {past.strftime("%Y%m%d")}'
+    while response := opac_client.databases().get_records(db_id='18', query=query, position=len(records)):
         if not response.data:
             break
 
@@ -127,3 +141,8 @@ def _get_cleaned_bbk(bbk_data: str):
             bbk_parts.append(c)
 
     return ''.join(bbk_parts).strip()
+
+
+def get_lib_card(record: Record) -> str:
+    record_el = record_to_xml(record)
+    return get_library_card(record_el)
