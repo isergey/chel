@@ -1,9 +1,14 @@
 # encoding: utf-8
 import json
+from typing import List, ForwardRef
+
+from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.db import transaction
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+
 from common.pagination import get_page
 from .. import models
 
@@ -24,7 +29,7 @@ def index(request):
         forms = []
         for group in groups:
             SubscriberForm = get_subscriber_form(
-                models.Subscribe.objects.filter(group=group, is_active=True, hidden=False))
+                models.Subscribe.objects.filter(group=group, is_active=True, hidden=False, parent=None))
             forms.append({
                 'group': group,
                 'form': SubscriberForm(request.POST, prefix=group.id)
@@ -214,7 +219,6 @@ def journals(request):
     for subscribe in subscriber.subscribe.values('id').filter(group_id=group.id).order_by('name'):
         current_subscribe_ids.add(subscribe['id'])
 
-
     current_subscribes = []
     for subscribe in subscriber.subscribe.values('id', 'name').filter(group=group).order_by('name'):
         current_subscribes.append(subscribe)
@@ -275,8 +279,6 @@ def unsubscribe_ajax(request, id):
 #         return HttpResponse(json.dumps({'result': 'success', 'status': False}))
 
 
-
-
 @transaction.atomic()
 def unsubscribe(request, id):
     subscribe = get_object_or_404(models.Subscribe, id=id)
@@ -315,3 +317,106 @@ def send_letters_req(request):
 def send_emails_req(request):
     models.send_to_email()
     return HttpResponse('Ok')
+
+
+from pydantic import BaseModel, EmailStr, ValidationError
+
+ListSubscriptionJson = ForwardRef("List['SubscriptionJson']")
+
+
+class SubscriptionJson(BaseModel):
+    id: int
+    title: str
+    subscribed: bool
+    children: ListSubscriptionJson
+
+
+SubscriptionJson.update_forward_refs()
+
+
+class SubscriptionsJson(BaseModel):
+    email: EmailStr
+    subscriptions: List[SubscriptionJson]
+
+
+def _get_subscription(subscribe: models.Subscribe, email: str) -> SubscriptionJson:
+    children: List[SubscriptionJson] = []
+    for child in subscribe.get_children():
+        children.append(SubscriptionJson(
+            id=child.id,
+            title=child.name,
+            subscribed=False if not email else models.Subscriber.objects.filter(
+                email=email,
+                subscribe=child
+            ).exists(),
+            children=list(map(lambda x: _get_subscription(x, email), child.get_children()))
+        ))
+
+    return SubscriptionJson(
+        id=subscribe.id,
+        title=subscribe.name,
+        subscribed=False if not email else models.Subscriber.objects.filter(
+            email=email,
+            subscribe=subscribe
+        ).exists(),
+        children=children
+    )
+
+
+def get_subscribes(request):
+    subscribes = models.Subscribe.objects.filter(is_active=True, hidden=False, parent=None)
+    email = ''
+    if request.user.is_authenticated:
+        email = request.user.email
+
+    subscriptions: List[SubscriptionJson] = []
+
+    for subscribe in subscribes:
+        subscriptions.append(_get_subscription(subscribe, email))
+
+    return JsonResponse(
+        SubscriptionsJson(email=email, subscriptions=subscriptions).dict(),
+        json_dumps_params=dict(ensure_ascii=False)
+    )
+
+
+@csrf_exempt
+@transaction.atomic()
+def set_subscribes(request):
+    data = request.body
+    try:
+        subscriptions_json = SubscriptionsJson(**json.loads(data))
+    except ValidationError as e:
+        return HttpResponse(e.json(), status=409)
+
+    user = None
+    if request.user.is_authenticated:
+        user = request.user
+
+    email = subscriptions_json.email
+
+    subscriber = models.Subscriber.objects.filter(email__iexact=email).first()
+
+    if subscriber is None:
+        subscriber = models.Subscriber(user=user, email=email)
+        subscriber.save()
+
+    def add_to_subscribe(subscription: SubscriptionJson):
+        subscribe_model = models.Subscribe.objects.filter(id=subscription.id).first()
+        if subscribe_model is None:
+            return
+
+        if subscription.subscribed:
+            subscriber.subscribe.add(subscribe_model)
+        else:
+            subscriber.subscribe.remove(subscribe_model)
+
+        for child in subscription.children:
+            add_to_subscribe(child)
+
+    for subscription in subscriptions_json.subscriptions:
+        add_to_subscribe(subscription)
+
+    return JsonResponse({
+        'result': 'ok'
+    })

@@ -25,6 +25,9 @@
           content="{% block meta_keywords %}ЧОУНБ, Челябинская областная универсальная научная библиотека, челябинская публичная библиотека, Публичка, сайт ЧОУНБ, информационный портал библиотек Челябинской области, электронный каталог, спроси библиотекаря, афиша{% endblock %}"/>
     <meta name="Description"
           content="{% block meta_description %}ЧОУНБ – знаковое место культурной жизни Челябинска. Информация о книгах, электронных ресурсах, услугах и событиях. Регистрация читателей, Виртуальный абонемент, Виртуальная справка. Новости и адреса библиотек Челябинской области.{% endblock %}"/>
+    {% block canonical_link %}
+        <link rel="canonical" href="https://{{ request.get_host }}{{ request.path }}">
+    {% endblock %}
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/theme/logo.png">
     <link rel="stylesheet" href="{{ STATIC_URL }}front/styles/index.css?84688">
     <link rel="stylesheet" href="{{ STATIC_URL }}front/vendors/visually/button-visually-impaired/css/bvi.min.css?8468"
@@ -201,9 +204,11 @@
             <div class="menu-nav-user">
                 {% if request.user.is_authenticated %}
                     <a class="menu-nav-user__link" href="#">Вы вошли как: {{ request.user.username }}</a>
-                    <a class="menu-nav-user__link" href="{% url 'orders:frontend:index' %}">Заказы</a>
+                    <a class="menu-nav-user__link" href="{% url 'sso_opac:index' %}">Заказы</a>
+                    <a class="menu-nav-user__link" href="{% url 'sso_opac:on_hand' %}">Выданные книги</a>
                     <a class="menu-nav-user__link" href="{% url 'events:frontend:favorit_events' %}">События</a>
                     <a class="menu-nav-user__link" href="{% url 'ask_librarian:frontend:my_questions' %}">Вопросы</a>
+                    <a class="menu-nav-user__link" href="{% url 'subscribe:frontend:index' %}">Подписки</a>
                     <a class="menu-nav-user__link" href="{% url 'accounts:frontend:logout' %}">Выйти</a>
                 {% else %}
                     <a class="btn" href="{% url 'login' %}">Войти</a>

@@ -10,7 +10,7 @@ from .cache import TokenCache
 from .utils import join_url
 
 from .entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
-    CirculationOperationsResponse, CirculationOrdersResponse
+    CirculationOperationsResponse, CirculationOrdersResponse, RecordsResponse
 
 
 class Config:
@@ -124,7 +124,7 @@ class Databases:
 
         return data
 
-    def get_records(self, db_id, position=0):
+    def get_records(self, db_id, position=0) -> RecordsResponse:
         """
         filter[query]=SCB '2021/10'&filter[levels]=Full&position=0
         """
@@ -140,8 +140,8 @@ class Databases:
                 'position': position
             }
         )
-
-        return data
+        # print(data)
+        return RecordsResponse(**data)
 
 
 class Client:

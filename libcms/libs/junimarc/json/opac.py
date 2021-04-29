@@ -3,10 +3,10 @@ import json
 from .. import record
 
 
-def make_data_subfield(code, subfield_dict):
+def make_data_subfield(code, data: str):
     return record.DataSubfield(
         code=code,
-        data=subfield_dict.get('data', '')
+        data=data
     )
 
 
@@ -25,7 +25,7 @@ def make_extended_subfield(code, data):
         if not tag:
             continue
         if tag.startswith('00'):
-            fields.append(make_control_field(tag, field_dict))
+            fields.append(make_control_field(tag, field_dict.get('data', '')))
         else:
             fields.append(make_data_field(tag, field_dict))
 
@@ -78,7 +78,7 @@ def record_from_json(json_record):
         if not tag:
             continue
         if tag.startswith('00'):
-            fields.append(make_control_field(tag, field_dict))
+            fields.append(make_control_field(tag, field_dict.get('data', '')))
         else:
             fields.append(make_data_field(tag, field_dict))
 

@@ -154,11 +154,15 @@ class Reader(object):
         field_length = len(field_bytes)
         if field_length > 0:
             ind1 = chr(field_bytes[0])
+            if ind1 == '#':
+                ind1 = ' '
         else:
             ind1 = u' '
 
         if field_length > 1:
-            ind2 = chr(field_bytes[1])
+            ind2 = chr(field_bytes[1]).replace('#', ' ')
+            if ind2 == '#':
+                ind2 = ' '
         else:
             ind2 = u' '
 

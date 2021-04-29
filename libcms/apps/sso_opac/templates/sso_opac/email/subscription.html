@@ -1,0 +1,8 @@
+{% for subscription, records in subscribes.items %}
+    <h1>{{ subscription }}</h1>
+<ul>
+    {% for record in records %}
+        <li>{{ record }}</li>
+    {% endfor %}
+</ul>
+{% endfor %}

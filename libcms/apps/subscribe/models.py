@@ -1,5 +1,6 @@
 # encoding: utf-8
 import hashlib
+from typing import List
 from urllib.parse import quote
 
 import bs4
@@ -13,6 +14,7 @@ from django.shortcuts import resolve_url
 from django.template import Context, Template
 from django.template.loader import get_template
 from django.utils import timezone
+from mptt.models import MPTTModel
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -37,7 +39,8 @@ class Group(models.Model):
         ordering = ['-order', 'name']
 
 
-class Subscribe(models.Model):
+class Subscribe(MPTTModel):
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     group = models.ForeignKey(Group, verbose_name='Группа рассылок', null=True, blank=True, on_delete=models.SET_NULL)
     name = models.CharField(verbose_name='Название рассылки', max_length=255)
     code = models.SlugField(verbose_name='Код рассылки', unique=True, max_length=32, db_index=True)
@@ -55,15 +58,15 @@ class Subscribe(models.Model):
     )
     is_active = models.BooleanField(verbose_name='Активна', default=True, db_index=True)
     hidden = models.BooleanField(verbose_name='Скрыть', default=False)
-    order = models.IntegerField(verbose_name='Сортировка', db_index=True, default=0)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['order', 'name']
+        # ordering = ['order', 'name']
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+
 
 
 CONTENT_FORMAT_CHOICES = (
@@ -196,6 +199,7 @@ class SubscribingLog(models.Model):
     class Meta:
         verbose_name = 'Журнал подписок'
         verbose_name_plural = 'Журнал подписок'
+
 
 #
 # class SearchQuerySubscribe(models.Model):

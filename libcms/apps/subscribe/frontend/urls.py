@@ -14,4 +14,6 @@ urlpatterns = (
     url(r'^(?P<id>[0-9]+)/unsubscribe_ajax/$', views.unsubscribe_ajax, name="unsubscribe_ajax"),
     url(r'^slr/$', views.send_letters_req, name="send_letters_req"),
     url(r'^ser/$', views.send_emails_req, name="send_emails_req"),
+    url(r'^get_subscribes/$', views.get_subscribes, name="get_subscribes"),
+    url(r'^set_subscribes/$', views.set_subscribes, name="set_subscribes"),
 )

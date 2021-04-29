@@ -1,3 +1,4 @@
+import datetime
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import List
@@ -11,6 +12,7 @@ from opac_global_client.client import Client
 from opac_global_client.entities import ReaderResponse, CirculationOperation, CirculationOrder
 from .settings import opac_client, AUTH_SOURCE
 from sso import models
+from .subscription import create_subscription_letter
 
 
 @dataclass
@@ -113,11 +115,15 @@ def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List
 
 
 def _get_orders(opac_client: Client, reader_response: ReaderResponse) -> List[CirculationOrderInfo]:
+    now = datetime.datetime.now()
+    past = now - datetime.timedelta(days=30)
     databases = opac_client.databases()
     orders: List[CirculationOrderInfo] = []
     response = opac_client.circulation().get_reader_orders(reader_response.id)
     for order_info in response.data:
         order = order_info.attributes
+        if order.operation_time < past:
+            continue
         record = databases.get_record(db_id=order.db_id, record_id=order.record_id)
         libcard = '\n'.join(record.get('data', {}).get('attributes', {}).get('SHOTFORM', {}).get('content', []))
         orders.append(CirculationOrderInfo(
@@ -126,3 +132,9 @@ def _get_orders(opac_client: Client, reader_response: ReaderResponse) -> List[Ci
         ))
 
     return orders
+
+
+
+def subscription(request):
+    create_subscription_letter([])
+    return HttpResponse('ok')

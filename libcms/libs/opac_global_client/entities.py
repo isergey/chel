@@ -143,3 +143,18 @@ class CirculationOrdersResponse(BaseModel):
     class Config:
         extra = 'ignore'
         alias_generator = to_camel
+
+
+class RecordInfo(BaseModel):
+    type: str
+    id: str
+    attributes: dict
+
+
+class RecordsResponse(BaseModel):
+    meta: Meta
+    data: List[RecordInfo] = []
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel

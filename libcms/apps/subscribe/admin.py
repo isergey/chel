@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from mptt.admin import MPTTModelAdmin
 from . import models
 
 
@@ -10,8 +10,8 @@ class SubscribeGroupAdmin(admin.ModelAdmin):
 admin.site.register(models.Group, SubscribeGroupAdmin)
 
 
-class SubscribeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'group', 'order')
+class SubscribeAdmin(MPTTModelAdmin):
+    list_display = ('name', 'code', 'is_active', 'hidden')
 
 
 admin.site.register(models.Subscribe, SubscribeAdmin)
