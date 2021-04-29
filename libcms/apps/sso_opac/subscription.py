@@ -14,7 +14,7 @@ from ssearch.frontend.views import get_library_card
 from sso_opac.settings import opac_client
 from subscribe.models import Subscribe, Letter, Subscriber
 
-SUBSCRIPTION_CODE = 'elib_incomes'
+SUBSCRIPTION_CODE = 'incomes'
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'localhost:8000')
 
