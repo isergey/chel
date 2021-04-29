@@ -56,6 +56,9 @@ export default {
         modelValue(value) {
             if (this.subscribed !== value) {
                 this.subscribed = value;
+                this.children.forEach((child) => {
+                    child.subscribed = value;
+                })
             }
         }
     }
