@@ -11,7 +11,7 @@ admin.site.register(models.Group, SubscribeGroupAdmin)
 
 
 class SubscribeAdmin(MPTTModelAdmin):
-    list_display = ('name', 'code', 'is_active', 'hidden')
+    list_display = ('name', 'code', 'lucene_query', 'is_active', 'hidden')
 
 
 admin.site.register(models.Subscribe, SubscribeAdmin)
