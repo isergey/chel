@@ -9,5 +9,5 @@ class Command(BaseCommand):
         parser.add_argument('--from_iso', nargs='+', type=str, help='Path to iso2709 records file')
 
     def handle(self, *args, **options):
-        from_iso = options.get('from_iso')
+        from_iso = options.get('from_iso', [''])[0]
         create_subscription_letter(from_iso=from_iso)
