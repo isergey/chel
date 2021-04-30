@@ -34,10 +34,11 @@ class RecordAndQuery:
         return self.__str__()
 
 
-def create_subscription_letter(records):
+def create_subscription_letter(from_iso: str=None):
     records = load_records()
     print('records', len(records))
-    # records = load_records_from_file()
+    if from_iso:
+        records = load_records_from_file(from_iso)
     record_and_queries: List[RecordAndQuery] = []
 
     for record in records:
@@ -110,8 +111,8 @@ def load_records():
     return records
 
 
-def load_records_from_file():
-    reader = Reader('/home/sergey/Загрузки/2021-13.iso')
+def load_records_from_file(file_path: str):
+    reader = Reader(file_path)
     records = []
     for record in reader.read():
         records.append(record)
