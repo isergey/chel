@@ -38,7 +38,7 @@ def redirect_to_url(request):
         if len(attr) > 5 and attr.startswith('attr_'):
             attributes[attr[5:]] = value[0:128]
 
-    sc = _get_or_set_sc(request)
+    sc, is_new = _get_sc(request)
 
     create_record(
         request=request,
@@ -47,16 +47,20 @@ def redirect_to_url(request):
         attributes=attributes
     )
 
-    return redirect(to_url)
-
-
-def _get_or_set_sc(request):
-    sc = request.COOKIES.get('_sc')
-    if sc is None:
-        sc = str(uuid4())
+    response = redirect(to_url)
+    if is_new:
         request.set_cookie(
             key='_sc',
             value=sc,
             max_age=31536000
         )
-    return sc
+    return response
+
+
+def _get_sc(request):
+    sc = request.COOKIES.get('_sc')
+    is_new = False
+    if sc is None:
+        sc = str(uuid4())
+        is_new = True
+    return sc, is_new
