@@ -8,7 +8,7 @@ from .models import create_record
 @never_cache
 def index(request):
     action = request.GET['a']
-    sc = _get_or_set_sc(request)
+    sc, is_new = _get_sc(request)
     attributes = {}
 
     for attr, value in request.GET.items():
@@ -22,7 +22,9 @@ def index(request):
         attributes=attributes
     )
 
-    return HttpResponse('')
+    response = HttpResponse('')
+    _set_sc_cookie(response, is_new, sc)
+    return response
 
 
 @never_cache
@@ -48,12 +50,7 @@ def redirect_to_url(request):
     )
 
     response = redirect(to_url)
-    if is_new:
-        request.set_cookie(
-            key='_sc',
-            value=sc,
-            max_age=31536000
-        )
+    _set_sc_cookie(response, is_new, sc)
     return response
 
 
@@ -64,3 +61,12 @@ def _get_sc(request):
         sc = str(uuid4())
         is_new = True
     return sc, is_new
+
+
+def _set_sc_cookie(response, is_new, sc):
+    if is_new:
+        response.set_cookie(
+            key='_sc',
+            value=sc,
+            max_age=31536000
+        )
