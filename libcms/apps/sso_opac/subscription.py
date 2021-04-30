@@ -35,14 +35,18 @@ class RecordAndQuery:
 
 
 def create_subscription_letter(from_iso: str=None):
-    records = load_records()
-    print('records', len(records))
+    #
+    #
     if from_iso:
         records = load_records_from_file(from_iso)
+    else:
+        records = load_records()
+
+    print('records', len(records))
+
     record_and_queries: List[RecordAndQuery] = []
 
     for record in records:
-        print(record)
         mq = MarcQuery(record)
         record_and_queries.append(RecordAndQuery(
             id=mq.get_field('001').get_data().replace('\\', '\\\\'),
@@ -52,7 +56,7 @@ def create_subscription_letter(from_iso: str=None):
         ))
 
     main_subscribe: Subscribe = Subscribe.objects.filter(code=SUBSCRIPTION_CODE).first()
-    print('send', main_subscribe)
+
     if not main_subscribe:
         return
 
@@ -127,7 +131,7 @@ def filter_records_by_bbk(record_and_queries: List[RecordAndQuery], bbk_prefixes
             continue
         # print(bbk_data)
         for bbk_prefix in bbk_prefixes.replace('\n', ' ').split(' '):
-            if bbk_data == bbk_prefix:
+            if bbk_data == bbk_prefix.strip('.'):
                 filtered_records.append(record_and_query)
                 break
     return filtered_records
