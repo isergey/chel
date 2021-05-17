@@ -424,8 +424,9 @@ def send_to_email():
         soup = bs4.BeautifulSoup(email_body, features='lxml')
 
         unsubscribe_link = soup.find(id='unsubscribe_link')
+
         if unsubscribe_link:
-            unsubscribe_link['href'] =  'https://' + SITE_DOMAIN + resolve_url('subscribe:frontend:index') + '?email={email}&key={key}'.format(
+            unsubscribe_link['href'] = 'https://' + SITE_DOMAIN + resolve_url('subscribe:frontend:index') + '?email={email}&key={key}'.format(
                 email=email,
                 key=key
             )
