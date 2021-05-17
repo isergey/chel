@@ -380,8 +380,6 @@ def get_subscribes(request):
     if not email:
         subscriptions_json['email'] = ''
 
-    print(subscriptions_json)
-
     return JsonResponse(subscriptions_json,
         json_dumps_params=dict(ensure_ascii=False)
     )

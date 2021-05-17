@@ -38,7 +38,8 @@ async function saveData(subscribtions) {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X_KEY': new URLSearchParams(window.location.search).get('key') || undefined,
         },
         body: JSON.stringify(subscribtions)
     });
