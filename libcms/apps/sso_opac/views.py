@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 from junimarc.json.opac import record_from_json
 from opac_global_client.client import Client
 from opac_global_client.entities import ReaderResponse, CirculationOperation, CirculationOrder
+from opac_global_client.exceptions import Error
 from .settings import opac_client, AUTH_SOURCE
 from sso import models
 from .subscription import create_subscription_letter
@@ -78,12 +79,13 @@ def renewal(request):
     external_user = models.get_external_users(request.user, AUTH_SOURCE).first()
     if not external_user:
         return HttpResponse('Вы не являетесь читателем')
-
     reader_response = ReaderResponse(**external_user.get_attributes())
     place = request.POST.get('place')
     item_code = request.POST.get('item_code')
-    response = opac_client.circulation().renewal(place=place, item_codes=[item_code])
-    print(response)
+    try:
+        response = opac_client.circulation().renewal(place=place, item_codes=[item_code])
+    except Error as e:
+        return HttpResponse(str(e))
     # ye
     return redirect('sso_opac:on_hand')
 

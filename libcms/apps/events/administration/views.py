@@ -89,7 +89,7 @@ def events_list(request):
 @transaction.atomic()
 def create_event(request):
     if request.method == 'POST':
-        event_form = EventForm(request.POST, prefix='event_form')
+        event_form = EventForm(request.POST, request.FILES, prefix='event_form')
         event_content_forms = []
         for lang in settings.LANGUAGES:
             event_content_forms.append({
@@ -143,7 +143,7 @@ def edit_event(request, id):
         event_contents_langs[event_content.lang] = event_content
 
     if request.method == 'POST':
-        event_form = EventForm(request.POST, prefix='event_form', instance=event)
+        event_form = EventForm(request.POST, request.FILES, prefix='event_form', instance=event)
 
         if event_form.is_valid():
             event_form.save()
@@ -153,13 +153,13 @@ def edit_event(request, id):
                     lang = lang[0]
                     if lang in event_contents_langs:
                         event_content_forms.append({
-                            'form': EventContentForm(request.POST, prefix='event_content_' + lang,
+                            'form': EventContentForm(request.POST, prefix='event_content' + lang,
                                                      instance=event_contents_langs[lang]),
                             'lang': lang
                         })
                     else:
                         event_content_forms.append({
-                            'form': EventContentForm(request.POST, prefix='event_content_' + lang),
+                            'form': EventContentForm(request.POST, prefix='event_content' + lang),
                             'lang': lang
                         })
 
@@ -184,12 +184,12 @@ def edit_event(request, id):
             lang = lang[0]
             if lang in event_contents_langs:
                 event_content_forms.append({
-                    'form': EventContentForm(prefix='event_content_' + lang, instance=event_contents_langs[lang]),
+                    'form': EventContentForm(prefix='event_content' + lang, instance=event_contents_langs[lang]),
                     'lang': lang
                 })
             else:
                 event_content_forms.append({
-                    'form': EventContentForm(prefix='event_content_' + lang),
+                    'form': EventContentForm(prefix='event_content' + lang),
                     'lang': lang
                 })
 

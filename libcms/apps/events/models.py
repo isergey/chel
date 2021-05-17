@@ -1,4 +1,7 @@
 # -*- encoding: utf-8 -*-
+import os
+import uuid
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -109,7 +112,29 @@ class Address(MPTTModel):
         ordering = ['title']
 
 
+def upload_avatar_handler(instance, filename):
+    filename, file_extension = os.path.splitext(filename)
+    uid = str(uuid.uuid4())
+    uid0 = uid[0]
+    uid1 = uid[1]
+    uid2 = uid[2]
+    uid3 = uid[3]
+    return 'events/avatars/{uid0}/{uid1}/{uid2}/{uid3}/{id}{file_extension}'.format(
+        uid0=uid0,
+        uid1=uid1,
+        uid2=uid2,
+        uid3=uid3,
+        id=uid,
+        file_extension=file_extension
+    )
+
+
 class Event(models.Model):
+    avatar = models.ImageField(
+        verbose_name='Аватарка',
+        blank=True,
+        upload_to=upload_avatar_handler
+    )
     start_date = models.DateTimeField(
         verbose_name='Дата начала',
         null=False,

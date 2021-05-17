@@ -16,39 +16,7 @@
 
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" href="#">{% block module_title %}{% trans 'Administration' %}{% endblock %}</a>
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                    <li id="fat-menu" class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Модули<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url 'participants:administration:index' %}">Библиотеки</a></li>
-                            <li><a href="{% url 'news:administration:index' %}">Новости</a></li>
-                            <li><a href="{% url 'events:administration:index' %}">События</a></li>
-                            <li><a href="{% url 'ask_librarian:administration:index' %}">Спроси библиотекаря</a></li>
-                            <li><a href="{% url 'cid:administration:index' %}">КЗД</a></li>
-                            <li><a href="{% url 'gallery:administration:index' %}">Галерея</a></li>
-                            <li><a href="{% url 'guestbook:administration:index' %}">Гостевая книга</a></li>
-                            <li><a href="{% url 'polls:administration:index' %}">Голосования</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{% url 'professionals_news:administration:index' %}">Проф. новости</a>
-                            <li><a href="{% url 'professionals_pages:administration:index' %}">Проф. страницы</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{% url 'menu:administration:index' %}">Меню</a></li>
-                            <li><a href="{% url 'pages:administration:index' %}">Страницы</a></li>
-                            <li><a href="{% url 'filebrowser:administration:index' %}">Файлы</a></li>
-                            <li><a href="{% url 'accounts:administration:index' %}">Аккаунты</a></li>
-{#                            <li><a href="#">{% trans 'Settings' %}</a></li>#}
-                        </ul>
-                    </li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div>
-    </div>
-</div>
+{% include 'administration/navbar.html' %}
 
 <div class="container" style="margin-top: 39px;">
     <div class="row">

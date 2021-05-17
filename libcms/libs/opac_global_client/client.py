@@ -86,6 +86,15 @@ class Circulation:
         return CirculationOrdersResponse(**data)
 
     def renewal(self, place: str, item_codes: List[str]):
+        print(json.dumps({
+                "data": {
+                    "type": "circulationOperationsTemplate",
+                    "attributes": {
+                        "place": place,
+                        "itemCodes": item_codes
+                    }
+                }
+            }))
         data = self.__client.make_request(
             method='post',
             path='/circulation/renewal',
@@ -194,7 +203,7 @@ class Client:
             timeout=10,
         )
 
-        if 200 >= response.status_code < 400:
+        if 200 <= response.status_code < 400:
             return response
 
         text = response.json().get('errors', [{}])[0].get('detail')

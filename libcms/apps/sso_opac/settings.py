@@ -8,6 +8,7 @@ PASSWORD = OPAC_GLOBAL.get('password')
 BASE_URL = OPAC_GLOBAL.get('base_url')
 CLIENT_ID = OPAC_GLOBAL.get('client_id')
 CLIENT_SECRET = OPAC_GLOBAL.get('client_secret')
+SCOPE = OPAC_GLOBAL.get('scope', ['read', 'write'])
 
 AUTH_SOURCE = 'opac'
 
@@ -19,5 +20,6 @@ opac_client = Client(config=Config(
             password=PASSWORD,
             base_url=BASE_URL,
             client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET
+            client_secret=CLIENT_SECRET,
+            scope=SCOPE
         ), token_cache=token_cache)

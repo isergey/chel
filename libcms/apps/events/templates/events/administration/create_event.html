@@ -30,7 +30,7 @@
         }
     </style>
 
-    <form novalidate class="form" method="POST">{% csrf_token %}
+    <form novalidate class="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <legend>Создание события</legend>
 
             {{ event_form|bootstrap }}
