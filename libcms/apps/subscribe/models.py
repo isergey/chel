@@ -422,6 +422,14 @@ def send_to_email():
             'SITE_DOMAIN': SITE_DOMAIN
         })
         soup = bs4.BeautifulSoup(email_body, features='lxml')
+
+        unsubscribe_link = soup.find(id='unsubscribe_link')
+        if unsubscribe_link:
+            unsubscribe_link['href'] =  'https://' + SITE_DOMAIN + resolve_url('subscribe:frontend:index') + '?email={email}&key={key}'.format(
+                email=email,
+                key=key
+            )
+
         journal_redirect = 'https://' + SITE_DOMAIN + resolve_url('journal:redirect_to_url')
 
         for link in soup.find_all('a'):
@@ -439,12 +447,7 @@ def send_to_email():
             if src.startswith('/static/') or src.startswith('/media/'):
                 img['src'] = 'https://' + SITE_DOMAIN + img['src']
 
-        unsubscribe_link = soup.find('#unsubscribe_link')
-        if unsubscribe_link:
-            unsubscribe_link['href'] =  'https://' + SITE_DOMAIN + resolve_url('subscribe:frontend:index') + '?email={email}&key={key}'.format(
-                email=email,
-                key=key
-            )
+
 
         email_body = str(soup.prettify(formatter=None))
         message = EmailMessage(
