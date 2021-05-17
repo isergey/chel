@@ -29,7 +29,12 @@ const template = `
 `;
 
 async function loadData() {
-    const response = await fetch('/ru/subscribe/get_subscribes/');
+    const response = await fetch('/ru/subscribe/get_subscribes/', {
+        headers: {
+          'X-KEY': new URLSearchParams(window.location.search).get('key') || undefined,
+          'X-EMAIL': new URLSearchParams(window.location.search).get('email') || undefined,
+        }
+    });
     return await response.json();
 }
 
@@ -39,7 +44,8 @@ async function saveData(subscribtions) {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'X_KEY': new URLSearchParams(window.location.search).get('key') || undefined,
+          'X-KEY': new URLSearchParams(window.location.search).get('key') || undefined,
+          'X-EMAIL': new URLSearchParams(window.location.search).get('email') || undefined,
         },
         body: JSON.stringify(subscribtions)
     });

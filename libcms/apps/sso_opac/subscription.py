@@ -6,6 +6,7 @@ from typing import List, Dict
 from django.conf import settings
 from django.template.loader import render_to_string
 from junimarc.json.opac import record_from_json
+from junimarc.json.junimarc import record_from_json as jm_record_from_json
 from junimarc.iso2709.reader import Reader
 from junimarc.marc_query import MarcQuery
 from junimarc.record import Record
@@ -34,7 +35,7 @@ class RecordAndQuery:
         return self.__str__()
 
 
-def create_subscription_letter(from_iso: str=None):
+def create_subscription_letter(from_iso: str = None):
     #
     #
     if from_iso:
@@ -121,6 +122,17 @@ def load_records_from_file(file_path: str):
     for record in reader.read():
         records.append(record)
     return records
+
+
+def load_records_from_harvester():
+    from harvester import models
+    source = models.Source.objects.filter(code='chelreglib.chelreglib').first()
+
+    record_contents = models.RecordContent.objects.filter(record__source=source, record__create_date__gte=source.last_harvesting_date)[:20]
+
+    for record_content in record_contents:
+        record = jm_record_from_json(record_content.content)
+        print(record)
 
 
 def filter_records_by_bbk(record_and_queries: List[RecordAndQuery], bbk_prefixes: str) -> List[RecordAndQuery]:

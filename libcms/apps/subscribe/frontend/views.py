@@ -365,41 +365,53 @@ def _get_subscription(subscribe: models.Subscribe, email: str) -> SubscriptionJs
 
 def get_subscribes(request):
     subscribes = models.Subscribe.objects.filter(is_active=True, hidden=False, parent=None)
-    email = ''
+    email = request.headers.get('x-email', '')
+    key = request.headers.get('x-key', '')
+
     if request.user.is_authenticated:
         email = request.user.email
+    else:
+        subscriber = models.Subscriber.objects.filter(email__iexact=email).first()
+        if key and subscriber is not None:
+            if key != models.generate_key(subscriber.id, email):
+                email = ''
 
     subscriptions: List[SubscriptionJson] = []
-
     for subscribe in subscribes:
         subscriptions.append(_get_subscription(subscribe, email))
 
-    fake_email = '222@ex.com'
+    fake_email = 'blank@ex.com'
     subscriptions_json = SubscriptionsJson(email=email or fake_email, subscriptions=subscriptions).dict()
 
     if not email:
         subscriptions_json['email'] = ''
 
     return JsonResponse(subscriptions_json,
-        json_dumps_params=dict(ensure_ascii=False)
-    )
+                        json_dumps_params=dict(ensure_ascii=False)
+                        )
 
 
 @csrf_exempt
 @transaction.atomic()
 def set_subscribes(request):
+    key = request.headers.get('X-Key')
+
     data = request.body
     try:
         subscriptions_json = SubscriptionsJson(**json.loads(data))
     except ValidationError as e:
         return HttpResponse(e.json(), status=409)
 
+    email = subscriptions_json.email
     user = None
     if request.user.is_authenticated:
         user = request.user
 
-    email = subscriptions_json.email
     subscriber = models.Subscriber.objects.filter(email__iexact=email).first()
+
+    if user is None and key:
+        if key != models.generate_key(subscriber.id, email):
+            return HttpResponse('Некорректный запрос', status=409)
 
     if subscriber is None:
         subscriber = models.Subscriber(user=user, email=email)
