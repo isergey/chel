@@ -61,7 +61,7 @@ def create_subscription_letter(from_iso: str=None):
         return
 
     subscribes = main_subscribe.get_descendants()
-    print('subscribes', subscribes)
+
     subscribe_records: Dict[Subscribe, List[RecordAndQuery]] = {}
 
     for subscribe in subscribes:

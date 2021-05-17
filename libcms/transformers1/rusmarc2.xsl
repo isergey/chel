@@ -190,7 +190,7 @@ RUSMARC
   <xsl:apply-templates select="field[@id='215']"/>
   <xsl:apply-templates select="field[@id='225']"/>
 
-  <xsl:call-template name="notes"/>
+  <!--<xsl:call-template name="notes"/>-->
 
   <xsl:if test="$fmt != 'B' and field[@id='464']">
     <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/></p>
@@ -579,7 +579,7 @@ RUSMARC
   <xsl:apply-templates select="field[@id='225']"/>
   <xsl:apply-templates select="field[@id='461']/subfield[@id='1']/field[@id='011']"/>
   <xsl:apply-templates select="field[@id='463']/subfield[@id='1']/field[@id='011']"/>
-  <xsl:call-template name="notes"/>
+  <!--<xsl:call-template name="notes"/>-->
   <xsl:call-template name="links"/>
   <xsl:apply-templates select="field[@id='856']"/>
 </xsl:template>
