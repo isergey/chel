@@ -1,6 +1,6 @@
 # encoding: utf-8
 import json
-from typing import List, ForwardRef
+from typing import List, ForwardRef, Optional
 
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, get_object_or_404
@@ -374,8 +374,15 @@ def get_subscribes(request):
     for subscribe in subscribes:
         subscriptions.append(_get_subscription(subscribe, email))
 
-    return JsonResponse(
-        SubscriptionsJson(email=email, subscriptions=subscriptions).dict(),
+    fake_email = '222@ex.com'
+    subscriptions_json = SubscriptionsJson(email=email or fake_email, subscriptions=subscriptions).dict()
+
+    if not email:
+        subscriptions_json['email'] = ''
+
+    print(subscriptions_json)
+
+    return JsonResponse(subscriptions_json,
         json_dumps_params=dict(ensure_ascii=False)
     )
 
@@ -394,7 +401,6 @@ def set_subscribes(request):
         user = request.user
 
     email = subscriptions_json.email
-
     subscriber = models.Subscriber.objects.filter(email__iexact=email).first()
 
     if subscriber is None:

@@ -421,7 +421,7 @@ def send_to_email():
             'subscribe_id': send_status.letter.subscribe_id,
             'SITE_DOMAIN': SITE_DOMAIN
         })
-
+        print(email_body)
         soup = bs4.BeautifulSoup(email_body, features='lxml')
         journal_redirect = 'https://' + SITE_DOMAIN + resolve_url('journal:redirect_to_url')
 
