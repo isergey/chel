@@ -389,7 +389,7 @@ RUSMARC
 
   <!--<xsl:call-template name="notes"/>-->
 
-  <xsl:if test="$fmt != 'B' and field[@id='464']">
+  <!--<xsl:if test="$fmt != 'B' and field[@id='464']">
     <p><xsl:value-of select="$msg/messages/localization[@language=$lang]/msg[@id='I_CONTENTS']"/></p>
     <xsl:for-each select="field[@id='464']">
       <xsl:choose>
@@ -409,7 +409,7 @@ RUSMARC
       <br/>
     </xsl:for-each>
     <p/>
-  </xsl:if>
+  </xsl:if>-->
   <!--<xsl:call-template name="links"/>-->
 
   <xsl:apply-templates select="field[@id='010']"/>
