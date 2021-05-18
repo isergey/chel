@@ -49,11 +49,9 @@
         });
 
         document.getElementById('save_button').addEventListener('click', () => {
-            unlayer.exportHtml(data => {
-                unlayer.saveDesign(function (design) {
-                    const blob = new Blob([JSON.stringify(design, undefined, 2)], {type: "text/plain;charset=utf-8"});
-                    saveAs(blob, "design.json");
-                });
+           unlayer.saveDesign(function (design) {
+                const blob = new Blob([JSON.stringify(design, undefined, 2)], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, "design.json");
             });
         });
 
