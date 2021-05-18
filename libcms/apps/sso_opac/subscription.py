@@ -16,6 +16,7 @@ from sso_opac.settings import opac_client
 from subscribe.models import Subscribe, Letter, Subscriber
 
 SUBSCRIPTION_CODE = 'incomes'
+ELIB_INCOMES_CODE = 'elib_incomes'
 
 SITE_DOMAIN = getattr(settings, 'SITE_DOMAIN', 'localhost:8000')
 
@@ -101,6 +102,40 @@ def create_subscription_letter(from_iso: str = None):
         letter.save()
 
 
+def create_elib_income_letter():
+    #
+    #
+    records = load_records_from_harvester()
+
+    if not records:
+        return
+
+    subscribe = Subscribe.objects.filter(code=ELIB_INCOMES_CODE).first()
+
+    if subscribe is None:
+        subscribe = Subscribe(
+            code=ELIB_INCOMES_CODE,
+            name='Новинки Уральской электронной библиотеки'
+        )
+        subscribe.save()
+
+    content = render_to_string('sso_opac/email/subscription_elib_incomes.html', {
+        'records': records,
+        'subscribe': subscribe,
+        'SITE_DOMAIN': SITE_DOMAIN
+    })
+
+    letter = Letter(
+        subscribe=subscribe,
+        subject=subscribe.name,
+        content_format='html',
+        content=content
+    )
+
+    letter.save()
+    return letter
+
+
 def load_records():
     now = datetime.datetime.now()
     past = now - datetime.timedelta(days=5)
@@ -128,11 +163,20 @@ def load_records_from_harvester():
     from harvester import models
     source = models.Source.objects.filter(code='chelreglib.chelreglib').first()
 
-    record_contents = models.RecordContent.objects.filter(record__source=source, record__create_date__gte=source.last_harvesting_date)[:20]
+    record_contents = models.RecordContent.objects.filter(
+        record__source=source,
+        record__create_date__gte=source.last_harvesting_date)[:100]
 
+    records = []
     for record_content in record_contents:
         record = jm_record_from_json(record_content.content)
-        print(record)
+        records.append(RecordAndQuery(
+            id=record_content.record_id,
+            record=record,
+            libcard=get_lib_card(record),
+            mq=MarcQuery(record)
+        ))
+    return records
 
 
 def filter_records_by_bbk(record_and_queries: List[RecordAndQuery], bbk_prefixes: str) -> List[RecordAndQuery]:

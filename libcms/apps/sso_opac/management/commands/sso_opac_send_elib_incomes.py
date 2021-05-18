@@ -1,7 +1,7 @@
 import fasteners
 from django.core.management.base import BaseCommand, CommandError
 
-from sso_opac.subscription import load_records_from_harvester
+from sso_opac.subscription import create_elib_income_letter
 
 
 class Command(BaseCommand):
@@ -11,4 +11,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # from_iso = options.get('from_iso', [''])[0]
-        load_records_from_harvester()
+        create_elib_income_letter()
