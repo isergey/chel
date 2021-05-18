@@ -34,4 +34,5 @@ urlpatterns = (
     url(r'^statistics/$', views.statistics, name="statistics"),
     url(r'^commands/$', views.commands, name="commands"),
     url(r'^commands/(?P<index>\d+)/run/$', views.run_command, name="run_command"),
+
 )
