@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Редактор</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
     <script src="//editor.unlayer.com/embed.js"></script>
     <style>
         html, body {
@@ -20,8 +21,12 @@
     </style>
 </head>
 <body>
-<div class="toolbar" style="background-color: #0c5460">
-    <button id="export_button">Экспорт</button>
+<div class="toolbar" style="background-color: #e8e8e8">
+    <button id="copy_button" title="Копировать в буфер обмена">Копировать</button>
+    <button id="save_button" title="Сохранить в файл">Сохранить</button>
+    <input type="file" id="file_selector" title="Укажите файл из которого нужно загрузить дизан">
+    <button id="load_design" title="Загрузить дизайн из выбранного файла">Загрузить дизайн</button>
+
 </div>
 <div id="editor">
 
@@ -33,7 +38,7 @@
             projectId: 1234,
             displayMode: 'email'
         });
-        document.getElementById('export_button').addEventListener('click', () => {
+        document.getElementById('copy_button').addEventListener('click', () => {
             unlayer.exportHtml(data => {
                 navigator.clipboard.writeText(data.html).then(() => {
                     alert('HTML код скопирован в буфер обмена');
@@ -42,6 +47,32 @@
                 });
             });
         });
+
+        document.getElementById('save_button').addEventListener('click', () => {
+            unlayer.exportHtml(data => {
+                unlayer.saveDesign(function (design) {
+                    const blob = new Blob([JSON.stringify(design, undefined, 2)], {type: "text/plain;charset=utf-8"});
+                    saveAs(blob, "design.json");
+                });
+            });
+        });
+
+        const fileSelector = document.getElementById('file_selector');
+        document.getElementById('load_design').addEventListener('click', () => {
+            const files = fileSelector.files;
+            if (!files.length) {
+                alert('Выберите файл с дизаном в формате JSON');
+                return;
+            }
+            const reader = new FileReader();
+           reader.readAsText(files[0],'UTF-8');
+
+           // here we tell the reader what to do when it's done reading...
+           reader.onload = readerEvent => {
+              const content = readerEvent.target.result; // this is the content!
+              unlayer.loadDesign(JSON.parse(content));
+           }
+        })
     })();
 </script>
 </body>
