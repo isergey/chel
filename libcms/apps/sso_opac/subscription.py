@@ -163,7 +163,7 @@ def load_records_from_harvester():
     from harvester import models
     source = models.Source.objects.filter(code='chelreglib.chelreglib').first()
     now = datetime.datetime.now()
-    past = now - datetime.timedelta(days=5)
+    past = now - datetime.timedelta(days=7)
 
     record_contents = models.RecordContent.objects.filter(
         record__source=source,
