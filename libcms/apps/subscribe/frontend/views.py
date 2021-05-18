@@ -380,15 +380,21 @@ def get_subscribes(request):
     for subscribe in subscribes:
         subscriptions.append(_get_subscription(subscribe, email))
 
+
+    if email == 'undefined':
+        email = ''
+
     fake_email = 'blank@ex.com'
+
     subscriptions_json = SubscriptionsJson(email=email or fake_email, subscriptions=subscriptions).dict()
 
     if not email:
         subscriptions_json['email'] = ''
 
-    return JsonResponse(subscriptions_json,
-                        json_dumps_params=dict(ensure_ascii=False)
-                        )
+    return JsonResponse(
+        subscriptions_json,
+        json_dumps_params=dict(ensure_ascii=False)
+    )
 
 
 @csrf_exempt
