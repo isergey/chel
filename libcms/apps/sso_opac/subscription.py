@@ -162,10 +162,12 @@ def load_records_from_file(file_path: str):
 def load_records_from_harvester():
     from harvester import models
     source = models.Source.objects.filter(code='chelreglib.chelreglib').first()
+    now = datetime.datetime.now()
+    past = now - datetime.timedelta(days=5)
 
     record_contents = models.RecordContent.objects.filter(
         record__source=source,
-        record__create_date__gte=source.last_harvesting_date)[:100]
+        record__create_date__gte=past)[:100]
 
     records = []
     for record_content in record_contents:
