@@ -106,7 +106,7 @@ def create_elib_income_letter():
     #
     #
     records = load_records_from_harvester()
-
+    print(records)
     if not records:
         return
 
