@@ -428,6 +428,7 @@ def set_subscribes(request):
             return
 
         if subscription.subscribed:
+            models.log_subscribing(user, subscribe_model, action=models.SUBSCRIBING_LOG_ACTIONS['subscribe'])
             subscriber.subscribe.add(subscribe_model)
         else:
             subscriber.subscribe.remove(subscribe_model)
