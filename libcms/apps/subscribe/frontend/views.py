@@ -380,8 +380,7 @@ def get_subscribes(request):
     for subscribe in subscribes:
         subscriptions.append(_get_subscription(subscribe, email))
 
-
-    if email == 'undefined':
+    if '@' not in email:
         email = ''
 
     fake_email = 'blank@ex.com'
