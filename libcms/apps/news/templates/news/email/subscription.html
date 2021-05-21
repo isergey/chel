@@ -237,7 +237,7 @@ a[x-apple-data-detectors='true'] {
   <tbody><tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
 
-      <img align="center" border="0" src="{{ MEDIA_URL }}uploads/newsavatars/{{ news.avatar_img_name }}" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 184px;" width="184">
+      <img align="center" border="0" src="{{ MEDIA_URL }}uploads/newsavatars/{{ news.avatar_img_name }}" alt="{{ news.news_content.title }}" title="{{ news.news_content.title }}" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 184px;" width="184">
 
     </td>
   </tr>
@@ -265,7 +265,7 @@ a[x-apple-data-detectors='true'] {
   <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%;"><strong><span style="color: #7e8c8d; font-size: 14px; line-height: 19.6px;">{{ news.create_date|date:"d.m.Y" }} </span></strong></p>
 <p style="font-size: 14px; line-height: 140%;">&nbsp;</p>
-<p style="font-size: 14px; line-height: 140%;"><strong><a href="{% url 'news:frontend:show' news.id %}" target="_blank" rel="noopener">{{ news.news_content.title }}</a></strong></p>
+<p style="font-size: 14px; line-height: 140%;"><strong><a style="color: #ba372a" href="{% url 'news:frontend:show' news.id %}" target="_blank" rel="noopener">{{ news.news_content.title }}</a></strong></p>
 <p style="font-size: 14px; line-height: 140%;">{{ news.news_content.teaser }}</p>
   </div>
 
