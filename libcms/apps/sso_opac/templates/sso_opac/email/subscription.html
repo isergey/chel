@@ -230,7 +230,7 @@ a[x-apple-data-detectors='true'] {
       {% for record in records %}
           <p class="record" style="font-size: 14px; line-height: 160%;"><a href="http://opac.chelreglib.ru/rfind?iddb={{ record.db_id|urlencode }}&amp;ID={{ record.id|urlencode }}" target="_blank" rel="noopener"> {{ record.libcard|safe }}</a></p>
 {#          {% if not forloop.last %}<p class="record-divider" style="font-size: 14px; line-height: 160%;">&nbsp;</p>{% endif %}#}
-          <hr/>
+          <hr style="border: 0; height: 0; border-top: 1px solid F6F6F6; border-bottom: 1px solid F6F6F6"/>
       {% endfor %}
   </div>
 
