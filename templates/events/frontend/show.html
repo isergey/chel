@@ -35,11 +35,11 @@
                     </p>
                     <div class="content">
                         {#                        {% if event.address %}#}
-                        {#                            <p><b>Место проведения</b>: {{ event.address }}<br/></p>#}
+                        {#                            <p><b>Подразделение</b>: {{ event.address }}<br/></p>#}
                         {#                        {% endif %}#}
                         {#                        {% if event.address_reference %}#}
                         {#                            <p>#}
-                        {#                                <b>Место проведения</b>:#}
+                        {#                                <b>Подразделение</b>:#}
                         {#                                {% for ancestor in event.address_reference.get_ancestors %}#}
                         {#                                    {{ ancestor.title }}#}
                         {#                                    {% if ancestor.address %}({{ ancestor.address }}){% endif %}#}
@@ -91,10 +91,10 @@
                             </h2>
                             <p class="card-detail">
                                 {% if event.address %}
-                                    <b>Место проведения</b>: {{ event.address }}<br/>
+                                    <b>Подразделение</b>: {{ event.address }}<br/>
                                 {% endif %}
                                 {% if event.address_reference %}
-                                    <b>Место проведения</b>:
+                                    <b>Подразделение</b>:
                                     {% for ancestor in event.address_reference.get_ancestors %}
                                         {{ ancestor.title }}
                                         {% if ancestor.address %}({{ ancestor.address }}){% endif %}
