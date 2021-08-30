@@ -150,7 +150,7 @@ class Event(models.Model):
     )
 
     address = models.CharField(
-        verbose_name='Место проведения',
+        verbose_name='Подразделение',
         max_length=512,
         blank=True
     )
@@ -158,7 +158,7 @@ class Event(models.Model):
     address_reference = TreeForeignKey(
         Address,
         on_delete=models.PROTECT,
-        verbose_name='Место проведения из справочника',
+        verbose_name='Подразделение из справочника',
         blank=True,
         null=True
     )

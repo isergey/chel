@@ -58,7 +58,7 @@ class EventsFilterForm(forms.Form):
     # )
 
     address = TreeNodeChoiceField(
-        label=u'Место проведения',
+        label=u'Подразделение',
         queryset=models.Address.objects.all(),
         required=False,
     )
