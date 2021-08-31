@@ -150,7 +150,7 @@ class Event(models.Model):
     )
 
     address = models.CharField(
-        verbose_name='Подразделение',
+        verbose_name='Название места',
         max_length=512,
         blank=True
     )
