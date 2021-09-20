@@ -16,6 +16,11 @@
     <div class="well well-small">
         <form class="form-inline">
             <div class="form-group">
+                <select class="form-control" name="type">
+                    <option value="0" {% if request.GET.type == '0' %}selected{% endif %}>Новости ЧОУНБ</option>
+                    <option value="1" {% if request.GET.type == '1' %}selected{% endif %}>Новости библиотек области</option>
+                    <option value="2" {% if request.GET.type == '2' %}selected{% endif %}>Общие</option>
+                </select>
                 <input class="form-control" type="date" name="start_date" value="{{ filter_form.cleaned_data.start_date|default:filter_form.start_date.value|date:'Y-m-d' }}">
 
                 <input class="form-control" type="date" name="end_date" value="{{ filter_form.cleaned_data.end_date|default:filter_form.end_date.value|date:'Y-m-d' }}">

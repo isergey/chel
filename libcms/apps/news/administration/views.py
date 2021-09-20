@@ -22,6 +22,7 @@ from .forms import NewsForm, NewsContentForm, SubscriptionFilterForm
 from ..models import News, NewsContent
 from .. import subscription
 
+
 @login_required
 @permission_required_or_403('news.add_news')
 def index(request):
@@ -32,7 +33,7 @@ def index(request):
 @permission_required_or_403('news.add_news')
 def news_list(request):
     type = request.GET.get('type', 'public')
-    if type ==  'prof':
+    if type == 'prof':
         news_page = get_page(request, News.objects.filter(type=1).order_by('-create_date'))
     elif type == 'public':
         news_page = get_page(request, News.objects.filter(type=0).order_by('-create_date'))
@@ -44,28 +45,24 @@ def news_list(request):
     return render(request, 'news/administration/news_list.html', {
         'news_list': news_page.object_list,
         'news_page': news_page,
-        })
-
+    })
 
 
 @login_required
 @permission_required_or_403('news.add_news')
 @transaction.atomic
 def create_news(request):
-
     if request.method == 'POST':
-        news_form = NewsForm(request.POST,prefix='news_form')
+        news_form = NewsForm(request.POST, prefix='news_form')
 
         news_content_forms = []
         for lang in settings.LANGUAGES:
             news_content_forms.append({
-                'form':NewsContentForm(request.POST,prefix='news_content' + lang[0]),
-                'lang':lang[0]
+                'form': NewsContentForm(request.POST, prefix='news_content' + lang[0]),
+                'lang': lang[0]
             })
 
         if news_form.is_valid():
-
-
 
             valid = False
             for news_content_form in news_content_forms:
@@ -93,14 +90,15 @@ def create_news(request):
         news_content_forms = []
         for lang in settings.LANGUAGES:
             news_content_forms.append({
-                'form':NewsContentForm(prefix='news_content' + lang[0]),
-                'lang':lang[0]
+                'form': NewsContentForm(prefix='news_content' + lang[0]),
+                'lang': lang[0]
             })
 
     return render(request, 'news/administration/create_news.html', {
         'news_form': news_form,
         'news_content_forms': news_content_forms,
-        })
+    })
+
 
 @login_required
 @permission_required_or_403('news.change_news')
@@ -117,7 +115,7 @@ def edit_news(request, id):
         news_contents_langs[news_content.lang] = news_content
 
     if request.method == 'POST':
-        news_form = NewsForm(request.POST,prefix='news_form', instance=news)
+        news_form = NewsForm(request.POST, prefix='news_form', instance=news)
 
         if news_form.is_valid():
             news = news_form.save(commit=False)
@@ -133,15 +131,15 @@ def edit_news(request, id):
                 lang = lang[0]
                 if lang in news_contents_langs:
                     news_content_forms.append({
-                        'form':NewsContentForm(request.POST,prefix='news_content_' + lang, instance=news_contents_langs[lang]),
-                        'lang':lang
+                        'form': NewsContentForm(request.POST, prefix='news_content_' + lang,
+                                                instance=news_contents_langs[lang]),
+                        'lang': lang
                     })
                 else:
                     news_content_forms.append({
-                        'form':NewsContentForm(request.POST, prefix='news_content_' + lang),
-                        'lang':lang
+                        'form': NewsContentForm(request.POST, prefix='news_content_' + lang),
+                        'lang': lang
                     })
-
 
             valid = False
             for news_content_form in news_content_forms:
@@ -163,19 +161,19 @@ def edit_news(request, id):
             lang = lang[0]
             if lang in news_contents_langs:
                 news_content_forms.append({
-                    'form':NewsContentForm(prefix='news_content_' + lang, instance=news_contents_langs[lang]),
-                    'lang':lang
+                    'form': NewsContentForm(prefix='news_content_' + lang, instance=news_contents_langs[lang]),
+                    'lang': lang
                 })
             else:
                 news_content_forms.append({
-                    'form':NewsContentForm(prefix='news_content_' + lang),
-                    'lang':lang
+                    'form': NewsContentForm(prefix='news_content_' + lang),
+                    'lang': lang
                 })
 
     return render(request, 'news/administration/edit_news.html', {
         'news_form': news_form,
         'news_content_forms': news_content_forms,
-        })
+    })
 
 
 @login_required
@@ -194,7 +192,7 @@ def delete_news(request, id):
 def subscriptions(request):
     now = datetime.now()
     past = now - timedelta(days=7)
-
+    news_type = int(request.GET.get('type', '0'))
     start_date = past.date()
     end_date = now.date()
 
@@ -210,15 +208,16 @@ def subscriptions(request):
             'end_date': end_date
         })
 
-
-    q = Q(create_date__gte=datetime(
-        year=start_date.year,
-        month=start_date.month,
-        day=start_date.day,
-        hour=0,
-        minute=0,
-        second=0
-    ))
+    q = Q(
+        type=news_type,
+        create_date__gte=datetime(
+            year=start_date.year,
+            month=start_date.month,
+            day=start_date.day,
+            hour=0,
+            minute=0,
+            second=0
+        ))
 
     q &= Q(create_date__lte=datetime(
         year=end_date.year,
@@ -249,7 +248,8 @@ def subscriptions(request):
         'filter_form': filter_form,
     })
 
-#def handle_uploaded_file(f, old_name=None):
+
+# def handle_uploaded_file(f, old_name=None):
 #    upload_dir = settings.MEDIA_ROOT + 'uploads/newsavatars/'
 #    now = datetime.now()
 #    dirs = [
@@ -280,9 +280,9 @@ def handle_uploaded_file(f, old_name=None):
     now = datetime.now()
     dirs = [
         upload_dir,
-        upload_dir  + str(now.year) + '/',
-        upload_dir  + str(now.year) + '/' + str(now.month) + '/',
-        ]
+        upload_dir + str(now.year) + '/',
+        upload_dir + str(now.year) + '/' + str(now.month) + '/',
+    ]
     for dir in dirs:
         if not os.path.isdir(dir):
             os.makedirs(dir, 0o744)
@@ -332,7 +332,7 @@ def handle_uploaded_file(f, old_name=None):
     final_width = int((image_ratio * final_hight))
     im = im.resize((final_width, final_hight), Image.ANTIALIAS)
     im = im.convert('RGB')
-    im.save(path, "JPEG",  quality=95)
+    im.save(path, "JPEG", quality=95)
     return name
 
 
