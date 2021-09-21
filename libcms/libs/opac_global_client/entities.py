@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from typing import TypeVar, Generic, List
+from typing import TypeVar, Generic, List, Optional
 
 from pydantic import BaseModel, validator
 from pydantic import Field
@@ -15,7 +15,12 @@ def to_camel(string: str) -> str:
     if length == 1:
         return parts[0]
 
-    return parts[0] + ''.join(word.capitalize() for word in string.split('_')[1:])
+    res = parts[0] + ''.join(word.capitalize() for word in string.split('_')[1:])
+    return res
+
+
+def convert_to_datetime(val):
+    return datetime.strptime(val, '%Y%m%d%H%M%S')
 
 
 class Token(BaseModel):
@@ -139,6 +144,51 @@ class CirculationOrderInfo(BaseModel):
 class CirculationOrdersResponse(BaseModel):
     meta: Meta
     data: List[CirculationOrderInfo] = []
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel
+
+
+class CirculationBiblInfo(BaseModel):
+    db_id: Optional[str]
+    record_id: Optional[str]
+    bibcard: Optional[str]
+    db_title: Optional[str]
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel
+
+
+class CirculationAction(BaseModel):
+    id: str
+    time: Optional[datetime]
+    pmr_title: str
+    operator_record_id: str
+    document_code: str
+    return_time: Optional[datetime]
+    bibl_info: CirculationBiblInfo
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel
+
+    @validator('return_time', 'time', pre=True, allow_reuse=True)
+    def time_validate(cls, v):
+        return None if v is None else convert_to_datetime(v)
+
+
+class CirculationData(BaseModel):
+    actions: List[CirculationAction] = []
+
+    class Config:
+        extra = 'ignore'
+        alias_generator = to_camel
+
+
+class CirculationHistoryResponse(BaseModel):
+    data: CirculationData
 
     class Config:
         extra = 'ignore'

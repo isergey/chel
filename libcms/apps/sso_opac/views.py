@@ -9,7 +9,8 @@ from django.shortcuts import render, redirect
 
 from junimarc.json.opac import record_from_json
 from opac_global_client.client import Client
-from opac_global_client.entities import ReaderResponse, CirculationOperation, CirculationOrder
+from opac_global_client.entities import ReaderResponse, CirculationOperation, CirculationOrder, \
+    CirculationHistoryResponse
 from opac_global_client.exceptions import Error
 from .settings import opac_client, AUTH_SOURCE
 from sso import models
@@ -73,6 +74,23 @@ def on_hand(request):
         'checkouts': checkouts,
     })
 
+@login_required
+def circ_history(request):
+    external_user = models.get_external_users(request.user, AUTH_SOURCE).first()
+    if not external_user:
+        return HttpResponse('Вы не являетесь читателем')
+
+    reader_response = ReaderResponse(**external_user.get_attributes())
+
+    response = _get_circ_history(
+        opac_client=opac_client,
+        reader_response=reader_response
+    )
+    actions = response.data.actions
+    return render(request, 'sso_opac/history.html', {
+        'actions': filter(lambda x: x.return_time is not None, reversed(actions)),
+    })
+
 
 @login_required
 def renewal(request):
@@ -92,11 +110,10 @@ def renewal(request):
 
 def incomes(request):
     resoponse = opac_client.databases().get_records(db_id='18')
-    for item in resoponse.get('data', []):
-        record = record_from_json(item.get('attributes', {}))
-        print(record)
-        # print(''.join(item.get('attributes', {}).get('SHOTFORM', {}).get('content', [])))
-        # print('--------------------')
+    # for item in resoponse.get('data', []):
+    #     record = record_from_json(item.get('attributes', {}))
+    #     # print(''.join(item.get('attributes', {}).get('SHOTFORM', {}).get('content', [])))
+    #     # print('--------------------')
     return HttpResponse('')
 
 
@@ -115,6 +132,17 @@ def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List
 
     return checkouts
 
+
+def _get_circ_history(opac_client: Client, reader_response: ReaderResponse) -> CirculationHistoryResponse:
+    now = datetime.datetime.now()
+    past = now - datetime.timedelta(days=36500)
+    response = opac_client.circulation().get_reader_circ_history(
+        barcode=reader_response.attributes.barcode,
+        from_date=past.date(),
+        to_date=now.date()
+    )
+
+    return response
 
 def _get_orders(opac_client: Client, reader_response: ReaderResponse) -> List[CirculationOrderInfo]:
     now = datetime.datetime.now()

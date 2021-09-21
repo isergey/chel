@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from typing import List, Optional
 from urllib.parse import quote, urlencode
 
@@ -10,7 +11,7 @@ from .cache import TokenCache
 from .utils import join_url
 
 from .entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
-    CirculationOperationsResponse, CirculationOrdersResponse, RecordsResponse
+    CirculationOperationsResponse, CirculationOrdersResponse, RecordsResponse, CirculationHistoryResponse
 
 
 class Config:
@@ -85,16 +86,36 @@ class Circulation:
 
         return CirculationOrdersResponse(**data)
 
-    def renewal(self, place: str, item_codes: List[str]):
-        print(json.dumps({
+    def get_reader_circ_history(self, barcode: str, from_date: date, to_date: date) -> CirculationHistoryResponse:
+        data = self.__client.get_json(
+            method='post',
+            data=json.dumps({
                 "data": {
-                    "type": "circulationOperationsTemplate",
+                    "type": "reportsTask",
                     "attributes": {
-                        "place": place,
-                        "itemCodes": item_codes
+                        "collectionCode": "standard",
+                        "reportCode": "reader_history",
+                        "reportTitle": "Статистика операций",
+                        "mode": "sync_once",
+                        "outputFile": "response.json",
+                        "args": {
+                            "actionDates": '{from_date}-{to_date}'.format(
+                                from_date=from_date.strftime('%Y%m%d'),
+                                to_date=to_date.strftime('%Y%m%d')
+                            ),
+                            "readerLogin": "",
+                            "readerBarcode": barcode,
+                            "readerId": ""
+                        }
                     }
                 }
-            }))
+            }, ensure_ascii=False).encode('utf-8'),
+            path='/reports/tasks'
+        )
+        return CirculationHistoryResponse(**data)
+
+
+    def renewal(self, place: str, item_codes: List[str]):
         data = self.__client.make_request(
             method='post',
             path='/circulation/renewal',
