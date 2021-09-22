@@ -18,7 +18,7 @@ class Command(BaseCommand):
         isoweekday = datetime.today().isoweekday()
         from_date = None
 
-        if isoweekday == 3:
+        if isoweekday == 2:
             from_date = (now - timedelta(days=3)).replace(hour=0, minute=0, second=0, microsecond=0)
         elif isoweekday == 5:
             from_date = (now - timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0)
