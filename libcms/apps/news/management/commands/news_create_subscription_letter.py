@@ -13,7 +13,7 @@ from ...administration.views import _join_content
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        translation.activate(settings.LANGUAGE_CODE)
+        # translation.activate(settings.LANGUAGE_CODE)
         now = datetime.now()
         isoweekday = datetime.today().isoweekday()
         from_date = None
