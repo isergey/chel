@@ -106,7 +106,6 @@ def create_elib_income_letter():
     #
     #
     records = load_records_from_harvester()
-    print(records)
     if not records:
         return
 
@@ -167,7 +166,7 @@ def load_records_from_harvester():
 
     record_contents = models.RecordContent.objects.filter(
         record__source=source,
-        record__create_date__gte=past)[:100]
+        record__create_date__gte=past.replace(hour=0, minute=0))[:100]
 
     records = []
     for record_content in record_contents:

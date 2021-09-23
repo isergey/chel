@@ -81,10 +81,13 @@ def circ_history(request):
         return HttpResponse('Вы не являетесь читателем')
 
     reader_response = ReaderResponse(**external_user.get_attributes())
-
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
     response = _get_circ_history(
         opac_client=opac_client,
-        reader_response=reader_response
+        reader_response=reader_response,
+        from_date=datetime.date.fromisoformat(from_date) if from_date else None,
+        to_date=datetime.date.fromisoformat(to_date) if to_date else None
     )
     actions = response.data.actions
     return render(request, 'sso_opac/history.html', {
@@ -133,13 +136,13 @@ def _get_checkouts(opac_client: Client, reader_response: ReaderResponse) -> List
     return checkouts
 
 
-def _get_circ_history(opac_client: Client, reader_response: ReaderResponse) -> CirculationHistoryResponse:
+def _get_circ_history(opac_client: Client, reader_response: ReaderResponse, from_date: datetime.date = None, to_date: datetime.date = None) -> CirculationHistoryResponse:
     now = datetime.datetime.now()
     past = now - datetime.timedelta(days=36500)
     response = opac_client.circulation().get_reader_circ_history(
         barcode=reader_response.attributes.barcode,
-        from_date=past.date(),
-        to_date=now.date()
+        from_date=from_date if from_date else past.date(),
+        to_date=to_date if to_date else now.date()
     )
 
     return response
