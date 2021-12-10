@@ -5710,7 +5710,8 @@ a.label:focus, a.label:hover {
     width: 60px;
     height: auto;
     max-height: 71px;
-    vertical-align: top
+    vertical-align: top;
+    padding-top: 9px;
 }
 
 .logo__text-wrap {
