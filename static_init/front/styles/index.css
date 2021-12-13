@@ -5697,7 +5697,7 @@ a.label:focus, a.label:hover {
     text-align: center
 }
 
-.logo__text-b, .logo__text-mob, .logo__text-t {
+.logo__text-mob, .logo__text-t {
     font-family: 'Cormorant Infant', serif;
     /*font-weight: 500;*/
     text-transform: uppercase
@@ -5714,19 +5714,24 @@ a.label:focus, a.label:hover {
     padding-top: 9px;
 }
 
+.logo__img_mobile {
+    display: none;
+}
+
 .logo__text-wrap {
     padding-left: 10px
 }
 
 .logo__text-t {
-    font-size: 13px;
+    font-size: 55px;
+    line-height: 1;
     color: #171821
 }
 
 .logo__text-b {
-    padding-top: 10px;
-    font-size: 10px;
-    color: #83858f
+    padding-top: 1px;
+    font-size: 14px;
+    color: #5a5b5f
 }
 
 .logo__text-mob {
@@ -5770,6 +5775,12 @@ a.label:focus, a.label:hover {
         width: 30px
     }
 
+    .logo__img_desktop {
+        display: none;
+    }
+    .logo__img_mobile {
+        display: inline;
+    }
     .logo__text-wrap {
         display: -webkit-box;
         display: -ms-flexbox;
