@@ -12,7 +12,7 @@ django-recaptcha==2.0.6
 fasteners==0.15
 huey==2.2.0
 lockfile==0.12.2
-lxml==4.5.0
+lxml==4.6.5
 monotonic==1.5
 Pillow==7.1.1
 psycopg2-binary==2.8.5
