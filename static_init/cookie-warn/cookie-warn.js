@@ -29,9 +29,9 @@
 
         if (!langData) {
             data = {
-                text: "Наш сайт использует cookies",
+                text: "Наш сайт использует cookies. Ознакомиться с подробной информацией можно по ",
                 accept_text: "Понятно",
-                more_text: "Ознакомиться с подробной информацие можно по ссылке",
+                more_text: "ссылке.",
                 more_link: "https://chelreglib.ru/ru/pages/cookies/",
                 // reject_text: "Отклонить",
                 // reject_info: 'eded',
