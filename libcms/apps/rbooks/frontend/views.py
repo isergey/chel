@@ -31,6 +31,9 @@ def show(request):
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
 
+    if not code:
+        raise Http404('Book not found')
+
     if not id:
         uc = init_solr_collection('uc')
         url = request.build_absolute_uri()
