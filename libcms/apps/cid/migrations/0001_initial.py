@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='Type',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('variant', models.IntegerField(choices=[(0, 'Персоналия'), (1, 'Организация'), (2, 'Мероприятие'), (3, 'Географический объект'), (4, 'Тема')], db_index=True, unique=True)),
+                ('variant', models.IntegerField(choices=[(0, 'Персоналия'), (1, 'Организация'), (2, 'Событие'), (3, 'Географический объект'), (4, 'Тема')], db_index=True, unique=True)),
             ],
         ),
         migrations.CreateModel(
