@@ -4,6 +4,7 @@ from .models import Version
 
 
 class VersionAdmin(admin.ModelAdmin):
+    raw_id_fields = ('user',)
     list_display = ('content_type', 'content_id', 'user', 'created')
 
 
