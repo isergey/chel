@@ -58,6 +58,9 @@ class Page(MPTTModel):
         auto_now_add=True,
         db_index=True
     )
+
+    deleted = models.BooleanField(default=False, db_index=True)
+
     def get_cur_lang_content(self):
         cur_language = get_language()
         try:

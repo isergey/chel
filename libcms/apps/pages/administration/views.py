@@ -14,11 +14,14 @@ from core.forms import LanguageForm, get_groups_form
 from pages.models import Page, Content
 from .forms import ContentForm, get_content_form, get_page_form
 
+# @permission_required_or_403('accounts.view_users')
+from ..version import save_content_version
 
-#@permission_required_or_403('accounts.view_users')
+
 def index(request):
     return redirect('pages:administration:pages_list')
-    #return render(request, 'pages/administration/index.html')
+    # return render(request, 'pages/administration/index.html')
+
 
 @login_required
 @permission_required_or_403('pages.add_page')
@@ -26,25 +29,25 @@ def pages_list(request, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
 
-    pages_page = get_page(request, Page.objects.filter(parent=parent))
+    pages_page = get_page(request, Page.objects.filter(parent=parent).exclude(deleted=True))
     pages_page.object_list = list(pages_page.object_list)
     contents = list(Content.objects.filter(page__in=pages_page.object_list, lang=get_language()[:2]))
 
     pages_dict = {}
     for page in pages_page.object_list:
-        pages_dict[page.id] = {'page':page}
+        pages_dict[page.id] = {'page': page}
 
     for content in contents:
         pages_dict[content.page_id]['page'].content = content
 
-#    pages = [page['page'] for page in pages_dict.values()]
-
+    #    pages = [page['page'] for page in pages_dict.values()]
 
     return render(request, 'pages/administration/pages_list.html', {
         'parent': parent,
         'pages': pages_page.object_list,
         'pages_page': pages_page,
     })
+
 
 @login_required
 @permission_required_or_403('pages.add_page')
@@ -77,7 +80,8 @@ def create_page(request, parent=None):
     return render(request, 'pages/administration/create_page.html', {
         'parent': parent,
         'page_form': page_form,
-     })
+    })
+
 
 @login_required
 @permission_required_or_403('pages.change_page')
@@ -113,9 +117,10 @@ def edit_page(request, id):
         'page_form': page_form,
     })
 
-#@login_required
-#@permission_required_or_403('pages.public_page')
-#def toggle_page_public(request, id):
+
+# @login_required
+# @permission_required_or_403('pages.public_page')
+# def toggle_page_public(request, id):
 #    page = get_object_or_404(Page, id=id)
 #    if page.public:
 #        page.public = False
@@ -129,8 +134,10 @@ def edit_page(request, id):
 @transaction.atomic
 def delete_page(request, id):
     page = get_object_or_404(Page, id=id)
-    page.delete()
+    page.deleted = True
+    page.save()
     return redirect('pages:administration:pages_list')
+
 
 @login_required
 @permission_required_or_403('pages.add_page')
@@ -144,7 +151,7 @@ def create_page_content(request, page_id):
             content = content_form.save(commit=False)
             content.page = page
             content.save()
-
+            save_content_version(content, request.user)
             save = request.POST.get('save', 'save_edit')
             if save == 'save':
                 return redirect('pages:administration:edit_page', id=page_id)
@@ -156,6 +163,7 @@ def create_page_content(request, page_id):
         'page': page,
         'content_form': content_form,
     })
+
 
 @login_required
 @permission_required_or_403('pages.change_page')
@@ -181,7 +189,7 @@ def edit_page_content(request, page_id, lang):
             content = content_form.save(commit=False)
             content.page = page
             content.save()
-
+            save_content_version(content, request.user)
         save = request.POST.get('save', 'save_edit')
         if save == 'save':
             return redirect('pages:administration:edit_page', id=page_id)
@@ -203,12 +211,10 @@ def page_permissions(request, id):
     GroupsForm = get_groups_form(Group.objects.all(), initial=list(get_groups_with_perms(obj)))
     groups_form = GroupsForm()
 
-
     return render(request, 'pages/administration/permissions.html', {
         'page': obj,
         'groups_form': groups_form,
     })
-
 
 
 @login_required
@@ -217,7 +223,6 @@ def assign_page_permissions(request, id):
     obj = get_object_or_404(Page, id=id)
     perm = 'view_page'
 
-
     if request.method == 'POST':
         GroupsForm = get_groups_form(Group.objects.all())
         groups_form = GroupsForm(request.POST)
@@ -225,6 +230,7 @@ def assign_page_permissions(request, id):
             assign_permission(groups_form.cleaned_data['groups'], [obj], perm)
             assign_permission(groups_form.cleaned_data['groups'], obj.get_descendants(), perm)
     return HttpResponse('{"status":"ok"}')
+
 
 @transaction.atomic
 def assign_permission(new_groups, objects, perm):
@@ -235,9 +241,10 @@ def assign_permission(new_groups, objects, perm):
         for new_group in new_groups:
             assign(perm, new_group, obj)
 
+
 @transaction.atomic
 def copy_perms_for_groups(obj, new_obj):
-    group_and_perms =  get_groups_with_perms(obj, True)
+    group_and_perms = get_groups_with_perms(obj, True)
     for gp in group_and_perms:
         for perm in group_and_perms[gp]:
             assign(perm, gp, new_obj)
@@ -251,6 +258,7 @@ def page_up(request, id):
         return redirect('pages:administration:pages_list', parent=page.parent_id)
     else:
         return redirect('pages:administration:pages_list')
+
 
 @transaction.atomic
 def page_down(request, id):

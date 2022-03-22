@@ -104,7 +104,7 @@ def create_news(request):
 @permission_required_or_403('news.change_news')
 @transaction.atomic
 def edit_news(request, id):
-    news = get_object_or_404(News, id=id)
+    news = get_object_or_404(News, id=id, deleted=False)
     news_contents = NewsContent.objects.filter(news=news)
     news_contents_langs = {}
 
@@ -181,8 +181,9 @@ def edit_news(request, id):
 @transaction.atomic
 def delete_news(request, id):
     news = get_object_or_404(News, id=id)
-    news.delete()
-    delete_avatar(news.avatar_img_name)
+    news.deleted = True
+    news.save()
+    #delete_avatar(news.avatar_img_name)
     return redirect('news:administration:news_list')
 
 

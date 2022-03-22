@@ -10,7 +10,7 @@ def get_page_form(parent=None):
     class PageForm(forms.ModelForm):
         class Meta:
             model = Page
-            exclude = ('parent', 'library', 'url_path')
+            exclude = ('parent', 'library', 'url_path', 'deleted')
 
         def clean_slug(self):
             slug = self.cleaned_data['slug']

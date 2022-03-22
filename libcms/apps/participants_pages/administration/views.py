@@ -13,6 +13,8 @@ from core.forms import LanguageForm
 from ..models import Page, Content
 from .forms import get_content_form, get_page_form
 from participants.models import Library, LibraryContentEditor
+from ..version import save_content_version
+
 
 def get_cbs(library_node):
     if library_node.parent_id:
@@ -44,7 +46,7 @@ def pages_list(request, code, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
 
-    pages_page = get_page(request, Page.objects.filter(parent=parent, library=library))
+    pages_page = get_page(request, Page.objects.filter(parent=parent, library=library).exclued(deleted=False))
     pages_page.object_list = list(pages_page.object_list)
     pages = pages_page.object_list
     contents = list(Content.objects.filter(page__in=pages, lang=get_language()[:2]))
@@ -113,7 +115,7 @@ def edit_page(request, code, id):
             'title': _(lang[1])
         })
 
-    page = get_object_or_404(Page, id=id)
+    page = get_object_or_404(Page, id=id, deleted=False)
     PageForm = get_page_form(library, page.parent_id)
     if request.method == 'POST':
         page_form = PageForm(request.POST, prefix='page_form', instance=page)
@@ -155,8 +157,9 @@ def delete_page(request, code, id):
     cbs = get_cbs(library)
     if not check_owning(request.user, cbs):
         return HttpResponse('У Вас нет прав на удаление страницы в этой ЦБС')
-    page = get_object_or_404(Page, id=id)
-    page.delete()
+    page = get_object_or_404(Page, id=id, deleted=False)
+    page.deleted = True
+    page.save()
     return redirect('participants_pages:administration:pages_list', code=code)
 
 
@@ -177,7 +180,7 @@ def create_page_content(request, code, page_id):
             content = content_form.save(commit=False)
             content.page = page
             content.save()
-
+            save_content_version(content, request.user)
             save = request.POST.get('save', 'save_edit')
             if save == 'save':
                 return redirect('participants_pages:administration:edit_page', id=page_id, code=code)
@@ -218,7 +221,7 @@ def edit_page_content(request, code,  page_id, lang):
             content = content_form.save(commit=False)
             content.page = page
             content.save()
-
+            save_content_version(content, request.user)
         save = request.POST.get('save', 'save_edit')
         if save == 'save':
             return redirect('participants_pages:administration:edit_page', id=page_id, code=code)

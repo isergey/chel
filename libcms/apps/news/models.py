@@ -16,7 +16,7 @@ class News(models.Model):
                                db_index=True)
     publicated = models.BooleanField(verbose_name='Опубликовано?', default=True, db_index=True)
     avatar_img_name = models.CharField(max_length=100, blank=True, null=True)
-
+    deleted = models.BooleanField(default=False, db_index=True)
     def get_absolute_url(self):
         return reverse('news:frontend:show', args=[self.id])
 

@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'sso',
     'sso_opac',
     'journal',
+    'versioning'
 ]
 
 MIDDLEWARE = [

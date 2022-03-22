@@ -42,6 +42,7 @@ class Page(MPTTModel):
         default=False,
     )
 
+    deleted = models.BooleanField(default=False, db_index=True)
 
     create_date = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, db_index=True)
 
