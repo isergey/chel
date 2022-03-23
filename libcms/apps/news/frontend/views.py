@@ -16,7 +16,7 @@ def index(request):
     if news_type == 'lib':
         query = query & Q(type=1)
 
-    news_page = get_page(request, News.objects.filter(query).order_by('-create_date'))
+    news_page = get_page(request, News.objects.filter(query).exclude(deleted=True).order_by('-create_date'))
 
     news_contents = list(NewsContent.objects.filter(news__in=list(news_page.object_list), lang=get_language()[:2]))
 
@@ -38,7 +38,7 @@ def index(request):
 def show(request, id):
     cur_language = translation.get_language()
     try:
-        news = News.objects.get(id=id)
+        news = News.objects.get(id=id, deleted=False)
     except News.DoesNotExist:
         raise Http404()
 
@@ -54,7 +54,7 @@ def show(request, id):
 
 
 def sitemap(request):
-    news = News.objects.values('id').filter(publicated=True).order_by('-create_date')
+    news = News.objects.values('id').filter(publicated=True, deleted=False).order_by('-create_date')
     return render(
         request, 'news/frontend/sitemap.html', {
             'news': news

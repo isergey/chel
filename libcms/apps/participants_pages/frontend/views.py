@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.utils import translation
-from django.utils.translation import to_locale, get_language
 
-from ..models import Page, Content
 from participants.models import Library
+from ..models import Page, Content
+
 
 def index(request, library_id):
     library = get_object_or_404(Library, id=library_id)
     cur_language = translation.get_language()
-    page = get_object_or_404(Page, slug='index')
+    page = get_object_or_404(Page, slug='index', deleted=False)
     try:
         content = Content.objects.get(page=page, lang=cur_language[:2])
     except Content.DoesNotExist:
@@ -24,7 +24,7 @@ def index(request, library_id):
 def show(request, code, slug):
     library = get_object_or_404(Library, code=code)
     cur_language = translation.get_language()
-    page = get_object_or_404(Page, url_path=slug, library=library)
+    page = get_object_or_404(Page, url_path=slug, library=library, deleted=False)
     try:
         content = Content.objects.get(page=page, lang=cur_language[:2])
     except Content.DoesNotExist:

@@ -3,8 +3,6 @@
 from django.utils.translation import get_language
 from news.models import News, NewsContent
 
-
-
 from django.contrib.syndication.views import Feed
 
 
@@ -24,7 +22,7 @@ class LatestEntriesFeed(Feed):
 
 
 def index():
-    news_list =  News.objects.filter(publicated=True).order_by('-create_date')[:5]
+    news_list = News.objects.filter(publicated=True, deleted=False).order_by('-create_date')[:5]
 
     news_contents = list(NewsContent.objects.filter(news__in=list(news_list), lang=get_language()[:2]))
 
@@ -37,7 +35,7 @@ def index():
 
     return news_list
 
-#def show(request, id):
+# def show(request, id):
 #    cur_language = translation.get_language()
 #    news = get_object_or_404(News, id=id)
 #    try:

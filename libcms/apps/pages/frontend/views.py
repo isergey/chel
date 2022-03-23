@@ -16,7 +16,7 @@ CHECK_SHOW_PERMISSION = PAGES.get('check_show_permission', False)
 
 def index(request):
     cur_language = translation.get_language()
-    page = get_object_or_404(Page, slug='index', public=True)
+    page = get_object_or_404(Page, slug='index', public=True, deleted=False)
     try:
         content = Content.objects.get(page=page, lang=cur_language[:2])
     except Content.DoesNotExist:
@@ -30,7 +30,7 @@ def index(request):
 
 def show(request, slug):
     cur_language = translation.get_language()
-    page = get_object_or_404(Page, url_path=slug, public=True)
+    page = get_object_or_404(Page, url_path=slug, public=True, deleted=False)
     if CHECK_SHOW_PERMISSION:
         if not request.user.is_authenticated:
             anaons = Group.objects.get(name='anonymouses')
@@ -48,7 +48,7 @@ def show(request, slug):
 
     if page.show_children:
         if not page.is_leaf_node():
-            children = list(Page.objects.filter(parent=page, public=True))
+            children = list(Page.objects.filter(parent=page, public=True, deleted=False))
             contents = Content.objects.filter(page__in=children, lang=cur_language[:2])
             cd = {}
             for child in children:
@@ -62,7 +62,7 @@ def show(request, slug):
 
     if page.show_neighbors:
         if page.parent_id:
-            neighbors = list(Page.objects.filter(parent=page.parent_id, public=True))
+            neighbors = list(Page.objects.filter(parent=page.parent_id, public=True, deleted=False))
             contents = Content.objects.filter(page__in=neighbors, lang=cur_language[:2])
             nd = {}
             for neighbor in neighbors:
@@ -97,7 +97,7 @@ def show(request, slug):
 
 
 def sitemap(request):
-    pages = Page.objects.values('url_path').filter(public=True)
+    pages = Page.objects.values('url_path').filter(public=True, deleted=False)
     return render(
         request, 'pages/frontend/sitemap.html', {
             'pages': pages
