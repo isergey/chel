@@ -46,7 +46,7 @@ def pages_list(request, code, parent=None):
     if parent:
         parent = get_object_or_404(Page, id=parent)
 
-    pages_page = get_page(request, Page.objects.filter(parent=parent, library=library).exclude(deleted=False))
+    pages_page = get_page(request, Page.objects.filter(parent=parent, library=library).exclude(deleted=True))
     pages_page.object_list = list(pages_page.object_list)
     pages = pages_page.object_list
     contents = list(Content.objects.filter(page__in=pages, lang=get_language()[:2]))
