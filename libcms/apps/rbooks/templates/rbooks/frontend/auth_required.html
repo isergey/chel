@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Необходим вход</title>
+</head>
+<body>
+<h1>Просмотр ресурсов разрешен только зарегистрированным пользователям!</h1>
+<p>
+    Пожалуйста, выполните <a href="{% url 'login' %}">вход</a> на портал,
+    либо пройдите <a href="{% url 'accounts:frontend:registration' %}">регистрацию</a>.
+</p>
+
+</body>
+</html>

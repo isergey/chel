@@ -6,6 +6,7 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from zipfile import ZipFile
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse
 from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
@@ -28,6 +29,9 @@ class AccessDenied(Exception): pass
 
 @never_cache
 def show(request):
+    if not request.user.is_authenticated:
+        return redirect('rbooks:frontend:auth_required')
+
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
 
@@ -90,7 +94,6 @@ def show(request):
         'locale_chain': locale_chain,
         'id': id,
     })
-
 
 @never_cache
 def book(request, book):
