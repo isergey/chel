@@ -29,8 +29,8 @@ class AccessDenied(Exception): pass
 
 @never_cache
 def show(request):
-    # if not request.user.is_authenticated:
-    #     return redirect('rbooks:frontend:auth_required')
+    if not request.user.is_authenticated:
+        return redirect('rbooks:frontend:auth_required')
 
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
