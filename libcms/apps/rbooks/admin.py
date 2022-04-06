@@ -1,13 +1,7 @@
-# from django.contrib import admin
-#
-#
-# from models import InternalAccessRange
-#
-#
-#
-# class InternalAccessRangeAdmin(admin.ModelAdmin):
-#     list_display = ('range', 'type', 'comments')
-#     readonly_fields=('type',)
-#     exclude = ('pickle',)
-#
-# admin.site.register(InternalAccessRange, InternalAccessRangeAdmin)
+from django.contrib import admin
+from . import models
+
+class ViewLogAdmin(admin.ModelAdmin):
+    list_display = ('doc_id', 'collection', 'view_dt', 'user_id')
+
+admin.site.register(models.ViewLog, ViewLogAdmin)

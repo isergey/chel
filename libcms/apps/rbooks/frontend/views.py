@@ -185,18 +185,6 @@ def rbooks2(request, id=None):
         rbooks_server=rbooks_server,
     )
 
-    collection = ''
-    records = get_records([id])
-    if records:
-        catalogs = get_content_dict(records[0]['tree']).get('catalog', [])
-        if catalogs:
-            collection = catalogs[0]
-
-    view_log = ViewLog(doc_id=id, collection=collection)
-    if request.user.is_authenticated:
-        view_log.user_id = request.user.id
-    ViewLog.objects.bulk_create([view_log])
-
     return render(request, 'rbooks/frontend/rbooks2.html', {
         'file': file,
         'id': id,
