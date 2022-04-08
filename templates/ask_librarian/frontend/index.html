@@ -31,6 +31,9 @@
                                     библиотеки? Виртуальная справочная служба ЧОУНБ поможет.
                                     <a class="btn_link" href="{% url 'pages:frontend:show' 'ask_librarian_info' %}">Подробнее</a>.
                                 </p>
+                                <p class="card-detail">
+                                    <a class="btn_link"  style="color: rgb(232,71,55)" href="/ru/pages/ask_librarian_info/quality/">Оцените качество</a>
+                                </p>
                                 <ul class="card-nav">
                                     <li class="card-nav__item">
                                         <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>
@@ -38,11 +41,11 @@
                                 </ul>
                             </div>
                         </div>
-{#                        <ul class="search-main__side-detail-nav">#}
-{#                            <li class="search-main__side-detail-nav-item">#}
-{#                                <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>#}
-{#                            </li>#}
-{#                        </ul>#}
+                        {#                        <ul class="search-main__side-detail-nav">#}
+                        {#                            <li class="search-main__side-detail-nav-item">#}
+                        {#                                <a class="btn" href="{% url 'ask_librarian:frontend:ask' %}">Задать вопрос</a>#}
+                        {#                            </li>#}
+                        {#                        </ul>#}
                         {% cache 30 questions_category_menu %}
                             {% drow_categories_tree %}
                         {% endcache %}
