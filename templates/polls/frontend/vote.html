@@ -1,5 +1,6 @@
 {% extends 'index/frontend/index.html' %}
 {% block title %}{{ poll.question }}{% endblock %}
+{% block meta_description %}Опрос/голосование {{ poll.question }}{% endblock %}
 {% block content %}
     <main class="main">
         <div class="container">

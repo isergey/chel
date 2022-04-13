@@ -1,6 +1,7 @@
 {% extends 'index/frontend/index.html' %}
 {% load static %}
 {% block title %}{{ album.title }}{% endblock %}
+{% block meta_description %}Альбом {{ album.title }}{% endblock %}
 {% block content %}
     {% get_media_prefix as MEDIA_URL %}
     <main class="main">

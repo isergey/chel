@@ -1,6 +1,7 @@
 {% extends 'index/frontend/index.html' %}
 {% load news_tags %}
 {% block title %}{{ content.title }}{% endblock %}
+{% block meta_description %}{{ content.teaser }}{% endblock %}
 {% block content %}
     <main class="main main_bg-white">
         <div class="container">
