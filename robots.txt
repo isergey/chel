@@ -1,6 +1,6 @@
 User-agent: *
 Host: chelreglib.ru
-Sitemap: http://chelreglib.ru/ru/sitemap/sitemap.xml
+Sitemap: https://chelreglib.ru/ru/sitemap/sitemap.xml
 Allow: /
 Disallow:/ru/search
 Disallow:/en/search
