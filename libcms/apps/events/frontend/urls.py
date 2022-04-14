@@ -13,4 +13,5 @@ urlpatterns = (
     re_path(r'^(?P<id>\d+)/delete_from_favorite/$', views.delete_from_favorite, name="delete_from_favorite"),
     re_path(r'^(?P<id>\d+)/participant/$', views.participant, name="participant"),
     re_path(r'^(?P<id>\d+)/participant/delete/$', views.delete_participant, name="delete_participant"),
+    re_path(r'sitemap.xml$', views.sitemap, name="sitemap"),
 )

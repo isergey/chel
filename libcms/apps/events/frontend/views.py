@@ -381,3 +381,12 @@ def _join_content(events):
 
     for event_content in event_contents:
         t_dict[event_content.event_id]['event'].event_content = event_content
+
+def sitemap(request):
+    news = models.Event.objects.values('id').all().order_by('-create_date')
+    return render(
+        request, 'events/frontend/sitemap.html', {
+            'events': events
+        },
+        content_type='application/xml'
+    )
