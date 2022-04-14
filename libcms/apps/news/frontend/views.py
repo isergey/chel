@@ -54,7 +54,7 @@ def show(request, id):
 
 
 def sitemap(request):
-    news = News.objects.values('id').filter(publicated=True, deleted=False).order_by('-create_date')
+    news = News.objects.values('id').filter(publicated=True, deleted=False).order_by('-create_date').iterator()
     return render(
         request, 'news/frontend/sitemap.html', {
             'news': news

@@ -97,7 +97,7 @@ def show(request, slug):
 
 
 def sitemap(request):
-    pages = Page.objects.values('url_path').filter(public=True, deleted=False)
+    pages = Page.objects.values('url_path').filter(public=True, deleted=False).iterator()
     return render(
         request, 'pages/frontend/sitemap.html', {
             'pages': pages
