@@ -7,7 +7,7 @@ from ..models import NewsContent, News
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        exclude = ('avatar_img_name',)
+        exclude = ('avatar_img_name', 'deleted')
 
 
 class NewsContentForm(forms.ModelForm):
