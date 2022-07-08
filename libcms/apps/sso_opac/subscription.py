@@ -1,4 +1,5 @@
 import datetime
+import calendar
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import List, Dict
@@ -37,13 +38,13 @@ class RecordAndQuery:
         return self.__str__()
 
 
-def create_subscription_letter(from_iso: str = None):
+def create_subscription_letter(from_date: datetime, from_iso: str = None):
     #
     #
     if from_iso:
         records = load_records_from_file(from_iso)
     else:
-        records = load_records()
+        records = load_records(from_date)
 
     print('records', len(records))
 
@@ -103,11 +104,10 @@ def create_subscription_letter(from_iso: str = None):
         letter.save()
 
 
-
-def create_elib_income_letter():
+def create_elib_income_letter(from_date: datetime):
     #
     #
-    records = load_records_from_harvester()
+    records = load_records_from_harvester(from_date)
     if not records:
         return
 
@@ -137,11 +137,9 @@ def create_elib_income_letter():
     return letter
 
 
-def load_records():
-    now = datetime.datetime.now()
-    past = now - datetime.timedelta(days=5)
+def load_records(from_date: datetime):
     records = []
-    query = f'TIMELOAD GE {past.strftime("%Y%m%d")}'
+    query = f'TIMELOAD GE {from_date.strftime("%Y%m%d")}'
     while response := opac_client.databases().get_records(db_id='18', query=query, position=len(records)):
         if not response.data:
             break
@@ -160,15 +158,13 @@ def load_records_from_file(file_path: str):
     return records
 
 
-def load_records_from_harvester():
+def load_records_from_harvester(from_date: datetime):
     from harvester import models
     source = models.Source.objects.filter(code='chelreglib.chelreglib').first()
-    now = datetime.datetime.now()
-    past = now - datetime.timedelta(days=7)
 
     record_contents = models.RecordContent.objects.filter(
         record__source=source,
-        record__create_date__gte=past.replace(hour=0, minute=0))[:100]
+        record__create_date__gte=from_date.replace(hour=0, minute=0))[:100]
 
     records = []
     for record_content in record_contents:

@@ -1,5 +1,7 @@
-import fasteners
-from django.core.management.base import BaseCommand, CommandError
+import calendar
+from datetime import datetime
+
+from django.core.management.base import BaseCommand
 
 from sso_opac.subscription import create_elib_income_letter
 
@@ -7,8 +9,16 @@ from sso_opac.subscription import create_elib_income_letter
 class Command(BaseCommand):
     def add_arguments(self, parser):
         pass
-        # parser.add_argument('--from_iso', nargs='+', type=str, help='Path to iso2709 records file')
 
     def handle(self, *args, **options):
-        # from_iso = options.get('from_iso', [''])[0]
-        create_elib_income_letter()
+        now = datetime.now()
+        monthrange = calendar.monthrange(now.year, now.month)
+        print(monthrange)
+        if now.day == 15:
+            from_date = datetime(year=now.year, month=now.month, day=1)
+        elif now.day == monthrange[1]:
+            from_date = datetime(year=now.year, month=now.month, day=16)
+        else:
+            return
+
+        create_elib_income_letter(from_date)
