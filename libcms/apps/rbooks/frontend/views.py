@@ -95,6 +95,7 @@ def show(request):
         'id': id,
     })
 
+
 @never_cache
 def book(request, book):
     try:
