@@ -1,28 +1,28 @@
 # coding: utf-8
+import datetime
+import json as simplejson
 import re
 import uuid
-import json as simplejson
-from lxml import etree
-import requests
-import json
-import datetime
-from junimarc.marc_query import MarcQuery
-
 from collections import defaultdict
 from urllib.parse import urlparse
+
+import requests
+from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, HttpResponse, Http404, resolve_url, reverse
+from django.utils.http import urlquote
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.http import urlquote
-from django.conf import settings
-from django.shortcuts import render, HttpResponse, Http404, resolve_url, reverse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from lxml import etree
+
+from junimarc.marc_query import MarcQuery
+from rbooks.models import ViewLog
+from . import record_templates
+from .extended import subject_render
+from .titles import get_attr_value_title, get_attr_title
+from .. import models
 from ..ppin_client.solr import SearchCriteria
 from ..solr.solr import Solr, FacetParams, escape
-from .titles import get_attr_value_title, get_attr_title
-from . import record_templates
-from .. import models
-from rbooks.models import ViewLog
-from .extended import subject_render
 
 transformers = dict()
 
@@ -559,6 +559,7 @@ def load_collections(request):
         'pivot_tree': pivote_root.to_html(),
     })
 
+
 def _flat_kv_args(kv_dicts):
     flat = defaultdict(list)
     for kv_dict in kv_dicts:
@@ -806,7 +807,7 @@ def get_orderd_facets(facets):
 def construct_query(attrs, values, optimize=True):
     sc = SearchCriteria("AND")
     for i, attr in enumerate(attrs):
-        value = (values[i:i+1] or [''])[0].strip()
+        value = (values[i:i + 1] or [''])[0].strip()
         if not value:
             continue
 
@@ -821,7 +822,8 @@ def construct_query(attrs, values, optimize=True):
                 if attr == 'date_of_publication_of_original_s':
                     res = re.findall(r'\d+', value)
                     if len(res) == 2:
-                        sc.add_attr('date_of_publication_of_original_l', '[{start} TO {stop}]'.format(start=res[0], stop=res[1]))
+                        sc.add_attr('date_of_publication_of_original_l',
+                                    '[{start} TO {stop}]'.format(start=res[0], stop=res[1]))
                     else:
                         sc.add_attr(attr, value)
                 else:
@@ -1118,7 +1120,6 @@ def incomes(request):
     def get_income_date(rq):
         return rq.get_field('100').get_subfield('a').get_data()[0:8]
 
-
     days_index = {
         '7': 7,
         '30': 60,
@@ -1134,8 +1135,6 @@ def incomes(request):
 
     page = request.GET.get('page')
 
-
-
     result = solr.search(
         'date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'),
         sort=['date_time_added_to_db_dts desc'],
@@ -1150,7 +1149,6 @@ def incomes(request):
         result_page = paginator.page(1)
     except EmptyPage:
         result_page = paginator.page(paginator.num_pages)
-
 
     # print('date_time_added_to_db_dt:[{past} TO {now}]'.format(now=now.isoformat() + 'Z', past=past.isoformat() + 'Z'))
     ids_list = []
@@ -1173,7 +1171,7 @@ def incomes(request):
             income_records.append({
                 'id': record['id'],
                 'title': get_title(rq),
-                'collections':  rusmarc_tpl.get_collections(),
+                'collections': rusmarc_tpl.get_collections(),
                 'income_date': datetime.strptime(get_income_date(rq), '%Y%m%d'),
             })
     return render(request, 'ssearch/frontend/incomes.html', {

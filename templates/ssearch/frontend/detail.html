@@ -140,4 +140,26 @@
             });
         });
     </script>
+    <script>
+        $(function () {
+            $('.record a').on('click', function (event) {
+                var $link = $(this);
+                var href = $link.attr('href');
+                var action = '';
+
+                if (href.endsWith('.mp4')) {
+                    action = 'VIEW_VIDEO'
+                }
+                if (!action) {
+                    return;
+                }
+                $.post('{% url 'ssearch:frontend:log' %}', {
+                    id: '{{ request.GET.id }}',
+                    action: action
+                }).done(function () {
+                }).fail(function () {
+                });
+            })
+        });
+    </script>
 {% endblock %}
