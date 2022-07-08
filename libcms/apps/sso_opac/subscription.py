@@ -11,6 +11,7 @@ from junimarc.iso2709.reader import Reader
 from junimarc.marc_query import MarcQuery
 from junimarc.record import Record
 from junimarc.ruslan_xml import record_to_xml
+
 from ssearch.frontend.views import get_library_card
 from sso_opac.settings import opac_client
 from subscribe.models import Subscribe, Letter, Subscriber
@@ -100,6 +101,7 @@ def create_subscription_letter(from_iso: str = None):
         )
 
         letter.save()
+
 
 
 def create_elib_income_letter():
