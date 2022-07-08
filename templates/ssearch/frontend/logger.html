@@ -1,0 +1,32 @@
+<script>
+    $(function () {
+        function logLink($link) {
+
+            var href = ($link.attr('href') || '').toLowerCase();
+            var action = '';
+            var mediaExtensions = ['.mp4', '.mp3', '.jpg', '.jpeg', '.png'];
+            mediaExtensions.forEach(function (ext) {
+                if (href.endsWith(ext)) {
+                    action = 'MEDIA_VIEW';
+                }
+            });
+            if (!action) {
+                return;
+            }
+            $.post('{% url 'ssearch:frontend:log' %}', {
+                id: '{{ request.GET.id }}',
+                action: action
+            }).done(function () {
+            }).fail(function () {
+            });
+        }
+        $('.record a').on('click', function (event) {
+            var $link = $(this);
+            logLink($link);
+        });
+        $('.search-results .media_link').on('click', function (event) {
+            var $link = $(this);
+            logLink($link);
+        });
+    });
+</script>
