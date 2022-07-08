@@ -20,6 +20,25 @@ from . import forms
 from ..frontend.views import init_solr_collection
 
 
+def total_users_stat(request):
+    years = {}
+    for log in DetailLog.objects.values('session_id', 'date_time').all().order_by('date_time').iterator():
+        date_time: datetime = log['date_time']
+        users = years.get(date_time.year)
+        if users is None:
+            users = set()
+            years[date_time.year] = users
+        users.add(log['session_id'])
+
+    stat = {}
+
+    for year, user in years.items():
+        stat[year] = len(user)
+
+    return HttpResponse(json.dumps(stat, ensure_ascii=False))
+
+
+
 def incomes_stat(request):
     report_file_path = get_income_report_file_path()
     if os.path.exists(report_file_path):
@@ -182,6 +201,7 @@ def iterator(qs, batch_size=1000, order_by='pk', start_with=None, limit=None):
     for batch in batch_iterator(qs, batch_size, order_by, start_with, limit):
         for item in batch:
             yield item
+
 
 def generate_incomes_report():
     collections = {}
@@ -672,7 +692,7 @@ def _get_content_type(rq):
     f105_a_pos_5 = f105_a[5:6]
     f105_a_pos_6 = f105_a[6:7]
     f105_a_pos_7 = f105_a[7:8]
-    f105_a_pos_4_7 = ''.join([f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7])\
+    f105_a_pos_4_7 = ''.join([f105_a_pos_4, f105_a_pos_5, f105_a_pos_6, f105_a_pos_7]) \
         .lower() \
         .replace('#', '') \
         .replace(' ', '') \

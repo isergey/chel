@@ -19,4 +19,5 @@ urlpatterns = (
     re_path(r'^doc_types_stat/$', views.doc_types_stat, name='doc_types_stat'),
     re_path(r'^content_types_stat/$', views.content_types_stat, name='content_types_stat'),
     re_path(r'^search_requests_stat/$', views.search_requests_stat, name='search_requests_stat'),
+    re_path(r'^total_users_stat/$', views.total_users_stat, name='total_users_stat'),
 )
