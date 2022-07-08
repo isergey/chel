@@ -146,10 +146,12 @@
                 var $link = $(this);
                 var href = $link.attr('href');
                 var action = '';
-
-                if (href.endsWith('.mp4')) {
-                    action = 'VIEW_VIDEO'
-                }
+                var mediaExtensions = ['.mp4', '.mp3', '.jpg', '.jpeg', '.png'];
+                mediaExtensions.forEach(function (ext) {
+                    if (href.endsWith(ext)) {
+                        action = 'MEDIA_VIEW'
+                    }
+                });
                 if (!action) {
                     return;
                 }

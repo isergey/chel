@@ -333,6 +333,7 @@ class SearchLog(models.Model):
     def get_params(self):
         return json.loads(self.params)
 
+
 DETAIL_ACTIONS_REFERENCE = {
     'VIEW_DETAIL': {
         'code': 0,
@@ -373,6 +374,10 @@ DETAIL_ACTIONS_REFERENCE = {
     'SOCIAL_SHARE': {
         'code': 9,
         'title': 'отправка в соц. сети',
+    },
+    'MEDIA_VIEW': {
+        'code': 10,
+        'title': 'загрузка медиа',
     },
 }
 
