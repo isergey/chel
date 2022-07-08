@@ -20,8 +20,7 @@
         {% for subject_row in record.extended.subject_heading %}
             {% if forloop.first %}— —{% endif %}
             {% for subject_part in subject_row %}
-                <a href="
-                        {% url 'ssearch:frontend:index' %}{% add_get q=subject_part attr='subject_heading_t' in='on' %}">{{ subject_part }}</a>
+                <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject_part attr='subject_heading_t' in='on' %}">{{ subject_part }}</a>
                 {% if not forloop.last %} — {% else %}; {% endif %}
             {% endfor %}
         {% endfor %}
@@ -33,9 +32,7 @@
             </div>
             <div class="search-results-item__tb-cl">
                 {% for subject in record.dict.subject_keywords %}
-                    <a href="
-
-                            {% url 'ssearch:frontend:index' %}{% add_get q=subject attr='subject_keywords_t' in='on' %}">{{ subject }}</a>
+                    <a href="{% url 'ssearch:frontend:index' %}{% add_get q=subject attr='subject_keywords_t' in='on' %}">{{ subject }}</a>
                     {% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </div>
@@ -55,7 +52,7 @@
     {% if record.ft_links %}
         <div class="search-results-item__tb">
             {% for ft_link in record.ft_links  %}
-                <a href="{{ ft_link.url }}{% if '?' in ft_link.url %}&{% else %}?{% endif %}id={{ record.id }}" target="_blank">
+                <a class="media_link" href="{{ ft_link.url }}{% if '?' in ft_link.url %}&{% else %}?{% endif %}id={{ record.id }}" target="_blank">
                     {{ ft_link.title }}
                 </a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
