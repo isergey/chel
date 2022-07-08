@@ -18,6 +18,9 @@
                     action = 'MEDIA_VIEW';
                 }
             });
+            if (url.hostname.includes('youtube')) {
+                action = 'MEDIA_VIEW';
+            }
             if (!action) {
                 return;
             }
