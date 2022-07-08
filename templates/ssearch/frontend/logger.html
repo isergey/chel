@@ -1,12 +1,18 @@
 <script>
     $(function () {
         function logLink($link) {
-
             var href = ($link.attr('href') || '').toLowerCase();
+            if (!href) {
+                return;
+            }
+            var pathname = new URL(href).pathname;
+            if (!pathname) {
+                return;
+            }
             var action = '';
             var mediaExtensions = ['.mp4', '.mp3', '.jpg', '.jpeg', '.png'];
             mediaExtensions.forEach(function (ext) {
-                if (href.endsWith(ext)) {
+                if (pathname.endsWith(ext)) {
                     action = 'MEDIA_VIEW';
                 }
             });
