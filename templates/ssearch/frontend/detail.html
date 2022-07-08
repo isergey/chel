@@ -144,7 +144,7 @@
         $(function () {
             $('.record a').on('click', function (event) {
                 var $link = $(this);
-                var href = $link.attr('href');
+                var href = ($link.attr('href') || '').toLowerCase();
                 var action = '';
                 var mediaExtensions = ['.mp4', '.mp3', '.jpg', '.jpeg', '.png'];
                 mediaExtensions.forEach(function (ext) {
