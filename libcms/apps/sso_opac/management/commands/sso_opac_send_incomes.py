@@ -22,8 +22,5 @@ class Command(BaseCommand):
         update_date = str(os.path.getmtime(from_iso))
         last_update_date = kvdb_services.get_value(SSO_OPAC_NAME_SPACE, FILE_LAST_UPDATE_KEY)
         if not last_update_date or update_date != last_update_date:
-            print('send')
-            # create_subscription_letter(from_iso=from_iso)
+            create_subscription_letter(from_iso=from_iso)
             kvdb_services.set_value(SSO_OPAC_NAME_SPACE, FILE_LAST_UPDATE_KEY, str(update_date))
-        else:
-            print('skip')
