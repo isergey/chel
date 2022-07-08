@@ -5,7 +5,9 @@
             if (!href) {
                 return;
             }
-            var pathname = new URL(href).pathname;
+            var url = new URL(href);
+            var pathname = url.pathname;
+            var recordId = url.searchParams.get('id')
             if (!pathname) {
                 return;
             }
@@ -20,7 +22,7 @@
                 return;
             }
             $.post('{% url 'ssearch:frontend:log' %}', {
-                id: '{{ request.GET.id }}',
+                id: recordId || '{{ record_id }}',
                 action: action
             }).done(function () {
             }).fail(function () {

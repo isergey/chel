@@ -140,5 +140,5 @@
             });
         });
     </script>
-    {% include 'ssearch/frontend/logger.html' %}
+    {% include 'ssearch/frontend/logger.html' with record_id = request.GET.id %}
 {% endblock %}
