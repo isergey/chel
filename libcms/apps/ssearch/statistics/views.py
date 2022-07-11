@@ -13,7 +13,7 @@ from . import olap
 from .settings import get_income_report_file_path, get_actions_report_file_path, get_users_report_file_path, \
     get_doc_types_report_file_path, get_search_requests_report_file_path, get_content_types_report_file_path
 from harvester.models import RecordContent
-from ..models import SearchLog, DetailLog, DETAIL_ACTIONS_REFERENCE, get_records
+from ..models import SearchLog, DetailLog, ViewDocLog, DETAIL_ACTIONS_REFERENCE, get_records
 from ..frontend.titles import get_attr_title
 from ..frontend import record_templates
 from . import forms
@@ -38,6 +38,22 @@ def total_users_stat(request):
     return HttpResponse(json.dumps(stat, ensure_ascii=False))
 
 
+def total_user_view_doc(request):
+    years = {}
+    for log in ViewDocLog.objects.values('session_id', 'date_time').all().order_by('date_time').iterator():
+        date_time: datetime = log['date_time']
+        users = years.get(date_time.year)
+        if users is None:
+            users = set()
+            years[date_time.year] = users
+        users.add(log['session_id'])
+
+    stat = {}
+
+    for year, user in years.items():
+        stat[year] = len(user)
+
+    return HttpResponse(json.dumps(stat, ensure_ascii=False))
 
 def incomes_stat(request):
     report_file_path = get_income_report_file_path()
