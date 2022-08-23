@@ -103,7 +103,7 @@ def append_symbol(c: str, items: List[str]):
 def get_title(rq: MarcQuery, fq: FieldQuery):
     title = []
     for sfa in fq.get_subfield('a').list():
-        title_part = sfa.getData()
+        title_part = sfa.get_data()
         if not title_part:
             continue
         if title:
