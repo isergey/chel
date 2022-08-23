@@ -12,7 +12,7 @@ def index(request):
     for offset in range(total_offsets):
         offsets.append(offset)
 
-    return render('ssearch/sitemap/index.html', {
+    return render(request, 'ssearch/sitemap/index.html', {
         'offsets': offsets
     }, content_type='application/xml')
 
