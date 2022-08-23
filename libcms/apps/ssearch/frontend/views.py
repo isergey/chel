@@ -368,7 +368,10 @@ def collections():
 
 
 def index(request):
-    return redirect('ssearch:frontend:results')
+    query = request.META['QUERY_STRING']
+    if query:
+        query = '?' + query
+    return redirect(reverse('ssearch:frontend:results') + query)
 
 
 def results(request, catalog='uc'):
