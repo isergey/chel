@@ -177,18 +177,18 @@ class RusmarcTemplate(object):
         title461 = get_title(self.rq, self.rq.get_field('461'))
         title463 = get_title(self.rq, self.rq.get_field('463'))
 
-        if title463 and self.rq.get_element().get_leader()[7:8] == 'a':
+        if title461 and title463:
             title.append(title200)
-            if title461:
-                title.append(' // ')
-                title.append(title461)
-            if title463:
-                if not title461:
-                    title.append(' // ')
-                else:
-                    append_symbol('.', title)
-                    title.append(' — ')
-                title.append(title463)
+            title.append(' // ')
+            title.append(title461)
+            append_symbol('.', title)
+            title.append(' — ')
+            title.append(title463)
+        elif title461:
+            title.append(title461)
+            append_symbol('.', title)
+            title.append(' — ')
+            title.append(title200)
         elif title461:
             title.append(title461)
             append_symbol('.', title)
