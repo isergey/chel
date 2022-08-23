@@ -13,10 +13,10 @@
 {#    <meta property='og:image' content='https://rusneb.ru/local/tools/exalead/thumbnail.php?url=000199_000009_003107369&width=360&height=460' />#}
     <meta property='og:type' content='book' />
     <meta property='og:site_name' content='chelreglib.ru - Челябинская областная универсальная научная библиотека, ЧОУНБ' />
-    {% if record.get_author %}
+    {% if record.tpl.get_author %}
         <meta property='book:author' content='{{ record.get_author }}' />
     {% endif %}
-    {% if record.get_publication_date %}
+    {% if record.tpl.get_publication_date %}
     <meta property='book:release_date' content='{{ record.get_publication_date }}' />
     {% endif %}
 {% endblock %}
