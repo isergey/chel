@@ -1,5 +1,5 @@
 {% extends 'themed_frontend_base.html' %}
-{% block title %}{{ record.dict.title }}{% endblock %}
+{% block title %}{{ record.dict.title.0 }}{% endblock %}
 {% block canonical_link %}
     <link rel="canonical" href="https://{{ request.get_host }}{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}">
 {% endblock %}
