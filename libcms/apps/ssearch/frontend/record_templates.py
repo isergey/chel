@@ -168,7 +168,10 @@ class RusmarcTemplate(object):
         self.cache = {}
 
     @cached_property
-    def get_title(self, field=None):
+    def get_title(self):
+        return self.__get_title()
+
+    def __get_title(self, field=None):
         title = []
         title200 = get_title(self.rq, self.rq.get_field('200'))
         title461 = get_title(self.rq, self.rq.get_field('461'))
@@ -343,7 +346,7 @@ class RusmarcTemplate(object):
 
     def _get_link_from_inner(self, field):
         return {
-            'title': self.get_title(field),
+            'title': self.__get_title(field),
             'id': field.get_field('001').get_data(),
         }
 
