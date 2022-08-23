@@ -207,6 +207,12 @@ class RusmarcTemplate(object):
                 parts.append(data)
 
         if not parts:
+            for fq in self.rq.get_field('702').list():
+                data = get_person_name(fq)
+                if data:
+                    parts.append(data)
+
+        if not parts:
             data = self.rq.get_field('710').get_subfield('a').get_data()
             if data:
                 parts.append(data)
@@ -225,7 +231,7 @@ class RusmarcTemplate(object):
             data = self.rq.get_field('740').get_subfield('a').get_data()
             if data:
                 parts.append(data)
-        return ''.join(parts)
+        return ', '.join(parts)
 
     @cached_property
     def get_publication_date(self):
