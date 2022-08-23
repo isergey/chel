@@ -689,6 +689,7 @@ def detail(request):
         'attributes': attributes,
         'ft_links': ft_links,
         'statistics': statistics,
+        'next_record_id': models.get_next_record_id(record_id)
     })
 
     # _set_session_id(session_id, request, response)

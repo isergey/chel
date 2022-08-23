@@ -1,5 +1,8 @@
 {% extends 'themed_frontend_base.html' %}
 {% block title %}{{ record.dict.title }}{% endblock %}
+{% block canonical_link %}
+    <link rel="canonical" href="https://{{ request.get_host }}{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}">
+{% endblock %}
 {% block index_content %}
 
     <main class="main">
@@ -85,10 +88,13 @@
                                     <ul>
                                         {% for linked_record in linked_records %}
                                             <li><a target="_blank"
-                                                   href="{% url 'ssearch:frontend:detail' %}?id={{ linked_record.id }}">{{ linked_record.dict.title.0 }}</a>
+                                                   href="{% url 'ssearch:frontend:detail' %}?id={{ linked_record.id|urlencode }}">{{ linked_record.dict.title.0 }}</a>
                                             </li>
                                         {% endfor %}
                                     </ul>
+                                {% endif %}
+                                {% if next_record_id %}
+                                    <a href="{% url 'ssearch:frontend:detail' %}?id={{ next_record_id|urlencode }}">Следующая запись</a>
                                 {% endif %}
                             </div>
                         </div>

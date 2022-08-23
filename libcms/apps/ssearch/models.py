@@ -8,8 +8,9 @@ import hashlib
 from io import BytesIO
 from django.db import models
 from django.contrib.auth.models import User
-from harvester.models import RecordContent
+from harvester.models import RecordContent, Record
 from junimarc.json.junimarc import record_from_json
+
 
 # from common.pagination import get_page2
 
@@ -182,6 +183,10 @@ def get_records(record_ids):
     return nrecords
 
 
+def get_next_record_id(record_id):
+    return Record.objects.values('id').filter(id__gt=record_id).order_by('-create_date').first()
+
+
 # def get_records(ids, db_config='records'):
 #     cleaned_ids = []
 #     for id in ids:
@@ -198,6 +203,7 @@ def get_records(record_ids):
 #     return result_records
 
 from junimarc import ruslan_xml
+
 
 def record_to_ruslan_xml(map_record, syntax='1.2.840.10003.5.28', namespace=False):
     return ruslan_xml.record_to_xml(map_record, syntax, namespace)
@@ -414,7 +420,6 @@ class DetailLog(models.Model):
         max_length=10 * 1024
     )
     date_time = models.DateTimeField(auto_now_add=True, db_index=True)
-
 
     def set_attrs(self, attrs):
         self.attrs = json.dumps(attrs, ensure_ascii=False)
