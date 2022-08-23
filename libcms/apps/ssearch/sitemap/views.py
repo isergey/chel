@@ -22,5 +22,6 @@ def records(request, offset):
     record_models = list(models.Record.objects.values('id', 'update_date').all().order_by('create_date')[
                     offset:offset + LIMIT])
     return render(request, 'ssearch/sitemap/index.html', {
-        'records': record_models
+        'records': record_models,
+        'len': len(record_models)
     }, content_type='application/xml')
