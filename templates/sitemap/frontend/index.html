@@ -9,4 +9,7 @@
     <sitemap>
         <loc>https://{{ request.META.HTTP_HOST }}{% url 'events:frontend:sitemap' %}</loc>
     </sitemap>
+    <sitemap>
+        <loc>https://{{ request.META.HTTP_HOST }}{% url 'ssearch:sitemap:index' %}</loc>
+    </sitemap>
 </sitemapindex>
