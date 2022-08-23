@@ -184,8 +184,8 @@ def get_records(record_ids):
 
 
 def get_next_record_id(record_id):
-    return Record.objects.values('id').filter(id__gt=record_id).order_by('-create_date').first()
-
+    next_record = Record.objects.values('id').filter(id__gt=record_id).order_by('-create_date').first()
+    return '' if next_record is None else next_record['id']
 
 # def get_records(ids, db_config='records'):
 #     cleaned_ids = []
