@@ -18,7 +18,9 @@ def index(request):
 
 
 def records(request, offset):
-    record_models = models.Record.objects.values('id', 'update_date').all().order_by('created_date')[int(offset):LIMIT]
+    offset = int(offset)
+    record_models = models.Record.objects.values('id', 'update_date').all().order_by('created_date')[
+                    offset:offset + LIMIT]
     return render(request, 'ssearch/sitemap/index.html', {
         'records': record_models
     }, content_type='application/xml')
