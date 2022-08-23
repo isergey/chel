@@ -367,7 +367,7 @@ def collections():
     return collection_values, pivote_root
 
 
-def index():
+def index(request):
     return redirect('ssearch:frontend:results')
 
 
