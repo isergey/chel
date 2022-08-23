@@ -14,10 +14,10 @@
     <meta property='og:type' content='book' />
     <meta property='og:site_name' content='chelreglib.ru - Челябинская областная универсальная научная библиотека, ЧОУНБ' />
     {% if record.tpl.get_author %}
-        <meta property='book:author' content='{{ record.get_author }}' />
+        <meta property='book:author' content='{{ record.tpl.get_author }}' />
     {% endif %}
     {% if record.tpl.get_publication_date %}
-    <meta property='book:release_date' content='{{ record.get_publication_date }}' />
+    <meta property='book:release_date' content='{{ record.tpl.get_publication_date }}' />
     {% endif %}
 {% endblock %}
 {% block index_content %}
