@@ -1,6 +1,9 @@
 # coding=utf-8
 from collections import OrderedDict
-from junimarc.marc_query import MarcQuery
+from functools import cached_property
+from typing import List
+
+from junimarc.marc_query import MarcQuery, FieldQuery
 
 
 def _get_df_index(field):
@@ -89,8 +92,73 @@ def _append_if_not_endswith_to(parts, item, additionals=None):
     parts.append(item)
 
 
-def get_title(field):
-    return field.get_subfield('a').get_data()
+def append_symbol(c: str, items: List[str]):
+    if not items:
+        return
+    last_item = items[-1].strip()
+    if last_item[-1] != c:
+        items.append(c)
+
+
+def get_title(rq: MarcQuery, fq: FieldQuery):
+    title = []
+    for sfa in fq.get_subfield('a').list():
+        title_part = sfa.getData()
+        if not title_part:
+            continue
+        if title:
+            append_symbol(';', title)
+
+        title.append(' ' + title_part)
+
+    title_part = fq.get_subfield('b').get_data()
+    if title_part:
+        title.append(' [' + title_part + ']')
+
+    title_part = fq.get_subfield('h').get_data()
+    if title_part:
+        append_symbol('.', title)
+        title.append(' ' + title_part)
+
+    title_part = fq.get_subfield('i').get_data()
+    if title_part:
+        append_symbol('.', title)
+        title.append(' ' + title_part)
+
+    title_part = fq.get_subfield('f').get_data()
+    if title_part:
+        title.append(' / ' + title_part)
+
+    title_part = fq.get_subfield('g').get_data()
+    if title_part:
+        append_symbol(';', title)
+        title.append(' ' + title_part)
+
+    title_part = fq.get_subfield('v').get_data()
+    if title_part:
+        if rq.get_field('200').get_subfield('a').get_data() != title_part:
+            append_symbol('.', title)
+            title.append(' - ' + title_part)
+    return ''.join(title)
+
+
+def get_person_name(fq: FieldQuery):
+    result = []
+    sa = fq.get_subfield('a').get_data()
+    sb = fq.get_subfield('b').get_data()
+    sg = fq.get_subfield('g').get_data()
+
+    if sg:
+        result.append(sa)
+        result.append(', ')
+        result.append(sg)
+    elif sb:
+        result.append(sa)
+        result.append(' ')
+        result.append(sb)
+    else:
+        result.append(sa)
+    return ''.join(result)
 
 
 class RusmarcTemplate(object):
@@ -99,9 +167,68 @@ class RusmarcTemplate(object):
         self.references = references or {}
         self.cache = {}
 
+    @cached_property
     def get_title(self, field=None):
-        return get_title(self.rq.get_field('200'))
+        title = []
+        title200 = get_title(self.rq, self.rq.get_field('200'))
+        title461 = get_title(self.rq, self.rq.get_field('461'))
+        title463 = get_title(self.rq, self.rq.get_field('463'))
 
+        if title463 and self.rq.get_element().get_leader()[7:8] == 'a':
+            title.append(title200)
+            if title461:
+                title.append(' // ')
+                title.append(title461)
+            if title463:
+                if not title461:
+                    title.append(' // ')
+                else:
+                    append_symbol('.', title)
+                    title.append(' — ')
+                title.append(title463)
+        elif title461:
+            title.append(title461)
+            append_symbol('.', title)
+            title.append(' — ')
+            title.append(title200)
+        else:
+            title.append(title200)
+        return ''.join(title)
+
+    @cached_property
+    def get_author(self):
+        parts = []
+        for fq in self.rq.get_field('700').list():
+            data = get_person_name(fq)
+            if data:
+                parts.append(data)
+
+        if not parts:
+            data = self.rq.get_field('710').get_subfield('a').get_data()
+            if data:
+                parts.append(data)
+
+        if not parts:
+            data = self.rq.get_field('720').get_subfield('a').get_data()
+            if data:
+                parts.append(data)
+
+        if not parts:
+            data = self.rq.get_field('730').get_subfield('a').get_data()
+            if data:
+                parts.append(data)
+
+        if not parts:
+            data = self.rq.get_field('740').get_subfield('a').get_data()
+            if data:
+                parts.append(data)
+        return ''.join(parts)
+
+    @cached_property
+    def get_publication_date(self):
+        return self.rq.get_field('210').get_subfield('d').get_data()
+
+    @cached_property
     def annotations(self):
         values = []
         data = self.rq.get_field('330').get_subfield('a').get_data()
@@ -109,32 +236,10 @@ class RusmarcTemplate(object):
             values.append(data)
         return values
 
+    @cached_property
     def get_source(self):
-
-        # f461_link = self._get_link_from_inner(_get_inner_fields_index(self.fields_index.get('461', [{}])[0].get('1')))
-        # f463_link = self._get_link_from_inner(_get_inner_fields_index(self.fields_index.get('463', [{}])[0].get('1')))
-        #
-        # sources_parts = []
-        #
-        # link_title = f461_link.get('title', '')
-        # if link_title:
-        #     sources_parts.append(link_title)
-        #
-        # link_title = f463_link.get('title', '')
-        # if link_title:
-        #     sources_parts.append(link_title)
-        #
-        # title = ' — '.join(sources_parts)
-        # link = f463_link.get('id', '')
-        #
-        # if not link:
-        #     link = f461_link.get('id', '')
-        #
-        # if not title:
-        #     return []
-        #
         f461q = self.rq.get_field('461')
-        title = f461q.get_field('200').get_subfield('a').get_data()
+        title = get_title(f461q, f461q.get_field('200'))
         link = f461q.get_field('001').get_data()
 
         if not title:
@@ -144,27 +249,35 @@ class RusmarcTemplate(object):
             'link_id': link
         }]
 
+    @cached_property
     def get_content(self):
         return self._get_inner_links('464')
 
+    @cached_property
     def at_same_storage(self):
         return self._get_inner_links('451')
 
+    @cached_property
     def at_another_storage(self):
         return self._get_inner_links('452')
 
+    @cached_property
     def translate_link(self):
         return self._get_inner_links('453')
 
+    @cached_property
     def translate_original_link(self):
         return self._get_inner_links('454')
 
+    @cached_property
     def copy_original(self):
         return self._get_inner_links('455')
 
+    @cached_property
     def reproduction(self):
         return self._get_inner_links('456')
 
+    @cached_property
     def subject_heading(self):
         items = []
         fields = self.rq.get_field('606').list()
@@ -180,6 +293,7 @@ class RusmarcTemplate(object):
             items.append(' — '.join(parts))
         return items
 
+    @cached_property
     def subject_keywords(self):
         items = []
         fields = self.rq.get_field('610').list()
@@ -190,6 +304,7 @@ class RusmarcTemplate(object):
                     items.append(sfa)
         return items
 
+    @cached_property
     def holders(self):
         items = []
         fields = self.rq.get_field('850').list() + self.rq.get_field('899').list()
@@ -203,6 +318,7 @@ class RusmarcTemplate(object):
                 })
         return items
 
+    @cached_property
     def shelving(self):
         items = []
         fields = self.rq.get_field('852').list()
@@ -279,5 +395,3 @@ def get_full_text_links(marq_query):
             'title': fq.get_subfield('2').get_data() or 'полный текст',
         })
     return ft_links
-
-

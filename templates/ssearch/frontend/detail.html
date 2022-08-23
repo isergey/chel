@@ -1,7 +1,22 @@
 {% extends 'themed_frontend_base.html' %}
-{% block title %}{{ record.dict.title.0 }}{% endblock %}
+{% block title %}{{ record.tpl.get_title }}{% endblock %}
 {% block canonical_link %}
     <link rel="canonical" href="https://{{ request.get_host }}{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}">
+{% endblock %}
+{% block meta %}
+    <meta property='og:locale' content='ru_RU' />
+    <meta property='og:title' content='{{ record.tpl.get_title }}' />
+    <meta property='og:description' content='{{ record.tpl.annotations }}' />
+    <meta property='og:url' content='https://{{ request.get_host }}{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}' />
+{#    <meta property='og:image' content='https://rusneb.ru/local/tools/exalead/thumbnail.php?url=000199_000009_003107369&width=360&height=460' />#}
+    <meta property='og:type' content='book' />
+    <meta property='og:site_name' content='chelreglib.ru - Челябинская областная универсальная научная библиотека, ЧОУНБ' />
+    {% if record.get_author %}
+        <meta property='book:author' content='{{ record.get_author }}' />
+    {% endif %}
+    {% if record.get_publication_date %}
+    <meta property='book:release_date' content='{{ record.get_publication_date }}' />
+    {% endif %}
 {% endblock %}
 {% block index_content %}
 
