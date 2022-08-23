@@ -657,15 +657,15 @@ def detail(request):
                 linked_records.append(lrecord)
 
     attributes = []
-    _add_to_attributes(attributes, 'Источник', record_template.get_source())
-    _add_to_attributes(attributes, 'См. так же', record_template.at_same_storage())
-    _add_to_attributes(attributes, 'См. так же', record_template.at_another_storage())
-    _add_to_attributes(attributes, 'Перевод', record_template.translate_link())
-    _add_to_attributes(attributes, 'Оригинал перевода', record_template.translate_original_link())
-    _add_to_attributes(attributes, 'Копия оригинала', record_template.copy_original())
-    _add_to_attributes(attributes, 'Репродуцировано в', record_template.reproduction())
-    _add_to_attributes(attributes, 'Предмет', record_template.subject_heading())
-    _add_to_attributes(attributes, 'Ключевые слова', record_template.subject_keywords())
+    _add_to_attributes(attributes, 'Источник', record_template.get_source)
+    _add_to_attributes(attributes, 'См. так же', record_template.at_same_storage)
+    _add_to_attributes(attributes, 'См. так же', record_template.at_another_storage)
+    _add_to_attributes(attributes, 'Перевод', record_template.translate_link)
+    _add_to_attributes(attributes, 'Оригинал перевода', record_template.translate_original_link)
+    _add_to_attributes(attributes, 'Копия оригинала', record_template.copy_original)
+    _add_to_attributes(attributes, 'Репродуцировано в', record_template.reproduction)
+    _add_to_attributes(attributes, 'Предмет', record_template.subject_heading)
+    _add_to_attributes(attributes, 'Ключевые слова', record_template.subject_keywords)
     _add_to_attributes(attributes, 'Год изготовления копии', record['dict'].get('date_of_publication', []))
     _add_to_attributes(attributes, 'Год издания оригинала', record['dict'].get('date_of_publication_of_original', []))
     _add_to_attributes(attributes, 'Издатель', record['dict'].get('publisher', []))
@@ -1179,7 +1179,7 @@ def incomes(request):
             income_records.append({
                 'id': record['id'],
                 'title': get_title(rq),
-                'collections': rusmarc_tpl.get_collections(),
+                'collections': rusmarc_tpl.get_collections,
                 'income_date': datetime.strptime(get_income_date(rq), '%Y%m%d'),
             })
     return render(request, 'ssearch/frontend/incomes.html', {
