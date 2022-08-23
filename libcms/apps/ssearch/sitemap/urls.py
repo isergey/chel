@@ -3,6 +3,6 @@ from django.conf.urls import re_path
 from . import views
 
 urlpatterns = (
-    re_path(r'^$', views.index, name="index"),
-    re_path(r'^records/(?P<offset>\d+)$', views.records, name="records"),
+    re_path(r'^sitemap.xml$', views.index, name="index"),
+    re_path(r'^records_(?P<offset>\d+).xml$', views.records, name="records"),
 )
