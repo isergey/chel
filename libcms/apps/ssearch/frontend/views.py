@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 import requests
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, HttpResponse, Http404, resolve_url, reverse
+from django.shortcuts import render, HttpResponse, Http404, resolve_url, reverse, redirect
 from django.utils.http import urlquote
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
@@ -367,7 +367,11 @@ def collections():
     return collection_values, pivote_root
 
 
-def index(request, catalog='uc'):
+def index():
+    return redirect('ssearch:frontend:results')
+
+
+def results(request, catalog='uc'):
     # sc = SearchCriteria(u"AND")
     # sc.add_attr(u'name', u'zi zi')
     # sc.add_attr(u'surname', u'do do')
