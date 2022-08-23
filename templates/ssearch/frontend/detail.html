@@ -6,7 +6,9 @@
 {% block meta %}
     <meta property='og:locale' content='ru_RU' />
     <meta property='og:title' content='{{ record.tpl.get_title }}' />
-    <meta property='og:description' content='{{ record.tpl.annotations }}' />
+    {% if record.tpl.annotations %}
+    <meta property='og:description' content='{{ record.tpl.annotations.0 }}' />
+    {% endif %}
     <meta property='og:url' content='https://{{ request.get_host }}{% url 'ssearch:frontend:detail' %}?id={{ record.id|urlencode }}' />
 {#    <meta property='og:image' content='https://rusneb.ru/local/tools/exalead/thumbnail.php?url=000199_000009_003107369&width=360&height=460' />#}
     <meta property='og:type' content='book' />

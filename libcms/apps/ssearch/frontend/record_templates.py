@@ -237,6 +237,11 @@ class RusmarcTemplate(object):
         data = self.rq.get_field('330').get_subfield('a').get_data()
         if data:
             values.append(data)
+        if not values:
+            data = self.rq.get_field('324').get_subfield('a').get_data()
+            if data:
+                values.append(data)
+
         return values
 
     @cached_property
