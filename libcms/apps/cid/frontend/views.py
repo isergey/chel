@@ -35,13 +35,13 @@ def index(request):
     query = ''
     date_query = []
     if year:
-       date_query.append('year_l:' + int(year) )
+       date_query.append('year_l:' + str(int(year)))
 
     if month:
-        date_query.append('month_l:' + int(month))
+        date_query.append('month_l:' + str(int(month)))
 
     if day:
-        date_query.append('day_l:' + int(day))
+        date_query.append('day_l:' + str(int(day)))
 
     if date_query:
         query = ' AND '.join(date_query) + ' '
