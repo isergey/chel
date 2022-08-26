@@ -63,7 +63,7 @@ class ImportantDate(models.Model):
             [year, year, mod])
 
 
-def important_date_to_index_doc(idmodel):
+def important_date_to_index_doc(idmodel: ImportantDate):
 
     types = []
 
@@ -73,6 +73,9 @@ def important_date_to_index_doc(idmodel):
     doc = {
         'id': idmodel.id,
         'id_ls': idmodel.id,
+        'year_l': idmodel.date.year,
+        'month_l': idmodel.date.month,
+        'day_l': idmodel.date.day
     }
 
     if types:

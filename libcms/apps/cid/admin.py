@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from django.contrib.admin import DateFieldListFilter
-from .models import ImportantDate
+from .models import ImportantDate, Type
 
 
 class ImportantDateAdmin(admin.ModelAdmin):
@@ -12,4 +12,10 @@ class ImportantDateAdmin(admin.ModelAdmin):
         ('date', DateFieldListFilter),
 )
 admin.site.register(ImportantDate, ImportantDateAdmin)
+
+class TypeAdmin(admin.ModelAdmin):
+    list_display = ["__str__"]
+
+admin.site.register(Type, TypeAdmin)
+
 

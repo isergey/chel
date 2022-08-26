@@ -10,6 +10,7 @@ from ..models import ImportantDate, Type, update_doc
 from solr.solr import Solr, SolrError, escape
 from .. import exporting
 
+
 def index(request):
     year = request.GET.get('year', None)
     month = request.GET.get('month', None)
@@ -30,9 +31,23 @@ def index(request):
 
     events_page = None
 
+
+    query = []
+    if year:
+       query.append('year_l:' + int(year) )
+
+    if month:
+        query.append('month_l:' + int(month))
+
+    if day:
+        query.append('day_l:' + int(day))
+
+    query = ' AND '.join(query) + ' '
+
+
     if attr and q:
         attrs, values = extract_request_query_attrs(request)
-        query = construct_query(attrs=attrs, values=values)
+        query += construct_query(attrs=attrs, values=values)
         solr_conf = settings.CID['solr']
         solr = Solr(solr_conf['addr'])
         collection = solr.get_collection(solr_conf['collection'])
@@ -57,45 +72,45 @@ def index(request):
         search = True
 
         # events_page = result
-    if y:
-        events_page = None
-        events = ImportantDate.get_ids_by_year(year=y)
-
-    if not search and not y:
-        q = Q()
-        try:
-            if year:
-                errors += int_validator(year, 'Год')
-                errors += max_validator(int(year), 9999, 'Год')
-                errors += min_validator(int(year), 1, 'Год')
-                q = q & Q(date__year=year)
-
-            if month:
-                errors += int_validator(month, 'Месяц')
-                errors += max_validator(int(month), 12, 'Месяц')
-                errors += min_validator(int(month), 1, 'Месяц')
-                q = q & Q(date__month=month)
-
-            if day:
-                errors += int_validator(day, 'День')
-                errors += max_validator(int(day), 31, 'День')
-                errors += min_validator(int(day), 1, 'День')
-                q = q & Q(date__day=day)
-
-            if theme:
-                errors += int_validator(theme, 'Тема')
-                q = q & Q(theme_id=int(theme))
-
-            if type:
-                errors += int_validator(type, 'Тип')
-                q = q & Q(type__id=int(type))
-
-        except ValueError as e:
-            pass
-
-        if not errors:
-            events_page = get_page(request, ImportantDate.objects.filter(q).order_by('date'), limit_on_page)
-            events = events_page.object_list
+    # if y:
+    #     events_page = None
+    #     events = ImportantDate.get_ids_by_year(year=y)
+    #
+    # if not search and not y:
+    #     q = Q()
+    #     try:
+    #         if year:
+    #             errors += int_validator(year, 'Год')
+    #             errors += max_validator(int(year), 9999, 'Год')
+    #             errors += min_validator(int(year), 1, 'Год')
+    #             q = q & Q(date__year=year)
+    #
+    #         if month:
+    #             errors += int_validator(month, 'Месяц')
+    #             errors += max_validator(int(month), 12, 'Месяц')
+    #             errors += min_validator(int(month), 1, 'Месяц')
+    #             q = q & Q(date__month=month)
+    #
+    #         if day:
+    #             errors += int_validator(day, 'День')
+    #             errors += max_validator(int(day), 31, 'День')
+    #             errors += min_validator(int(day), 1, 'День')
+    #             q = q & Q(date__day=day)
+    #
+    #         if theme:
+    #             errors += int_validator(theme, 'Тема')
+    #             q = q & Q(theme_id=int(theme))
+    #
+    #         if type:
+    #             errors += int_validator(type, 'Тип')
+    #             q = q & Q(type__id=int(type))
+    #
+    #     except ValueError as e:
+    #         pass
+    #
+    #     if not errors:
+    #         events_page = get_page(request, ImportantDate.objects.filter(q).order_by('date'), limit_on_page)
+    #         events = events_page.object_list
 
     now = datetime.datetime.now()
 
