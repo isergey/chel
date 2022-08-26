@@ -32,17 +32,19 @@ def index(request):
     events_page = None
 
 
-    query = []
+    query = ''
+    date_query = []
     if year:
-       query.append('year_l:' + int(year) )
+       date_query.append('year_l:' + int(year) )
 
     if month:
-        query.append('month_l:' + int(month))
+        date_query.append('month_l:' + int(month))
 
     if day:
-        query.append('day_l:' + int(day))
+        date_query.append('day_l:' + int(day))
 
-    query = ' AND '.join(query) + ' '
+    if date_query:
+        query = ' AND '.join(date_query) + ' '
 
 
     if attr and q:
