@@ -39,6 +39,9 @@
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
+                                {% if filtered %}
+                                    <a class="btn btn_sm" href="{% url 'cid:frontend:index' %}">Очистить фильтр</a>
+                                {% endif %}
                                 <p>Подбор текущих событий</p>
                                 <ul>
                                     <li>

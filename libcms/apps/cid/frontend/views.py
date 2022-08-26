@@ -74,7 +74,7 @@ def index(request):
         ids.append(doc['id'])
     events = get_records(ids)
     events_page.object_list = events
-    search = True
+
 
         # events_page = result
     # if y:
@@ -133,11 +133,15 @@ def index(request):
                 return response
         else:
             template = 'cid/frontend/print.html'
+
+    filtered = False
+    if query and query != '*:*':
+        filtered = True
     return render(request, template, {
         'now': now,
         'events': events,
         'events_page': events_page,
-        # 'themes': themes,
+        'filtered': filtered,
         'types': types,
         'errors': errors
     })
