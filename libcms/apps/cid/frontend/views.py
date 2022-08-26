@@ -48,28 +48,31 @@ def index(request):
     if attr and q:
         attrs, values = extract_request_query_attrs(request)
         query += construct_query(attrs=attrs, values=values)
-        solr_conf = settings.CID['solr']
-        solr = Solr(solr_conf['addr'])
-        collection = solr.get_collection(solr_conf['collection'])
-        result = collection.search(query, ['id'])
 
-        paginator = Paginator(result, limit_on_page)
+    if not query:
+        query = '*:*'
+    solr_conf = settings.CID['solr']
+    solr = Solr(solr_conf['addr'])
+    collection = solr.get_collection(solr_conf['collection'])
+    result = collection.search(query, ['id'])
 
-        page = request.GET.get('page')
-        try:
-            events_page = paginator.page(page)
-        except PageNotAnInteger:
-            events_page = paginator.page(1)
-        except EmptyPage:
-            events_page = paginator.page(paginator.num_pages)
+    paginator = Paginator(result, limit_on_page)
 
-        docs = result.get_docs()
-        ids = []
-        for doc in docs:
-            ids.append(doc['id'])
-        events = get_records(ids)
-        events_page.object_list = events
-        search = True
+    page = request.GET.get('page')
+    try:
+        events_page = paginator.page(page)
+    except PageNotAnInteger:
+        events_page = paginator.page(1)
+    except EmptyPage:
+        events_page = paginator.page(paginator.num_pages)
+
+    docs = result.get_docs()
+    ids = []
+    for doc in docs:
+        ids.append(doc['id'])
+    events = get_records(ids)
+    events_page.object_list = events
+    search = True
 
         # events_page = result
     # if y:
