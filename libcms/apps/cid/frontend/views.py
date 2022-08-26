@@ -56,7 +56,7 @@ def index(request):
     solr_conf = settings.CID['solr']
     solr = Solr(solr_conf['addr'])
     collection = solr.get_collection(solr_conf['collection'])
-    result = collection.search(query, ['id'], sort=['id desc'])
+    result = collection.search(query, ['id'], sort=['create_date_l desc'])
 
     paginator = Paginator(result, limit_on_page)
 
