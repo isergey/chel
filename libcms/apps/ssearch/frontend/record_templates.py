@@ -96,7 +96,7 @@ def append_symbol(c: str, items: List[str]):
     if not items:
         return
     last_item = items[-1].strip()
-    if last_item[-1] != c:
+    if last_item and last_item[-1] != c:
         items.append(c)
 
 
