@@ -81,7 +81,7 @@ def events_list(request):
 
             if filter_title:
                 q &= Q(eventcontent__title__icontains=filter_title)
-    print(q)
+
     events_page = get_page(request, Event.objects.filter(q).order_by(order + sorting), 10)
 
     _join_content(list(events_page.object_list))
