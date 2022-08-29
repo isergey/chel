@@ -3,8 +3,9 @@ from datetime import datetime
 from django.conf import settings
 from django import forms
 from django.contrib.admin import widgets
+from django.forms import ModelChoiceField
 
-from ..models import EventContent, Event
+from ..models import EventContent, Event, Category
 
 
 class EventForm(forms.ModelForm):
@@ -55,6 +56,8 @@ class EventFilterForm(forms.Form):
     ended = forms.BooleanField(label='Звершенные', required=False, initial=False)
     start_date = forms.DateField(label='C даты начала (дд.мм.гггг)', required=False)
     end_date = forms.DateField(label='По дате окончания (дд.мм.гггг)', required=False)
+    category = ModelChoiceField(label='Категория', queryset=Category.objects.all(), required=False)
+    title = forms.CharField(label='Заглавие', required=False)
 
 
 class SubscriptionFilterForm(forms.Form):

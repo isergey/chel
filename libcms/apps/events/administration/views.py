@@ -73,6 +73,15 @@ def events_list(request):
             if filter_end_date:
                 q &= Q(end_date__lte=filter_end_date)
 
+            filter_category = filter_form.cleaned_data['category']
+            filter_title = filter_form.cleaned_data['title']
+
+            if filter_category:
+                q &= Q(category=filter_category)
+
+            if filter_title:
+                q &= Q(eventcontent__title__icontains=filter_title)
+    print(q)
     events_page = get_page(request, Event.objects.filter(q).order_by(order + sorting), 10)
 
     _join_content(list(events_page.object_list))
