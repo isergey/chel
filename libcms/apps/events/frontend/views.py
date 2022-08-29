@@ -28,7 +28,7 @@ def index(request):
     if filter_form.is_valid():
         keywords = filter_form.cleaned_data['keywords']
         if keywords:
-            q &= Q(keywords__icontains=keywords)
+            q &= Q(Q(keywords__icontains=keywords) | Q(eventcontent__content__icontains=keywords))
 
         start_date = filter_form.cleaned_data['start_date']
         if start_date is not None:
