@@ -211,12 +211,12 @@ def construct_query(attrs, values, optimize=True):
 
         term_operator = 'AND'
 
-        # атрибуты, термы которых будут объеденын чере OR
-        or_operators_attrs = [
-            'all_t',
-        ]
-        if attr in or_operators_attrs:
-            term_operator = 'OR'
+        # # атрибуты, термы которых будут объеденын чере OR
+        # or_operators_attrs = [
+        #     'all_t',
+        # ]
+        # if attr in or_operators_attrs:
+        #     term_operator = 'OR'
 
         attr_type = get_attr_type(attr)
         # если атрибут имеет строковой тип, то представляем его как фразу
@@ -234,7 +234,7 @@ def construct_query(attrs, values, optimize=True):
         all_fields = []
         if attr == 'all_t':
             # all_fields.append(u'author_t:%s^22' % value)
-            all_fields.append('all_tru:%s' % value)
+            query.append('all_tru:%s' % value)
             # all_fields.append('fio_tru:%s^8' % value)
             # all_fields.append('org_title_t:%s^16' % value)
             # all_fields.append('org_title_tru:%s^8' % value)
@@ -248,7 +248,7 @@ def construct_query(attrs, values, optimize=True):
             #            all_fields.append(u'subject_subheading_tru:%s^4' % value)
             #            all_fields.append(u'subject_keywords_tru:%s^4' % value)
             #            all_fields.append(u'all_tru:%s^2' % value)
-            query.append('(%s)' % (' %s ' % term_operator).join(all_fields))
+            # query.append('(%s)' % (' %s ' % term_operator).join(all_fields))
         else:
             query.append('%s:%s' % (attr, value))
 
