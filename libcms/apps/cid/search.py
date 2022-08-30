@@ -85,7 +85,7 @@ def construct_query(attr=None, value=None, type=None):
 
     if type:
         query.append('type_s:"%s"' % (type,))
-    return ' AND '.join(query)
+    return ' OR '.join(query)
 
 
 def get_attr_type(attr):

@@ -1,11 +1,11 @@
-import json
-from typing import List, Optional
+from typing import List
+
 from django.conf import settings
 from django.http import HttpResponse
 from pydantic import BaseModel
 
-from .. import models
 from . import schema
+from .. import models
 
 LIMIT = 20
 MEDIA_URL = settings.MEDIA_URL
@@ -99,5 +99,5 @@ def event_from_model(event_model: models.Event):
         keywords=event_model.keywords,
         translation_html=event_model.translation_html,
         content=event_model.content.content,
-        create_date=event_model.create_date
+        create_date=event_model.create_date.astimezone()
     )
