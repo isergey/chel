@@ -65,16 +65,16 @@ def construct_query(attr=None, value=None, type=None):
     if attr and value.strip():
         if attr == 'all_t':
             # all_fields.append(u'author_t:%s^22' % value)
-            all_fields.append('fio_t:%s^16' % value)
-            all_fields.append('fio_tru:%s^8' % value)
-            all_fields.append('org_title_t:%s^16' % value)
-            all_fields.append('org_title_tru:%s^8' % value)
-            all_fields.append('event_title_t:%s^16' % value)
-            all_fields.append('event_title_tru:%s^8' % value)
-            all_fields.append('geo_title_t:%s^16' % value)
-            all_fields.append('geo_title_tru:%s^8' % value)
-            all_fields.append('theme_t:%s^16' % value)
-            all_fields.append('theme_tru:%s^8' % value)
+            all_fields.append('all_t:%s' % value)
+            # all_fields.append('fio_tru:%s^8' % value)
+            # all_fields.append('org_title_t:%s^16' % value)
+            # all_fields.append('org_title_tru:%s^8' % value)
+            # all_fields.append('event_title_t:%s^16' % value)
+            # all_fields.append('event_title_tru:%s^8' % value)
+            # all_fields.append('geo_title_t:%s^16' % value)
+            # all_fields.append('geo_title_tru:%s^8' % value)
+            # all_fields.append('theme_t:%s^16' % value)
+            # all_fields.append('theme_tru:%s^8' % value)
             #            all_fields.append(u'subject_heading_tru:%s^4' % value)
             #            all_fields.append(u'subject_subheading_tru:%s^4' % value)
             #            all_fields.append(u'subject_keywords_tru:%s^4' % value)
@@ -85,7 +85,7 @@ def construct_query(attr=None, value=None, type=None):
 
     if type:
         query.append('type_s:"%s"' % (type,))
-    return ' OR '.join(query)
+    return ' AND '.join(query)
 
 
 def get_attr_type(attr):

@@ -79,29 +79,38 @@ def important_date_to_index_doc(idmodel: ImportantDate):
         'create_date_ls': idmodel.create_date.timestamp()
     }
 
+    all = []
     if types:
         doc['type_s'] = types
 
     if idmodel.fio:
         doc['fio_t'] = idmodel.fio
+        all.append(idmodel.fio)
 
     if idmodel.org_title:
         doc['org_title_t'] = idmodel.org_title
+        all.append(strip_tags(idmodel.org_title))
 
     if idmodel.org_title:
         doc['event_title_t'] = idmodel.event_title
+        all.append(strip_tags(idmodel.event_title))
 
     if idmodel.geo_title:
         doc['geo_title_t'] = idmodel.geo_title
+        all.append(strip_tags(idmodel.geo_title))
 
     if idmodel.theme:
         doc['theme_t'] = idmodel.theme
 
     if idmodel.description:
         doc['description_t'] = strip_tags(idmodel.description)
+        all.append( strip_tags(idmodel.description))
 
     if idmodel.literature:
         doc['literature_t'] = strip_tags(idmodel.literature)
+
+    doc['all_t'] = ' '.join(all)
+
     return doc
 
 
