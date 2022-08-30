@@ -109,7 +109,7 @@ def important_date_to_index_doc(idmodel: ImportantDate):
     if idmodel.literature:
         doc['literature_t'] = strip_tags(idmodel.literature)
 
-    doc['all_t'] = ' '.join(all)
+    doc['all_tru'] = ' '.join(all)
 
     return doc
 

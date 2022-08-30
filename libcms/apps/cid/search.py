@@ -65,7 +65,7 @@ def construct_query(attr=None, value=None, type=None):
     if attr and value.strip():
         if attr == 'all_t':
             # all_fields.append(u'author_t:%s^22' % value)
-            all_fields.append('all_t:%s' % value)
+            all_fields.append('all_tru:%s' % value)
             # all_fields.append('fio_tru:%s^8' % value)
             # all_fields.append('org_title_t:%s^16' % value)
             # all_fields.append('org_title_tru:%s^8' % value)
