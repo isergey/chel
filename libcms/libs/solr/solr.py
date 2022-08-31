@@ -173,7 +173,7 @@ class SearchResults(object):
     def _make_request(self):
 #        if hasattr(self, 'response_dict'):
 #            return
-        r = requests.get(self.__address,params=self.__params)
+        r = requests.get(self.__address,params=self.__params, verify=False)
 
         if r.status_code != 400:
             r.raise_for_status()

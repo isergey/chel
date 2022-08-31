@@ -31,11 +31,10 @@ def index(request):
 
     events_page = None
 
-
     query = ''
     date_query = []
     if year:
-       date_query.append('year_l:' + str(int(year)))
+        date_query.append('year_l:' + str(int(year)))
 
     if month:
         date_query.append('month_l:' + str(int(month)))
@@ -45,7 +44,6 @@ def index(request):
 
     if date_query:
         query = ' AND '.join(date_query) + ' '
-
 
     if attr and q:
         attrs, values = extract_request_query_attrs(request)
@@ -75,8 +73,7 @@ def index(request):
     events = get_records(ids)
     events_page.object_list = events
 
-
-        # events_page = result
+    # events_page = result
     # if y:
     #     events_page = None
     #     events = ImportantDate.get_ids_by_year(year=y)

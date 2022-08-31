@@ -91,7 +91,7 @@ def important_date_to_index_doc(idmodel: ImportantDate):
         doc['org_title_t'] = idmodel.org_title
         all.append(strip_tags(idmodel.org_title))
 
-    if idmodel.org_title:
+    if idmodel.event_title:
         doc['event_title_t'] = idmodel.event_title
         all.append(strip_tags(idmodel.event_title))
 
