@@ -25,6 +25,7 @@
     <meta name="Description"
           content="{% block meta_description %}{% endblock %}"/>
     {% block canonical_link %}
+
         <link rel="canonical" href="https://{{ request.get_host }}{{ request.path }}">
     {% endblock %}
     {% block meta %}{% endblock %}
