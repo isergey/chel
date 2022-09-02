@@ -84,7 +84,7 @@ INSTALLED_APPS = [
     'journal',
     'versioning',
     'kvdb',
-    'django_minify_html'
+    # 'django_minify_html'
 ]
 
 MIDDLEWARE = [
@@ -96,7 +96,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django_minify_html.middleware.MinifyHtmlMiddleware'
+    # 'django_minify_html.middleware.MinifyHtmlMiddleware'
 ]
 
 ROOT_URLCONF = 'libcms.urls'
