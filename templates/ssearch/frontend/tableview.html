@@ -3,13 +3,13 @@
 <div class="search-results-item__description">
     <h3 class="search-results-item__title">
         <a class="search-results-item__title-link"
-           href="{% url 'ssearch:frontend:detail' %}?id={{ record.id }}&back={{ request.get_full_path|urlencode }}">
+           href="{% url 'ssearch:frontend:detail' %}?id={{ record.id }}">
             {{ record.tpl.get_title }}
         </a>
     </h3>
     {% if record.library_cadr %}
             <div class="record-search">
-                <a href="#?back={{ request.get_full_path|urlencode }}">{{ record.library_cadr|safe }}</a>
+                <a href="#">{{ record.library_cadr|safe }}</a>
             </div>
     {% endif %}
     <div class="search-results-item__tb">
