@@ -57,7 +57,7 @@
                                 <p>Подбор событий по типу</p>
                                 <ul>
                                     {% for type in types %}
-                                        <li><a href="?type={{ type.id }}">{{ type }}</a></li>
+                                        <li><a href="?type={{ type.get_variant_display|urlencode }}">{{ type }}</a></li>
                                     {% endfor %}
                                 </ul>
 
