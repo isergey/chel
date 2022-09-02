@@ -74,8 +74,11 @@ def important_date_to_index_doc(idmodel: ImportantDate):
         'id': idmodel.id,
         'id_ls': idmodel.id,
         'year_l': idmodel.date.year,
+        'year_ls': idmodel.date.year,
         'month_l': idmodel.date.month,
+        'month_ls': idmodel.date.month,
         'day_l': idmodel.date.day,
+        'day_ls': idmodel.date.day,
         'create_date_ls': idmodel.create_date.timestamp()
     }
 
