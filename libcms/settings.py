@@ -83,7 +83,8 @@ INSTALLED_APPS = [
     'sso_opac',
     'journal',
     'versioning',
-    'kvdb'
+    'kvdb',
+    'django_minify_html'
 ]
 
 MIDDLEWARE = [
@@ -94,7 +95,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
+    'django_minify_html.middleware.MinifyHtmlMiddleware'
 ]
 
 ROOT_URLCONF = 'libcms.urls'
