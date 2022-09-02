@@ -27,7 +27,7 @@ def index(request):
     attr = request.GET.get('attr', None)
     search = False
     q = request.GET.get('q', None)
-    y = request.GET.get('y', None)
+    y = request.GET.get('y', '')
 
     events_page = None
 
@@ -35,7 +35,7 @@ def index(request):
     date_query = []
 
     if y:
-        date_query.append('year_s:' + y)
+        date_query.append('year_s:' + parese_int(y))
 
     if year:
         date_query.append('year_l:' + str(int(year)))
@@ -279,3 +279,12 @@ def index_sid(request):
     for date in dates:
         update_doc(sender=None, instance=date)
     return HttpResponse('Indexed' + str(len(dates)))
+
+
+
+def parese_int(string: str):
+    result = []
+    for c in string:
+        if c.isdigit() or c == '*':
+            result.append(c)
+    return ''.join(result)
