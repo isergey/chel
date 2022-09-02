@@ -78,9 +78,10 @@ def index(request):
     for doc in docs:
         ids.append(doc['id'])
 
-    if y:
-        ids = ImportantDate.get_ids_by_year(y)
+
     events = get_records(ids)
+    if y:
+        events = ImportantDate.get_ids_by_year(y)
     events_page.object_list = events
 
 
