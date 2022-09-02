@@ -1,14 +1,14 @@
 # encoding: utf-8
 import datetime
 import re
+
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
-from common.pagination import get_page
-from ..models import ImportantDate, Type, update_doc
-from solr.solr import Solr, SolrError, escape
+from django.shortcuts import render, get_object_or_404, HttpResponse
+
+from solr.solr import Solr, escape
 from .. import exporting
+from ..models import ImportantDate, Type, update_doc
 
 
 def index(request):
