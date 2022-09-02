@@ -121,7 +121,7 @@
                                         {% for event in events %}
                                             <li>
                                                 <h3 class="participants__title">
-                                                    <a href="{% url 'cid:frontend:detail' event.id %}?back={{ request.get_full_path }}">
+                                                    <a href="{% url 'cid:frontend:detail' event.id %}">
                                                         {% if event.count_day %}{{ event.date|date:"d" }}{% endif %}
                                                         {% if event.count_month %}{{ event.date|date:"E" }} {% endif %}
                                                         {% if event.count_year %}{{ event.date|date:"Y" }} г.{% endif %}
