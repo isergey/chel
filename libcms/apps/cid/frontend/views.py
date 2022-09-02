@@ -53,7 +53,7 @@ def index(request):
 
     if not query:
         query = '*:*'
-
+    print(query)
     solr_conf = settings.CID['solr']
     solr = Solr(solr_conf['addr'])
     collection = solr.get_collection(solr_conf['collection'])
