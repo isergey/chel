@@ -170,7 +170,7 @@ def rbooks2(request, id=None):
     resp = requests.post(rbooks_session_server + '/session', params={
         'code': code,
         'key': '123456',
-        'p': '0',
+        'p': '1',
         't': '1'
     })
 
