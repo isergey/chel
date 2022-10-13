@@ -40,6 +40,7 @@ class Event(BaseModel):
     keywords: str
     translation_html: str
     create_date: datetime
+    teaser: str
     content: str
 
 
