@@ -98,6 +98,7 @@ def event_from_model(event_model: models.Event):
         age_category=event_model.age_category_id,
         keywords=event_model.keywords,
         translation_html=event_model.translation_html,
+        title=event_model.content.title,
         teaser=event_model.content.teaser,
         content=event_model.content.content,
         create_date=event_model.create_date.astimezone()
