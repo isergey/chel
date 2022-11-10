@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('create_date', models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания')),
                 ('start_process_date', models.DateTimeField(blank=True, db_index=True, null=True, verbose_name='Дата взятия вопроса на обработку')),
                 ('end_process_date', models.DateTimeField(blank=True, db_index=True, null=True, verbose_name='Дата окончания обработки вопроса')),
-                ('category', models.ForeignKey(help_text='Укажите тематику, к которой относиться вопрос', null=True, on_delete=django.db.models.deletion.CASCADE, to='ask_librarian.Category', verbose_name='Тематика')),
+                ('category', models.ForeignKey(help_text='Укажите тематику, к которой относится вопрос', null=True, on_delete=django.db.models.deletion.CASCADE, to='ask_librarian.Category', verbose_name='Тематика')),
             ],
         ),
         migrations.CreateModel(
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField(max_length=2048, verbose_name='Текст рекомендации')),
                 ('public', models.BooleanField(db_index=True, default=False, verbose_name='Публиковать Вместе с ответом')),
                 ('create_date', models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ask_librarian.Question', verbose_name='Вопрос, к которому относиться рекомендация')),
+                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ask_librarian.Question', verbose_name='Вопрос, к которому относится рекомендация')),
                 ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
             ],
         ),

@@ -122,7 +122,7 @@ class Question(models.Model):
     city = models.CharField(verbose_name='Город', blank=True, max_length=64)
     country = models.CharField(verbose_name='Страна', blank=True, max_length=64)
     category = models.ForeignKey(Category, null=True, verbose_name='Тематика',
-                                 help_text='Укажите тематику, к которой относиться вопрос', on_delete=models.PROTECT)
+                                 help_text='Укажите тематику, к которой относится вопрос', on_delete=models.PROTECT)
     question_target = models.ForeignKey(
         QuestionTarget,
         on_delete=models.PROTECT,
@@ -216,7 +216,7 @@ class StatusJournal(models.Model):
 
 class Recomendation(models.Model):
     user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, verbose_name='Вопрос, к которому относиться рекомендация',
+    question = models.ForeignKey(Question, verbose_name='Вопрос, к которому относится рекомендация',
                                  on_delete=models.CASCADE)
     text = models.TextField(max_length=2048, verbose_name='Текст рекомендации')
     public = models.BooleanField(default=False, db_index=True, verbose_name='Публиковать Вместе с ответом')

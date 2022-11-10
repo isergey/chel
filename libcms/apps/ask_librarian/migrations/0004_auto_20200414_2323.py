@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='category',
-            field=models.ForeignKey(help_text='Укажите тематику, к которой относиться вопрос', null=True, on_delete=django.db.models.deletion.PROTECT, to='ask_librarian.Category', verbose_name='Тематика'),
+            field=models.ForeignKey(help_text='Укажите тематику, к которой относится вопрос', null=True, on_delete=django.db.models.deletion.PROTECT, to='ask_librarian.Category', verbose_name='Тематика'),
         ),
         migrations.AlterField(
             model_name='question',
