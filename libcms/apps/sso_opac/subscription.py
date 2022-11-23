@@ -38,13 +38,10 @@ class RecordAndQuery:
         return self.__str__()
 
 
-def create_subscription_letter(from_date: datetime, from_iso: str = None):
+def create_subscription_letter(from_iso: str):
     #
     #
-    if from_iso:
-        records = load_records_from_file(from_iso)
-    else:
-        records = load_records(from_date)
+    records = load_records_from_file(from_iso)
 
     print('records', len(records))
 
