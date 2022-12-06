@@ -117,29 +117,29 @@ class Question(models.Model):
     )
 
     user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE, blank=True)
-    fio = models.CharField(verbose_name='ФИО', blank=False, max_length=128, default='')
-    email = models.EmailField(verbose_name='email', blank=False, max_length=256)
-    city = models.CharField(verbose_name='Город', blank=False, max_length=64)
+    fio = models.CharField(verbose_name='ФИО *', blank=False, max_length=128, default='')
+    email = models.EmailField(verbose_name='email *', blank=False, max_length=256)
+    city = models.CharField(verbose_name='Город *', blank=False, max_length=64)
     country = models.CharField(verbose_name='Страна', blank=True, max_length=64)
-    category = models.ForeignKey(Category, null=True, verbose_name='Тематика',
+    category = models.ForeignKey(Category, null=True, verbose_name='Тематика *',
                                  help_text='Укажите тематику, к которой относится вопрос', on_delete=models.PROTECT)
     question_target = models.ForeignKey(
         QuestionTarget,
         on_delete=models.PROTECT,
         null=True,
         blank=False,
-        verbose_name='Цель запроса'
+        verbose_name='Цель запроса *'
     )
 
     education = models.ForeignKey(
         Education,
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
-        verbose_name='Образование',
+        blank=False,
+        verbose_name='Образование *',
     )
 
-    question = models.TextField(max_length=2048, verbose_name='Вопрос')
+    question = models.TextField(max_length=2048, verbose_name='Вопрос *')
     answer = models.TextField(max_length=50000, verbose_name='Ответ', blank=True)
     status = models.IntegerField(choices=STATUSES, verbose_name='Статус', db_index=True, default=STATUS_NEW)
 
