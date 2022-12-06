@@ -117,9 +117,9 @@ class Question(models.Model):
     )
 
     user = models.ForeignKey(User, null=True, verbose_name='Пользователь', on_delete=models.CASCADE, blank=True)
-    fio = models.CharField(verbose_name='ФИО', blank=True, max_length=128, default='')
-    email = models.EmailField(verbose_name='email', blank=True, max_length=256)
-    city = models.CharField(verbose_name='Город', blank=True, max_length=64)
+    fio = models.CharField(verbose_name='ФИО', blank=False, max_length=128, default='')
+    email = models.EmailField(verbose_name='email', blank=False, max_length=256)
+    city = models.CharField(verbose_name='Город', blank=False, max_length=64)
     country = models.CharField(verbose_name='Страна', blank=True, max_length=64)
     category = models.ForeignKey(Category, null=True, verbose_name='Тематика',
                                  help_text='Укажите тематику, к которой относится вопрос', on_delete=models.PROTECT)
@@ -127,7 +127,7 @@ class Question(models.Model):
         QuestionTarget,
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
+        blank=False,
         verbose_name='Цель запроса'
     )
 
