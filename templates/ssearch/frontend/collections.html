@@ -108,187 +108,207 @@
     </div>
 </div>
 <script>
-    $(function () {
-        $('.pivot__description').on('click', function () {
-            /*try {
-                MicroModal.show('marcModal');
-            } catch (e) {
-                console.error(e)
-            }*/
-            var parts = [];
-            $(this).parents('.pivot__element').each(function (index, el) {
-                parts.push($(el).children('.pivot__title:first-child').text());
-            });
-            var collectionPages = {
-                'Уральская электронная библиотека':
-                    '/ru/pages/ecollection/urelib/',
+  $(function () {
+    $('.pivot__description').on('click', function () {
+      /*try {
+          MicroModal.show('marcModal');
+      } catch (e) {
+          console.error(e)
+      }*/
+      var parts = [];
+      $(this).parents('.pivot__element').each(function (index, el) {
+        parts.push($(el).children('.pivot__title:first-child').text());
+      });
+      var collectionPages = {
+        'Уральская электронная библиотека':
+          '/ru/pages/ecollection/urelib/',
 
-                'Уральская электронная библиотека/Периодические издания':
-                    '/ru/pages/ecollection/urelib/periodicals/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Большевистское слово" (Златоуст)':
-                    '/ru/pages/ecollection/urelib/kollekciya_gazeta_bolshevistskoe_slovo/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Вестник Приуралья" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/gazeta_vestnik_priuralya/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Власть народа" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/gazeta-vlast-naroda/',
-                'Уральская электронная библиотека/Периодические издания/Газета "За трудовую доблесть" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/kollekciya_gazeta_za_trudovuyu_doblest/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Златоустовский рабочий"':
-                        '/ru/pages/ecollection/urelib/kollekciya_gazeta_zlatoustovskiy_rabochiy/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Копейский рабочий"':
-                        '/ru/pages/ecollection/urelib/gazeta_kopeyskiy_rabochiy/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Колос" (Уйское)':
-                        '/ru/pages/ecollection/urelib/gazeta_kolos/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Курганская свободная мысль"':
-                        '/ru/pages/ecollection/urelib/gazeta-kurganskaya-svobodnaya-mysl/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Ленинские искры" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/gazeta_leninskie_iskry/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Наш трактор" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/gazeta_nash_traktor/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Оренбургские епархиальные ведомости"':
-                        '/ru/pages/ecollection/urelib/gazeta_orenburgskie_eparhialnye_vedomosti/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Призыв"':
-                        '/ru/pages/ecollection/urelib/kollekciya_gazeta_prizyv/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Пролетарская мысль" (Златоуст)':
-                        '/ru/pages/ecollection/urelib/kollekciya_gazeta_proletarskaya_mysl/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Саткинский рабочий"':
-                        '/ru/pages/ecollection/urelib/gazeta_satkinskiy_rabochiy/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Сталинская смена" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/gazeta_stalinskaya_smena/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Утро Сибири" (Челябинск)':
-                        '/ru/pages/ecollection/urelib/gazeta_utro_sibiri/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Челябинский рабочий"':
-                        '/ru/pages/ecollection/urelib/periodicals/gazeta_chelyabinskiy_rabochiy/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Уфалейский рабочий" (Верхний Уфалей)':
-                        '/ru/pages/ecollection/urelib/gazeta_ufaleyskiy_rabochiy/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Красный уралец" (Верхнеуральск)':
-                        '/ru/pages/ecollection/urelib/gazeta_krasnyy_uralec/',
-                'Уральская электронная библиотека/Периодические издания/Газета "Сельский день" (Магнитогорск ; Верхнеуральск)':
-                        '/ru/pages/ecollection/urelib/gazeta_selskiy_den/',
+        'Уральская электронная библиотека/Периодические издания':
+          '/ru/pages/ecollection/urelib/periodicals/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Авангард»':
+          '/ru/pages/ecollection/urelib/gazeta_avangard/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Горняцкая правда»':
+          '/ru/pages/ecollection/urelib/gazeta_gornyackaya_pravda/',
+        'Уральская электронная библиотека/Периодические издания/Газета «За цветные металлы»':
+          '/ru/pages/ecollection/urelib/gazeta_za_cvetnye_metally/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Красное знамя»':
+          '/ru/pages/ecollection/urelib/gazeta_krasnoe_znamya/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Новая жизнь»':
+          '/ru/pages/ecollection/urelib/gazeta_novaya_zhizn/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Путь Ильича»':
+          '/ru/pages/ecollection/urelib/gazeta_put_ilicha/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Социалистический труд»':
+          '/ru/pages/ecollection/urelib/gazeta_socialisticheskiy_trud/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Стальная искра»':
+          '/ru/pages/ecollection/urelib/gazeta_stalnaya_iskra/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Победа»':
+          '/ru/pages/ecollection/urelib/gazeta_pobeda/',
+        'Уральская электронная библиотека/Периодические издания/Газета «Степные зори»':
+          '/ru/pages/ecollection/urelib/gazeta_stepnye_zori/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Большевистское слово" (Златоуст)':
+          '/ru/pages/ecollection/urelib/kollekciya_gazeta_bolshevistskoe_slovo/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Вестник Приуралья" (Челябинск)':
+          '/ru/pages/ecollection/urelib/gazeta_vestnik_priuralya/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Власть народа" (Челябинск)':
+          '/ru/pages/ecollection/urelib/gazeta-vlast-naroda/',
+        'Уральская электронная библиотека/Периодические издания/Газета "За трудовую доблесть" (Челябинск)':
+          '/ru/pages/ecollection/urelib/kollekciya_gazeta_za_trudovuyu_doblest/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Златоустовский рабочий"':
+          '/ru/pages/ecollection/urelib/kollekciya_gazeta_zlatoustovskiy_rabochiy/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Копейский рабочий"':
+          '/ru/pages/ecollection/urelib/gazeta_kopeyskiy_rabochiy/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Колос" (Уйское)':
+          '/ru/pages/ecollection/urelib/gazeta_kolos/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Курганская свободная мысль"':
+          '/ru/pages/ecollection/urelib/gazeta-kurganskaya-svobodnaya-mysl/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Ленинские искры" (Челябинск)':
+          '/ru/pages/ecollection/urelib/gazeta_leninskie_iskry/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Наш трактор" (Челябинск)':
+          '/ru/pages/ecollection/urelib/gazeta_nash_traktor/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Оренбургские епархиальные ведомости"':
+          '/ru/pages/ecollection/urelib/gazeta_orenburgskie_eparhialnye_vedomosti/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Призыв"':
+          '/ru/pages/ecollection/urelib/kollekciya_gazeta_prizyv/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Пролетарская мысль" (Златоуст)':
+          '/ru/pages/ecollection/urelib/kollekciya_gazeta_proletarskaya_mysl/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Саткинский рабочий"':
+          '/ru/pages/ecollection/urelib/gazeta_satkinskiy_rabochiy/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Сталинская смена" (Челябинск)':
+          '/ru/pages/ecollection/urelib/gazeta_stalinskaya_smena/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Утро Сибири" (Челябинск)':
+          '/ru/pages/ecollection/urelib/gazeta_utro_sibiri/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Челябинский рабочий"':
+          '/ru/pages/ecollection/urelib/periodicals/gazeta_chelyabinskiy_rabochiy/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Уфалейский рабочий" (Верхний Уфалей)':
+          '/ru/pages/ecollection/urelib/gazeta_ufaleyskiy_rabochiy/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Красный уралец" (Верхнеуральск)':
+          '/ru/pages/ecollection/urelib/gazeta_krasnyy_uralec/',
+        'Уральская электронная библиотека/Периодические издания/Газета "Сельский день" (Магнитогорск ; Верхнеуральск)':
+          '/ru/pages/ecollection/urelib/gazeta_selskiy_den/',
 
 
-                'Уральская электронная библиотека/Персональные коллекции':
-                    '/ru/pages/ecollection/urelib/personal_collections/',
-                'Уральская электронная библиотека/Персональные коллекции/Наследие Моргенштерна':
-                    '/ru/pages/ecollection/urelib/personal_collections/morgenshtern/',
-                'Уральская электронная библиотека/Персональные коллекции/Б. Т. Уткин - ученый, библиограф, краевед':
-                    '/ru/pages/ecollection/urelib/personal_collections/utkin/',
-                'Уральская электронная библиотека/Уральская область':
-                    '/ru/pages/ecollection/urelib/uralskaya_oblast/',
-                'Уральская электронная библиотека/БПА Челябинской области советского периода':
-                    '/ru/pages/ecollection/urelib/uralskaya_oblast/',
-                'Уральская электронная библиотека/Урал. XVIII–XXI вв.':
-                    '/ru/pages/ecollection/urelib/kollekciya_ural_xviii-xxi_vv/',
-                'Уральская электронная библиотека/Челябинская область: история':
-                    '/ru/pages/ecollection/urelib/kollekciya_chelyabinskaya_oblast_istoriya/',
-                'Уральская электронная библиотека/Природа Урала':
-                    '/ru/pages/ecollection/urelib/priroda_urala/',
-                'Уральская электронная библиотека/Чернобыль: взгляд сквозь время':
-                    '/ru/pages/ecollection/urelib/chernobyl_vzglyad_skvoz_vremya/',
-                'Уральская электронная библиотека/Южный Урал - театральный':
-                    '/ru/pages/ecollection/urelib/yuzhnyy_ural_teatralnyy/',
-                'Уральская электронная библиотека/Народное образование на Урале':
-                    '/ru/pages/ecollection/urelib/narodnoe_obrazovanie_na_urale/',
-                'Уральская электронная библиотека/Горнозаводское производство на Южном Урале':
-                    '/ru/pages/ecollection/urelib/gornozavodskoe_proizvodstvo_na_yuzhnom_urale/',
-                'Уральская электронная библиотека/Записки Уральского общества любителей естествознания':
-                    '/ru/pages/ecollection/urelib/zapiski_uralskogo_obshchestva_lyubiteley_estestvoznaniya/',
-                'Уральская электронная библиотека/Издано в Челябинске. 1941–1945 гг.':
-                    '/ru/pages/ecollection/urelib/izdano_v_chelyabinske_1941-1945/',
-                'Уральская электронная библиотека/Оренбургская архивная комиссия. 1896-1917':
-                    '/ru/pages/ecollection/urelib/orenburgskaya_arhivnaya_komissiya_1896-1917/',
-                'Уральская электронная библиотека/Библиотеки Урала. XIX-XXI вв.':
-                    '/ru/pages/ecollection/urelib/biblioteki_urala/',
-                'Уральская электронная библиотека/Оренбургская губерния':
-                    '/ru/pages/ecollection/urelib/kollekciya_orenburgskaya_guberniya/',
-                'Уральская электронная библиотека/Гражданская война на Урале':
-                    '/ru/pages/ecollection/urelib/grazhdanskaya_voyna_na_urale/',
-                'Уральская электронная библиотека/Челябинская губерния. 1919-1923 гг.':
-                    '/ru/pages/ecollection/urelib/chelyabinskaya_guberniya_1919_1923/',
-                'Уральская электронная библиотека/Западно-Сибирская железная дорога':
-                    '/ru/pages/ecollection/urelib/zapadno-sibirskaya_zheleznaya_doroga/',
-                'Уральская электронная библиотека/Южный Урал–Казахстан: встречи на границе':
-                    '/ru/pages/ecollection/urelib/kollekciya_yuzhnyy_ural-kazahstan_vstrechi_na_granice/',
-                'Уральская электронная библиотека/Уфимская губерния. 1865–1919 гг.':
-                    '/ru/pages/ecollection/urelib/ufimskaya_guberniya_1865-1919/',
-                'Уральская электронная библиотека/Календари знаменательных дат':
-                    '/ru/pages/ecollection/urelib/kalendari_znamenatelnyh_dat/',
-                'Уральская электронная библиотека/Революции 1917 г. на Урале':
-                    '/ru/pages/ecollection/urelib/kollekciya_revolyucii_1917_g_na_urale/',
-                'Уральская электронная библиотека/Искусство Урала':
-                    '/ru/pages/ecollection/urelib/iskusstvo_urala/',
-                'Уральская электронная библиотека/Краеведы и краеведение':
-                    '/ru/pages/ecollection/urelib/kraevedy_i_kraevedenie/',
-                'Уральская электронная библиотека/Фольклор Урала':
-                    '/ru/pages/ecollection/urelib/folklor_urala/',
-                'Уральская электронная библиотека/Челябинск. XIX–XXI вв.':
-                    '/ru/pages/ecollection/urelib/kollekciya_chelyabinsk_xix-xxi_vv/',
-                'Уральская электронная библиотека/Музыкальная жизнь Урала':
-                    '/ru/pages/ecollection/urelib/muzykalnaya_zhizn_urala/',
-                'Уральская электронная библиотека/Религия на Урале':
-                    '/ru/pages/ecollection/urelib/kollekciya_religiya_na_urale/',
-                'Уральская электронная библиотека/Оренбургское казачье войско':
-                    '/ru/pages/ecollection/urelib/kollekciya_orenburgskoe_kazache_voysko/',
-                'Уральская электронная библиотека/Пермская губерния. 1796–1923 гг.':
-                    '/ru/pages/ecollection/urelib/permskaya_guberniya/',
-                'Уральская электронная библиотека/Коллекция "Южный Урал – театральный"':
-                    '/ru/pages/ecollection/urelib/yuzhnyy_ural_teatralnyy/',
-                'Уральская электронная библиотека/Музей права Южного Урала':
-                    '/ru/pages/ecollection/urelib/muzey_prava_yuzhnogo_urala/',
-                'Книжные памятники Челябинской области':
-                    '/ru/pages/ecollection/kp/',
-                'Книжные памятники Челябинской области/Старопечатные книги (изданные с 1450 по 1830 г.)':
-                    '#',
-                'Книжные памятники Челябинской области/Рукописные книги кириллической традиции':
-                    '/ru/pages/ecollection/kp/rukopisnye_knigi_kirillicheskoy_tradicii/',
-                'Книжные памятники Челябинской области/Книги гражданской печати 18 века':
-                    '#',
-                'Книжные памятники Челябинской области/Книжные памятники регионального значения (собрания местной печати)':
-                    '/ru/pages/ecollection/kp/knizhnye_pamyatniki_regionalnogo_znacheniya/',
-                'Книжные памятники Челябинской области/Печатные книги кириллической традиции':
-                    '#',
-                'Книжные памятники Челябинской области/Печатные книги кириллической традиции':
-                    '#',
-                'Книжные памятники Челябинской области/Редкие книги второй половины XIX-начала XX вв.':
-                    '#',
-                'ШОС и БРИКС: контуры сотрудничества':
-                    '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/',
-                'ШОС и БРИКС: контуры сотрудничества/Деятельность стран ШОС и БРИКС':
-                    '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/deyatelnost_stran_shos_i_briks/',
-                'ШОС и БРИКС: контуры сотрудничества/Нормативно-правовые документы':
-                    '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/normativno_pravovye_dokumenty_stran_shos_i_briks/',
-            };
+        'Уральская электронная библиотека/Персональные коллекции':
+          '/ru/pages/ecollection/urelib/personal_collections/',
+        'Уральская электронная библиотека/Персональные коллекции/Наследие Моргенштерна':
+          '/ru/pages/ecollection/urelib/personal_collections/morgenshtern/',
+        'Уральская электронная библиотека/Персональные коллекции/Б. Т. Уткин - ученый, библиограф, краевед':
+          '/ru/pages/ecollection/urelib/personal_collections/utkin/',
+        'Уральская электронная библиотека/Уральская область':
+          '/ru/pages/ecollection/urelib/uralskaya_oblast/',
+        'Уральская электронная библиотека/БПА Челябинской области советского периода':
+          '/ru/pages/ecollection/urelib/uralskaya_oblast/',
+        'Уральская электронная библиотека/Урал. XVIII–XXI вв.':
+          '/ru/pages/ecollection/urelib/kollekciya_ural_xviii-xxi_vv/',
+        'Уральская электронная библиотека/Челябинская область: история':
+          '/ru/pages/ecollection/urelib/kollekciya_chelyabinskaya_oblast_istoriya/',
+        'Уральская электронная библиотека/Природа Урала':
+          '/ru/pages/ecollection/urelib/priroda_urala/',
+        'Уральская электронная библиотека/Чернобыль: взгляд сквозь время':
+          '/ru/pages/ecollection/urelib/chernobyl_vzglyad_skvoz_vremya/',
+        'Уральская электронная библиотека/Южный Урал - театральный':
+          '/ru/pages/ecollection/urelib/yuzhnyy_ural_teatralnyy/',
+        'Уральская электронная библиотека/Народное образование на Урале':
+          '/ru/pages/ecollection/urelib/narodnoe_obrazovanie_na_urale/',
+        'Уральская электронная библиотека/Горнозаводское производство на Южном Урале':
+          '/ru/pages/ecollection/urelib/gornozavodskoe_proizvodstvo_na_yuzhnom_urale/',
+        'Уральская электронная библиотека/Записки Уральского общества любителей естествознания':
+          '/ru/pages/ecollection/urelib/zapiski_uralskogo_obshchestva_lyubiteley_estestvoznaniya/',
+        'Уральская электронная библиотека/Издано в Челябинске. 1941–1945 гг.':
+          '/ru/pages/ecollection/urelib/izdano_v_chelyabinske_1941-1945/',
+        'Уральская электронная библиотека/Оренбургская архивная комиссия. 1896-1917':
+          '/ru/pages/ecollection/urelib/orenburgskaya_arhivnaya_komissiya_1896-1917/',
+        'Уральская электронная библиотека/Библиотеки Урала. XIX-XXI вв.':
+          '/ru/pages/ecollection/urelib/biblioteki_urala/',
+        'Уральская электронная библиотека/Оренбургская губерния':
+          '/ru/pages/ecollection/urelib/kollekciya_orenburgskaya_guberniya/',
+        'Уральская электронная библиотека/Гражданская война на Урале':
+          '/ru/pages/ecollection/urelib/grazhdanskaya_voyna_na_urale/',
+        'Уральская электронная библиотека/Челябинская губерния. 1919-1923 гг.':
+          '/ru/pages/ecollection/urelib/chelyabinskaya_guberniya_1919_1923/',
+        'Уральская электронная библиотека/Западно-Сибирская железная дорога':
+          '/ru/pages/ecollection/urelib/zapadno-sibirskaya_zheleznaya_doroga/',
+        'Уральская электронная библиотека/Южный Урал–Казахстан: встречи на границе':
+          '/ru/pages/ecollection/urelib/kollekciya_yuzhnyy_ural-kazahstan_vstrechi_na_granice/',
+        'Уральская электронная библиотека/Уфимская губерния. 1865–1919 гг.':
+          '/ru/pages/ecollection/urelib/ufimskaya_guberniya_1865-1919/',
+        'Уральская электронная библиотека/Календари знаменательных дат':
+          '/ru/pages/ecollection/urelib/kalendari_znamenatelnyh_dat/',
+        'Уральская электронная библиотека/Революции 1917 г. на Урале':
+          '/ru/pages/ecollection/urelib/kollekciya_revolyucii_1917_g_na_urale/',
+        'Уральская электронная библиотека/Искусство Урала':
+          '/ru/pages/ecollection/urelib/iskusstvo_urala/',
+        'Уральская электронная библиотека/Краеведы и краеведение':
+          '/ru/pages/ecollection/urelib/kraevedy_i_kraevedenie/',
+        'Уральская электронная библиотека/Фольклор Урала':
+          '/ru/pages/ecollection/urelib/folklor_urala/',
+        'Уральская электронная библиотека/Челябинск. XIX–XXI вв.':
+          '/ru/pages/ecollection/urelib/kollekciya_chelyabinsk_xix-xxi_vv/',
+        'Уральская электронная библиотека/Музыкальная жизнь Урала':
+          '/ru/pages/ecollection/urelib/muzykalnaya_zhizn_urala/',
+        'Уральская электронная библиотека/Религия на Урале':
+          '/ru/pages/ecollection/urelib/kollekciya_religiya_na_urale/',
+        'Уральская электронная библиотека/Оренбургское казачье войско':
+          '/ru/pages/ecollection/urelib/kollekciya_orenburgskoe_kazache_voysko/',
+        'Уральская электронная библиотека/Пермская губерния. 1796–1923 гг.':
+          '/ru/pages/ecollection/urelib/permskaya_guberniya/',
+        'Уральская электронная библиотека/Коллекция "Южный Урал – театральный"':
+          '/ru/pages/ecollection/urelib/yuzhnyy_ural_teatralnyy/',
+        'Уральская электронная библиотека/Музей права Южного Урала':
+          '/ru/pages/ecollection/urelib/muzey_prava_yuzhnogo_urala/',
+        'Книжные памятники Челябинской области':
+          '/ru/pages/ecollection/kp/',
+        'Книжные памятники Челябинской области/Старопечатные книги (изданные с 1450 по 1830 г.)':
+          '#',
+        'Книжные памятники Челябинской области/Рукописные книги кириллической традиции':
+          '/ru/pages/ecollection/kp/rukopisnye_knigi_kirillicheskoy_tradicii/',
+        'Книжные памятники Челябинской области/Книги гражданской печати 18 века':
+          '#',
+        'Книжные памятники Челябинской области/Книжные памятники регионального значения (собрания местной печати)':
+          '/ru/pages/ecollection/kp/knizhnye_pamyatniki_regionalnogo_znacheniya/',
+        'Книжные памятники Челябинской области/Печатные книги кириллической традиции':
+          '#',
+        'Книжные памятники Челябинской области/Печатные книги кириллической традиции':
+          '#',
+        'Книжные памятники Челябинской области/Редкие книги второй половины XIX-начала XX вв.':
+          '#',
+        'ШОС и БРИКС: контуры сотрудничества':
+          '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/',
+        'ШОС и БРИКС: контуры сотрудничества/Деятельность стран ШОС и БРИКС':
+          '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/deyatelnost_stran_shos_i_briks/',
+        'ШОС и БРИКС: контуры сотрудничества/Нормативно-правовые документы':
+          '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/normativno_pravovye_dokumenty_stran_shos_i_briks/',
+      };
 
-            var collectionPage = collectionPages[parts.reverse().join('/')];
-            var $modalContent = $('.modal__content');
-            if (collectionPage !== undefined) {
-                $modalContent.html('Загрузка описания...');
-                $.get(collectionPage).done(function (data) {
-                    $modalContent.html(data);
-                    MicroModal.show('marcModal');
-                }).error(function (error) {
-                    if (error.status === 404) {
-                        $modalContent.html('Страница с описанием коллекции не существует');
-                    } else {
-                        $modalContent.html('Ошибка при загрузке описания');
-                    }
+      var collectionPage = collectionPages[parts.reverse().join('/')];
+      var $modalContent = $('.modal__content');
+      if (collectionPage !== undefined) {
+        $modalContent.html('Загрузка описания...');
+        $.get(collectionPage).done(function (data) {
+          $modalContent.html(data);
+          MicroModal.show('marcModal');
+        }).error(function (error) {
+          if (error.status === 404) {
+            $modalContent.html('Страница с описанием коллекции не существует');
+          } else {
+            $modalContent.html('Ошибка при загрузке описания');
+          }
 
-                    MicroModal.show('marcModal');
-                    console.error(error, error.stack)
-                });
-            } else {
-                $modalContent.html('Ссылка на описание не найдена');
-                MicroModal.show('marcModal');
-            }
-            return false;
+          MicroModal.show('marcModal');
+          console.error(error, error.stack)
         });
-
-        $('.pivot__title').on('click', function () {
-            $(this).siblings('ul').toggle();
-            $(this).siblings('span').toggleClass('expanded');
-            return false
-        })
+      } else {
+        $modalContent.html('Ссылка на описание не найдена');
+        MicroModal.show('marcModal');
+      }
+      return false;
     });
+
+    $('.pivot__title').on('click', function () {
+      $(this).siblings('ul').toggle();
+      $(this).siblings('span').toggleClass('expanded');
+      return false
+    })
+  });
 
 </script>
 

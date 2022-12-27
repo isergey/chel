@@ -6,11 +6,11 @@ from urllib.parse import quote, urlencode
 import requests
 from requests.auth import HTTPBasicAuth
 
-from . import exceptions
-from .cache import TokenCache
-from .utils import join_url
+from opac_global_client import exceptions
+from opac_global_client.cache import TokenCache
+from opac_global_client.utils import join_url
 
-from .entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
+from opac_global_client.entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
     CirculationOperationsResponse, CirculationOrdersResponse, RecordsResponse, CirculationHistoryResponse
 
 
@@ -221,7 +221,7 @@ class Client:
             json=json_dict,
             headers=request_headers,
             auth=auth,
-            timeout=10,
+            timeout=30,
         )
 
         if 200 <= response.status_code < 400:
@@ -269,11 +269,15 @@ class Client:
 if __name__ == '__main__':
     import os
 
-    username = os.environ.get('OPAC_USERNAME')
-    password = os.environ.get('OPAC_PASSWORD')
-    base_url = os.environ.get('OPAC_BASE_URL')
-    client_id = os.environ.get('OPAC_CLIENT_ID')
-    client_secret = os.environ.get('OPAC_CLIENT_SECRET')
+    OPAC_GLOBAL = {
+    }
+
+
+    username = OPAC_GLOBAL.get('OPAC_USERNAME')
+    password = OPAC_GLOBAL.get('OPAC_PASSWORD')
+    base_url = OPAC_GLOBAL.get('OPAC_BASE_URL')
+    client_id = OPAC_GLOBAL.get('OPAC_CLIENT_ID')
+    client_secret = OPAC_GLOBAL.get('OPAC_CLIENT_SECRET')
 
     config = Config(
         username=username,
@@ -285,4 +289,4 @@ if __name__ == '__main__':
 
     client = Client(config, token_cache=TokenCache())
 
-    response = client.readers().find_by_login('dostovalov@gmail.com')
+    response = client.readers().find_by_login('202060')
