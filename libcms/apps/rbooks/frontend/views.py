@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse, resolve_url
 from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
+from django.utils.http import urlquote_plus
 from django.views.decorators.cache import never_cache
 from ..models import ViewLog
 from ssearch.frontend.views import get_content_dict, init_solr_collection
@@ -39,7 +40,7 @@ def show(request):
         elif id:
             back_url.append('?id=' + id)
 
-        return redirect(resolve_url('rbooks:frontend:auth_required') + '?next=' + ''.join(back_url))
+        return redirect(resolve_url('rbooks:frontend:auth_required') + '?next=' + urlquote_plus(''.join(back_url)))
 
     if not code:
         raise Http404('Book not found')
