@@ -39,7 +39,7 @@ def show(request):
         elif id:
             back_url.append('?id=' + id)
 
-        return redirect(resolve_url('rbooks:frontend:auth_required') + '?back=' + ''.join(back_url))
+        return redirect(resolve_url('rbooks:frontend:auth_required') + '?next=' + ''.join(back_url))
 
     if not code:
         raise Http404('Book not found')
