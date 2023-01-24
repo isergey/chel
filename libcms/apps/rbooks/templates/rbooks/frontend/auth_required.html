@@ -7,8 +7,11 @@
 <body>
 <h1>Для работы с ресурсом пройдите, пожалуйста, регистрацию!</h1>
 <p>
-    Пожалуйста, выполните <a href="{% url 'login' %}">вход</a> на портал,
+    Пожалуйста, выполните <a href="{% url 'login' %}?">вход</a> на портал,
     либо пройдите <a href="http://opac.chelreglib.ru/wl/reg.php">регистрацию</a>.
+    <pre>
+    {{ request.META.HTTP_REFERER }}
+</pre>
 </p>
 
 </body>

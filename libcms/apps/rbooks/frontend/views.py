@@ -7,7 +7,7 @@ from urllib.parse import parse_qs
 from zipfile import ZipFile
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, resolve_url
 from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
@@ -30,7 +30,7 @@ class AccessDenied(Exception): pass
 @never_cache
 def show(request):
     if not request.user.is_authenticated:
-        return redirect('rbooks:frontend:auth_required')
+        return redirect(resolve_url('rbooks:frontend:auth_required') + '?back=' + request.META.get('HTTP_REFERER'))
 
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
