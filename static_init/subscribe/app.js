@@ -15,7 +15,7 @@ const template = `
             />
         </ul>
         <div class="subscriptions__params">
-            <input class="form-control" type="email" v-model="email"/>
+            <input class="form-control" type="email" v-model="email" placeholder="Email"/>
         </div>
     </div>
 
