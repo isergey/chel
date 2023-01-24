@@ -8,7 +8,6 @@ from zipfile import ZipFile
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse, resolve_url
-from django.template.defaultfilters import urlencode
 from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.views.decorators.cache import never_cache
@@ -30,11 +29,17 @@ class AccessDenied(Exception): pass
 
 @never_cache
 def show(request):
-    if not request.user.is_authenticated:
-        return redirect(resolve_url('rbooks:frontend:auth_required') + '?back=' + urlencode(request.META.get('HTTP_REFERER')))
-
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
+
+    if not request.user.is_authenticated:
+        back_url = [resolve_url('rbooks:frontend:show')]
+        if code:
+            back_url.append('?code=' + code)
+        elif id:
+            back_url.append('?id=' + id)
+
+        return redirect(resolve_url('rbooks:frontend:auth_required') + '?back=' + ''.join(back_url))
 
     if not code:
         raise Http404('Book not found')
