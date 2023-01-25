@@ -126,7 +126,7 @@ def handle_uploaded_file(instance):
         final_width = int((image_ratio * final_hight))
         im.thumbnail((final_width, final_hight), Image.ANTIALIAS)
         im = im.convert('RGB')
-        im.save(image_file_path, "JPEG", quality=95)
+        im.save(image_file_path, "JPEG", quality=85)
     except IOError as e:
         return None
 
@@ -167,7 +167,7 @@ def handle_uploaded_file(instance):
         final_width = int((image_ratio * final_hight))
         im.thumbnail((final_width, final_hight), Image.ANTIALIAS)
         im = im.convert('RGB')
-        im.save(thumbinail_path, "JPEG", quality=95)
+        im.save(thumbinail_path, "JPEG", quality=85)
     except IOError as e:
         return None
     return image_file_path
