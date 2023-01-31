@@ -15,8 +15,8 @@ huey==2.2.0
 lockfile==0.12.2
 lxml==4.5.0
 monotonic==1.5
-Pillow==7.1.1
-psycopg2-binary==2.8.5
+Pillow==9.4.0
+psycopg2-binary==2.9.5
 Pygments==2.6.1
 pylibmc==1.6.1
 python-crontab==2.4.1
