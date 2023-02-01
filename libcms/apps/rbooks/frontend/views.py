@@ -34,7 +34,7 @@ def show(request):
     id = request.GET.get('id', None)
 
     if not request.user.is_authenticated:
-        back_url = [resolve_url('rbooks:frontend:show')]
+        back_url = [request.build_absolute_uri(resolve_url('rbooks:frontend:show'))]
         if code:
             back_url.append('?code=' + code)
         elif id:
