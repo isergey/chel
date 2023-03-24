@@ -8,6 +8,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
+from crawlerdetect.detector import is_crawler
+
 User = get_user_model()
 
 
@@ -53,6 +55,9 @@ class Record(models.Model):
 
 
 def create_record(request, sc: str, action: str, attributes: dict = None):
+    if is_crawler(request):
+        return
+
     user_id = ''
     if request.user.is_authenticated:
         user_id = str(request.user.id)
