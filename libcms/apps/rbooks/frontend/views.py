@@ -12,6 +12,8 @@ from django.utils import translation
 from django.shortcuts import HttpResponse, Http404
 from django.utils.http import urlquote_plus
 from django.views.decorators.cache import never_cache
+
+from crawlerdetect.detector import is_crawler
 from ..models import ViewLog
 from ssearch.frontend.views import get_content_dict, init_solr_collection
 from ssearch.models import get_records
@@ -88,10 +90,12 @@ def show(request):
             catalogs = get_content_dict(records[0]['tree']).get('catalog', [])
             if catalogs:
                 collection = catalogs[0]
-        view_log = ViewLog(doc_id=id, collection=collection)
-        if request.user.is_authenticated:
-            view_log.user_id = request.user.id
-        ViewLog.objects.bulk_create([view_log])
+
+        if not is_crawler(request):
+            view_log = ViewLog(doc_id=id, collection=collection)
+            if request.user.is_authenticated:
+                view_log.user_id = request.user.id
+            ViewLog.objects.bulk_create([view_log])
 
     if edoc2_path and os.path.isfile(edoc2_path):
         return rbooks2(request, id)
