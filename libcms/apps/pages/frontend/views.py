@@ -6,6 +6,8 @@ from django.utils import translation
 from django.contrib.auth.models import Group
 from guardian.shortcuts import get_perms
 from guardian.utils import get_anonymous_user
+
+from crawlerdetect.detector import is_crawler
 from ..models import Page, Content, ViewLog
 
 ANON_USER = get_anonymous_user()
@@ -73,12 +75,14 @@ def show(request, slug):
                     nd[contend_page.page_id].content = contend_page
 
     user = request.user
-    log = ViewLog(page=page)
-    if not user.id:
-        log.user_id = ANON_USER.id
-    else:
-        log.user = user
-    log.save()
+
+    if not is_crawler(request):
+        log = ViewLog(page=page)
+        if not user.id:
+            log.user_id = ANON_USER.id
+        else:
+            log.user = user
+        ViewLog.objects.bulk_create([log])
 
     if request.is_ajax():
         return render(request, 'pages/frontend/show_ajax.html', {

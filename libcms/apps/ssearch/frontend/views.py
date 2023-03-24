@@ -15,6 +15,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from lxml import etree
 
+from crawlerdetect.detector import is_crawler
 from junimarc.marc_query import MarcQuery
 from rbooks.models import ViewLog
 from . import record_templates
@@ -515,7 +516,7 @@ def results(request, catalog='uc'):
     make_logging = not _is_request_from_detail(request)
     user = request.user if request.user.is_authenticated else None
     # make_logging = False
-    if make_logging:
+    if not is_crawler(request) and make_logging:
         models.log_search_request(
             params=_flat_kv_args(kv_dicts),
             user=user,
@@ -707,6 +708,10 @@ def detail(request):
 @never_cache
 @csrf_exempt
 def log(request):
+
+    if is_crawler(request):
+        return HttpResponse('')
+
     session_id = _get_session_id(request)
     record_id = request.POST.get('id', None)
     action = request.POST.get('action', None)

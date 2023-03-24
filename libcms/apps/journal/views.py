@@ -2,11 +2,15 @@ from uuid import uuid4
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.decorators.cache import never_cache
 
+from crawlerdetect.detector import is_crawler
 from .models import create_record
 
 
 @never_cache
 def index(request):
+    if is_crawler(request):
+        return HttpResponse('')
+
     action = request.GET['a']
     sc, is_new = _get_sc(request)
     attributes = {}
