@@ -3,6 +3,8 @@ BOTS = [
     'bingbot',
     'yandexbot',
     'googlebot',
-    'crawl',
+    'baiduspider',
+    'begaindex',
+    'crawler',
     'spider'
 ]
