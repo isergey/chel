@@ -7,5 +7,7 @@ BOTS = [
     'begaindex',
     'crawler',
     'spider',
+    'robot',
+    'request',
     'zabbix'
 ]
