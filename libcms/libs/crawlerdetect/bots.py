@@ -6,5 +6,6 @@ BOTS = [
     'baiduspider',
     'begaindex',
     'crawler',
-    'spider'
+    'spider',
+    'zabbix'
 ]

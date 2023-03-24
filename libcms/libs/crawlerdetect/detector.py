@@ -4,9 +4,7 @@ from .bots import BOTS
 
 
 def is_crawler(request: HttpRequest):
-    user_agent = (request.headers.get('User-Agent') or request.headers.get('user-agent') or request.headers.get(
-        'user-agent') or '').lower()
-    print(user_agent)
+    user_agent = (request.META.get('HTTP_USER_AGENT')or '').lower()
     if not user_agent:
         return False
 
