@@ -1,5 +1,8 @@
 BOTS = [
-    'compatible; ahrefsbot',
-    'compatible; bingbot',
-    'compatible; yandexbot'
+    'ahrefsbot',
+    'bingbot',
+    'yandexbot',
+    'googlebot',
+    'crawl',
+    'spider'
 ]

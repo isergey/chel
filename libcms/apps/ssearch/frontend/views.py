@@ -376,6 +376,8 @@ def index(request):
 
 
 def results(request, catalog='uc'):
+    if is_crawler(request):
+        return HttpResponse('')
     # sc = SearchCriteria(u"AND")
     # sc.add_attr(u'name', u'zi zi')
     # sc.add_attr(u'surname', u'do do')
@@ -516,7 +518,7 @@ def results(request, catalog='uc'):
     make_logging = not _is_request_from_detail(request)
     user = request.user if request.user.is_authenticated else None
     # make_logging = False
-    if not is_crawler(request) and make_logging:
+    if make_logging:
         models.log_search_request(
             params=_flat_kv_args(kv_dicts),
             user=user,
