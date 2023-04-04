@@ -347,7 +347,9 @@ def build_pivot_tree(pivot):
 
 
 def collections():
-    pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s,collection5_s'
+    # pivot_collections = 'collection2_s,collection_s,collection3_s,collection4_s,collection5_s'
+    pivot_collections = 'collection2_s,collection_s'
+
     uc = init_solr_collection('uc')
     faset_params = FacetParams()
     faset_params.fields = ['collection_s']
