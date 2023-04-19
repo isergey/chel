@@ -109,7 +109,19 @@
 </div>
 <script>
   $(function () {
-    const collectionPages = {
+    const collectionPages = new Map();
+
+    collectionPages.set(
+      'Периодические издания',
+      '/ru/pages/urelib/periodika/'
+    );
+
+    collectionPages.set(
+      'Периодические издания/Газета "Авангард" (Катав-Ивановск)',
+      '/ru/pages/urelib/periodika/gazeta_avangard/'
+    );
+
+    const collectionPages1 = {
         'Уральская электронная библиотека':
           '/ru/pages/ecollection/urelib/',
 
@@ -275,12 +287,12 @@
       } catch (e) {
           console.error(e)
       }*/
-      var parts = [];
+      const parts = [];
       $(this).parents('.pivot__element').each(function (index, el) {
         parts.push($(el).children('.pivot__title:first-child').text());
       });
-      console.log(parts.reverse().join('/'))
-      const collectionPage = collectionPages[parts.reverse().join('/')];
+      const path = parts.reverse().join('/');
+      const collectionPage = collectionPages[path];
       console.log(collectionPage);
       var $modalContent = $('.modal__content');
       if (collectionPage) {
