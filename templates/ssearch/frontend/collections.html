@@ -283,7 +283,7 @@
       console.log(parts.reverse().join('/'))
       var collectionPage = collectionPages[parts.reverse().join('/')];
       var $modalContent = $('.modal__content');
-      if (collectionPage !== undefined) {
+      if (collectionPage) {
         $modalContent.html('Загрузка описания...');
         $.get(collectionPage).done(function (data) {
           $modalContent.html(data);
