@@ -279,7 +279,7 @@
       $(this).parents('.pivot__element').each(function (index, el) {
         parts.push($(el).children('.pivot__title:first-child').text());
       });
-
+      console.log(collectionPages)
       console.log(parts.reverse().join('/'))
       var collectionPage = collectionPages[parts.reverse().join('/')];
       console.log(collectionPage);
