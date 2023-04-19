@@ -292,7 +292,7 @@
         parts.push($(el).children('.pivot__title:first-child').text());
       });
       const path = parts.reverse().join('/');
-      const collectionPage = collectionPages[path];
+      const collectionPage = collectionPages.get(path);
       console.log(collectionPage);
       var $modalContent = $('.modal__content');
       if (collectionPage) {
