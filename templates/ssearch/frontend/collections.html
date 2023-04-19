@@ -109,17 +109,7 @@
 </div>
 <script>
   $(function () {
-    const collectionPages = new Map();
 
-    collectionPages.set(
-      'Периодические издания',
-      '/ru/pages/urelib/periodika/'
-    );
-
-    collectionPages.set(
-      'Периодические издания/Газета "Авангард" (Катав-Ивановск)',
-      '/ru/pages/urelib/periodika/gazeta_avangard/'
-    );
 
     const collectionPages1 = {
         'Уральская электронная библиотека':
@@ -281,6 +271,10 @@
           '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/normativno_pravovye_dokumenty_stran_shos_i_briks/',
       };
 
+    const collectionPages = new Map();
+    Object.entries(collectionPages1).forEach((key, value) => {
+      collectionPages.set(key, value)
+    });
     $('.pivot__description').on('click', function () {
       /*try {
           MicroModal.show('marcModal');
