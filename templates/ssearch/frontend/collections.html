@@ -110,75 +110,159 @@
 <script>
   $(function () {
 
+    const collectionPages = new Map();
 
+    collectionPages.set(
+      'Уральская электронная библиотека',
+      '/ru/pages/ecollection/urelib/'
+    );
+    collectionPages.set(
+      'Периодические издания',
+      '/ru/pages/ecollection/urelib/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Авангард" (Катав-Ивановск)',
+      '/ru/pages/urelib/periodika/gazeta_avangard/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Горняцкая правда" (Коркино)',
+      '/ru/pages/ecollection/urelib/gazeta_gornyackaya_pravda/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "За цветные металлы" (Кыштым)',
+      '/ru/pages/ecollection/urelib/gazeta_za_cvetnye_metally/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Красное знамя" (Касли)',
+      '/ru/pages/ecollection/urelib/gazeta_krasnoe_znamya/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Новая жизнь" (Еманжелинск)',
+      '/ru/pages/ecollection/urelib/gazeta_novaya_zhizn/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Путь Ильича" (Бреды)',
+      '/ru/pages/ecollection/urelib/gazeta_put_ilicha/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Социалистический труд" (Нязепетровск)',
+      '/ru/pages/ecollection/urelib/gazeta_socialisticheskiy_trud/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Стальная искра" (Аша)',
+      '/ru/pages/ecollection/urelib/gazeta_stalnaya_iskra/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Победа" (Чесма)',
+      '/ru/pages/ecollection/urelib/gazeta_pobeda/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Степные зори" (Чесма)',
+      '/ru/pages/ecollection/urelib/gazeta_stepnye_zori/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Большевистское слово" (Златоуст)',
+      '/ru/pages/ecollection/urelib/kollekciya_gazeta_bolshevistskoe_slovo/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Вестник Приуралья" (Челябинск)',
+      '/ru/pages/ecollection/urelib/gazeta_vestnik_priuralya/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Власть народа" (Челябинск)',
+      '/ru/pages/ecollection/urelib/gazeta-vlast-naroda/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "За трудовую доблесть" (Челябинск)',
+      '/ru/pages/ecollection/urelib/kollekciya_gazeta_za_trudovuyu_doblest/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Златоустовский рабочий"',
+      '/ru/pages/ecollection/urelib/kollekciya_gazeta_zlatoustovskiy_rabochiy/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Колос" (Уйское)',
+      '/ru/pages/ecollection/urelib/gazeta_kolos/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Курганская свободная мысль"',
+      '/ru/pages/ecollection/urelib/gazeta-kurganskaya-svobodnaya-mysl/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Ленинские искры" (Челябинск)',
+      '/ru/pages/ecollection/urelib/gazeta_leninskie_iskry/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Наш трактор" (Челябинск)',
+      '/ru/pages/ecollection/urelib/gazeta_nash_traktor/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Оренбургские епархиальные ведомости"',
+      '/ru/pages/ecollection/urelib/gazeta_orenburgskie_eparhialnye_vedomosti/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Призыв"',
+      '/ru/pages/ecollection/urelib/kollekciya_gazeta_prizyv/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Пролетарская мысль" (Златоуст)',
+      '/ru/pages/ecollection/urelib/kollekciya_gazeta_proletarskaya_mysl/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Саткинский рабочий"',
+      '/ru/pages/ecollection/urelib/gazeta_satkinskiy_rabochiy/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Сталинская смена" (Челябинск)',
+      '/ru/pages/ecollection/urelib/gazeta_stalinskaya_smena/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Утро Сибири" (Челябинск)',
+      '/ru/pages/ecollection/urelib/gazeta_utro_sibiri/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Челябинский рабочий"',
+      '/ru/pages/ecollection/urelib/periodicals/gazeta_chelyabinskiy_rabochiy/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Уфалейский рабочий" (Верхний Уфалей)',
+      '/ru/pages/ecollection/urelib/gazeta_ufaleyskiy_rabochiy/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Красный уралец" (Верхнеуральск)',
+      '/ru/pages/ecollection/urelib/gazeta_krasnyy_uralec/'
+    );
+    collectionPages.set(
+      'Периодические издания/Газета "Сельский день" (Магнитогорск ; Верхнеуральск)',
+      '/ru/pages/ecollection/urelib/gazeta_selskiy_den/'
+    );
+    collectionPages.set(
+      'Персональные коллекции',
+      '/ru/pages/ecollection/urelib/personal_collections/'
+    );
+    collectionPages.set(
+      'Персональные коллекции/Наследие Моргенштерна',
+      '/ru/pages/ecollection/urelib/personal_collections/morgenshtern/'
+    );
+    collectionPages.set(
+      'Персональные коллекции/Б. Т. Уткин - ученый, библиограф, краевед',
+      '/ru/pages/ecollection/urelib/personal_collections/utkin/'
+    );
+    collectionPages.set(
+      '',
+      ''
+    );
+    collectionPages.set(
+      '',
+      ''
+    );
+    collectionPages.set(
+      '',
+      ''
+    );
+
+    /*
     const collectionPages1 = {
-        'Уральская электронная библиотека':
-          '/ru/pages/ecollection/urelib/',
-
-        'Периодические издания':
-          '/ru/pages/urelib/periodika/',
-        'Периодические издания/Газета "Авангард" (Катав-Ивановск)':
-          '/ru/pages/urelib/periodika/gazeta_avangard/',
-        'Периодические издания/Газета "Горняцкая правда" (Коркино)':
-          '/ru/pages/ecollection/urelib/gazeta_gornyackaya_pravda/',
-        'Периодические издания/Газета "За цветные металлы" (Кыштым)':
-          '/ru/pages/ecollection/urelib/gazeta_za_cvetnye_metally/',
-        'Периодические издания/Газета "Красное знамя" (Касли)':
-          '/ru/pages/ecollection/urelib/gazeta_krasnoe_znamya/',
-        'Периодические издания/Газета "Новая жизнь" (Еманжелинск)':
-          '/ru/pages/ecollection/urelib/gazeta_novaya_zhizn/',
-        'Периодические издания/Газета "Путь Ильича" (Бреды)':
-          '/ru/pages/ecollection/urelib/gazeta_put_ilicha/',
-        'Периодические издания/Газета "Социалистический труд" (Нязепетровск)':
-          '/ru/pages/ecollection/urelib/gazeta_socialisticheskiy_trud/',
-        'Периодические издания/Газета "Стальная искра" (Аша)':
-          '/ru/pages/ecollection/urelib/gazeta_stalnaya_iskra/',
-        'Периодические издания/Газета "Победа" (Чесма)':
-          '/ru/pages/ecollection/urelib/gazeta_pobeda/',
-        'Периодические издания/Газета "Степные зори" (Чесма)':
-          '/ru/pages/ecollection/urelib/gazeta_stepnye_zori/',
-        'Периодические издания/Газета "Большевистское слово" (Златоуст)':
-          '/ru/pages/ecollection/urelib/kollekciya_gazeta_bolshevistskoe_slovo/',
-        'Периодические издания/Газета "Вестник Приуралья" (Челябинск)':
-          '/ru/pages/ecollection/urelib/gazeta_vestnik_priuralya/',
-        'Периодические издания/Газета "Власть народа" (Челябинск)':
-          '/ru/pages/ecollection/urelib/gazeta-vlast-naroda/',
-        'Периодические издания/Газета "За трудовую доблесть" (Челябинск)':
-          '/ru/pages/ecollection/urelib/kollekciya_gazeta_za_trudovuyu_doblest/',
-        'Периодические издания/Газета "Златоустовский рабочий"':
-          '/ru/pages/ecollection/urelib/kollekciya_gazeta_zlatoustovskiy_rabochiy/',
-        'Периодические издания/Газета "Копейский рабочий"':
-          '/ru/pages/ecollection/urelib/gazeta_kopeyskiy_rabochiy/',
-        'Периодические издания/Газета "Колос" (Уйское)':
-          '/ru/pages/ecollection/urelib/gazeta_kolos/',
-        'Периодические издания/Газета "Курганская свободная мысль"':
-          '/ru/pages/ecollection/urelib/gazeta-kurganskaya-svobodnaya-mysl/',
-        'Периодические издания/Газета "Ленинские искры" (Челябинск)':
-          '/ru/pages/ecollection/urelib/gazeta_leninskie_iskry/',
-        'Периодические издания/Газета "Наш трактор" (Челябинск)':
-          '/ru/pages/ecollection/urelib/gazeta_nash_traktor/',
-        'Периодические издания/Газета "Оренбургские епархиальные ведомости"':
-          '/ru/pages/ecollection/urelib/gazeta_orenburgskie_eparhialnye_vedomosti/',
-        'Периодические издания/Газета "Призыв"':
-          '/ru/pages/ecollection/urelib/kollekciya_gazeta_prizyv/',
-        'Периодические издания/Газета "Пролетарская мысль" (Златоуст)':
-          '/ru/pages/ecollection/urelib/kollekciya_gazeta_proletarskaya_mysl/',
-        'Периодические издания/Газета "Саткинский рабочий"':
-          '/ru/pages/ecollection/urelib/gazeta_satkinskiy_rabochiy/',
-        'Периодические издания/Газета "Сталинская смена" (Челябинск)':
-          '/ru/pages/ecollection/urelib/gazeta_stalinskaya_smena/',
-        'Периодические издания/Газета "Утро Сибири" (Челябинск)':
-          '/ru/pages/ecollection/urelib/gazeta_utro_sibiri/',
-        'Периодические издания/Газета "Челябинский рабочий"':
-          '/ru/pages/ecollection/urelib/periodicals/gazeta_chelyabinskiy_rabochiy/',
-        'Периодические издания/Газета "Уфалейский рабочий" (Верхний Уфалей)':
-          '/ru/pages/ecollection/urelib/gazeta_ufaleyskiy_rabochiy/',
-        'Периодические издания/Газета "Красный уралец" (Верхнеуральск)':
-          '/ru/pages/ecollection/urelib/gazeta_krasnyy_uralec/',
-        'Периодические издания/Газета "Сельский день" (Магнитогорск ; Верхнеуральск)':
-          '/ru/pages/ecollection/urelib/gazeta_selskiy_den/',
-
-
         'Персональные коллекции':
           '/ru/pages/ecollection/urelib/personal_collections/',
         'Персональные коллекции/Наследие Моргенштерна':
@@ -269,9 +353,9 @@
           '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/deyatelnost_stran_shos_i_briks/',
         'ШОС и БРИКС: контуры сотрудничества/Нормативно-правовые документы':
           '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/normativno_pravovye_dokumenty_stran_shos_i_briks/',
-      };
+      };*/
 
-    const collectionPages = new Map();
+
     Object.entries(collectionPages1).forEach((key, value) => {
       collectionPages.set(key, value)
     });
