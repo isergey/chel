@@ -109,17 +109,7 @@
 </div>
 <script>
   $(function () {
-    $('.pivot__description').on('click', function () {
-      /*try {
-          MicroModal.show('marcModal');
-      } catch (e) {
-          console.error(e)
-      }*/
-      var parts = [];
-      $(this).parents('.pivot__element').each(function (index, el) {
-        parts.push($(el).children('.pivot__title:first-child').text());
-      });
-      var collectionPages = {
+    var collectionPages = {
         'Уральская электронная библиотека':
           '/ru/pages/ecollection/urelib/',
 
@@ -279,6 +269,18 @@
           '/ru/pages/ecollection/shos_i_briks_kontury_sotrudnichestva/normativno_pravovye_dokumenty_stran_shos_i_briks/',
       };
 
+    $('.pivot__description').on('click', function () {
+      /*try {
+          MicroModal.show('marcModal');
+      } catch (e) {
+          console.error(e)
+      }*/
+      var parts = [];
+      $(this).parents('.pivot__element').each(function (index, el) {
+        parts.push($(el).children('.pivot__title:first-child').text());
+      });
+
+      console.log(parts.reverse().join('/'))
       var collectionPage = collectionPages[parts.reverse().join('/')];
       var $modalContent = $('.modal__content');
       if (collectionPage !== undefined) {
