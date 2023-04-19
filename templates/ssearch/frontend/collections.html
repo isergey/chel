@@ -109,7 +109,7 @@
 </div>
 <script>
   $(function () {
-    var collectionPages = {
+    const collectionPages = {
         'Уральская электронная библиотека':
           '/ru/pages/ecollection/urelib/',
 
@@ -279,9 +279,8 @@
       $(this).parents('.pivot__element').each(function (index, el) {
         parts.push($(el).children('.pivot__title:first-child').text());
       });
-      console.log(collectionPages)
       console.log(parts.reverse().join('/'))
-      var collectionPage = collectionPages[parts.reverse().join('/')];
+      const collectionPage = collectionPages[parts.reverse().join('/')];
       console.log(collectionPage);
       var $modalContent = $('.modal__content');
       if (collectionPage) {
