@@ -196,11 +196,11 @@ def districts(request):
     if ftype:
         q &= Q(types__in=[ftype])
     cbs_list = None
-    if q:
+    # if q:
     #     cbs_list = Library.objects.filter(parent=None).order_by('weight', 'name')
     # else:
-        filter = True
-        cbs_list = Library.objects.filter(q).order_by('weight', 'name').exclude(parent=None)
+    filter = True
+    cbs_list = Library.objects.filter(q).order_by('weight', 'name').exclude(parent=None)
     # else:
     #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
 

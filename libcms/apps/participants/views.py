@@ -27,8 +27,6 @@ def index(request):
     for cbs in library_systems:
         letters.append(cbs.letter)
     letters = list(set(letters))
-    print(letters)
-    print('edwedweded')
     return render(request, 'participants/cbs_list.html', {
         'orgs': library_systems,
         'letters': letters
