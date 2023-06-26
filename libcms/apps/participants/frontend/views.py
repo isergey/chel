@@ -199,7 +199,7 @@ def districts(request):
     # if q:
     #     cbs_list = Library.objects.filter(parent=None).order_by('weight', 'name')
     # else:
-    filter = True
+    filter = bool(q)
     cbs_list = Library.objects.filter(q).order_by('weight', 'name').exclude(parent=None)
     # else:
     #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
@@ -208,14 +208,10 @@ def districts(request):
    #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
     js_orgs = []
 
-    cbs_page = None
-    if cbs_list:
-        cbs_page = get_page(request, cbs_list)
-        cbs_list = cbs_page.object_list
-        for org in cbs_page.object_list:
-            js_orgs.append(make_library_dict(org))
-
-
+    cbs_page = get_page(request, cbs_list)
+    cbs_list = cbs_page.object_list
+    for org in cbs_page.object_list:
+        js_orgs.append(make_library_dict(org))
 
     districts = District.objects.all().order_by('name')
     letters = []
