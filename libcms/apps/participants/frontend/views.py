@@ -179,7 +179,6 @@ def get_branches_by_district(request):
 
 
 def districts(request):
-    filter = False
     filter_title = ''
     letter = request.GET.get('letter')
     district = request.GET.get('district')
@@ -195,17 +194,10 @@ def districts(request):
 
     if ftype:
         q &= Q(types__in=[ftype])
-    cbs_list = None
-    # if q:
-    #     cbs_list = Library.objects.filter(parent=None).order_by('weight', 'name')
-    # else:
+
     filter = bool(q)
     cbs_list = Library.objects.filter(q).order_by('weight', 'name').exclude(parent=None)
-    # else:
-    #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
 
-   # if not filter:
-   #     cbs_list = Library.objects.filter(parent=None).order_by('weight')
     js_orgs = []
 
     cbs_page = get_page(request, cbs_list)
