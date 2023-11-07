@@ -1,17 +1,18 @@
 import json
 from datetime import date
-from typing import List, Optional
-from urllib.parse import quote, urlencode
+from typing import List
+from urllib.parse import quote
 
 import requests
 from requests.auth import HTTPBasicAuth
 
 from opac_global_client import exceptions
 from opac_global_client.cache import TokenCache
+from opac_global_client.entities import (
+    ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperationsResponse, CirculationOrdersResponse,
+    RecordsResponse, CirculationHistoryResponse
+)
 from opac_global_client.utils import join_url
-
-from opac_global_client.entities import ReaderResponse, ReaderSearchResponse, Reader, Token, CirculationOperation, \
-    CirculationOperationsResponse, CirculationOrdersResponse, RecordsResponse, CirculationHistoryResponse
 
 
 class Config:
@@ -114,7 +115,6 @@ class Circulation:
         )
         return CirculationHistoryResponse(**data)
 
-
     def renewal(self, place: str, item_codes: List[str]):
         data = self.__client.make_request(
             method='post',
@@ -212,7 +212,7 @@ class Client:
         request_headers = headers or {}
         if self.__config.username and auth is None:
             request_headers['Authorization'] = 'Bearer ' + self.__get_token().access_token
-
+        print(self.__config.base_url, path),
         response = requests.request(
             method=method,
             url=join_url(self.__config.base_url, path),
@@ -267,17 +267,19 @@ class Client:
 
 
 if __name__ == '__main__':
-    import os
-
     OPAC_GLOBAL = {
+        'username': 'PORTAL',
+        'password': 'gjhnfk',
+        'base_url': 'http://opac.chelreglib.ru/api/v1',
+        'client_id': '354FE540-6100-436F-A212-7B29C4D05512',
+        'client_secret': '7rhBQCWiIufQRooTtXc',
     }
 
-
-    username = OPAC_GLOBAL.get('OPAC_USERNAME')
-    password = OPAC_GLOBAL.get('OPAC_PASSWORD')
-    base_url = OPAC_GLOBAL.get('OPAC_BASE_URL')
-    client_id = OPAC_GLOBAL.get('OPAC_CLIENT_ID')
-    client_secret = OPAC_GLOBAL.get('OPAC_CLIENT_SECRET')
+    username = OPAC_GLOBAL.get('username')
+    password = OPAC_GLOBAL.get('password')
+    base_url = OPAC_GLOBAL.get('base_url')
+    client_id = OPAC_GLOBAL.get('client_id')
+    client_secret = OPAC_GLOBAL.get('client_secret')
 
     config = Config(
         username=username,
