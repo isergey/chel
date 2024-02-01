@@ -212,7 +212,7 @@ class Client:
         request_headers = headers or {}
         if self.__config.username and auth is None:
             request_headers['Authorization'] = 'Bearer ' + self.__get_token().access_token
-        print(self.__config.base_url, path),
+
         response = requests.request(
             method=method,
             url=join_url(self.__config.base_url, path),
@@ -265,12 +265,31 @@ class Client:
         )
         return Token(**data)
 
+# import logging
+#
+# # These two lines enable debugging at httplib level (requests->urllib3->http.client)
+# # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
+# # The only thing missing will be the response.body which is not logged.
+# try:
+#     import http.client as http_client
+# except ImportError:
+#     # Python 2
+#     import httplib as http_client
+# http_client.HTTPConnection.debuglevel = 1
+#
+# # You must initialize logging, otherwise you'll not see debug output.
+# logging.basicConfig()
+# logging.getLogger().setLevel(logging.DEBUG)
+# requests_log = logging.getLogger("requests.packages.urllib3")
+# requests_log.setLevel(logging.DEBUG)
+# requests_log.propagate = True
+
 
 if __name__ == '__main__':
     OPAC_GLOBAL = {
         'username': 'PORTAL',
         'password': 'gjhnfk',
-        'base_url': 'http://opac.chelreglib.ru/api/v1',
+        'base_url': 'https://opac.chelreglib.ru/api/v1',
         'client_id': '354FE540-6100-436F-A212-7B29C4D05512',
         'client_secret': '7rhBQCWiIufQRooTtXc',
     }
@@ -292,3 +311,13 @@ if __name__ == '__main__':
     client = Client(config, token_cache=TokenCache())
 
     response = client.readers().find_by_login('202060')
+    print(response)
+    response = client.circulation().get_reader_checkouts(reader_id='202060')
+    print(response)
+    # try:
+    #     response = client.circulation().get_reader_circ_history(
+    #         barcode='202060',
+    #         from_date=date(2021, 1, 1),
+    #         to_date=date(2022, 1, 1),
+    #     )
+    # except: pass
