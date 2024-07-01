@@ -489,6 +489,7 @@ def clean_source_records(request, source_id):
     harvesting.clean_source_records(source.id)
     return redirect('harvester:source', id=source.id)
 
+
 @login_required
 @atomic
 def collect_source(request, source_id):
@@ -584,6 +585,7 @@ def delete_index_transformation_rule(request, id):
     # )
     transformation_rule.delete()
     return redirect('harvester:index_transformation_rules')
+
 
 @login_required
 #@atomic
