@@ -78,5 +78,5 @@ def _set_sc_cookie(response, is_new, sc):
 
 
 def __decode_base64_url(b64_string: str):
-    s = base64.urlsafe_b64decode(b64_string)
+    s = base64.urlsafe_b64decode(b64_string) #
     return unquote(s)
