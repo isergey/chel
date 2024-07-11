@@ -1,5 +1,6 @@
 # encoding: utf-8
 import hashlib
+from base64 import urlsafe_b64encode
 from typing import List
 from urllib.parse import quote
 
@@ -439,7 +440,7 @@ def send_to_email():
                 continue
 
             link['href'] = journal_redirect + '?u={href}&a=subscribe_click&attr_subscribe={subscribe_id}'.format(
-                href=quote(link['href']),
+                href=urlsafe_b64encode(quote(link['href']).encode('utf-8')).decode('utf-8'),
                 subscribe_id=str(send_status.letter.subscribe_id)
             )
 
