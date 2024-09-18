@@ -1,5 +1,9 @@
 {% extends 'index/frontend/index.html' %}
-{% block title %}{{ idate }}{% endblock %}
+{% block title %}
+    {% if idate.count_day %}{{ idate.date|date:"d" }}{% endif %}
+    {% if idate.count_month %}{{ idate.date|date:"E" }} {% endif %}
+    {% if idate.count_year %}{{ idate.date|date:"Y" }} г.{% endif %} {{ idate }}
+{% endblock %}
 {% block meta_description %}{% endblock %}
 {% block content %}
     <main class="main main_bg-white">
