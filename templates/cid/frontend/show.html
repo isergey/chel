@@ -25,7 +25,13 @@
                     {#                    </li>#}
                 </ol>
             </div>
-            <h1 class="content-title">{{ idate.date }} {{ idate }}</h1>
+            <h1 class="content-title">
+                {% if idate.count_day %}{{ idate.date|date:"d" }}{% endif %}
+                        {% if idate.count_month %}{{ idate.date|date:"E" }} {% endif %}
+                        {% if idate.count_year %}{{ idate.date|date:"Y" }} г.{% endif %}
+
+                {{ idate }}
+            </h1>
             <div class="ya-share2" data-services="vkontakte,whatsapp,viber,telegram"></div>
             <div class="row">
                 <div class="col-lg-8 col-md-8 col-sm-12">
