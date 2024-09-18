@@ -33,7 +33,11 @@
                         <a class="btn" href="{% url 'cid:administration:edit_id' idate.id %}">Редактировать</a>
                     {% endif %}
                     <div class="content">
-                        <p><b>Дата события:</b> {{ idate.date }}</p>
+                        <p><b>Дата события:</b>
+                        {% if idate.count_day %}{{ idate.date|date:"d" }}{% endif %}
+                        {% if idate.count_month %}{{ idate.date|date:"E" }} {% endif %}
+                        {% if idate.count_year %}{{ idate.date|date:"Y" }} г.{% endif %}
+                        </p>
                         <p><b>Тип:</b> {% for type in  idate.type.all %} {{ type }} {% if not forloop.last %},
                         {% endif %}{% endfor %}</p>
                         <h2>Описание</h2>
