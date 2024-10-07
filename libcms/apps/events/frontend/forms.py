@@ -43,7 +43,7 @@ class EventsFilterForm(forms.Form):
 
     category = forms.ModelMultipleChoiceField(
         label=u'Категория события',
-        queryset=models.Category.objects.all(),
+        queryset=models.Category.objects.all().order_by('-order', 'title'),
         required=False,
         widget=forms.CheckboxSelectMultiple
     )
