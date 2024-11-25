@@ -125,7 +125,6 @@ class ParticipantForm(forms.Form):
     )
 
 
-
 DAY_CHOISE = (
     ('1', 'За один день'),
     ('3', 'За три дня'),
@@ -139,16 +138,24 @@ REMEMBER_SYSTEMS_CHOISE = (
 
 
 class CommentEventForm(forms.Form):
-    text = forms.CharField(min_length=6, max_length=255,
-                           label="Текст комментария", widget=forms.Textarea)
+    text = forms.CharField(
+        min_length=6,
+        max_length=255,
+        label="Текст комментария", widget=forms.Textarea
+    )
 
 
 class AddToFavoriteForm(forms.Form):
-    days_for_remember = forms.MultipleChoiceField(choices=DAY_CHOISE,
-                                                  widget=forms.CheckboxSelectMultiple(),
-                                                  label="Напомнить")
-    remember_system = forms.ChoiceField(choices=REMEMBER_SYSTEMS_CHOISE, initial='0',
-                                        label="Выслать напоминания по")
+    days_for_remember = forms.MultipleChoiceField(
+        choices=DAY_CHOISE,
+        widget=forms.CheckboxSelectMultiple(),
+        label="Напомнить"
+    )
+    remember_system = forms.ChoiceField(
+        choices=REMEMBER_SYSTEMS_CHOISE,
+        initial='0',
+        label="Выслать напоминания по"
+    )
 
 
 def get_years_choice():
@@ -186,10 +193,14 @@ def get_current_month_choice():
 
 
 class CalendarFilterForm(forms.Form):
-    month = forms.ChoiceField(choices=MONTH_CHOICES,
-                              label="Месяц",
-                              widget=forms.Select(attrs={'onchange': 'this.form.submit();'}))
-    year = forms.ChoiceField(choices=get_years_choice(),
-                             label="Год",
-                             widget=forms.Select(attrs={'onchange': 'this.form.submit();'}))
+    month = forms.ChoiceField(
+        choices=MONTH_CHOICES,
+        label="Месяц",
+        widget=forms.Select(attrs={'onchange': 'this.form.submit();'})
+    )
+    year = forms.ChoiceField(
+        choices=get_years_choice(),
+        label="Год",
+        widget=forms.Select(attrs={'onchange': 'this.form.submit();'})
+    )
     # Возвращаем список из предыдущего текущего и следующего года

@@ -12,6 +12,7 @@ from guardian.decorators import permission_required_or_403
 from .. import models
 from . import forms
 from .. import settings
+from .. import tasks
 DATE_RANGE_FORM_PREFIX = 'drf'
 
 
@@ -209,9 +210,7 @@ def delete_letter(request, id):
 def send_letters(request):
     if not request.user.has_module_perms('subscribe'):
         return HttpResponseForbidden('Нет прав для доступа')
-    models.send_letters()
-    models.send_to_email()
-    models.clear_statuses()
+    tasks.send_letters()
     return redirect('subscribe:administration:letters')
 
 

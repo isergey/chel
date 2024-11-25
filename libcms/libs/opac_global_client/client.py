@@ -222,6 +222,7 @@ class Client:
             headers=request_headers,
             auth=auth,
             timeout=30,
+            verify=False
         )
 
         if 200 <= response.status_code < 400:

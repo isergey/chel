@@ -20,7 +20,9 @@ class DataSubfield(object):
 
 
 class ExtendedSubfield(object):
-    def __init__(self, code, fields=list()):
+    def __init__(self, code, fields=None):
+        if fields is None:
+            fields = list()
         self.__code = code
         self.__fields = fields
 
@@ -97,6 +99,13 @@ class DataField(object):
     def set_subfields(self, subfields):
         self.__subfields = subfields
 
+    def get_record(self):
+        fields = []
+        for subfield in self.__subfields:
+            if isinstance(subfield, ExtendedSubfield):
+                fields += subfield.get_fields()
+        return Record(fields=fields)
+
     def append_subfield(self, subfield):
         self.__subfields.append(subfield)
 
@@ -138,7 +147,9 @@ class Record(object):
             return self.__fields
         return [field for field in self.__fields if field.get_tag() == tag]
 
-    def add_fields(self, fields=list()):
+    def add_fields(self, fields=None):
+        if fields is None:
+            fields = list()
         self.__fields += fields
 
     def __str__(self):

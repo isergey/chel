@@ -11,6 +11,9 @@ class SubfieldQuery(object):
             return self.get_element().get_code()
         return ''
 
+    def c(self):
+        return self.get_code()
+
     def get_data(self, default_value=''):
         if not self.subfields:
             return default_value
@@ -20,12 +23,18 @@ class SubfieldQuery(object):
             return subfield.get_data()
         return default_value
 
+    def d(self, default_value=''):
+        return self.get_data(default_value=default_value)
+
     def get_field(self, tag):
         fields = []
         for subfield in self.subfields:
             if isinstance(subfield, ExtendedSubfield):
                 fields += subfield.get_fields(tag)
         return FieldQuery(fields)
+
+    def f(self, tag):
+        return self.get_field(tag=tag)
 
     def get_fields(self):
         fields = []
@@ -58,6 +67,19 @@ class SubfieldQuery(object):
     def get_element(self):
         return self.subfields[0]
 
+    def __str__(self):
+        data = self.get_data()
+        return data
+
+    # def __iter__(self):
+    #     return self.list().__iter__()
+
+    def __getitem__(self, item):
+        return self.at(item)
+
+    # def __len__(self):
+    #     return len(self.list())
+
 
 class FieldQuery(object):
     def __init__(self, fields=None):
@@ -77,6 +99,9 @@ class FieldQuery(object):
                 subfields = exist_subfields
                 break
         return SubfieldQuery(subfields)
+
+    def s(self, code):
+        return self.get_subfield(code=code)
 
     def get_subfields(self):
         subfields = []
@@ -99,6 +124,12 @@ class FieldQuery(object):
                     fields.append(field_query.get_element())
         return FieldQuery(fields)
 
+    def get_inner_field(self, tag):
+        return self.get_field(tag)
+
+    def f(self, tag):
+        return self.get_field(tag=tag)
+
     def get_fields(self):
         fields = []
         for extended_subfield in self.extended_subfields:
@@ -118,6 +149,9 @@ class FieldQuery(object):
             return field.get_ind1()
         return default_value
 
+    def i1(self, default_value=' '):
+        return self.get_ind1(default_value)
+
     def get_ind2(self, default_value=' '):
         if self.fields:
             field = self.fields[0]
@@ -128,10 +162,16 @@ class FieldQuery(object):
             return field.get_ind2()
         return default_value
 
+    def i2(self, default_value=' '):
+        return self.get_ind2(default_value)
+
     def get_tag(self):
         if self.is_exist():
             return self.get_element().get_tag()
         return ''
+
+    def t(self):
+        return self.get_tag()
 
     def each(self, callback):
         for field in self.fields:
@@ -161,6 +201,28 @@ class FieldQuery(object):
                 return field.get_data()
         return default_value
 
+    def d(self, default_value=u''):
+        return self.get_data(default_value)
+
+    def __getattr__(self, item):
+        return self.get_subfield(item)
+
+    # def __iter__(self):
+    #     return self.list().__iter__()
+    #
+    # def __getitem__(self, item):
+    #     return self.at(item)
+    #
+    # def __len__(self):
+    #     return len(self.list())
+
+    def __str__(self):
+        print('str')
+        asterix_sf = self.get_subfield('*')
+        if asterix_sf.is_exist():
+            return asterix_sf.get_data('')
+        return ''
+
 
 class MarcQuery(object):
     def __init__(self, record):
@@ -177,6 +239,9 @@ class MarcQuery(object):
         fields = self.fields_index.get(tag, [])
         return FieldQuery(fields)
 
+    def f(self, tag):
+        return self.get_field(tag)
+
     def get_fields(self):
         fq = []
         for field in self.record.get_fields():
@@ -185,6 +250,11 @@ class MarcQuery(object):
 
     def leader_data(self):
         return self.record.get_leader()
+
+    def l(self, start: int, length: int = 1):
+        data = self.leader_data()
+
+        return data[start:start + length]
 
     def get_element(self):
         return self.record
@@ -197,3 +267,18 @@ class MarcQuery(object):
                 exist_fields = []
                 self.fields_index[field.get_tag()] = exist_fields
             exist_fields.append(field)
+
+    def __getattr__(self, item):
+        return self.get_field(item)
+
+    # def __iter__(self):
+    #     return self.list()
+
+    # def __getitem__(self, item):
+    #     return self.at(item)
+
+    # def __len__(self):
+    #     return len(self.list())
+
+    def __str__(self):
+        return str(self.record)

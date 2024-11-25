@@ -1,0 +1,12 @@
+<ul>
+    {% for income_group in income_groups %}
+        <li>
+            {{ income_group.title }}
+            <ul>
+                {% for income_item in income_group.income_items %}
+                    <li>{{ income_item.title }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>

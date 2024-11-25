@@ -84,6 +84,8 @@ INSTALLED_APPS = [
     'journal',
     'versioning',
     'kvdb',
+    'huey.contrib.djhuey',
+    'search_frontend'
     # 'django_minify_html'
 ]
 

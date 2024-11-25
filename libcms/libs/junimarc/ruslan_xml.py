@@ -4,7 +4,6 @@ import re
 
 from . import record
 
-
 # from http://boodebr.org/main/python/all-about-python-and-unicode#UNI_XML
 RE_XML_ILLEGAL = '([\u0000-\u0008\u000b-\u000c\u000e-\u001f\ufffe-\uffff])' + \
                  '|' + \
@@ -12,6 +11,8 @@ RE_XML_ILLEGAL = '([\u0000-\u0008\u000b-\u000c\u000e-\u001f\ufffe-\uffff])' + \
                  (chr(0xd800), chr(0xdbff), chr(0xdc00), chr(0xdfff),
                   chr(0xd800), chr(0xdbff), chr(0xdc00), chr(0xdfff),
                   chr(0xd800), chr(0xdbff), chr(0xdc00), chr(0xdfff))
+
+
 # x = u"<foo>text\u001a</foo>"
 # x = re.sub(RE_XML_ILLEGAL, "?", x)
 
@@ -58,6 +59,8 @@ def build_df_elem(field):
     ind2.text = smart_urlquote(field.get_ind2())
 
     for subfield in field.get_subfields():
+        if subfield.get_code() not in 'abcdefghijklmnopqrstuwxyz0123456789':
+            continue
         if isinstance(subfield, record.DataSubfield):
             data_field.append(buld_data_subfield(subfield))
         else:
@@ -66,7 +69,7 @@ def build_df_elem(field):
     return data_field
 
 
-def record_to_xml(record_obj, syntax='1.2.840.10003.5.28', namespace=False) -> etree.Element:
+def record_to_xml(record_obj, syntax='1.2.840.10003.5.28', namespace=False):
     """
     default syntax rusmarc
     """
@@ -82,7 +85,7 @@ def record_to_xml(record_obj, syntax='1.2.840.10003.5.28', namespace=False) -> e
     status = etree.SubElement(leader, 'status')
     status.text = smart_urlquote(string_leader[5])
 
-    type = etree.SubElement(leader, 'type')
+    type = etree.SubElement(leader, 'status')
     type.text = smart_urlquote(string_leader[6])
 
     leader07 = etree.SubElement(leader, 'leader07')

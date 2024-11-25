@@ -49,7 +49,7 @@ urlpatterns += i18n_patterns(
     re_path(r'^subscribe/', include(('subscribe.urls', 'subscribe'))),
     re_path(r'^opac/', include(('sso_opac.urls', 'sso_opac'))),
     re_path(r'^journal/', include(('journal.urls', 'journal'))),
-
+    re_path(r'^sf/', include(('search_frontend.urls', 'search_frontend'))),
     # url(r'^sql/', include('explorer.urls')),
 )
 

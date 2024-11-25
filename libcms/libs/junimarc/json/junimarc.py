@@ -119,7 +119,7 @@ def control_field_to_json(field):
 
 def field_to_json(field):
     if isinstance(field, record.DataField):
-        return data_field_to_json()
+        return data_field_to_json(field)
     return
 
 
