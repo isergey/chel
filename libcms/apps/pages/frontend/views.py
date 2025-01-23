@@ -84,7 +84,7 @@ def show(request, slug):
             log.user = user
         ViewLog.objects.bulk_create([log])
 
-    if request.is_ajax():
+    if request.is_ajax() or request.GET.get('view') == 'content':
         return render(request, 'pages/frontend/show_ajax.html', {
             'page': page,
             'content': content,
