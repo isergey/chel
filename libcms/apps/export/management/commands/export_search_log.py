@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         offset = 0
-        package = 1000000
+        package = 100000
         while True:
             limit = offset * package + package
             count = 0
