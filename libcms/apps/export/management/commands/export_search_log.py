@@ -7,8 +7,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         offset = 0
+        package = 1000000
         while True:
-            limit = offset + 100000
+            limit = offset * package + package
             count = 0
             for log in search_models.SearchLog.objects.all()[offset: limit].iterator():
                 count += 1
@@ -25,6 +26,6 @@ class Command(BaseCommand):
                 }
 
                 print(json.dumps(data, ensure_ascii=False))
-
+            offset += 1
             if count == 0:
                 break
