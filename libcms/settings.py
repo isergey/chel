@@ -85,7 +85,8 @@ INSTALLED_APPS = [
     'versioning',
     'kvdb',
     'huey.contrib.djhuey',
-    'search_frontend'
+    'search_frontend',
+    'export'
     # 'django_minify_html'
 ]
 
