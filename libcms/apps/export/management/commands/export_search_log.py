@@ -6,7 +6,7 @@ from ssearch import models as search_models
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        for log in search_models.SearchLog.objects.all().iterator():
+        for log in search_models.SearchLog.objects.all()[0: 5000000].iterator():
             log: search_models.SearchLog = log
             data = {
                 'id': log.id,
