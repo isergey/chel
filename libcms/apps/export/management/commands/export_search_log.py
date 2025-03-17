@@ -1,4 +1,5 @@
 import json
+from django.core.management.base import BaseCommand
 from ssearch import models as search_models
 
 
