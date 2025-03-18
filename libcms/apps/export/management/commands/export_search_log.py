@@ -27,7 +27,7 @@ class Command(BaseCommand):
                 }
 
                 # print(json.dumps(data, ensure_ascii=False))
-            offset += 1
+            offset += package
             print(count, offset)
             if count == 0:
                 break
