@@ -9,7 +9,7 @@ class Command(BaseCommand):
         offset = 0
         package = 100000
         while True:
-            limit = offset * package + package
+            limit = offset + package
             count = 0
 
             for log in search_models.SearchLog.objects.all()[offset: limit].iterator():
