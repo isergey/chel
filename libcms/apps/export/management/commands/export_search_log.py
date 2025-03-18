@@ -11,7 +11,7 @@ class Command(BaseCommand):
         while True:
             limit = offset * package + package
             count = 0
-            print(count)
+
             for log in search_models.SearchLog.objects.all()[offset: limit].iterator():
                 count += 1
                 log: search_models.SearchLog = log
@@ -28,5 +28,6 @@ class Command(BaseCommand):
 
                 # print(json.dumps(data, ensure_ascii=False))
             offset += 1
+            print(count, offset)
             if count == 0:
                 break
