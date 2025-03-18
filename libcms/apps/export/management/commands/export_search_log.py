@@ -26,8 +26,7 @@ class Command(BaseCommand):
                     'params_crc32': log.params_crc32,
                 }
 
-                # print(json.dumps(data, ensure_ascii=False))
+                print(json.dumps(data, ensure_ascii=False))
             offset += package
-            print(count, offset)
             if count == 0:
                 break
