@@ -258,32 +258,31 @@ def upload_file(request):
 @login_required
 @permission_required_or_403('filebrowser.delete_file')
 @transaction.atomic()
-def delete(request, file_id:int):
-    models.File.objects.filter(pk=file_id).delete()
-    # name = request.GET.get('name').replace('..', '').replace('/', '').replace('\\', '')
-    # pathes = _get_init_pathes(request)
-    #
-    # item_path = os.path.join(pathes['upload_dir'], name).encode(app_settings.FILE_NAME_ENCODING)
-    # if os.path.isfile(item_path):
-    #     os.remove(item_path)
-    # elif os.path.isdir(item_path):
-    #     shutil.rmtree(item_path)
-    #
-    # full_path_hash = models.File.generate_full_path_hash(pathes['current_dir'], name)
-    # try:
-    #     file_model = models.File.objects.get(full_path_hash=full_path_hash)
-    #     file_model.delete()
-    #     content_type = ContentType.objects.get_for_model(models.File)
-    #     # journal_models.log_action(
-    #     #     'filebrowser',
-    #     #     'delete_file',
-    #     #     user_id=request.user.id,
-    #     #     content_type=content_type,
-    #     #     content_id=file_model.full_path_hash,
-    #     #     message='%s/%s' %(file_model.path, file_model.name)
-    #     # )
-    # except models.File.DoesNotExist:
-    #     pass
+def delete(request):
+    name = request.GET.get('name').replace('..', '').replace('/', '').replace('\\', '')
+    pathes = _get_init_pathes(request)
+
+    item_path = os.path.join(pathes['upload_dir'], name).encode(app_settings.FILE_NAME_ENCODING)
+    if os.path.isfile(item_path):
+        os.remove(item_path)
+    elif os.path.isdir(item_path):
+        shutil.rmtree(item_path)
+
+    full_path_hash = models.File.generate_full_path_hash(pathes['current_dir'], name)
+    try:
+        file_model = models.File.objects.get(full_path_hash=full_path_hash)
+        file_model.delete()
+        content_type = ContentType.objects.get_for_model(models.File)
+        # journal_models.log_action(
+        #     'filebrowser',
+        #     'delete_file',
+        #     user_id=request.user.id,
+        #     content_type=content_type,
+        #     content_id=file_model.full_path_hash,
+        #     message='%s/%s' %(file_model.path, file_model.name)
+        # )
+    except models.File.DoesNotExist:
+        pass
 
     return redirect(reverse('filebrowser:administration:index') + '?path=' + pathes['current_dir'])
 
