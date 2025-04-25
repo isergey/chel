@@ -78,7 +78,7 @@
 
                             {% else %}
                                 <a class="delete btn btn-sm btn-danger " title="Удалить"
-                                   href="{% url 'filebrowser:administration:delete' %}?path={{ request.GET.path }}&name={{ dir_item.name|urlencode }}">
+                                   href="{% url 'filebrowser:administration:delete' dir_item.model %}?path={{ request.GET.path }}&name={{ dir_item.name|urlencode }}">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             {% endif %}
