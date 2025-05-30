@@ -34,7 +34,7 @@ class AccessDenied(Exception): pass
 def show(request):
     code = request.GET.get('code', None)
     id = request.GET.get('id', None)
-    return redirect(f'https://urelib.chelreglib.ru/dl/?code={code}')
+    # return redirect(f'https://urelib.chelreglib.ru/dl/?code={code}')
 
     if not request.user.is_authenticated:
         back_url = [request.build_absolute_uri(resolve_url('rbooks:frontend:show'))]
