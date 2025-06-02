@@ -371,6 +371,7 @@ def collections():
 
 
 def index(request):
+    return redirect(f'https://urelib.chelreglib.ru')
     query = request.META['QUERY_STRING']
     if query:
         query = '?' + query
@@ -378,6 +379,7 @@ def index(request):
 
 
 def results(request, catalog='uc'):
+    return redirect(f'https://urelib.chelreglib.ru')
     if is_crawler(request):
         return HttpResponse('')
     # sc = SearchCriteria(u"AND")
@@ -602,6 +604,12 @@ def detail(request):
     uc = init_solr_collection('uc')
     record_id = request.GET.get('id', None)
     local_number = request.GET.get('ln', None)
+
+    if record_id:
+        return redirect(f'https://urelib.chelreglib.ru/catalog/detail/{record_id}')
+
+    if local_number:
+        return redirect(f'https://urelib.chelreglib.ru/catalog/rr/?=ln{urlquote(local_number)}')
 
     if local_number:
         result = uc.search('local_number_s:"%s"' % local_number.replace('\\', '\\\\'), fields=['id'])
