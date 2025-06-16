@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     {% for news_item in news %}
         <url>
-            <loc>http://{{ request.META.HTTP_HOST }}{% url 'news:frontend:show' news_item.id %}</loc>
+            <loc>https://{{ request.META.HTTP_HOST }}{% url 'news:frontend:show' news_item.id %}</loc>
         </url>
     {% endfor %}
 </urlset>

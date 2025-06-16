@@ -53,8 +53,8 @@ class OpacGlobalAuthBackend:
     @transaction.atomic()
     def get_or_create_user(self, username, password, reader: ReaderResponse):
         user = find_external_user(external_username=username, auth_source=AUTH_SOURCE)
-        # if user is not None:
-        #     return user
+        if user is not None:
+            return user
 
         fio_parts = (reader.attributes.fio or '').split(' ')
 
