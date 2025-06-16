@@ -201,7 +201,7 @@ class Client:
             headers=request_headers,
             auth=auth,
         )
-        print(resp.text)
+
         try:
             return resp.json()
         except json.JSONDecodeError as e:
@@ -224,6 +224,7 @@ class Client:
             timeout=30,
             verify=False
         )
+        print(response.text)
 
         if 200 <= response.status_code < 400:
             return response
