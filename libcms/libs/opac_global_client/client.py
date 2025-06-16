@@ -224,7 +224,7 @@ class Client:
             timeout=30,
             verify=False
         )
-        print(response.text)
+        print(response.content)
 
         if 200 <= response.status_code < 400:
             return response
