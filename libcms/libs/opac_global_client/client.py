@@ -192,7 +192,7 @@ class Client:
         request_headers = headers or {}
         request_headers['Accept'] = 'application/json'
 
-        response = self.make_request(
+        resp = self.make_request(
             method=method,
             path=path,
             params=params,
@@ -201,9 +201,9 @@ class Client:
             headers=request_headers,
             auth=auth,
         )
-
+        print(resp.text)
         try:
-            return response.json()
+            return resp.json()
         except json.JSONDecodeError as e:
             raise exceptions.Error(str(e))
 
