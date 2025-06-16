@@ -192,7 +192,7 @@ class Client:
         request_headers = headers or {}
         request_headers['Accept'] = 'application/json'
 
-        resp = self.make_request(
+        response = self.make_request(
             method=method,
             path=path,
             params=params,
@@ -203,7 +203,7 @@ class Client:
         )
 
         try:
-            return resp.json()
+            return response.json()
         except json.JSONDecodeError as e:
             raise exceptions.Error(str(e))
 
@@ -224,7 +224,6 @@ class Client:
             timeout=30,
             verify=False
         )
-        print(response.content)
 
         if 200 <= response.status_code < 400:
             return response
