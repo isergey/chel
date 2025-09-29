@@ -86,7 +86,8 @@ INSTALLED_APPS = [
     'kvdb',
     'huey.contrib.djhuey',
     'search_frontend',
-    'export'
+    'export',
+    'login_limiter.apps.LoginLimiterConfig',
     # 'django_minify_html'
 ]
 
@@ -100,6 +101,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     # 'django_minify_html.middleware.MinifyHtmlMiddleware'
+    'login_limiter.middleware.LoginBlockMiddleware',
 ]
 
 ROOT_URLCONF = 'libcms.urls'
