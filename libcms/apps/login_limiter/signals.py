@@ -1,16 +1,17 @@
+import time
 from django.contrib.auth.signals import user_login_failed
 from django.core.cache import cache
-from django.conf import settings
 from django.dispatch import receiver
-import time
 
+from .config import get_config
 
 @receiver(user_login_failed)
 def track_login_failed(sender, credentials, request, **kwargs):
-    print('user_login_failed', user_login_failed)
     """
     Обработчик неудачных попыток входа
     """
+    config = get_config()
+
     username = credentials.get('username')
     ip_address = get_client_ip(request)
 
@@ -26,9 +27,9 @@ def track_login_failed(sender, credentials, request, **kwargs):
     current_time = time.time()
 
     # Настройки из settings.py или значения по умолчанию
-    max_attempts = getattr(settings, 'LOGIN_FAILURE_LIMIT', 10)
-    timeout_duration = getattr(settings, 'LOGIN_FAILURE_TIMEOUT', 3600)  # 1 час
-    window_duration = getattr(settings, 'LOGIN_FAILURE_WINDOW', 900)  # 15 минут
+    max_attempts = config.max_attempts
+    timeout_duration = config.timeout_duration
+    window_duration = config.window_duration
 
     # Обновляем счетчики
     update_failure_count(ip_key, max_attempts, window_duration, timeout_duration, current_time)

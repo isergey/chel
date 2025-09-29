@@ -1,11 +1,13 @@
 from functools import lru_cache
-
+import time
 from django.core.cache import cache
 from django.http import JsonResponse, HttpRequest
-from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.deprecation import MiddlewareMixin
-import time
+
+from .config import get_config
+
+
 
 @lru_cache
 def resolve_login_url():
@@ -32,8 +34,8 @@ class LoginBlockMiddleware(MiddlewareMixin):
         """
         Проверяет, заблокирован ли IP или пользователь
         """
-        max_attempts = getattr(settings, 'LOGIN_FAILURE_LIMIT', 10)
-        window_duration = getattr(settings, 'LOGIN_FAILURE_WINDOW', 900)
+
+        config = get_config()
 
         keys_to_check = [
             f'login_failures_ip_{ip_address}',
@@ -47,8 +49,8 @@ class LoginBlockMiddleware(MiddlewareMixin):
             failures_data = cache.get(key)
             if failures_data:
                 # Проверяем находится ли в пределах временного окна
-                if current_time - failures_data['first_attempt'] <= window_duration:
-                    if failures_data['count'] >= max_attempts:
+                if current_time - failures_data['first_attempt'] <= config.window_duration:
+                    if failures_data['count'] >= config.max_attempts:
                         return True
                 else:
                     # Удаляем устаревшие данные
