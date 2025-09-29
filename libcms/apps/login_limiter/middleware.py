@@ -32,7 +32,7 @@ class LoginBlockMiddleware(MiddlewareMixin):
         """
         Проверяет, заблокирован ли IP или пользователь
         """
-        max_attempts = getattr(settings, 'LOGIN_FAILURE_LIMIT', 5)
+        max_attempts = getattr(settings, 'LOGIN_FAILURE_LIMIT', 10)
         window_duration = getattr(settings, 'LOGIN_FAILURE_WINDOW', 900)
 
         keys_to_check = [
