@@ -26,7 +26,7 @@ def track_login_failed(sender, credentials, request, **kwargs):
     current_time = time.time()
 
     # Настройки из settings.py или значения по умолчанию
-    max_attempts = getattr(settings, 'LOGIN_FAILURE_LIMIT', 5)
+    max_attempts = getattr(settings, 'LOGIN_FAILURE_LIMIT', 10)
     timeout_duration = getattr(settings, 'LOGIN_FAILURE_TIMEOUT', 3600)  # 1 час
     window_duration = getattr(settings, 'LOGIN_FAILURE_WINDOW', 900)  # 15 минут
 
