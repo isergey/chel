@@ -1,24 +1,26 @@
-from functools import lru_cache
 import time
+from functools import lru_cache
+
 from django.core.cache import cache
 from django.http import JsonResponse, HttpRequest
 from django.shortcuts import resolve_url
-from django.utils.deprecation import MiddlewareMixin
 
 from .config import get_config
-
 
 
 @lru_cache
 def resolve_login_url():
     return resolve_url('login')
 
-class LoginBlockMiddleware(MiddlewareMixin):
+class LoginBlockMiddleware:
     """
     Middleware для блокировки запросов на вход при превышении лимита
     """
 
-    def process_request(self, request: HttpRequest):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest):
         login_url = resolve_login_url()
 
         if request.path == login_url and request.method == 'POST':
@@ -30,7 +32,10 @@ class LoginBlockMiddleware(MiddlewareMixin):
                     'error': 'Превышено количество попыток входа. Пожалуйста, попробуйте позже.'
                 }, status=429, json_dumps_params={'ensure_ascii': False})
 
-    def is_blocked(self, ip_address, username):
+        return self.get_response(request)
+
+    @classmethod
+    def is_blocked(cls, ip_address, username):
         """
         Проверяет, заблокирован ли IP или пользователь
         """
