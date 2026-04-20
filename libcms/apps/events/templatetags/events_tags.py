@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from datetime import date, datetime
-from django.utils import timezone
 import calendar
-from django.db.models import Q
+from datetime import date
+
 from django import template
-from django.core.cache import cache
+from django.db.models import Q
+from django.utils import timezone
 
 from ..constants import ONLINE_ADDRESS_REFERENCE_ID
-from ..models import Event
 from ..frontend.forms import CalendarFilterForm, get_current_month_choice, get_current_year_choice
 from ..frontend.views import _join_content
+from ..models import Event
+
 register = template.Library()
 
 
